@@ -1,0 +1,340 @@
+package com.mapsrahal.maps.onboarding;
+
+import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.os.Bundle;
+import android.view.View;
+import android.view.Window;
+import android.widget.CheckBox;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import com.mapsrahal.maps.BuildConfig;
+import com.mapsrahal.maps.Framework;
+import com.mapsrahal.maps.R;
+import com.mapsrahal.maps.base.BaseMwmDialogFragment;
+import com.mapsrahal.maps.news.OnboardingStep;
+import com.mapsrahal.util.Counters;
+import com.mapsrahal.util.SharedPropertiesUtils;
+import com.mapsrahal.util.ThemeUtils;
+import com.mapsrahal.util.UiUtils;
+
+import java.util.Stack;
+
+public class WelcomeDialogFragment extends BaseMwmDialogFragment implements View.OnClickListener
+{
+  private static final String ARG_HAS_SPECIFIC_STEP = "welcome_screen_type";
+  private static final String ARG_HAS_MANY_STEPS = "show_onboarding_steps";
+
+  @NonNull
+  private final Stack<OnboardingStep> mOnboardingSteps = new Stack<>();
+
+  @Nullable
+  private PolicyAgreementListener mPolicyAgreementListener;
+
+  @Nullable
+  private OnboardingStepPassedListener mOnboardingStepPassedListener;
+
+  @Nullable
+  private OnboardingStep mOnboardinStep;
+
+  @SuppressWarnings("NullableProblems")
+  @NonNull
+  private View mContentView;
+
+  @SuppressWarnings("NullableProblems")
+  @NonNull
+  private ImageView mImage;
+
+  @SuppressWarnings("NullableProblems")
+  @NonNull
+  private TextView mTitle;
+
+  @SuppressWarnings("NullableProblems")
+  @NonNull
+  private TextView mSubtitle;
+
+  @SuppressWarnings("NullableProblems")
+  @NonNull
+  private TextView mAcceptBtn;
+
+  @SuppressWarnings("NullableProblems")
+  @NonNull
+  private CheckBox mTermOfUseCheckbox;
+
+  @SuppressWarnings("NullableProblems")
+  @NonNull
+  private CheckBox mPrivacyPolicyCheckbox;
+
+  public static void show(@NonNull FragmentActivity activity)
+  {
+    create(activity, null);
+  }
+
+  public static void showOnboardinSteps(@NonNull FragmentActivity activity)
+  {
+    Bundle args = new Bundle();
+    args.putBoolean(ARG_HAS_MANY_STEPS, true);
+    create(activity, args);
+  }
+
+  public static void showOnboardinStepsStartWith(@NonNull FragmentActivity activity,
+                                                 @NonNull OnboardingStep startStep)
+  {
+    Bundle args = new Bundle();
+    args.putBoolean(ARG_HAS_MANY_STEPS, true);
+    args.putInt(ARG_HAS_SPECIFIC_STEP, startStep.ordinal());
+    create(activity, args);
+  }
+
+  public static boolean isFirstLaunch(@NonNull FragmentActivity activity)
+  {
+    if (Counters.getFirstInstallVersion() < BuildConfig.VERSION_CODE)
+      return false;
+
+    FragmentManager fm = activity.getSupportFragmentManager();
+    if (fm.isDestroyed())
+      return false;
+
+    return !Counters.isFirstStartDialogSeen(activity);
+  }
+
+  private static void create(@NonNull FragmentActivity activity, @Nullable Bundle args)
+  {
+    final WelcomeDialogFragment fragment = new WelcomeDialogFragment();
+    fragment.setArguments(args);
+    activity.getSupportFragmentManager()
+            .beginTransaction()
+            .add(fragment, WelcomeDialogFragment.class.getName())
+            .commitAllowingStateLoss();
+  }
+
+  @Nullable
+  public static DialogFragment find(@NonNull FragmentActivity activity)
+  {
+    final FragmentManager fm = activity.getSupportFragmentManager();
+    if (fm.isDestroyed())
+      return null;
+
+    Fragment f = fm.findFragmentByTag(WelcomeDialogFragment.class.getName());
+    return (DialogFragment) f;
+  }
+
+  @Override
+  public void onAttach(Activity activity)
+  {
+    super.onAttach(activity);
+    if (activity instanceof BaseNewsFragment.NewsDialogListener)
+      mPolicyAgreementListener = (PolicyAgreementListener) activity;
+    if (activity instanceof OnboardingStepPassedListener)
+      mOnboardingStepPassedListener = (OnboardingStepPassedListener) activity;
+  }
+
+  @Override
+  public void onDetach()
+  {
+    mPolicyAgreementListener = null;
+    super.onDetach();
+  }
+
+  @Override
+  protected int getCustomTheme()
+  {
+    return ThemeUtils.isNightTheme() ? R.style.MwmTheme_DialogFragment_NoFullscreen_Night
+                                     : R.style.MwmTheme_DialogFragment_NoFullscreen;
+  }
+
+  @NonNull
+  @Override
+  public Dialog onCreateDialog(Bundle savedInstanceState)
+  {
+    Dialog res = super.onCreateDialog(savedInstanceState);
+    res.requestWindowFeature(Window.FEATURE_NO_TITLE);
+    res.setCancelable(false);
+
+    hanldeOnboardingSteps();
+
+    mContentView = View.inflate(getActivity(), R.layout.fragment_welcome, null);
+    res.setContentView(mContentView);
+    mAcceptBtn = mContentView.findViewById(R.id.accept_btn);
+    mAcceptBtn.setOnClickListener(this);
+    mImage = mContentView.findViewById(R.id.iv__image);
+    mImage.setImageResource(R.drawable.img_welcome);
+    mTitle = mContentView.findViewById(R.id.tv__title);
+    mTitle.setText(R.string.onboarding_welcome_title);
+    mSubtitle = mContentView.findViewById(R.id.tv__subtitle1);
+    mSubtitle.setText(R.string.onboarding_welcome_first_subtitle);
+
+    initUserAgreementViews();
+    bindWelcomeScreenType();
+
+    return res;
+  }
+
+  private void hanldeOnboardingSteps()
+  {
+    Bundle args = getArguments();
+    if (args != null)
+    {
+      boolean hasManySteps = args.containsKey(ARG_HAS_MANY_STEPS);
+      if (hasManySteps)
+      {
+        mOnboardingSteps.push(OnboardingStep.SHARE_EMOTIONS);
+        mOnboardingSteps.push(OnboardingStep.EXPERIENCE);
+        mOnboardingSteps.push(OnboardingStep.DREAM_AND_PLAN);
+      }
+
+      boolean hasSpecificStep = args.containsKey(ARG_HAS_SPECIFIC_STEP);
+      if (hasSpecificStep)
+        mOnboardinStep =
+            OnboardingStep.values()[args.getInt(ARG_HAS_SPECIFIC_STEP)];
+
+      if (hasManySteps && hasSpecificStep)
+      {
+        OnboardingStep step = null;
+        while (!mOnboardinStep.equals(step))
+        {
+          step = mOnboardingSteps.pop();
+        }
+        mOnboardinStep = step;
+        return;
+      }
+
+      if (hasManySteps)
+        mOnboardinStep = mOnboardingSteps.pop();
+    }
+  }
+
+  private void initUserAgreementViews()
+  {
+    mTermOfUseCheckbox = mContentView.findViewById(R.id.term_of_use_welcome_checkbox);
+    mTermOfUseCheckbox.setChecked(
+        SharedPropertiesUtils.isTermOfUseAgreementConfirmed(requireContext()));
+
+    mPrivacyPolicyCheckbox = mContentView.findViewById(R.id.privacy_policy_welcome_checkbox);
+    mPrivacyPolicyCheckbox.setChecked(
+        SharedPropertiesUtils.isPrivacyPolicyAgreementConfirmed(requireContext()));
+
+    mTermOfUseCheckbox.setOnCheckedChangeListener(
+        (buttonView, isChecked) -> onTermsOfUseViewChanged(isChecked));
+    mPrivacyPolicyCheckbox.setOnCheckedChangeListener(
+        (buttonView, isChecked) -> onPrivacyPolicyViewChanged(isChecked));
+
+    UiUtils.linkifyView(mContentView, R.id.privacy_policy_welcome,
+                        R.string.sign_agree_pp_gdpr, Framework.nativeGetPrivacyPolicyLink());
+
+    UiUtils.linkifyView(mContentView, R.id.term_of_use_welcome,
+                        R.string.sign_agree_tof_gdpr, Framework.nativeGetTermsOfUseLink());
+  }
+
+  private void onPrivacyPolicyViewChanged(boolean isChecked)
+  {
+    SharedPropertiesUtils.putPrivacyPolicyAgreement(requireContext(), isChecked);
+    onCheckedValueChanged(isChecked, mTermOfUseCheckbox.isChecked());
+  }
+
+  private void onTermsOfUseViewChanged(boolean isChecked)
+  {
+    SharedPropertiesUtils.putTermOfUseAgreement(requireContext(), isChecked);
+    onCheckedValueChanged(isChecked, mPrivacyPolicyCheckbox.isChecked());
+  }
+
+  private void onCheckedValueChanged(boolean isChecked,
+                                     boolean isAnotherConditionChecked)
+
+  {
+    boolean isAgreementGranted = isChecked && isAnotherConditionChecked;
+    if (!isAgreementGranted)
+      return;
+
+    if (mPolicyAgreementListener != null)
+      mPolicyAgreementListener.onPolicyAgreementApplied();
+    dismissAllowingStateLoss();
+  }
+
+  private void bindWelcomeScreenType()
+  {
+    boolean hasBindingType = mOnboardinStep != null;
+    UiUtils.showIf(hasBindingType, mContentView, R.id.button_container);
+
+    boolean hasDeclineBtn = hasBindingType
+                            && mOnboardinStep.hasDeclinedButton();
+    TextView declineBtn = mContentView.findViewById(R.id.decline_btn);
+    UiUtils.showIf(hasDeclineBtn, declineBtn);
+
+    View userAgreementBlock = mContentView.findViewById(R.id.user_agreement_block);
+    UiUtils.hideIf(hasBindingType, userAgreementBlock);
+
+    if (hasDeclineBtn)
+      declineBtn.setText(mOnboardinStep.getDeclinedButtonResId());
+
+    if (!hasBindingType)
+      return;
+
+    mTitle.setText(mOnboardinStep.getTitle());
+    mImage.setImageResource(mOnboardinStep.getImage());
+    mAcceptBtn.setText(mOnboardinStep.getAcceptButtonResId());
+    declineBtn.setOnClickListener(v -> {});
+    mSubtitle.setText(mOnboardinStep.getSubtitle());
+  }
+
+  @Override
+  public void onClick(View v)
+  {
+    if (v.getId() != R.id.accept_btn)
+    {
+      Counters.setFirstStartDialogSeen(requireContext());
+      return;
+    }
+
+    if (!mOnboardingSteps.isEmpty())
+    {
+      mOnboardinStep = mOnboardingSteps.pop();
+      if (mOnboardingStepPassedListener != null)
+        mOnboardingStepPassedListener.onOnboardingStepPassed(mOnboardinStep);
+      bindWelcomeScreenType();
+      return;
+    }
+
+    Counters.setFirstStartDialogSeen(requireContext());
+    dismissAllowingStateLoss();
+
+    if (mOnboardingStepPassedListener != null)
+      mOnboardingStepPassedListener.onLastOnboardingStepPassed();
+  }
+
+  @Override
+  public void onCancel(DialogInterface dialog)
+  {
+    super.onCancel(dialog);
+    if (!isAgreementDeclined(requireContext()))
+      Counters.setFirstStartDialogSeen(requireContext());
+    requireActivity().finish();
+  }
+
+  public static boolean isAgreementDeclined(@NonNull Context context)
+  {
+    return !SharedPropertiesUtils.isTermOfUseAgreementConfirmed(context)
+           || !SharedPropertiesUtils.isPrivacyPolicyAgreementConfirmed(context);
+
+  }
+
+  public interface PolicyAgreementListener
+  {
+    void onPolicyAgreementApplied();
+  }
+
+  public interface OnboardingStepPassedListener
+  {
+    void onOnboardingStepPassed(@NonNull OnboardingStep step);
+    void onLastOnboardingStepPassed();
+  }
+}

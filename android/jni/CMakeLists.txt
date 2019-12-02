@@ -1,0 +1,155 @@
+cmake_minimum_required(VERSION 3.2)
+
+project(mapsrahal C CXX)
+
+include_directories(
+  ${OMIM_ROOT}/3party/jansson/src
+  ${OMIM_ROOT}/3party/boost
+  ${OMIM_ROOT}/3party/protobuf/protobuf/src
+  ${OMIM_ROOT}/3party/glm
+  ${OMIM_ROOT}/3party/succinct
+  ${OMIM_ROOT}/3party/agg
+  ${OMIM_ROOT}/3party/icu/common
+  ${OMIM_ROOT}/3party/icu/i18n
+  ${OMIM_ROOT}/3party/stb_image
+  ${OMIM_ROOT}/3party/sdf_image
+  ${OMIM_ROOT}/3party/Vulkan-Headers/include
+  ${OMIM_ROOT}/3party/vulkan_wrapper
+  ${OMIM_ROOT}/android/jni
+)
+
+set(
+  SRC
+  # JNI headers
+  ../../private.h
+  com/mapsrahal/core/jni_helper.hpp
+  com/mapsrahal/core/logging.hpp
+  com/mapsrahal/core/ScopedEnv.hpp
+  com/mapsrahal/core/ScopedLocalRef.hpp
+  com/mapsrahal/maps/discovery/Locals.hpp
+  com/mapsrahal/maps/Framework.hpp
+  com/mapsrahal/maps/promo/Promo.hpp
+  com/mapsrahal/maps/SearchEngine.hpp
+  com/mapsrahal/opengl/android_gl_utils.hpp
+  com/mapsrahal/opengl/androidoglcontext.hpp
+  com/mapsrahal/opengl/androidoglcontextfactory.hpp
+  com/mapsrahal/opengl/gl3stub.h
+  com/mapsrahal/platform/GuiThread.hpp
+  com/mapsrahal/platform/Platform.hpp
+
+  # JNI sources
+  com/mapsrahal/core/jni_helper.cpp
+  com/mapsrahal/core/logging.cpp
+  com/mapsrahal/maps/analytics/ExternalLibrariesMediator.cpp
+  com/mapsrahal/maps/bookmarks/data/BookmarkManager.cpp
+  com/mapsrahal/maps/discovery/DiscoveryManager.cpp
+  com/mapsrahal/maps/discovery/Locals.cpp
+  com/mapsrahal/maps/DisplayedCategories.cpp
+  com/mapsrahal/maps/DownloadResourcesLegacyActivity.cpp
+  com/mapsrahal/maps/editor/OpeningHours.cpp
+  com/mapsrahal/maps/editor/Editor.cpp
+  com/mapsrahal/maps/editor/OsmOAuth.cpp
+  com/mapsrahal/maps/Framework.cpp
+  com/mapsrahal/maps/LightFramework.cpp
+  com/mapsrahal/maps/LocationState.cpp
+  com/mapsrahal/maps/LocationHelper.cpp
+  com/mapsrahal/maps/MapFragment.cpp
+  com/mapsrahal/maps/MapManager.cpp
+  com/mapsrahal/maps/MwmApplication.cpp
+  com/mapsrahal/maps/metrics/UserActionsLogger.cpp
+  com/mapsrahal/maps/onboarding/Onboarding.cpp
+  com/mapsrahal/maps/PrivateVariables.cpp
+  com/mapsrahal/maps/promo/Promo.cpp
+  com/mapsrahal/maps/routing/RoutingOptions.cpp
+  com/mapsrahal/maps/SearchEngine.cpp
+  com/mapsrahal/maps/SearchRecents.cpp
+  com/mapsrahal/maps/settings/UnitLocale.cpp
+  com/mapsrahal/maps/sound/tts.cpp
+  com/mapsrahal/maps/Sponsored.cpp
+  com/mapsrahal/maps/taxi/TaxiManager.cpp
+  com/mapsrahal/maps/TrackRecorder.cpp
+  com/mapsrahal/maps/TrafficState.cpp
+  com/mapsrahal/maps/subway/SubwayManager.cpp
+  com/mapsrahal/maps/ugc/UGC.cpp
+  com/mapsrahal/maps/UserMarkHelper.cpp
+  com/mapsrahal/opengl/android_gl_utils.cpp
+  com/mapsrahal/opengl/androidoglcontext.cpp
+  com/mapsrahal/opengl/androidoglcontextfactory.cpp
+  com/mapsrahal/opengl/gl3stub.c
+  com/mapsrahal/platform/HttpThread.cpp
+  com/mapsrahal/platform/HttpUserAgent.cpp
+  com/mapsrahal/platform/GuiThread.cpp
+  com/mapsrahal/platform/Language.cpp
+  com/mapsrahal/platform/Localization.cpp
+  com/mapsrahal/platform/MarketingService.cpp
+  com/mapsrahal/platform/Platform.cpp
+  com/mapsrahal/platform/PThreadImpl.cpp
+  com/mapsrahal/platform/SecureStorage.cpp
+  com/mapsrahal/platform/SocketImpl.cpp
+  com/mapsrahal/util/Config.cpp
+  com/mapsrahal/util/GeoUtils.cpp
+  com/mapsrahal/util/HttpClient.cpp
+  com/mapsrahal/util/HttpUploader.cpp
+  com/mapsrahal/util/Language.cpp
+  com/mapsrahal/util/LoggerFactory.cpp
+  com/mapsrahal/util/NetworkPolicy.cpp
+  com/mapsrahal/util/StringUtils.cpp
+  com/mapsrahal/util/statistics/PushwooshHelper.cpp
+  com/mapsrahal/vulkan/android_vulkan_context_factory.cpp
+  com/mapsrahal/vulkan/android_vulkan_context_factory.hpp
+)
+
+omim_add_library(mapsrahal SHARED ${SRC})
+
+target_link_libraries(
+  mapsrahal
+  # Android libs
+  log
+  android
+  EGL
+  GLESv2
+  atomic
+  z
+  # MapsWithMe libs
+  map
+  tracking
+  routing
+  traffic
+  routing_common
+  transit
+  drape_frontend
+  shaders
+  search
+  storage
+  descriptions
+  ugc
+  drape
+  kml
+  editor
+  indexer
+  metrics
+  platform
+  partners_api
+  web_api
+  local_ads
+  mwm_diff
+  bsdiff
+  geometry
+  coding
+  base
+  opening_hours
+  pugixml
+  oauthcpp
+  expat
+  freetype
+  minizip
+  jansson
+  protobuf
+  stats_client
+  succinct
+  stb_image
+  sdf_image
+  icu
+  agg
+  vulkan_wrapper
+)

@@ -1,0 +1,26 @@
+package com.mapsrahal.maps.gallery.impl;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.mapsrahal.maps.R;
+import com.mapsrahal.maps.gallery.ItemSelectedListener;
+import com.mapsrahal.maps.gallery.Items;
+
+public class LocalExpertsErrorAdapterStrategy extends SimpleErrorAdapterStrategy
+{
+  LocalExpertsErrorAdapterStrategy(@Nullable ItemSelectedListener<Items.Item> listener)
+  {
+    super(listener);
+  }
+
+  @NonNull
+  @Override
+  protected View inflateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup parent)
+  {
+    return inflater.inflate(R.layout.item_discovery_expert_error, parent, false);
+  }
+}
