@@ -2,33 +2,35 @@ package com.mapsrahal.maps.ads;
 
 import android.content.Context;
 import android.os.SystemClock;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.facebook.ads.Ad;
-import com.facebook.ads.AdError;
-import com.facebook.ads.AdListener;
-import com.facebook.ads.NativeAd;
+//import com.facebook.ads.Ad;
+//import com.facebook.ads.AdError;
+//import com.facebook.ads.AdListener;
+//import com.facebook.ads.NativeAd;
 import com.mapsrahal.util.log.Logger;
 import com.mapsrahal.util.log.LoggerFactory;
+
 import net.jcip.annotations.NotThreadSafe;
 
 import java.util.EnumSet;
 
 @NotThreadSafe
-class FacebookAdsLoader extends CachingNativeAdLoader implements AdListener
+class MyAdsLoader extends CachingNativeAdLoader
 {
   private static final Logger LOGGER = LoggerFactory.INSTANCE.getLogger(LoggerFactory.Type.MISC);
-  private static final String TAG = FacebookAdsLoader.class.getSimpleName();
+  private static final String TAG = MyAdsLoader.class.getSimpleName();
 
-  FacebookAdsLoader(@Nullable OnAdCacheModifiedListener cacheListener,
-                    @Nullable AdTracker tracker)
+  MyAdsLoader(@Nullable OnAdCacheModifiedListener cacheListener,
+              @Nullable AdTracker tracker)
   {
     super(tracker, cacheListener);
   }
 
-  @Override
-  public void onError(Ad ad, AdError adError)
+  //@Override
+ /* public void onError(Ad ad, AdError adError)
   {
     LOGGER.w(TAG, "A error '" + adError.getErrorMessage() + "' is occurred while loading " +
                   "an ad for banner id '" + ad.getPlacementId() + "'");
@@ -53,15 +55,15 @@ class FacebookAdsLoader extends CachingNativeAdLoader implements AdListener
   public void onLoggingImpression(Ad ad)
   {
     LOGGER.i(TAG, "onLoggingImpression");
-  }
+  }*/
 
   @Override
   void loadAdFromProvider(@NonNull Context context, @NonNull String bannerId)
   {
-    NativeAd ad = new NativeAd(context, bannerId);
+    /*(NativeAd ad = new NativeAd(context, bannerId);
     ad.setAdListener(this);
     LOGGER.d(TAG, "Loading is started");
-    ad.loadAd(EnumSet.of(NativeAd.MediaCacheFlag.ICON));
+    ad.loadAd(EnumSet.of(NativeAd.MediaCacheFlag.ICON));*/
   }
 
   @NonNull

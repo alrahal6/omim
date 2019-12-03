@@ -11,7 +11,8 @@ public class Factory
                                               @Nullable AdTracker tracker)
   {
     String provider = banner.getProvider();
-    switch (provider)
+    return new  MyAdsLoader(cacheListener,tracker);
+    /*switch (provider)
     {
       case Providers.FACEBOOK:
         return new FacebookAdsLoader(cacheListener, tracker);
@@ -23,7 +24,7 @@ public class Factory
         throw new AssertionError("Not implemented yet");
       default:
         throw new AssertionError("Unknown ads provider: " + provider);
-    }
+    }*/
   }
 
   @NonNull

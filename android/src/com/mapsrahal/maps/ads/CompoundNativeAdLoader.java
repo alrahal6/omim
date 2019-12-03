@@ -56,7 +56,7 @@ public class CompoundNativeAdLoader extends BaseNativeAdLoader implements Native
   public void loadAd(@NonNull Context context, @NonNull List<Banner> banners)
   {
     LOGGER.i(TAG, "Load ads for " + banners);
-    detach();
+    /*detach();
     cancel();
     mLoadingCompleted = false;
     mFailedProviders.clear();
@@ -82,7 +82,7 @@ public class CompoundNativeAdLoader extends BaseNativeAdLoader implements Native
         loader.loadAd(context.getApplicationContext(), banner.getId());
       else
         loader.loadAd(context, banner.getId());
-    }
+    }*/
   }
 
   @Override

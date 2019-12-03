@@ -13,7 +13,7 @@ import com.appsflyer.AppsFlyerLib;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
 import com.crashlytics.android.ndk.CrashlyticsNdk;
-import com.google.android.gms.ads.identifier.AdvertisingIdClient;
+//import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.mapsrahal.maps.BuildConfig;
@@ -27,9 +27,9 @@ import com.mapsrahal.util.PermissionsUtils;
 import com.mapsrahal.util.Utils;
 import com.mapsrahal.util.log.Logger;
 import com.mapsrahal.util.log.LoggerFactory;
-import com.mopub.common.MoPub;
-import com.mopub.common.SdkConfiguration;
-import com.mopub.common.privacy.PersonalInfoManager;
+//import com.mopub.common.MoPub;
+//import com.mopub.common.SdkConfiguration;
+//import com.mopub.common.privacy.PersonalInfoManager;
 import com.my.target.common.MyTargetPrivacy;
 import io.fabric.sdk.android.Fabric;
 
@@ -66,15 +66,15 @@ public class ExternalLibrariesMediator
 
   public void initSensitiveDataToleranceLibraries()
   {
-    initMoPub();
+    //initMoPub();
     initCrashlytics();
     initAppsFlyer();
   }
 
   public void initSensitiveDataStrictLibrariesAsync()
   {
-    GetAdInfoTask getAdInfoTask = new GetAdInfoTask(this);
-    getAdInfoTask.execute();
+    //GetAdInfoTask getAdInfoTask = new GetAdInfoTask(this);
+    //getAdInfoTask.execute();
   }
 
   private void initSensitiveEventLogger()
@@ -155,14 +155,14 @@ public class ExternalLibrariesMediator
 
   private void initMoPub()
   {
-    SdkConfiguration sdkConfiguration = new SdkConfiguration
+    /*SdkConfiguration sdkConfiguration = new SdkConfiguration
         .Builder(Framework.nativeMoPubInitializationBannerId())
         .build();
 
     MoPub.initializeSdk(mApplication, sdkConfiguration, null);
     PersonalInfoManager manager = MoPub.getPersonalInformationManager();
     if (manager != null)
-      manager.grantConsent();
+      manager.grantConsent();*/
   }
 
   @UiThread
@@ -189,8 +189,8 @@ public class ExternalLibrariesMediator
   {
     if (mAdvertisingInfo == null)
       throw new IllegalStateException("Advertising info must be obtained first!");
-
-    return mAdvertisingInfo.isLimitAdTrackingEnabled();
+    return true;
+    //return mAdvertisingInfo.isLimitAdTrackingEnabled();
   }
 
   public void disableAdProvider(@NonNull Banner.Type type)
@@ -279,7 +279,7 @@ public class ExternalLibrariesMediator
     }
   }
 
-  private static class GetAdInfoTask extends AsyncTask<Void, Void, AdvertisingInfo>
+ /* private static class GetAdInfoTask extends AsyncTask<Void, Void, AdvertisingInfo>
   {
     private final static long ADS_INFO_GETTING_TIMEOUT_MS = 4000;
     private final static long ADS_INFO_GETTING_CHECK_INTERVAL_MS = 500;
@@ -366,10 +366,10 @@ public class ExternalLibrariesMediator
       super.onCancelled();
     }
   }
-
+*/
   private static class AdvertisingInfo
   {
-    @Nullable
+    /*@Nullable
     private final AdvertisingIdClient.Info mInfo;
 
     private AdvertisingInfo(@Nullable AdvertisingIdClient.Info info)
@@ -389,7 +389,7 @@ public class ExternalLibrariesMediator
       return "AdvertisingInfo{" +
              "mInfo=" + mInfo +
              '}';
-    }
+    }*/
   }
 
   @UiThread

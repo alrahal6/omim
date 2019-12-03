@@ -368,13 +368,13 @@ final class BannerController implements PlacePageStateObserver
 
   void detach()
   {
-    mAdsLoader.detach();
-    mAdsLoader.setAdListener(null);
+    //mAdsLoader.detach();
+    //mAdsLoader.setAdListener(null);
   }
 
   void attach()
   {
-    mAdsLoader.setAdListener(mAdsListener);
+    //mAdsLoader.setAdListener(mAdsListener);
   }
 
   private void fillViews(@NonNull MwmNativeAd data)

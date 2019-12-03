@@ -13,7 +13,7 @@ import android.text.TextUtils;
 import android.util.Pair;
 
 import com.android.billingclient.api.BillingClient;
-import com.facebook.ads.AdError;
+//import com.facebook.ads.AdError;
 import com.facebook.appevents.AppEventsLogger;
 import com.mapsrahal.maps.BuildConfig;
 import com.mapsrahal.maps.Framework;
@@ -1116,7 +1116,7 @@ public enum Statistics
   public void trackPPBannerError(@NonNull String bannerId, @NonNull String provider,
                                  @Nullable NativeAdError error, int state)
   {
-    boolean isAdBlank = error != null && error.getCode() == AdError.NO_FILL_ERROR_CODE;
+    /*boolean isAdBlank = error != null && error.getCode() == AdError.NO_FILL_ERROR_CODE;
     String eventName = isAdBlank ? PP_BANNER_BLANK : PP_BANNER_ERROR;
     Statistics.ParameterBuilder builder = Statistics.params();
     builder.add(BANNER, !TextUtils.isEmpty(bannerId) ? bannerId : "N/A")
@@ -1125,7 +1125,7 @@ public enum Statistics
            .add(PROVIDER, provider)
            .add(STATE, String.valueOf(state));
     trackEvent(eventName, builder.get());
-    MyTracker.trackEvent(eventName);
+    MyTracker.trackEvent(eventName);*/
   }
 
   public void trackBookingSearchEvent(@NonNull MapObject mapObject)

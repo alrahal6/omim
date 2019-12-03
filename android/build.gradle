@@ -54,7 +54,7 @@ dependencies {
   implementation 'com.android.support:support-compat:27.1.1'+ propSupportLibraryVersion
 
   implementation 'com.google.android.gms:play-services-location:17.0.0'
-  implementation 'com.google.android.gms:play-services-analytics:17.0.0'
+  //implementation 'com.google.android.gms:play-services-analytics:17.0.0'
   implementation 'com.google.android.gms:play-services-gcm:17.0.0'
   implementation 'com.google.android.gms:play-services-auth:17.0.0'
   implementation 'com.google.android.gms:play-services-basement:17.1.1'
@@ -66,7 +66,7 @@ dependencies {
   implementation('com.crashlytics.sdk.android:crashlytics-ndk:2.0.4@aar') { transitive = true }
   // 3-party
   implementation 'com.facebook.android:facebook-android-sdk:4.40.0'
-  implementation 'com.facebook.android:audience-network-sdk:4.28.2'
+  //implementation 'com.facebook.android:audience-network-sdk:4.28.2'
   implementation 'com.google.code.gson:gson:2.6.1'
   implementation 'com.pushwoosh:pushwoosh:5.19.7'
   implementation 'com.pushwoosh:pushwoosh-gcm:5.12.1'
@@ -76,9 +76,9 @@ dependencies {
     exclude group: 'com.google.android.exoplayer', module:'exoplayer-dash'
     exclude group: 'com.google.android.exoplayer', module:'exoplayer-hls'
   }
-  implementation('com.mopub:mopub-sdk-native-static:5.0.0@aar') {
+  /*implementation('com.mopub:mopub-sdk-native-static:5.0.0@aar') {
     transitive = true;
-  }
+  }*/
   implementation fileTree(dir: '3rd_party', include: '*.jar')
   // BottomSheet
   implementation 'com.cocosw:bottomsheet:1.5.0@aar'
@@ -138,7 +138,7 @@ configurations.all {
     force 'com.android.support:support-fragment:' + propSupportLibraryVersion
 
     force 'com.google.android.gms:play-services-location:17.0.0'
-    force 'com.google.android.gms:play-services-analytics:17.0.0'
+    //force 'com.google.android.gms:play-services-analytics:17.0.0'
     force 'com.google.android.gms:play-services-plus:17.0.0'
     force 'com.google.android.gms:play-services-gcm:17.0.0'
     force 'com.google.android.gms:play-services-auth:17.0.0'

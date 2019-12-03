@@ -111,7 +111,7 @@ public class SplashActivity extends AppCompatActivity
         return;
       }
 
-      ExternalLibrariesMediator mediator = MwmApplication.from(getApplicationContext()).getMediator();
+      /*ExternalLibrariesMediator mediator = MwmApplication.from(getApplicationContext()).getMediator();
       if (!mediator.isAdvertisingInfoObtained())
       {
         LOGGER.i(TAG, "Advertising info not obtained yet, wait...");
@@ -138,8 +138,8 @@ public class SplashActivity extends AppCompatActivity
       {
         LOGGER.i(TAG, "Limit ad tracking enabled, rb banners disabled.");
         mediator.disableAdProvider(Banner.Type.TYPE_RB);
-      }
-
+      }*/
+      init();
 //    Run delayed task because resumeDialogs() must see the actual value of mCanceled flag,
 //    since onPause() callback can be blocked because of UI thread is busy with framework
 //    initialization.
@@ -250,10 +250,10 @@ public class SplashActivity extends AppCompatActivity
   {
     super.onStart();
     mBaseDelegate.onStart();
-    mAdvertisingObserver.attach(this);
-    ExternalLibrariesMediator mediator = MwmApplication.from(this).getMediator();
-    LOGGER.d(TAG, "Add advertising observer");
-    mediator.addAdvertisingObserver(mAdvertisingObserver);
+    //mAdvertisingObserver.attach(this);
+    //ExternalLibrariesMediator mediator = MwmApplication.from(this).getMediator();
+    //LOGGER.d(TAG, "Add advertising observer");
+    //mediator.addAdvertisingObserver(mAdvertisingObserver);
   }
 
   @Override
@@ -356,10 +356,10 @@ public class SplashActivity extends AppCompatActivity
   {
     super.onStop();
     mBaseDelegate.onStop();
-    mAdvertisingObserver.detach();
-    ExternalLibrariesMediator mediator = MwmApplication.from(this).getMediator();
-    LOGGER.d(TAG, "Remove advertising observer");
-    mediator.removeAdvertisingObserver(mAdvertisingObserver);
+    //mAdvertisingObserver.detach();
+    //ExternalLibrariesMediator mediator = MwmApplication.from(this).getMediator();
+    //LOGGER.d(TAG, "Remove advertising observer");
+    //mediator.removeAdvertisingObserver(mAdvertisingObserver);
   }
 
   @Override
