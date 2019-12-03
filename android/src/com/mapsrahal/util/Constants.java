@@ -73,7 +73,7 @@ public final class Constants
   }
 
 
-  public static final String MWM_DIR_POSTFIX = "/MapsWithMe/";
+  public static final String MWM_DIR_POSTFIX = "/Rahal/";
   public static final String CACHE_DIR = "cache";
   public static final String FILES_DIR = "files";
 

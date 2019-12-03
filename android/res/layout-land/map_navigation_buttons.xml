@@ -54,6 +54,7 @@
     android:tint="@null"/>
 
   <FrameLayout
+      android:visibility="gone"
     android:id="@+id/subs_screen_btn_container"
     android:layout_alignBottom="@id/nav_zoom_out"
     android:layout_centerVertical="true"

@@ -83,8 +83,8 @@
   <color name="bg_menu_open">#FFFFFFFF</color>
   <color name="bg_menu_open_night">#FF2D3237</color>
 
-  <color name="bg_statusbar">#197841</color>
-  <color name="bg_statusbar_night">#14181C</color>
+  <color name="bg_statusbar">#FF4630</color>
+  <color name="bg_statusbar_night">#FF4630</color>
 
   <color name="bg_azimut_arrow">#1D414651</color>
   <color name="fg_azimut_arrow">#FFFFFFFF</color>

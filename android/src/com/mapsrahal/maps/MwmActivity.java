@@ -1676,7 +1676,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
       return;
 
     mMapFragment.setupRuler(offsetY, false);
-    mMapFragment.setupWatermark(offsetY, true);
+    //mMapFragment.setupWatermark(offsetY, true);
   }
 
   @Override

@@ -91,7 +91,7 @@ public class MapFragment extends BaseMwmFragment
     }
 
     setupRuler(0, false);
-    setupWatermark(0, false);
+    //setupWatermark(0, false);
 
     nativeSetupWidget(WIDGET_SCALE_FPS_LABEL,
                       UiUtils.dimen(R.dimen.margin_base),
@@ -126,12 +126,12 @@ public class MapFragment extends BaseMwmFragment
 
   void setupWatermark(int offsetY, boolean forceRedraw)
   {
-    nativeSetupWidget(WIDGET_WATERMARK,
+    /*nativeSetupWidget(WIDGET_WATERMARK,
                       mWidth - UiUtils.dimen(R.dimen.margin_watermark_right),
                       mHeight - UiUtils.dimen(R.dimen.margin_watermark_bottom) + offsetY,
                       ANCHOR_RIGHT_BOTTOM);
     if (forceRedraw && mSurfaceCreated)
-      nativeApplyWidgets();
+      nativeApplyWidgets();*/
   }
 
   private void reportUnsupported()

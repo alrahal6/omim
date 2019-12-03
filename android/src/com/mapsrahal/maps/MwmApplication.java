@@ -1,10 +1,15 @@
 package com.mapsrahal.maps;
 
 import android.app.Application;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.multidex.MultiDex;
 
@@ -42,6 +47,11 @@ import com.mapsrahal.util.log.Logger;
 import com.mapsrahal.util.log.LoggerFactory;
 import com.mapsrahal.util.statistics.Statistics;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 
@@ -51,14 +61,16 @@ public class MwmApplication extends Application implements AppBackgroundTracker.
   @NonNull
   private Logger mLogger;
   public final static String TAG = "MwmApplication";
-
+  private static final String FILE_NAME = "Sudan_West.mwm";
   private static MwmApplication sSelf;
   private SharedPreferences mPrefs;
   private AppBackgroundTracker mBackgroundTracker;
   @SuppressWarnings("NullableProblems")
   @NonNull
   private SubwayManager mSubwayManager;
-
+  public static final String CHANNEL_ID = "my_rahal_01";
+  public static final String CHANNEL_NAME = "Rahal App";
+  private static final String CHANNEL_DESCRIPTION = "Rahal CarPool App";
   private boolean mFrameworkInitialized;
   private boolean mPlatformInitialized;
 
@@ -189,10 +201,75 @@ public class MwmApplication extends Application implements AppBackgroundTracker.
 
   private void initNotificationChannels()
   {
+    //NotificationChannelProvider channelProvider = NotificationChannelFactory.createProvider(this);
+    //channelProvider.setUGCChannel();
+    //channelProvider.setDownloadingChannel();
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+      NotificationManager mNotificationManager = getSystemService(NotificationManager.class);
+      NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);
+      mChannel.setDescription(CHANNEL_DESCRIPTION);
+      mChannel.enableLights(true);
+      mChannel.setLightColor(Color.GREEN);
+      mChannel.enableVibration(true);
+      mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+      mNotificationManager.createNotificationChannel(mChannel);
+    }
+  }
+
+  private boolean isFileExist() {
+    String filePath = StorageUtils.getSettingsPath()+FILE_NAME;
+    File file = new File(filePath);
+    if(file.exists())
+      return true;
+    else
+      return false;
+  }
+
+  private void copyAssets() {
+    /*AssetManager assetManager = getAssets();
+    String[] files = null;
+    try {
+      files = assetManager.list("");
+    } catch (IOException e) {
+      Log.e("tag", "Failed to get asset file list.", e);
+    }
+    for(String filename : files) {*/
+    InputStream in = null;
+    OutputStream out = null;
+    try {
+      in = getAssets().open(FILE_NAME);
+
+      String outDir = StorageUtils.getSettingsPath();
+
+      File outFile = new File(outDir, FILE_NAME);
+
+      out = new FileOutputStream(outFile);
+      copyFile(in, out);
+      in.close();
+      in = null;
+      out.flush();
+      out.close();
+      out = null;
+    } catch(IOException e) {
+      Log.e("tag", "Failed to copy asset file: " + FILE_NAME, e);
+    }
+    //}
+  }
+
+  private void copyFile(InputStream in, OutputStream out) throws IOException {
+    byte[] buffer = new byte[1024];
+    int read;
+    while((read = in.read(buffer)) != -1){
+      out.write(buffer, 0, read);
+    }
+  }
+
+  /*private void initNotificationChannels()
+  {
     NotificationChannelProvider channelProvider = NotificationChannelFactory.createProvider(this);
     channelProvider.setUGCChannel();
     channelProvider.setDownloadingChannel();
-  }
+  }*/
 
   /**
    * Initialize native core of application: platform and framework. Caller must handle returned value
@@ -248,6 +325,9 @@ public class MwmApplication extends Application implements AppBackgroundTracker.
     Editor.init(this);
     UGC.init(this);
     mPlatformInitialized = true;
+    if(!isFileExist()) {
+      copyAssets();
+    }
   }
 
   private boolean createPlatformDirectories(@NonNull String settingsPath, @NonNull String filesPath,
