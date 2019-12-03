@@ -43,6 +43,8 @@ import com.mapsrahal.util.statistics.AlohaHelper;
 import java.io.Closeable;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.NetworkInterface;
 import java.security.MessageDigest;
 import java.text.NumberFormat;
@@ -734,6 +736,10 @@ public class Utils
 
     String key = "brand." + brand;
     return getLocalizedFeatureByKey(context, key);
+  }
+
+  public static double roundTwoDecimals(double d) {
+    return new BigDecimal(d).setScale(2, RoundingMode.HALF_UP).doubleValue();
   }
 
   private static class SupportInfoWithLogsCallback implements LoggerFactory.OnZipCompletedListener

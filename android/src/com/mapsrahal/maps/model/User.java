@@ -1,40 +1,45 @@
 package com.mapsrahal.maps.model;
 
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
-
-@Entity(tableName = "user_table")
 public class User {
 
-    @PrimaryKey(autoGenerate = true)
-    private int id;
-    private String userName;
-    private int phone;
-    private int vehicleType;
+    private String userName,phone;
+    private int id, vehicleType;
 
-    public User(String userName, int phone, int vehicleType) {
+    public User(String userName, String phone, int vehicleType) {
         this.userName = userName;
         this.phone = phone;
         this.vehicleType = vehicleType;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public String getUserName() {
         return userName;
     }
 
-    public int getPhone() {
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getPhone() {
         return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public int getVehicleType() {
         return vehicleType;
+    }
+
+    public void setVehicleType(int vehicleType) {
+        this.vehicleType = vehicleType;
     }
 }

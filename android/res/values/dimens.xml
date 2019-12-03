@@ -282,4 +282,35 @@
   <dimen name="zero">0dp</dimen>
   <dimen name="all_pass_top_offset">62dp</dimen>
   <dimen name="welcome_btn_min_width">148dp</dimen>
+
+  <dimen name="activity_horizontal_margin">16dp</dimen>
+  <dimen name="activity_vertical_margin">16dp</dimen>
+  <dimen name="space5">5dp</dimen>
+  <dimen name="space10">10dp</dimen>
+  <dimen name="space15">15dp</dimen>
+  <dimen name="space20">20dp</dimen>
+  <dimen name="m_left_right">50dp</dimen>
+  <dimen name="dots_height">30dp</dimen>
+
+  <dimen name="nav_header_vertical_spacing">8dp</dimen>
+  <dimen name="nav_header_height">176dp</dimen>
+
+  <dimen name="fab_margin">16dp</dimen>
+
+  <dimen name="text_size_xsmall">11sp</dimen>
+  <dimen name="text_size_small">12sp</dimen>
+  <dimen name="text_size_medium">14sp</dimen>
+  <dimen name="text_size_large">18sp</dimen>
+  <dimen name="text_size_xlarge">20sp</dimen>
+  <dimen name="text_size_xxlarge">32sp</dimen>
+  <dimen name="text_size_huge">48sp</dimen>
+
+  <dimen name="margin_xxlarge">100dip</dimen>
+  <dimen name="margin_xlarge">72dip</dimen>
+  <dimen name="margin_large">48dip</dimen>
+  <dimen name="margin_med_large">24dip</dimen>
+  <dimen name="margin_medium">16dip</dimen>
+  <dimen name="margin_small">12dip</dimen>
+  <dimen name="margin_xsmall">8dip</dimen>
+  <dimen name="divider">1dip</dimen>
 </resources>

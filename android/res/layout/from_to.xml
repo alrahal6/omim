@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_home"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:id="@+id/rl_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentTop="true">
+
+        <TextView
+            android:id="@+id/tv_pickup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:drawableLeft="@drawable/ic_search_brown_24dp"
+            android:drawableStart="@drawable/ic_search_brown_24dp"
+            android:layout_marginLeft="@dimen/m_left_right"
+            android:layout_marginRight="@dimen/m_left_right"
+            android:text="Pickup Adrress"
+            style="@style/TextView14spGrayPad"/>
+        <View
+            android:id="@+id/separator"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/tv_pickup"
+            android:layout_alignLeft="@id/tv_pickup"
+            android:layout_alignRight="@id/tv_pickup"
+            android:background="@color/separator"/>
+        <TextView
+            android:id="@+id/tv_dropoff"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:drawableLeft="@drawable/ic_search_brown_24dp"
+            android:drawableStart="@drawable/ic_search_brown_24dp"
+            android:layout_below="@id/separator"
+            android:layout_marginLeft="@dimen/m_left_right"
+            android:layout_marginRight="@dimen/m_left_right"
+            android:text="Dropoff Address"
+            style="@style/TextView14spGrayPad"/>
+        <LinearLayout
+            android:layout_width="@dimen/m_left_right"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@id/tv_pickup"
+            android:layout_alignBottom="@id/tv_dropoff"
+            style="@style/TextView14spGrayPad"
+            android:gravity="center|center_horizontal">
+
+            <ImageButton
+                android:id="@+id/addressToggle"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:background="#FFFFFF"
+                app:srcCompat="@drawable/ic_import_export_black_24dp" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="@dimen/m_left_right"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_alignParentLeft="true"
+            android:layout_alignTop="@id/tv_pickup"
+            android:layout_alignBottom="@id/tv_dropoff"
+            style="@style/TextView14spGrayPad"
+            android:gravity="center|center_horizontal">
+
+            <ImageButton
+                android:id="@+id/mainMenu"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:background="#FFFFFF"
+                app:srcCompat="@drawable/ic_menu_black_24dp" />
+        </LinearLayout>
+    </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/ll_form"
+        android:layout_below="@id/rl_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/space5"
+        android:background="@drawable/bg_white_top_border"
+        android:weightSum="6">
+        <TextView
+            android:id="@+id/date_time"
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="wrap_content"
+            android:paddingRight="@dimen/space5"
+            android:paddingLeft="@dimen/space5"
+            android:hint="Date Time"
+            style="@style/TextView14spGrayPad"
+            android:gravity="center"/>
+        <ImageView
+            android:id="@+id/remove_seat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:background="@drawable/bg_white_left_border"
+            app:srcCompat="@drawable/ic_minus_black" />
+        <TextView
+            android:id="@+id/required_seats"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:paddingRight="5dp"
+            android:drawableLeft="@drawable/ic_seat"
+            android:text="1"
+            style="@style/TextView14spGrayPad"
+            android:gravity="center" />
+        <ImageView
+            android:id="@+id/add_seat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            app:srcCompat="@drawable/ic_add" />
+        <TextView
+            android:id="@+id/tv_distance"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="wrap_content"
+            android:paddingRight="@dimen/space5"
+            android:paddingLeft="@dimen/space5"
+            android:text="0 km"
+            style="@style/TextView14spGrayPad"
+            android:gravity="center"
+            android:background="@drawable/bg_white_left_border"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/mnu_form"
+        android:layout_below="@id/ll_form"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/space20"
+        android:visibility="gone"
+        android:weightSum="2">
+        <TextView
+            android:id="@+id/set_pickup"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Set as Pickup"
+            style="@style/TextView14spBg"
+            android:background="@color/base_green"
+            android:gravity="center"/>
+        <TextView
+            android:id="@+id/set_drop"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:paddingRight="5dp"
+            android:text="Set as Dropoff"
+            style="@style/TextView14spBg"
+            android:gravity="center" />
+    </LinearLayout>
+</RelativeLayout>

@@ -100,6 +100,12 @@ dependencies {
   implementation 'com.google.android:flexbox:1.0.0'
   implementation 'com.trafi:anchor-bottom-sheet-behavior:0.13-alpha'
   implementation 'com.google.firebase:firebase-messaging:20.0.0'
+
+  implementation 'com.github.florent37:SingleDateAndTimePicker:v2.0.4'
+  implementation 'com.squareup.retrofit2:retrofit:2.6.2'
+  implementation 'com.squareup.retrofit2:converter-gson:2.6.2'
+  implementation 'com.squareup.okhttp3:logging-interceptor:3.12.0'
+  implementation 'com.squareup.okhttp3:okhttp:3.12.0'
 }
 
 def getDate() {
@@ -262,120 +268,10 @@ android {
       buildConfigField 'String', 'SUPPORT_MAIL', '"googleplay@maps.me"'
     }
 
-    samsung {
-      dimension "default"
-      versionName = android.defaultConfig.versionName + '-Samsung'
-      buildConfigField 'String', 'REVIEW_URL', '"samsungapps://ProductDetail/com.mapsrahal.maps.pro"'
-      buildConfigField 'String', 'SUPPORT_MAIL', '"samsung@maps.me"'
-      android.sourceSets.samsung.assets.srcDirs = ['flavors/mwm-ttf-assets']
-    }
-
-    amazon {
-      dimension "default"
-      versionName = android.defaultConfig.versionName + '-Amazon'
-      buildConfigField 'String', 'REVIEW_URL', '"amzn://apps/android?p=com.mapsrahal.maps.pro"'
-      buildConfigField 'String', 'SUPPORT_MAIL', '"amazon@maps.me"'
-      buildConfigField 'int', 'RATING_THRESHOLD', '4'
-      android.sourceSets.amazon.assets.srcDirs = ['flavors/mwm-ttf-assets']
-    }
-
-    yandex {
-      dimension "default"
-      versionName = android.defaultConfig.versionName + '-Yandex'
-      buildConfigField 'String', 'REVIEW_URL', '"yastore://details?id=com.mapsrahal.maps.pro"'
-      android.sourceSets.yandex.assets.srcDirs = ['flavors/mwm-ttf-assets']
-    }
-
     preinstall {
       dimension "default"
       versionName = android.defaultConfig.versionName + '-Preinstall'
       buildConfigField 'String', 'SUPPORT_MAIL', '"googleplay@maps.me"'
-    }
-
-    cipherlab {
-      dimension "default"
-      versionName = android.defaultConfig.versionName + '-CipherLab'
-      android.sourceSets.cipherlab.assets.srcDirs = ['flavors/mwm-ttf-assets']
-    }
-
-    xiaomi {
-      dimension "default"
-      versionName = android.defaultConfig.versionName + '-Xiaomi'
-      buildConfigField 'String', 'REVIEW_URL', '"http://app.mi.com/detail/85835?ref=search"'
-      android.sourceSets.xiaomi.assets.srcDirs = ['flavors/mwm-ttf-assets']
-    }
-
-    lenovo {
-      dimension "default"
-      versionName = android.defaultConfig.versionName + '-Lenovo'
-      android.sourceSets.lenovo.assets.srcDirs = ['flavors/mwm-ttf-assets']
-    }
-
-    web {
-      dimension "default"
-      versionName = android.defaultConfig.versionName + '-Web'
-      buildConfigField 'String', 'SUPPORT_MAIL', '"googleplay@maps.me"'
-      android.sourceSets.web.assets.srcDirs = ['flavors/mwm-ttf-assets']
-    }
-
-    nineApp {
-      dimension "default"
-      versionName = android.defaultConfig.versionName + '-9app'
-      buildConfigField 'String', 'REVIEW_URL', '"http://www.9apps.com/android-apps/mapsrahal-maps-pro/"'
-      android.sourceSets.nineApp.assets.srcDirs = ['flavors/mwm-ttf-assets']
-    }
-
-    mobogenie {
-      dimension "default"
-      versionName = android.defaultConfig.versionName + '-Mobogenie'
-      android.sourceSets.mobogenie.assets.srcDirs = ['flavors/mwm-ttf-assets']
-      buildConfigField 'String', 'REVIEW_URL', '"http://www.mobogenie.com/download-maps-me-4240212.html"'
-    }
-
-    tencent {
-      dimension "default"
-      versionName = android.defaultConfig.versionName + '-Tencent'
-      versionCode TENCENT_VERSION_CODE_BASE + android.defaultConfig.versionCode
-      android.sourceSets.tencent.assets.srcDirs = ['flavors/mwm-ttf-assets']
-      buildConfigField 'String', 'REVIEW_URL', '"http://android.myapp.com/myapp/detail.htm?apkName=com.mapsrahal.maps.pro"'
-    }
-
-    baidu {
-      dimension "default"
-      versionName = android.defaultConfig.versionName + '-Baidu'
-      android.sourceSets.baidu.assets.srcDirs = ['flavors/mwm-ttf-assets']
-      buildConfigField 'String', 'REVIEW_URL', '"http://shouji.baidu.com/software/item?docid=7999892&f=sug@software"'
-    }
-
-    appChina {
-      dimension "default"
-      versionName = android.defaultConfig.versionName + '-AppChina'
-      android.sourceSets.appChina.assets.srcDirs = ['flavors/mwm-ttf-assets']
-      buildConfigField 'String', 'REVIEW_URL', '"http://www.appchina.com/app/com.mapsrahal.maps.pro"'
-    }
-
-    moboMarket {
-      dimension "default"
-      versionName = android.defaultConfig.versionName + '-MoboMarket'
-      android.sourceSets.moboMarket.assets.srcDirs = ['flavors/mwm-ttf-assets']
-      // TODO While store url is unknown, force all rating reviews to be sent to our email.
-      // Change it in the next version after publishing app to the store.
-      buildConfigField 'int', 'RATING_THRESHOLD', '6'
-    }
-
-    blackberry {
-      dimension "default"
-      versionName = android.defaultConfig.versionName + '-Blackberry'
-      android.sourceSets.blackberry.assets.srcDirs = ['flavors/mwm-ttf-assets']
-      buildConfigField 'String', 'REVIEW_URL', '"https://appworld.blackberry.com/webstore/content/51013892"'
-    }
-
-    huawei {
-      dimension "default"
-      versionName = android.defaultConfig.versionName + '-Huawei'
-      versionCode = HUAWEI_VERSION_CODE_BASE + android.defaultConfig.versionCode
-      buildConfigField 'String', 'SUPPORT_MAIL', '"huawei@maps.me"'
-      android.sourceSets.huawei.assets.srcDirs = ['flavors/mwm-ttf-assets']
     }
   }
 

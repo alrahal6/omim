@@ -843,7 +843,7 @@ public class RoutingController implements TaxiManager.TaxiListener
   }
 
   @Nullable
-  RoutingInfo getCachedRoutingInfo()
+  public RoutingInfo getCachedRoutingInfo()
   {
     return mCachedRoutingInfo;
   }

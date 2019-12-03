@@ -1,0 +1,8 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item
+        android:id="@+id/set_as_pickup"
+        android:title="Set As Pickup"/>
+    <item
+        android:id="@+id/set_as_drop"
+        android:title="Set As Drop"/>
+</menu>

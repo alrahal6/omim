@@ -498,7 +498,8 @@ public class SplashActivity extends AppCompatActivity
   {
     Intent input = getIntent();
     //Intent result = new Intent(this, DownloadResourcesLegacyActivity.class);
-    Intent result = new Intent(this, MwmActivity.class);
+    //Intent result = new Intent(this, MwmActivity.class);
+    Intent result = new Intent(this, MapActivity.class);
     if (input != null)
     {
       if (input.hasExtra(EXTRA_ACTIVITY_TO_START))

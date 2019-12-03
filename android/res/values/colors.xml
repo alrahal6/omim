@@ -8,7 +8,7 @@
   <color name="text_light_subtitle">@color/white_secondary</color>
   <color name="text_light_hint">@color/white_lightest</color>
 
-  <color name="base_accent">#FF249CF2</color>
+  <color name="base_accent">#FF1E96F0</color>
   <color name="base_accent_night">#FF4BB9E6</color>
   <color name="base_accent_pressed">#FF1C85D6</color>
   <color name="base_accent_pressed_night">#FF3C9BBE</color>
@@ -213,4 +213,25 @@
   <color name="notification">#82E510</color>
   <color name="yellow">#FFC800</color>
   <color name="all_pass_subtitle">#67BEFF</color>
+
+  <color name="orange">#FF4630</color>
+  <color name="purple">#7745A9</color>
+  <color name="orangelight">#FF6250</color>
+  <color name="whiteblue">#F1F5F6</color>
+  <color name="dot_inactive">#E1E7EB</color>
+  <color name="dot_active">#A1ABB2</color>
+  <color name="textGray">#8B999F</color>
+  <color name="separator">#D0D4D9</color>
+  <color name="white">#FFFFFF</color>
+  <color name="black">#000000</color>
+  <color name="whitegrey">#F9F9F9</color>
+
+
+  <color name="colorPrimary">#FF5722</color>
+  <color name="colorPrimaryDark">#E64A19</color>
+  <color name="primary_light">#FFCCBC</color>
+  <color name="colorAccent">#00BCD4</color>
+  <color name="primary_text">#212121</color>
+  <color name="secondary_text">#757575</color>
+  <color name="icons">#FFFFFF</color>
 </resources>

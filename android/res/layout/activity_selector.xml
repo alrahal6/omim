@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.mapswithme.maps.SelectorActivity">
+
+    <TextView
+        android:textSize="19sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/space5"
+        android:textColor="@color/black"
+        android:text="Passenger Looking For"/>
+
+    <Button
+        android:id="@+id/passenger_cab_only"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/white_primary"
+        android:background="@drawable/button_corner"
+        android:text="Cab Only" />
+    <Button
+        android:id="@+id/passenger_pool_only"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_corner"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/white_primary"
+        android:text="Car Pool Only" />
+    <Button
+        android:id="@+id/passenger_any"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/white_primary"
+        android:background="@drawable/button_corner"
+        android:text="Any" />
+
+    <TextView
+        android:textSize="19sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/space5"
+        android:textColor="@color/black"
+        android:text="Captain Offering"/>
+
+    <Button
+        android:id="@+id/captain_cab_only"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/white_primary"
+        android:background="@drawable/button_corner"
+        android:text="Cab Only" />
+    <Button
+        android:id="@+id/captain_pool_only"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/white_primary"
+        android:background="@drawable/button_corner"
+        android:text="Car Pool Only" />
+    <Button
+        android:id="@+id/captain_any"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/white_primary"
+        android:background="@drawable/button_corner"
+        android:text="Any" />
+</LinearLayout>
