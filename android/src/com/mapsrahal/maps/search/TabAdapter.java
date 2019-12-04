@@ -34,7 +34,7 @@ class TabAdapter extends FragmentPagerAdapter
       {
         return SearchHistoryFragment.class;
       }
-    },
+    };/*,
 
     CATEGORIES
     {
@@ -49,7 +49,7 @@ class TabAdapter extends FragmentPagerAdapter
       {
         return SearchCategoriesFragment.class;
       }
-    };
+    };*/
 
     public abstract int getTitleRes();
     public abstract Class<? extends Fragment> getFragmentClass();

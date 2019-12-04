@@ -69,7 +69,7 @@ public class SearchToolbarController extends ToolbarController
     mProgress = mContainer.findViewById(R.id.progress);
 
     mVoiceInput = mContainer.findViewById(R.id.voice_input);
-    mVoiceInput.setOnClickListener(this);
+    //mVoiceInput.setOnClickListener(this);
 
     mClear = mContainer.findViewById(R.id.clear);
     mClear.setOnClickListener(this);
@@ -80,7 +80,7 @@ public class SearchToolbarController extends ToolbarController
 
   private void updateButtons(boolean queryEmpty)
   {
-    UiUtils.showIf(supportsVoiceSearch() && queryEmpty && mVoiceInputSupported, mVoiceInput);
+    //UiUtils.showIf(supportsVoiceSearch() && queryEmpty && mVoiceInputSupported, mVoiceInput);
     UiUtils.showIf(alwaysShowClearButton() || !queryEmpty, mClear);
   }
 

@@ -106,4 +106,14 @@
     <attr name="showSale" format="boolean" />
     <attr name="progressColor" />
   </declare-styleable>
+  <attr format="color" name="colorPrimary"/>
+
+  <!-- Dark variant of the primary branding color. By default, this is the color applied to
+       the status bar (via statusBarColor) and navigation bar (via navigationBarColor). -->
+  <attr format="color" name="colorPrimaryDark"/>
+
+  <!-- Bright complement to the primary branding color. By default, this is the color applied
+       to framework controls (via colorControlActivated). -->
+  <attr format="color" name="colorAccent"/>
+
 </resources>

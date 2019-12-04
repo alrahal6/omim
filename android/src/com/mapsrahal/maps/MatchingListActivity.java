@@ -1,5 +1,6 @@
 package com.mapsrahal.maps;
 
+
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.widget.Button;
@@ -20,7 +21,6 @@ import com.mapsrahal.maps.model.MatchMaker;
 import com.mapsrahal.maps.model.MatchingItem;
 import com.mapsrahal.maps.model.Post;
 import com.mapsrahal.maps.model.UserMessage;
-import com.mapsrahal.util.Constants;
 import com.mapsrahal.util.DateUtils;
 import com.mapsrahal.util.Utils;
 
@@ -29,12 +29,9 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MatchingListActivity extends AppCompatActivity {
 

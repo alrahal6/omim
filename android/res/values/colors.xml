@@ -66,7 +66,7 @@
   <!-- Backgrounds -->
   <color name="bg_window">#FFEEEEEE</color>
   <color name="bg_window_night">#FF32363A</color>
-  <color name="bg_primary">#1F9952</color>
+  <color name="bg_primary">#FF4630</color>
   <color name="bg_primary_night">#1E2226</color>
   <color name="bg_cards">@android:color/white</color>
   <color name="bg_cards_night">#FF3C4044</color>
@@ -234,4 +234,5 @@
   <color name="primary_text">#212121</color>
   <color name="secondary_text">#757575</color>
   <color name="icons">#FFFFFF</color>
+
 </resources>

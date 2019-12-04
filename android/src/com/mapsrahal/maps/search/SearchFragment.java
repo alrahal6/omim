@@ -383,7 +383,7 @@ public class SearchFragment extends BaseMwmFragment
     SearchEngine.INSTANCE.addListener(this);
 
     if (SearchRecents.getSize() == 0)
-      pager.setCurrentItem(TabAdapter.Tab.CATEGORIES.ordinal());
+      pager.setCurrentItem(TabAdapter.Tab.HISTORY.ordinal());
 
     tabAdapter.setTabSelectedListener(tab ->
                                       {
