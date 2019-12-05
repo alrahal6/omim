@@ -13,6 +13,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
+
+import com.mapsrahal.maps.activity.LoginActivity;
 import com.mapsrahal.maps.ads.Banner;
 import com.mapsrahal.maps.analytics.AdvertisingObserver;
 import com.mapsrahal.maps.analytics.ExternalLibrariesMediator;
@@ -474,7 +476,8 @@ public class SplashActivity extends AppCompatActivity
 
   private void initView()
   {
-    UiUtils.setupStatusBar(this);
+    //UiUtils.setupStatusBar(this);
+    UiUtils.setupColorStatusBar(this, R.color.bg_statusbar);
     setContentView(R.layout.activity_splash);
     mIvLogo = findViewById(R.id.iv__logo);
     mAppName = findViewById(R.id.tv__app_name);
@@ -499,7 +502,7 @@ public class SplashActivity extends AppCompatActivity
     Intent input = getIntent();
     //Intent result = new Intent(this, DownloadResourcesLegacyActivity.class);
     //Intent result = new Intent(this, MwmActivity.class);
-    Intent result = new Intent(this, MapActivity.class);
+    Intent result = new Intent(this, LoginActivity.class);
     if (input != null)
     {
       if (input.hasExtra(EXTRA_ACTIVITY_TO_START))

@@ -57,7 +57,8 @@
         android:theme="@style/MwmTheme"
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute"
         tools:replace="android:supportsRtl">
-        <activity android:name=".activity.ChatActivity"></activity>
+        <activity android:name=".activity.ProfileActivity"></activity>
+        <activity android:name=".activity.ChatActivity" />
         <activity android:name=".activity.LoginActivity" />
         <activity
             android:name=".activity.MatchingListActivity"

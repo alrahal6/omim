@@ -24,6 +24,7 @@ import com.mapsrahal.maps.model.MatchingItem;
 import com.mapsrahal.maps.model.Post;
 import com.mapsrahal.maps.model.UserMessage;
 import com.mapsrahal.util.DateUtils;
+import com.mapsrahal.util.UiUtils;
 import com.mapsrahal.util.Utils;
 
 import java.util.ArrayList;
@@ -60,6 +61,7 @@ public class MatchingListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        UiUtils.setupColorStatusBar(this, R.color.bg_statusbar);
         setContentView(R.layout.activity_matching_list);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

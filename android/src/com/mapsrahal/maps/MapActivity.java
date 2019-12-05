@@ -28,6 +28,7 @@ import com.github.florent37.singledateandtimepicker.dialog.SingleDateAndTimePick
 import com.google.android.material.navigation.NavigationView;
 import com.mapsrahal.maps.activity.ChatActivity;
 import com.mapsrahal.maps.activity.MatchingListActivity;
+import com.mapsrahal.maps.activity.ProfileActivity;
 import com.mapsrahal.maps.api.ParsedMwmRequest;
 import com.mapsrahal.maps.bookmarks.data.MapObject;
 import com.mapsrahal.maps.intent.MapTask;
@@ -622,21 +623,31 @@ public class MapActivity extends AppCompatActivity
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        Intent intent;
         switch (item.getItemId()) {
             case R.id.nav_settings:
                 break;
             case R.id.nav_trip_history:
                 break;
-            case R.id.nav_profile:
-                break;
             case R.id.nav_chat:
-                Intent intent = new Intent(this, ChatActivity.class);
+                intent = new Intent(this, ChatActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.nav_share:
-                Toast.makeText(this, "Share", Toast.LENGTH_SHORT).show();
+            case R.id.nav_profile:
+                intent = new Intent(this, ProfileActivity.class);
+                startActivity(intent);
                 break;
+            case R.id.nav_vehicle:
+                //intent = new Intent(this, ProfileActivity.class);
+                //startActivity(intent);
+                break;
+            //case R.id.nav_share:
+                //Toast.makeText(this, "Share", Toast.LENGTH_SHORT).show();
+                //break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + item.getItemId());
         }
+
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }

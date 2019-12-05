@@ -54,7 +54,7 @@
             android:hint="Email"
             android:padding="5dp" />-->
 
-         <android.support.design.widget.TextInputLayout
+         <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -81,7 +81,7 @@
                         android:maxLength="9"
                         android:padding="10dp" />
                 </LinearLayout>
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
         <!--<EditText
             android:id="@+id/mobileNumber"

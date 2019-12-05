@@ -175,6 +175,7 @@ public class MwmApplication extends Application implements AppBackgroundTracker.
   public void onCreate()
   {
     super.onCreate();
+    //UiUtils.setupColorStatusBar(sSelf.getApplicationContext(), R.color.bg_statusbar);
     LoggerFactory.INSTANCE.initialize(this);
     mLogger = LoggerFactory.INSTANCE.getLogger(LoggerFactory.Type.MISC);
     mBackgroundListener = new AppBaseTransitionListener(this);

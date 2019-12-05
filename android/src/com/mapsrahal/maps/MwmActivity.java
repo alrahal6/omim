@@ -730,14 +730,14 @@ public class MwmActivity extends BaseMwmFragmentActivity
         zoomIn, zoomOut, myPosition, getWindow().getDecorView().getRootView(), this,
         hasOnBoardingView ? openSubsScreenBtnContainer : null);
 
-    UiUtils.showIf(hasOnBoardingView, openSubsScreenBtnContainer);
-    if (hasOnBoardingView)
+    //UiUtils.showIf(hasOnBoardingView, openSubsScreenBtnContainer);
+    /*if (hasOnBoardingView)
     {
       openSubsScreenBtnContainer.findViewById(R.id.subs_screen_btn)
                                 .setOnClickListener(v -> onBoardingBtnClicked());
       Statistics.ParameterBuilder builder = Statistics.makeGuidesSubscriptionBuilder();
       Statistics.INSTANCE.trackEvent(Statistics.EventName.MAP_SPONSORED_BUTTON_SHOW, builder);
-    }
+    }*/
   }
 
   private void onBoardingBtnClicked()

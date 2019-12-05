@@ -14,20 +14,23 @@
             android:id="@+id/nav_profile"
             android:title="Profile" />
         <item
+            android:id="@+id/nav_vehicle"
+            android:title="Vehicle" />
+        <item
             android:id="@+id/nav_chat"
             android:title="Chat" />
-        <item
+        <!--<item
             android:id="@+id/logout"
-            android:title="Logout" />
+            android:title="Logout" />-->
     </group>
 
-    <item android:title="Communicate">
+    <!--<item android:title="Communicate">
         <menu>
             <item
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_menu_share"
                 android:title="Share" />
         </menu>
-    </item>
+    </item>-->
 
 </menu>

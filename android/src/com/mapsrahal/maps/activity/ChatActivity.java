@@ -20,6 +20,7 @@ import com.mapsrahal.maps.model.ChatItem;
 import com.mapsrahal.maps.model.MatchMaker;
 import com.mapsrahal.maps.model.MatchingItem;
 import com.mapsrahal.maps.websocket.ServerConnection;
+import com.mapsrahal.util.UiUtils;
 
 import java.util.ArrayList;
 
@@ -54,6 +55,7 @@ public class ChatActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        UiUtils.setupColorStatusBar(this, R.color.bg_statusbar);
         setContentView(R.layout.activity_chat);
         mConnectionStatus = findViewById(R.id.server_connection_status);
         mMessage = findViewById(R.id.my_message);

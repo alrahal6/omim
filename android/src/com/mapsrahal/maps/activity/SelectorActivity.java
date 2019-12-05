@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.mapsrahal.maps.MapActivity;
 import com.mapsrahal.maps.R;
+import com.mapsrahal.util.UiUtils;
 
 public class SelectorActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -19,6 +20,7 @@ public class SelectorActivity extends AppCompatActivity implements View.OnClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_selector);
+        UiUtils.setupColorStatusBar(this, R.color.bg_statusbar);
         mPassengerCab = findViewById(R.id.passenger_cab_only);
         mPassengerCab.setOnClickListener(this);
         mPassengerPool = findViewById(R.id.passenger_pool_only);

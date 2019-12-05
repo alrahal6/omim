@@ -95,9 +95,9 @@ public abstract class BaseMwmFragmentActivity extends AppCompatActivity
     if (layoutId != 0)
       setContentView(layoutId);
 
-    if (useTransparentStatusBar())
-      UiUtils.setupStatusBar(this);
-    if (useColorStatusBar())
+    //if (useTransparentStatusBar())
+      //UiUtils.setupStatusBar(this);
+    //if (useColorStatusBar())
       UiUtils.setupColorStatusBar(this, getStatusBarColor());
 
     // Use full-screen on Kindle Fire only
@@ -127,12 +127,12 @@ public abstract class BaseMwmFragmentActivity extends AppCompatActivity
 
   protected boolean useColorStatusBar()
   {
-    return false;
+    return true;
   }
 
   protected boolean useTransparentStatusBar()
   {
-    return true;
+    return false;
   }
 
   @CallSuper

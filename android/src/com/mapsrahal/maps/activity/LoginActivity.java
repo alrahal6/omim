@@ -22,6 +22,7 @@ import com.mapsrahal.maps.api.ApiInterface;
 import com.mapsrahal.maps.api.TokenApi;
 import com.mapsrahal.maps.model.NewToken;
 import com.mapsrahal.maps.model.User;
+import com.mapsrahal.util.UiUtils;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -41,6 +42,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        UiUtils.setupColorStatusBar(this, R.color.bg_statusbar);
         setContentView(R.layout.activity_login);
         if(MySharedPreference.getInstance(getApplicationContext()).isLoggedIn()) {
             sendTokenToServer();
