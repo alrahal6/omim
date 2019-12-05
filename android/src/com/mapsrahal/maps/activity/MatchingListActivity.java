@@ -1,4 +1,4 @@
-package com.mapsrahal.maps;
+package com.mapsrahal.maps.activity;
 
 
 import android.content.DialogInterface;
@@ -13,6 +13,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.mapsrahal.maps.MySharedPreference;
+import com.mapsrahal.maps.R;
 import com.mapsrahal.maps.adapter.MatchingAdapter;
 import com.mapsrahal.maps.api.ApiClient;
 import com.mapsrahal.maps.api.PostApi;

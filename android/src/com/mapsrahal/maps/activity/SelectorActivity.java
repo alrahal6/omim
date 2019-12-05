@@ -1,4 +1,4 @@
-package com.mapsrahal.maps;
+package com.mapsrahal.maps.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,6 +6,9 @@ import android.view.View;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.mapsrahal.maps.MapActivity;
+import com.mapsrahal.maps.R;
 
 public class SelectorActivity extends AppCompatActivity implements View.OnClickListener {
 

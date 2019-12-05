@@ -1,4 +1,4 @@
-package com.mapsrahal.maps;
+package com.mapsrahal.maps.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,10 +15,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.mapsrahal.maps.MySharedPreference;
+import com.mapsrahal.maps.R;
 import com.mapsrahal.maps.api.ApiClient;
 import com.mapsrahal.maps.api.ApiInterface;
 import com.mapsrahal.maps.api.TokenApi;
-import com.mapsrahal.maps.auth.MessageResponse;
 import com.mapsrahal.maps.model.NewToken;
 import com.mapsrahal.maps.model.User;
 

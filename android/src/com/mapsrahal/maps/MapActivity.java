@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -27,10 +26,9 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.github.florent37.singledateandtimepicker.dialog.SingleDateAndTimePickerDialog;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.iid.FirebaseInstanceId;
+import com.mapsrahal.maps.activity.ChatActivity;
+import com.mapsrahal.maps.activity.MatchingListActivity;
 import com.mapsrahal.maps.api.ParsedMwmRequest;
-import com.mapsrahal.maps.bookmarks.data.BookmarkManager;
-import com.mapsrahal.maps.bookmarks.data.FeatureId;
 import com.mapsrahal.maps.bookmarks.data.MapObject;
 import com.mapsrahal.maps.intent.MapTask;
 import com.mapsrahal.maps.location.CompassData;
@@ -53,7 +51,6 @@ import com.mapsrahal.util.sharing.TargetUtils;
 import com.mapsrahal.util.statistics.AlohaHelper;
 import com.mapsrahal.util.statistics.Statistics;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Stack;
 
@@ -631,6 +628,10 @@ public class MapActivity extends AppCompatActivity
             case R.id.nav_trip_history:
                 break;
             case R.id.nav_profile:
+                break;
+            case R.id.nav_chat:
+                Intent intent = new Intent(this, ChatActivity.class);
+                startActivity(intent);
                 break;
             case R.id.nav_share:
                 Toast.makeText(this, "Share", Toast.LENGTH_SHORT).show();

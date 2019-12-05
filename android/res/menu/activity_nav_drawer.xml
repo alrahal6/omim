@@ -14,6 +14,9 @@
             android:id="@+id/nav_profile"
             android:title="Profile" />
         <item
+            android:id="@+id/nav_chat"
+            android:title="Chat" />
+        <item
             android:id="@+id/logout"
             android:title="Logout" />
     </group>
