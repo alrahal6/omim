@@ -8,10 +8,13 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +31,7 @@ import com.github.florent37.singledateandtimepicker.dialog.SingleDateAndTimePick
 import com.google.android.material.navigation.NavigationView;
 import com.mapsrahal.maps.activity.ChatActivity;
 import com.mapsrahal.maps.activity.MatchingListActivity;
+import com.mapsrahal.maps.activity.MyRidesActivity;
 import com.mapsrahal.maps.activity.ProfileActivity;
 import com.mapsrahal.maps.api.ParsedMwmRequest;
 import com.mapsrahal.maps.bookmarks.data.MapObject;
@@ -63,7 +67,8 @@ public class MapActivity extends AppCompatActivity
                                     Framework.MapObjectListener,
                                     View.OnClickListener,
                                     NavigationView.OnNavigationItemSelectedListener,
-                                    NavigationButtonsAnimationController.OnTranslationChangedListener
+                                    NavigationButtonsAnimationController.OnTranslationChangedListener,
+                                    AdapterView.OnItemSelectedListener
 
 {
 
@@ -130,7 +135,13 @@ public class MapActivity extends AppCompatActivity
         mRemoveSeat = findViewById(R.id.remove_seat);
         mRemoveSeat.setOnClickListener(this);
         mRequiredSeats = findViewById(R.id.required_seats);
-        mMore = findViewById(R.id.more);
+        Spinner spinner = findViewById(R.id.gender_spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.select_gender, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(this);
+        //mMore = findViewById(R.id.more);
         btRequest = findViewById(R.id.bt_request);
         btRequest.setOnClickListener(this);
         mAddressToggle = findViewById(R.id.addressToggle);
@@ -143,11 +154,11 @@ public class MapActivity extends AppCompatActivity
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mMainMenu = findViewById(R.id.mainMenu);
         mMainMenu.setOnClickListener(this);
-        Button buttonOpenBottomSheet = findViewById(R.id.more);
-        buttonOpenBottomSheet.setOnClickListener(v -> {
+        //Button buttonOpenBottomSheet = findViewById(R.id.more);
+        /*buttonOpenBottomSheet.setOnClickListener(v -> {
             BottomSheetMoreSettings bottomSheet = new BottomSheetMoreSettings();
             bottomSheet.show(getSupportFragmentManager(), "MoreSetting");
-        });
+        });*/
         //removeBookmark();
         //Log.d("MAP", "instance id new token is " + FirebaseInstanceId.getInstance().getToken());
         mMapFragment = (MapFragment) getSupportFragmentManager().findFragmentByTag(MapFragment.class.getName());
@@ -182,6 +193,17 @@ public class MapActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        String text = parent.getItemAtPosition(position).toString();
+        //Toast.makeText(parent.getContext(), text, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
     private void listMatch() {
         Intent intent = new Intent(this, MatchingListActivity.class);
         startActivity(intent);
@@ -197,7 +219,7 @@ public class MapActivity extends AppCompatActivity
         mAddressToggle.setVisibility(View.GONE);
         mllForm.setVisibility(View.GONE);
         btRequest.setVisibility(View.GONE);
-        mMore.setVisibility(View.GONE);
+        //mMore.setVisibility(View.GONE);
     }
 
     void adjustCompass(int offsetY)
@@ -628,11 +650,13 @@ public class MapActivity extends AppCompatActivity
             case R.id.nav_settings:
                 break;
             case R.id.nav_trip_history:
-                break;
-            case R.id.nav_chat:
-                intent = new Intent(this, ChatActivity.class);
+                intent = new Intent(this, MyRidesActivity.class);
                 startActivity(intent);
                 break;
+            //case R.id.nav_chat:
+                //intent = new Intent(this, ChatActivity.class);
+                //startActivity(intent);
+                //break;
             case R.id.nav_profile:
                 intent = new Intent(this, ProfileActivity.class);
                 startActivity(intent);

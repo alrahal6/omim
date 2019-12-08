@@ -6,19 +6,19 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_settings"
-            android:title="Settings" />
+            android:title="@string/settings" />
         <item
             android:id="@+id/nav_trip_history"
-            android:title="Trip History" />
+            android:title="@string/trip_history" />
         <item
             android:id="@+id/nav_profile"
-            android:title="Profile" />
+            android:title="@string/my_profile" />
         <item
             android:id="@+id/nav_vehicle"
-            android:title="Vehicle" />
-        <item
+            android:title="@string/vehicle" />
+        <!--<item
             android:id="@+id/nav_chat"
-            android:title="Chat" />
+            android:title="Chat" />-->
         <!--<item
             android:id="@+id/logout"
             android:title="Logout" />-->

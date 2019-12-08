@@ -10,6 +10,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.0'
         classpath 'io.fabric.tools:gradle:1.31.0'
+        classpath 'com.google.gms:google-services:4.3.2'
     }
 }
 
@@ -100,13 +101,15 @@ dependencies {
     implementation 'com.google.android:flexbox:1.0.0'
     implementation 'com.trafi:anchor-bottom-sheet-behavior:0.13-alpha'
     implementation 'com.google.firebase:firebase-messaging:20.0.0'
-
+    //implementation 'com.google.firebase:firebase-analytics:17.2.0'
     implementation 'com.github.florent37:SingleDateAndTimePicker:v2.0.4'
     implementation 'com.squareup.retrofit2:retrofit:2.6.2'
     implementation 'com.squareup.retrofit2:converter-gson:2.6.2'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.12.0'
     implementation 'com.squareup.okhttp3:okhttp:3.12.0'
     implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
 }
 
 def getDate() {
@@ -481,3 +484,4 @@ android.buildTypes.all { buildType ->
     buildConfigField 'String', 'FILE_PROVIDER_AUTHORITY', authority
     manifestPlaceholders += [FILE_PROVIDER_PLACEHOLDER: authorityValue]
 }
+apply plugin: 'com.google.gms.google-services'

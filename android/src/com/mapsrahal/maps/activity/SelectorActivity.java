@@ -64,6 +64,6 @@ public class SelectorActivity extends AppCompatActivity implements View.OnClickL
         Intent intent = new Intent(this, MapActivity.class);
         intent.putExtra(PASSENGER_CAPTAIN_SELECTOR,v);
         startActivity(intent);
-        finish();
+        //finish();
     }
 }

@@ -10,11 +10,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.mapsrahal.maps.MySharedPreference;
 import com.mapsrahal.maps.R;
 import com.mapsrahal.maps.api.ApiClient;
@@ -30,6 +35,7 @@ import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private static final String TAG = LoginActivity.class.getSimpleName();
     private Button btnSubmit,mOtpSubmit;
     private EditText name, mobileNumber, etOTP;
     private LinearLayout mOtpTab;
@@ -44,14 +50,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         UiUtils.setupColorStatusBar(this, R.color.bg_statusbar);
         setContentView(R.layout.activity_login);
+        //Log.i("id token", "here");
+        apiService = ApiClient.getClient().create(ApiInterface.class);
+        tokenApi = ApiClient.getClient().create(TokenApi.class);
         if(MySharedPreference.getInstance(getApplicationContext()).isLoggedIn()) {
             sendTokenToServer();
             startActivity(new Intent(this, SelectorActivity.class));
             finish();
             return;
         }
-        apiService = ApiClient.getClient().create(ApiInterface.class);
-        tokenApi = ApiClient.getClient().create(TokenApi.class);
         btnSubmit = findViewById(R.id.btnSubmit);
         name = findViewById(R.id.name);
         //email = findViewById(R.id.email);
@@ -63,13 +70,48 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mProgressBar = findViewById(R.id.loginProgressOtp);
         mProgressBar.setVisibility(View.GONE);
         btnSubmit.setOnClickListener(this);
+
     }
 
     private void sendTokenToServer() {
-        if(MySharedPreference.getInstance(getApplicationContext()).isHaveNewToken()) {
-            String token = FirebaseInstanceId.getInstance().getToken();
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "getInstanceId failed", task.getException());
+                            return;
+                        }
+
+                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+                        int id = MySharedPreference.getInstance(getApplicationContext()).getUserId();
+                        //Log.d("id token", ""+id +" "+ token);
+                        NewToken newToken = new NewToken(id, token);
+                        Call<NewToken> call = tokenApi.sendToken(newToken);
+                        call.enqueue(new Callback<NewToken>() {
+                            @Override
+                            public void onResponse(Call<NewToken> call, Response<NewToken> response) {
+                                //MySharedPreference.getInstance(getApplicationContext()).clearNewToken();
+                            }
+
+                            @Override
+                            public void onFailure(Call<NewToken> call, Throwable t) {
+
+                            }
+                        });
+                        // Log and toast
+                        //String msg = getString(R.string.msg_token_fmt, token);
+                        //Log.d(TAG, msg);
+                        //Toast.makeText(org.alohalytics.demoapp.MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
+        /*if(MySharedPreference.getInstance(getApplicationContext()).isHaveNewToken()) {
+        //Log.i("id token", "yesssssss");
             int id = MySharedPreference.getInstance(getApplicationContext()).getUserId();
+            String token = FirebaseInstanceId.getInstance().getToken();
             NewToken newToken = new NewToken(id, token);
+            Log.i("id token",newToken+"");
             Call<NewToken> call = tokenApi.sendToken(newToken);
             call.enqueue(new Callback<NewToken>() {
                 @Override
@@ -82,7 +124,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                 }
             });
-        }
+        //Log.i("id token", ""+id +" "+ token);
+        }*/
     }
     
     @Override

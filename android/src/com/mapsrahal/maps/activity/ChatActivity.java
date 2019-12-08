@@ -64,6 +64,7 @@ public class ChatActivity extends AppCompatActivity implements
         mSendMessageButton.setOnClickListener(this);
         mServerConnection = new ServerConnection(SERVER_URL);
         mSendMessageButton.setEnabled(false);
+        mServerConnection.connect(this);
         buildRecyclerView();
     }
 
@@ -87,13 +88,13 @@ public class ChatActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        mServerConnection.connect(this);
+
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mServerConnection.disconnect();
+        //mServerConnection.disconnect();
     }
 
     public void onSendClicked() {

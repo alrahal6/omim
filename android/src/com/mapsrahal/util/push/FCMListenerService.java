@@ -1,6 +1,5 @@
 package com.mapsrahal.util.push;
 
-
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -26,7 +25,8 @@ public class FCMListenerService extends FirebaseMessagingService {
     @Override
     public void onNewToken(@NonNull String s) {
         super.onNewToken(s);
-        MySharedPreference.getInstance(getApplicationContext()).newTokenAvailable();
+        //Log.d(TAG, "New Token " + s);
+        //MySharedPreference.getInstance(getApplicationContext()).newTokenAvailable();
     }
 
     @Override
@@ -54,7 +54,7 @@ public class FCMListenerService extends FirebaseMessagingService {
             title = notification.getTitle();
             body  = notification.getBody();
         }
-        Log.d(TAG, "Message from server " + title + body);
+        //Log.d(TAG, "Message from server " + title + body);
         Intent intent = new Intent(this,  SplashActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,

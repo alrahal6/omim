@@ -115,7 +115,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginLeft="16dp"
-            android:text="Expected Price : "
+            android:text="@string/expected_price"
             android:textColor="@color/base_red"
             android:textSize="16dp"
             android:textStyle="bold" />

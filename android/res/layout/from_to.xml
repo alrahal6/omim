@@ -86,50 +86,23 @@
         android:paddingTop="@dimen/space5"
         android:background="@drawable/bg_white_top_border"
         android:weightSum="6">
+        <Spinner
+            android:id="@+id/gender_spinner"
+            android:layout_width="wrap_content"
+            android:layout_weight="2"
+            android:layout_margin="4dp"
+            android:layout_height="wrap_content" />
         <TextView
             android:id="@+id/date_time"
             android:layout_width="0dp"
-            android:layout_weight="3"
+            android:layout_weight="4"
             android:layout_height="wrap_content"
             android:paddingRight="@dimen/space5"
             android:paddingLeft="@dimen/space5"
             android:hint="Date Time"
             style="@style/TextView14spGrayPad"
-            android:gravity="center"/>
-        <ImageView
-            android:id="@+id/remove_seat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
             android:background="@drawable/bg_white_left_border"
-            app:srcCompat="@drawable/ic_minus_black" />
-        <TextView
-            android:id="@+id/required_seats"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:paddingRight="5dp"
-            android:drawableLeft="@drawable/ic_seat"
-            android:text="1"
-            style="@style/TextView14spGrayPad"
-            android:gravity="center" />
-        <ImageView
-            android:id="@+id/add_seat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            app:srcCompat="@drawable/ic_add" />
-        <TextView
-            android:id="@+id/tv_distance"
-            android:layout_width="0dp"
-            android:layout_weight="2"
-            android:layout_height="wrap_content"
-            android:paddingRight="@dimen/space5"
-            android:paddingLeft="@dimen/space5"
-            android:text="0 km"
-            style="@style/TextView14spGrayPad"
-            android:gravity="center"
-            android:background="@drawable/bg_white_left_border"/>
+            android:gravity="center"/>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/mnu_form"
@@ -158,5 +131,168 @@
             android:text="Set as Dropoff"
             style="@style/TextView14spBg"
             android:gravity="center" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true">
+        <LinearLayout
+            android:id="@+id/llx_form"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/space5"
+            android:background="@drawable/bg_white_top_border"
+            android:weightSum="5">
+            <!--<ImageView
+                android:id="@+id/monet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                app:srcCompat="@drawable/ic_monetization"
+                android:background="@drawable/bg_white_left_border" />-->
+            <ImageView
+                android:id="@+id/remove_seat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:background="@drawable/bg_white_left_border"
+                app:srcCompat="@drawable/ic_minus_black" />
+            <TextView
+                android:id="@+id/required_seats"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:paddingRight="5dp"
+                android:drawableLeft="@drawable/ic_seat"
+                android:text="1"
+                style="@style/TextView14spGrayPad"
+                android:gravity="center" />
+            <ImageView
+                android:id="@+id/add_seat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                app:srcCompat="@drawable/ic_add" />
+            <TextView
+                android:id="@+id/expected_price"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="wrap_content"
+                android:paddingRight="@dimen/space5"
+                android:paddingLeft="@dimen/space5"
+                android:text="0 SDG"
+                style="@style/TextView14spGrayPad"
+                android:gravity="center"
+                android:background="@drawable/bg_white_left_border"/>
+            <TextView
+                android:id="@+id/tv_distance"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="wrap_content"
+                android:paddingRight="@dimen/space5"
+                android:paddingLeft="@dimen/space5"
+                android:text="0 km"
+                style="@style/TextView14spGrayPad"
+                android:gravity="center"
+                android:background="@drawable/bg_white_left_border"/>
+
+           <!-- <ImageView
+                android:id="@+id/remove_seat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:background="@drawable/bg_white_left_border"
+                app:srcCompat="@drawable/ic_minus_black" />
+            <TextView
+                android:id="@+id/required_seats"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:paddingRight="5dp"
+                android:drawableLeft="@drawable/ic_seat"
+                android:text="1"
+                style="@style/TextView14spGrayPad"
+                android:gravity="center" />
+            <ImageView
+                android:id="@+id/add_seat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                app:srcCompat="@drawable/ic_add" />-->
+
+
+            <!--<TextView
+                android:id="@+id/gender"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="wrap_content"
+                android:paddingRight="@dimen/space5"
+                android:paddingLeft="@dimen/space5"
+                android:text="0 km"
+                style="@style/TextView14spGrayPad"
+                android:gravity="center"
+                android:background="@drawable/bg_white_left_border"/>-->
+        </LinearLayout>
+        <!--<RadioGroup
+            android:paddingBottom="@dimen/space5"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <RadioButton
+                android:id="@+id/findRide"
+                android:text="Find Ride"
+                android:paddingLeft="@dimen/space10"
+                android:checked="true"
+                android:textSize="@dimen/space20"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+            <RadioButton
+                android:id="@+id/offerRide"
+                android:text="Offer Ride"
+                android:paddingRight="@dimen/space10"
+                android:textSize="@dimen/space20"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </RadioGroup>-->
+        <LinearLayout
+            android:id="@+id/request_buttons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="4"
+            android:layout_alignParentBottom="true">
+            <EditText
+                android:id="@+id/your_price"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="40dp"
+                android:hint="Your Price in SDG"
+                android:inputType="number"
+                style="@style/TextView14spGrayPad"
+                android:gravity="center"
+                android:background="@drawable/bg_white_left_border"/>
+            <!--<Button
+                android:id="@+id/more"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:text="Find Ride"
+                style="@style/ButtonOrange"/>-->
+            <Button
+                android:id="@+id/bt_request"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="40dp"
+                android:text="Find"
+                style="@style/ButtonOrange"/>
+        </LinearLayout>
+
     </LinearLayout>
 </RelativeLayout>

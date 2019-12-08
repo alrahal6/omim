@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
 
-  <style name="MwmWidget"/>
+  <style name="MwmWidget" />
 
-  <style name="MwmWidget.ProgressWheel"/>
+  <style name="MwmWidget.ProgressWheel" />
 
-  <style name="MwmWidget.FrameLayout"/>
+  <style name="MwmWidget.FrameLayout" />
 
-  <style name="MwmWidget.Downloader"/>
+  <style name="MwmWidget.Downloader" />
 
   <style name="BottomSheet.Icon">
     <item name="android:layout_width">0dp</item>
@@ -135,7 +134,9 @@
     <item name="android:elevation" tools:ignore="NewApi">@dimen/appbar_elevation</item>
     <item name="android:displayOptions">homeAsUp|showTitle</item>
     <item name="contentInsetStart">72dp</item>
-    <item name="android:titleTextAppearance" tools:ignore="NewApi">@style/MwmTextAppearance.Toolbar.Title</item>
+    <item name="android:titleTextAppearance" tools:ignore="NewApi">
+      @style/MwmTextAppearance.Toolbar.Title
+    </item>
     <item name="titleTextAppearance">@style/MwmTextAppearance.Toolbar.Title</item>
     <item name="contentInsetLeft">72dp</item>
     <item name="android:contentInsetStart" tools:ignore="NewApi">72dp</item>
@@ -143,7 +144,9 @@
   </style>
 
   <style name="MwmWidget.ToolbarStyle.Light">
-    <item name="android:titleTextAppearance" tools:targetApi="lollipop">@style/MwmTextAppearance.Toolbar.Title.Light</item>
+    <item name="android:titleTextAppearance" tools:targetApi="lollipop">
+      @style/MwmTextAppearance.Toolbar.Title.Light
+    </item>
     <item name="titleTextAppearance">@style/MwmTextAppearance.Toolbar.Title.Light</item>
   </style>
 
@@ -169,9 +172,7 @@
     <item name="windowActionBarOverlay">true</item>
   </style>
 
-  <style
-      name="MwmWidget.ToolbarTheme.DownButton"
-      parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+  <style name="MwmWidget.ToolbarTheme.DownButton" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
     <item name="android:gravity">center_vertical</item>
     <item name="colorAccent">@android:color/white</item>
     <item name="android:homeAsUpIndicator">@drawable/ic_down</item>
@@ -369,21 +370,21 @@
     <item name="android:maxLines">2</item>
   </style>
 
-  <style name="TextAppearance" parent="MwmTextAppearance.Body3"/>
+  <style name="TextAppearance" parent="MwmTextAppearance.Body3" />
 
-  <style name="TextAppearance.Small" parent="MwmTextAppearance.Body4"/>
+  <style name="TextAppearance.Small" parent="MwmTextAppearance.Body4" />
 
-  <style name="TextAppearance.Medium" parent="MwmTextAppearance.Body2"/>
+  <style name="TextAppearance.Medium" parent="MwmTextAppearance.Body2" />
 
   <style name="TextAppearance.Large" parent="MwmTextAppearance.Body1">
     <item name="android:textSize">@dimen/text_size_toolbar</item>
   </style>
 
-  <style name="TextAppearance.Inverse" parent="MwmTextAppearance.Body3.Light"/>
+  <style name="TextAppearance.Inverse" parent="MwmTextAppearance.Body3.Light" />
 
-  <style name="TextAppearance.Small.Inverse" parent="MwmTextAppearance.Body4.Light"/>
+  <style name="TextAppearance.Small.Inverse" parent="MwmTextAppearance.Body4.Light" />
 
-  <style name="TextAppearance.Medium.Inverse" parent="MwmTextAppearance.Body2.Light"/>
+  <style name="TextAppearance.Medium.Inverse" parent="MwmTextAppearance.Body2.Light" />
 
   <style name="TextAppearance.Large.Inverse" parent="MwmTextAppearance.Body1.Light">
     <item name="android:textSize">@dimen/text_size_toolbar</item>
@@ -490,7 +491,7 @@
   </style>
 
   <style name="TextView14spGrayPad">
-    <item name="android:textSize">16sp</item>
+    <item name="android:textSize">14sp</item>
     <item name="android:background">@color/white</item>
     <item name="android:textStyle">normal</item>
     <item name="android:textColor">@android:color/black</item>
@@ -513,14 +514,15 @@
 
 
   <!--<style name="StarRatingBar" parent="@android:style/Widget.RatingBar">
-    <item name="android:progressDrawable">@drawable/ratingbar</item>
-    <item name="android:minHeight">18dip</item>
-    <item name="android:maxHeight">18dip</item>
-  </style>-->
+<item name="android:progressDrawable">@drawable/ratingbar</item>
+<item name="android:minHeight">18dip</item>
+<item name="android:maxHeight">18dip</item>
+</style>-->
 
   <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
   <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
   <style name="DetailInfoItem">
     <item name="android:layout_width">0dip</item>
     <item name="android:layout_weight">1</item>
@@ -529,18 +531,21 @@
     <item name="android:gravity">center</item>
     <item name="android:textSize">@dimen/text_size_xlarge</item>
   </style>
+
   <style name="ListElemName">
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:textColor">@color/primary_text</item>
     <item name="android:textSize">@dimen/text_size_xlarge</item>
   </style>
+
   <style name="ListElemAddress">
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:textColor">@color/secondary_text</item>
     <item name="android:textSize">@dimen/text_size_medium</item>
   </style>
+
   <style name="ListElemNumber">
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">match_parent</item>
@@ -553,10 +558,24 @@
   <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
     <item name="android:windowBackground">@drawable/splash_background</item>
   </style>
+
   <declare-styleable name="VectorTextView">
-    <attr name="drawableLeftCompat" format="reference"/>
-    <attr name="drawableRightCompat" format="reference"/>
-    <attr name="drawableTopCompat" format="reference"/>
-    <attr name="drawableBottomCompat" format="reference"/>
+    <attr name="drawableLeftCompat" format="reference" />
+    <attr name="drawableRightCompat" format="reference" />
+    <attr name="drawableTopCompat" format="reference" />
+    <attr name="drawableBottomCompat" format="reference" />
   </declare-styleable>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
 </resources>

@@ -57,7 +57,11 @@
         android:theme="@style/MwmTheme"
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute"
         tools:replace="android:supportsRtl">
-        <activity android:name=".activity.ProfileActivity"></activity>
+        <activity
+            android:name=".activity.MyRidesActivity"
+            android:label="@string/title_activity_my_rides"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".activity.ProfileActivity" />
         <activity android:name=".activity.ChatActivity" />
         <activity android:name=".activity.LoginActivity" />
         <activity

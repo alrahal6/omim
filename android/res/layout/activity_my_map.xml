@@ -34,63 +34,6 @@
         android:visibility="gone"
         tools:visibility="invisible"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_alignParentBottom="true">
-
-     <!--<RadioGroup
-         android:paddingBottom="@dimen/space5"
-         android:orientation="horizontal"
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content">
-         <RadioButton
-             android:id="@+id/findRide"
-             android:text="Find Ride"
-             android:paddingLeft="@dimen/space10"
-             android:checked="true"
-             android:textSize="@dimen/space20"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content" />
-         <Space
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:layout_weight="1"/>
-         <RadioButton
-             android:id="@+id/offerRide"
-             android:text="Offer Ride"
-             android:paddingRight="@dimen/space10"
-             android:textSize="@dimen/space20"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content" />
-     </RadioGroup>-->
-    <LinearLayout
-        android:id="@+id/request_buttons"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_alignParentBottom="true">
-        
-        <Button
-            android:id="@+id/more"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:text="More Settings"
-            style="@style/ButtonOrange"/>
-        <Button
-            android:id="@+id/bt_request"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:text="Request"
-            style="@style/ButtonOrange"/>
-    </LinearLayout>
-
-    </LinearLayout>
 </RelativeLayout>
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
