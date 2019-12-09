@@ -30,6 +30,7 @@ import androidx.fragment.app.FragmentActivity;
 import com.github.florent37.singledateandtimepicker.dialog.SingleDateAndTimePickerDialog;
 import com.google.android.material.navigation.NavigationView;
 import com.mapsrahal.maps.activity.ChatActivity;
+import com.mapsrahal.maps.activity.ContactActivity;
 import com.mapsrahal.maps.activity.MatchingListActivity;
 import com.mapsrahal.maps.activity.MyRidesActivity;
 import com.mapsrahal.maps.activity.ProfileActivity;
@@ -665,9 +666,10 @@ public class MapActivity extends AppCompatActivity
                 //intent = new Intent(this, ProfileActivity.class);
                 //startActivity(intent);
                 break;
-            //case R.id.nav_share:
-                //Toast.makeText(this, "Share", Toast.LENGTH_SHORT).show();
-                //break;
+            case R.id.nav_contact_us:
+                intent = new Intent(this, ContactActivity.class);
+                startActivity(intent);
+                break;
             default:
                 throw new IllegalStateException("Unexpected value: " + item.getItemId());
         }

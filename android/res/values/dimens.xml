@@ -313,6 +313,6 @@
     <dimen name="margin_small">12dip</dimen>
     <dimen name="margin_xsmall">8dip</dimen>
     <dimen name="divider">1dip</dimen>
-    <dimen name="appbar_padding">16dp</dimen>
+    <dimen name="appbar_padding">10dp</dimen>
     <dimen name="appbar_padding_top">8dp</dimen>
 </resources>
