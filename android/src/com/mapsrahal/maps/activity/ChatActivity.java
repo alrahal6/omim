@@ -19,12 +19,15 @@ import com.mapsrahal.maps.api.UserMessageApi;
 import com.mapsrahal.maps.model.ChatItem;
 import com.mapsrahal.maps.model.MatchMaker;
 import com.mapsrahal.maps.model.MatchingItem;
-import com.mapsrahal.maps.websocket.ServerConnection;
+//import com.mapsrahal.maps.websocket.ServerConnection;
 import com.mapsrahal.util.UiUtils;
 
 import java.util.ArrayList;
 
-public class ChatActivity extends AppCompatActivity implements
+public class ChatActivity extends AppCompatActivity {
+
+}
+/*public class ChatActivity extends AppCompatActivity implements
         ServerConnection.ServerListener, View.OnClickListener {
 
     private final String SERVER_URL = "ws://192.168.43.214:3002/x";
@@ -129,4 +132,4 @@ public class ChatActivity extends AppCompatActivity implements
                 break;
         }
     }
-}
+}*/

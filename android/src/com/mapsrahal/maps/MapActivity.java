@@ -1,20 +1,39 @@
 package com.mapsrahal.maps;
 
+import android.app.ActivityManager;
 import android.app.Dialog;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.location.Location;
+import android.media.MediaPlayer;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.ConnectivityManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.IBinder;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RatingBar;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,14 +41,19 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.github.florent37.singledateandtimepicker.dialog.SingleDateAndTimePickerDialog;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.material.navigation.NavigationView;
-import com.mapsrahal.maps.activity.ChatActivity;
+import com.google.gson.Gson;
 import com.mapsrahal.maps.activity.ContactActivity;
 import com.mapsrahal.maps.activity.MatchingListActivity;
 import com.mapsrahal.maps.activity.MyRidesActivity;
@@ -49,14 +73,21 @@ import com.mapsrahal.maps.search.SearchFilterController;
 import com.mapsrahal.maps.sound.TtsPlayer;
 import com.mapsrahal.maps.taxi.TaxiInfo;
 import com.mapsrahal.maps.taxi.TaxiManager;
+import com.mapsrahal.maps.websocket.ServerConnection;
+import com.mapsrahal.maps.websocket.WebSocketViewModel;
 import com.mapsrahal.maps.widget.menu.MyPositionButton;
+import com.mapsrahal.util.Constants;
 import com.mapsrahal.util.DateUtils;
 import com.mapsrahal.util.PermissionsUtils;
+import com.mapsrahal.util.SwipeButton;
+import com.mapsrahal.util.SwipeButtonCustomItems;
 import com.mapsrahal.util.UiUtils;
 import com.mapsrahal.util.sharing.TargetUtils;
 import com.mapsrahal.util.statistics.AlohaHelper;
 import com.mapsrahal.util.statistics.Statistics;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 import java.util.Stack;
 
@@ -110,6 +141,58 @@ public class MapActivity extends AppCompatActivity
     private static final String PASSENGER_CAPTAIN_SELECTOR = "passenger_captain_selector";
 
 
+    private FusedLocationProviderClient mFusedLocationClient;
+    private Location mLastLocation;
+    private SwipeButton mSwipeButton;
+    private Button mOpenGMap;
+    private ProgressBar mProgressbar;
+
+    private Boolean isOnWaytoCustomer = false;
+    private Boolean isOnTrip = false;
+    private String usrId;
+    private LinearLayout mCustomerInfo, mAcceptBusyInfo, mSwipeLayout, mpayAndRating;
+    private int requestingPassenger = 0;
+    private TextView mAmount, mTripTimer;
+    private TextView mCustomerName;
+    private TextView mCustomerPhone;
+    private TextView mCustomerPickup;
+    private TextView mCustomerDestination;
+    private TextView mTripDistance;
+    private Ringtone r;
+    //MediaPlayer mediaPlayer;
+    private CountDownTimer mCountDownTimer;
+    private static final long START_TIME_IN_MILLIS = 20000;
+    private int requestResponse = 3;
+    private static final int SEND_BUSY = 2;
+    private static final int ACCEPT_REQUEST = 3;
+    private static final int TRIP_CANCELLED = 5;
+    private static final int REACHED_CUSTOMER = 11;
+    private static final int TRIP_STARTED = 12;
+    private static final int TRIP_COMPLETED = 13;
+    private static final int DISTANCE_NOTIFY = 50;
+    private Long tripStartTime;
+    private String phoneNumber;
+    private boolean mTimerRunning;
+    private NetworkStateReceiver receiver;
+    private UserTripInfo g;
+    private final Gson gSon = new Gson();
+    private static final String TAG = MapActivity.class.getSimpleName();
+    private String tripId;
+    private float base, km, mins;
+    private int minDis;
+
+    private SwipeButtonCustomItems swipeButtonSettings;
+    private double distance, duration, price;
+    private long startTime = 0;
+    private final Handler timerHandler = new Handler();
+    private final Handler tripRecordHandler = new Handler();
+    private UserTripInfo userTripInfo;
+    private Button mSendRequest;
+    private Switch mSwitch;
+
+    private ServerConnection mService;
+    private WebSocketViewModel mViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,6 +202,13 @@ public class MapActivity extends AppCompatActivity
         mllForm = findViewById(R.id.ll_form);
         tvDropOff = findViewById(R.id.tv_dropoff);
         tvPickup = findViewById(R.id.tv_pickup);
+        mSwitch = findViewById(R.id.switch2);
+        if(MySharedPreference.getInstance(this).isCaptainOnline()) {
+            mSwitch.setChecked(true);
+        } else {
+            mSwitch.setChecked(false);
+        }
+        //mSwitch.setOnT
         tvPickup.setOnClickListener(this);
         tvDropOff.setOnClickListener(this);
         mDateTime = findViewById(R.id.date_time);
@@ -163,16 +253,7 @@ public class MapActivity extends AppCompatActivity
         //removeBookmark();
         //Log.d("MAP", "instance id new token is " + FirebaseInstanceId.getInstance().getToken());
         mMapFragment = (MapFragment) getSupportFragmentManager().findFragmentByTag(MapFragment.class.getName());
-        if (mMapFragment == null)
-        {
-            Bundle args = new Bundle();
-            args.putBoolean(MapFragment.ARG_LAUNCH_BY_DEEP_LINK, isLaunchByDeepLink);
-            mMapFragment = (MapFragment) MapFragment.instantiate(this, MapFragment.class.getName(), args);
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.map_fragment_container, mMapFragment, MapFragment.class.getName())
-                    .commit();
-        }
+
 
         View container = findViewById(R.id.map_fragment_container);
         //myView = findViewById(R.id.map_fragment_container);
@@ -192,6 +273,130 @@ public class MapActivity extends AppCompatActivity
             /*default:
                 break;*/
         }
+
+        try {
+            //Uri notificationRaw = Uri.parse("android.resource://" + this.getPackageName() + "/raw/driver_call.mp3");
+            //Log.i(TAG,"Uri "+ notificationRaw);
+            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+            //mediaPlayer = MediaPlayer.create(getApplicationContext(), notification);
+            r = RingtoneManager.getRingtone(this, notification);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        mViewModel = ViewModelProviders.of(this).get(WebSocketViewModel.class);
+        setObservers();
+        //Bundle bundle = this.getArguments();
+        //String s = (String) bundle.getSerializable("userTripInfo");
+        //userTripInfo = gSon.fromJson(s, UserTripInfo.class);
+        //mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        //SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        //mapFragment.getMapAsync(this);
+        //mapView = mapFragment.getView();
+        mSendRequest = findViewById(R.id.send_request_test);
+        mSendRequest.setOnClickListener(this);
+        mCustomerInfo = findViewById(R.id.customerInfo);
+        mOpenGMap = findViewById(R.id.openGMap);
+        mAcceptBusyInfo = findViewById(R.id.acceptBusyInfo);
+        mTripTimer = findViewById(R.id.tripTimer);
+        mSwipeLayout = findViewById(R.id.swipeLayout);
+        mSwipeButton = findViewById(R.id.swipeButton);
+        mCustomerName = findViewById(R.id.customerName);
+        mCustomerPickup = findViewById(R.id.customerPickup);
+        mCustomerPhone = findViewById(R.id.customerPhone);
+        mTripDistance = findViewById(R.id.tripDistance);
+        mCustomerDestination = findViewById(R.id.customerDestination);
+        mProgressbar = findViewById(R.id.myProgress);
+        mProgressbar.setVisibility(View.GONE);
+        //View headerView = navigationView.getHeaderView(0);
+        usrId = String.valueOf(MySharedPreference.getInstance(this).getUserId());
+        //TextView mPhone = headerView.findViewById(R.id.dPhone);
+        //mPhone.setText(MySharedPreference.getInstance(this).getPhoneNumber());
+        mpayAndRating = findViewById(R.id.payAndRating);
+        mpayAndRating.setVisibility(View.GONE);
+        final RatingBar mRatingBar = findViewById(R.id.ratingBar);
+        mAmount = findViewById(R.id.payAmount);
+        Button mSendFeedback = findViewById(R.id.submitRating);
+        //checkLocationPermission();
+
+        mOpenGMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openInGoogleMap();
+            }
+        });
+
+        mSendFeedback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mpayAndRating.setVisibility(View.GONE);
+                //if (mMap != null) {
+                    //mMap.clear();
+                //}
+                // todo save rating
+            }
+        });
+
+        mCustomerPhone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                callDriver();
+            }
+        });
+
+        Button mRideStatus = findViewById(R.id.rideStatus);
+        mRideStatus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                acceptRequest();
+            }
+        });
+
+        Button mBusyResponse = findViewById(R.id.busyResponse);
+        mBusyResponse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requestResponse = 2;
+                respondBusy();
+            }
+        });
+
+        /*mSwipeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                swipeButtonPressed();
+            }
+        });*/
+        //SwipeButton mSwipeButton = findViewById(R.id.my_swipe_button);
+
+        swipeButtonSettings = new SwipeButtonCustomItems() {
+            @Override
+            public void onSwipeConfirm() {
+                swipeButtonPressed();
+                //Log.d("NEW_STUFF", "New swipe confirm callback");
+            }
+        };
+
+        if (mSwipeButton != null) {
+            mSwipeButton.setSwipeButtonCustomItems(swipeButtonSettings);
+        }
+        mSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if(isChecked) {
+                connect();
+            } else {
+                disconnect();
+            }
+        });
+    }
+
+    private void setObservers() {
+        mViewModel.getBinder().observe(this, myBinder -> {
+            if (myBinder == null) {
+                //Log.d(TAG, "onChanged: unbound from service");
+            } else {
+                //Log.d(TAG, "onChanged: bound to service.");
+                mService = myBinder.getService();
+            }
+        });
     }
 
     @Override
@@ -318,6 +523,16 @@ public class MapActivity extends AppCompatActivity
         listMatch();
     }
 
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId())
@@ -345,6 +560,9 @@ public class MapActivity extends AppCompatActivity
                 break;
             case R.id.date_time:
                 dateTime();
+                break;
+            case R.id.send_request_test:
+                sendMe();
                 break;
             case R.id.add_seat:
                 if(seatCount < 4) {
@@ -558,6 +776,7 @@ public class MapActivity extends AppCompatActivity
 
     @Override
     public void onLocationUpdated(@NonNull Location location) {
+        //Log.d("Map Activity Location", location.getLatitude()+"");
         if (!RoutingController.get().isNavigating())
             return;
         mNavigationController.update(Framework.nativeGetRouteFollowingInfo());
@@ -719,8 +938,19 @@ public class MapActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        unBindMyService();
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
+
+        //if(mViewModel.getBinder() != null) {
+            //unbindService(mViewModel.getServiceConnection());
+        //}
+        //disconnect();
         //SearchEngine.INSTANCE.removeListener(this);
         Framework.nativeRemoveMapObjectListener();
         //BookmarkManager.INSTANCE.removeLoadingListener(this);
@@ -758,6 +988,554 @@ public class MapActivity extends AppCompatActivity
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         return simpleDateFormat.format(afterAddingMins);
     }*/
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //disconnect();
+    }
+
+    private void openInGoogleMap() {
+        /*String url = "http://maps.google.com/maps?saddr=" + pickupLatLng.latitude + ","
+                + pickupLatLng.longitude + "&daddr=" + destinationLatLng.latitude + "," + destinationLatLng.longitude + "&mode=driving";
+        Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(url));
+        intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
+        startActivity(intent);*/
+    }
+
+    private void acceptRequest() {
+        try {
+            r.stop();
+            send(ACCEPT_REQUEST, 0, 0, 0);
+            mAcceptBusyInfo.setVisibility(View.GONE);
+            mSwipeLayout.setVisibility(View.VISIBLE);
+            mOpenGMap.setVisibility(View.VISIBLE);
+            //mCustomerName.setText("");
+            //mCustomerPhone.setText("");
+            base = g.getBase();
+            km = g.getKm();
+            mins = g.getMins();
+            minDis = g.getMinDis();
+            tripId = String.valueOf(g.getTripId());
+            distance = g.getDistance();
+            duration = g.getDuration();
+            price = g.getPrice();
+            if (mTimerRunning) {
+                stopTimer();
+            }
+            // todo register accepted driver with trip id
+            // tripId
+            prepareGoToCustomer();
+        } catch (Exception e) {
+            Log.d(TAG, "Error accept request " + e.getMessage());
+        }
+    }
+
+    private void startTimer() {
+        mCountDownTimer = new CountDownTimer(START_TIME_IN_MILLIS, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                //Log.i(TAG,"Timer Started...");
+            }
+
+            @Override
+            public void onFinish() {
+                mTimerRunning = false;
+                respondBusy();
+                //Log.i(TAG,"Finished timer");
+            }
+        }.start();
+        mTimerRunning = true;
+    }
+
+    private void stopTimer() {
+        mCountDownTimer.cancel();
+        mTimerRunning = false;
+        //Log.i(TAG,"Timer Stopped");
+    }
+
+    private void prepareGoToCustomer() {
+        //pickupLatLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+        //destinationLatLng = new LatLng(g.getLat(), g.getLng());
+        isOnWaytoCustomer = true;
+        //getDirectionDistance();
+    }
+
+    private void reachedCustomer() {
+        send(REACHED_CUSTOMER, 0, 0, 0);
+        isOnWaytoCustomer = false;
+        swipeButtonSettings.setActionConfirmText(getString(R.string.start_trip));
+        mSwipeButton.setSwipeButtonCustomItems(swipeButtonSettings);
+        //mSwipeButton.setText(R.string.start_trip);
+    }
+
+    private void send(int flag, double distance, double duration, double price) {
+        try {
+            mService.sendMessage(flag, requestingPassenger, distance, duration, price);
+            updateResponse(flag);
+        } catch (Exception e) {
+            Log.d(TAG, "Error sending message " + e.getMessage());
+        }
+    }
+
+    private void updateResponse(int responseId) {
+        requestResponse = responseId;
+        //MyBase.getInstance(this).addToRequestQueue(updateIsOnReq);
+    }
+
+    private void sendMe() {
+        //mDriverInfo.setVisibility(View.GONE);
+        //mDriverPhone.setText("");
+        //Log.i(TAG , "" +userTripInfo);
+
+        try {
+            UserTripInfo userTripInfo = new UserTripInfo(
+                    26,
+                    "912391525",
+                    "dhayal");
+            userTripInfo.setDriverId(25);
+            mService.sendReq(userTripInfo);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //startTimer();
+    }
+
+    private void processMessage(String myMsg) {
+        g = gSon.fromJson(myMsg, UserTripInfo.class);
+        int flag = g.getMyFlag();
+        requestingPassenger = g.getUserId();
+        tripId = String.valueOf(g.getTripId());
+        //Log.i(TAG,"request received");
+        switch (flag) {
+            case 4:
+                r.play();
+                //mediaPlayer.start();
+                mCustomerInfo.setVisibility(View.VISIBLE);
+                mAcceptBusyInfo.setVisibility(View.VISIBLE);
+                mSwipeButton.setText("Reached Customer");
+                mSwipeLayout.setVisibility(View.GONE);
+                mCustomerName.setText(getString(R.string.name) + g.getCustomerName());
+                mCustomerPickup.setText(getString(R.string.pickup) + g.getPickupAddress());
+                mCustomerDestination.setText(getString(R.string.destination) + g.getDestAddress());
+                phoneNumber = "0" + g.getPhone();
+                mCustomerPhone.setText(getString(R.string.customer_phone) + g.getPhone());
+                mTripDistance.setText(getString(R.string.price) + g.getPrice() + getString(R.string.distance) + g.getDistance());
+                if (!mTimerRunning) {
+                    startTimer();
+                }
+                break;
+            case 5:
+                //r.play();
+                mCustomerInfo.setVisibility(View.VISIBLE);
+                mSwipeLayout.setVisibility(View.GONE);
+                mCustomerName.setText(R.string.passenger_cancel);
+                mCustomerPickup.setText("");
+                mCustomerDestination.setText("");
+                //mCustomerPhone.setText("");
+                mTripDistance.setText("");
+                mAcceptBusyInfo.setVisibility(View.GONE);
+                updateResponse(TRIP_CANCELLED);
+                MyNotificationManager.getInstance(MapActivity.this).displayNotification("Request Cancelled", "Sorry! request cancelled by passenger");
+                if (r.isPlaying()) {
+                    r.stop();
+                }
+                if (mTimerRunning) {
+                    stopTimer();
+                }
+                cancelCall();
+                break;
+            /*case 13:
+                mCustomerInfo.setVisibility(View.GONE);
+                updateResponse(TRIP_COMPLETED);
+                // todo display payment details
+                break;*/
+            case 3:
+                /*removeRequest();
+                // mCancelRequest.setVisibility(View.GONE);
+                mDriverInfo.setVisibility(View.VISIBLE);
+                //mDriverName.setText("Driver Phone: "+g.getPhone());
+                //Log.i(TAG,g.getUserId() + " D - " +g.getDriverId());
+                g.setMyFlag(9);
+                try {
+                    mService.sendMessage(g);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                mDriverPhone.setVisibility(View.VISIBLE);
+                mDriverPhone.setText("Driver Phone: " + g.getPhone());
+                MyNotificationManager.getInstance(MapActivity.this).displayNotification("Driver Found", "Driver Coming to you");
+                //mRequest.setText("Driver Found, Coming to you");
+                phoneNumber = "0" + g.getPhone();
+                isDriverAccepted = true;
+                isRequestInProgress = false;
+                erasePolylines();*/
+                //if(mMap != null) {
+                //mMap.clear();
+                //}
+                break;
+            case 2:
+                //isDriverBusy = true;
+                //isRequestInProgress = false;
+                //removeRequest();
+                //requestHandler.removeCallbacks(requestRunnable);
+                //requestHandler.postDelayed(requestRunnable, 0);
+                //if (requestCounter < 9) {
+                //getClosestDriver();
+                //} else {
+                //mRequest.setText("Sorry! Driver Not Found");
+                //}
+                break;
+            case 11:
+                MyNotificationManager.getInstance(MapActivity.this).displayNotification("Driver Reached", "Driver Reached your place");
+                break;
+            case 9:
+                //Log.i(TAG," receiving driver current location"+ g);
+                //LatLng newLocation;
+                //double oldLat = oldLocation.latitude;
+                //double oldLng = oldLocation.longitude;
+                //double newLat = g.getLat();
+                //double newLng = g.getLng();
+                //LatLng newLocation = new LatLng(g.getLat(), g.getLng());
+                //if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                //float rotation = (float) SphericalUtil.computeHeading(oldLocation, newLocation);
+                //rotateMarker(mDriverMarker, newLocation, rotation);
+                //oldLocation = newLocation;
+                //} else {
+                //updateDriverLocMarker(newLocation);
+                //}
+                // break;
+                break;
+            case 6:
+                MyNotificationManager.getInstance(MapActivity.this).displayNotification("Trip Canceled", "Trip Cancelled by driver");
+                //mDriverPhone.setVisibility(View.VISIBLE);
+                //mCustomerInfo.setVisibility(View.VISIBLE);
+                //mCustomerName.setText("");
+                //mCustomerPickup.setText("");
+                //mCustomerDestination.setText("");
+                //mCustomerPhone.setText("Sorry! Passenger Canceled the carPriceArray");
+                //mTripDistance.setText("");
+                break;
+            case 12:
+                //mCancelRequest.setVisibility(View.GONE);
+                MyNotificationManager.getInstance(MapActivity.this).displayNotification("Trip Started", "Trip Started by driver");
+                startTime = System.currentTimeMillis();
+                timerHandler.postDelayed(timerRunnable, 0);
+                //mCustomerInfo.setVisibility(View.VISIBLE);
+                //mCustomerName.setText("Trip Started");
+                break;
+            case 13:
+                //onEndtrip(Double.valueOf(g.getPhone()));
+                timerHandler.removeCallbacks(timerRunnable);
+                //mDriverInfo.setVisibility(View.GONE);
+                mpayAndRating.setVisibility(View.VISIBLE);
+                mAmount.setText("Pay Driver : " + g.getPhone() + " SDG");
+                MyNotificationManager.getInstance(MapActivity.this).displayNotification("Trip Completed", "Trip Completed");
+                // mCustomerInfo.setVisibility(View.GONE);
+                // todo display payment details
+                break;
+            case 99:
+                //userTripInfo.setDriverId(driverId);
+                break;
+        }
+    }
+
+    private void cancelCall() {
+        final MediaPlayer[] player = {null};
+        if (player[0] == null) {
+            player[0] = MediaPlayer.create(this, R.raw.cancel_alarm);
+            player[0].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    if (player[0] != null) {
+                        player[0].release();
+                        player[0] = null;
+                    }
+                }
+            });
+        }
+        player[0].start();
+    }
+
+    private void respondBusy() {
+        try {
+            r.stop();
+            send(SEND_BUSY, 0, 0, 0);
+            mCustomerInfo.setVisibility(View.GONE);
+            mCustomerName.setText("");
+            mCustomerPhone.setText("");
+            if (mTimerRunning) {
+                stopTimer();
+            }
+        } catch (Exception e) {
+            Log.d(TAG, "Error respond busy " + e.getMessage());
+        }
+    }
+
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        if (mMapFragment == null)
+        {
+            Bundle args = new Bundle();
+            args.putBoolean(MapFragment.ARG_LAUNCH_BY_DEEP_LINK, isLaunchByDeepLink);
+            mMapFragment = (MapFragment) MapFragment.instantiate(this, MapFragment.class.getName(), args);
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.map_fragment_container, mMapFragment, MapFragment.class.getName())
+                    .commit();
+        }
+        if(MySharedPreference.getInstance(this).isCaptainOnline()) {
+            connect();
+        }
+        String msg = MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).getUserMessage();
+        //Log.i(TAG,"Shared message : "+msg);
+        if (msg != null) {
+            processMessage(msg);
+            MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).userMessage(null);
+        }
+
+        String tripId = MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).getTripId();
+        if(tripId != null) {
+            this.tripId = tripId;
+            // todo handle unclosed trip
+            //Toast.makeText(this,"Last trip not ended properly",Toast.LENGTH_LONG).show();
+            isOnWaytoCustomer = false;
+            isOnTrip = true;
+            price = 1;
+            mCustomerInfo.setVisibility(View.VISIBLE);
+            mAcceptBusyInfo.setVisibility(View.GONE);
+            mSwipeLayout.setVisibility(View.VISIBLE);
+            mSwipeButton.setText(getString(R.string.end_trip));
+            //mCustomerPhone.setText(getString(R.string.customer_phone) + g.getPhone());
+            // endTrip();
+        }
+    }
+
+    /*private final ServiceConnection mConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            //Log.i(TAG, "onServiceConnected");
+            ServerConnection.ServerConnectionBinder binder = (ServerConnection.ServerConnectionBinder) service;
+            mService = binder.getService();
+            //mService.registerListener(DriverMapsActivity.this);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            //Log.i(TAG, "onServiceDisconnected");
+            mService = null;
+        }
+    };*/
+
+    private void swipeButtonPressed() {
+        if (isOnWaytoCustomer) {
+            reachedCustomer();
+        } else if (!isOnTrip) {
+            send(TRIP_STARTED, 0, 0, 0);
+            startTrip();
+        } else if (isOnTrip) {
+            endTrip();
+        }
+    }
+
+    private Long getCurrentTimestamp() {
+        // Long timestamp = System.currentTimeMillis()/1000;
+        //return timestamp;
+        return System.currentTimeMillis() / 1000;
+    }
+
+    private void endTrip() {
+        tripRecordHandler.removeCallbacks(recordTripRunnable);
+        timerHandler.removeCallbacks(timerRunnable);
+        MySharedPreference.getInstance(MapActivity.this).finishTrip();
+        //NumberFormat format = NumberFormat.getCurrencyInstance();
+        if (price == 0) {
+            // todo get price from server
+            long startedTime = MySharedPreference.getInstance(MapActivity.this).getStartTime();
+            duration = (getCurrentTimestamp() - startedTime) / 60;
+            price = base + (((distance < minDis) ? 0 : (distance - minDis)) * km) + (duration * mins);
+            price = roundTwoDecimals(price);
+            //Log.i(TAG,"Distance : "+distance);
+            //Log.i(TAG,"Duration : "+duration);
+            //Log.i(TAG,"Price : "+price);
+            mOpenGMap.setVisibility(View.GONE);
+            mAmount.setText(getString(R.string.collect_payment) + price + getString(R.string.sdg));
+            mpayAndRating.setVisibility(View.VISIBLE);
+            isOnTrip = false;
+            mCustomerInfo.setVisibility(View.GONE);
+            send(TRIP_COMPLETED, distance, duration, price);
+
+            //MyBase.getInstance(MapActivity.this).addToRequestQueue(savePrice);
+            //Long tripEndTime = getCurrentTimestamp();
+            //duration = (tripEndTime - tripStartTime) / 60;
+            //Log.i(TAG,"Duration : "+ duration);
+            //distance = getDistance(pickupLatLng.latitude, pickupLatLng.longitude,
+            //mLastLocation.getLatitude(), mLastLocation.getLongitude()) / 1000;
+            //Log.i(TAG,"Distance : "+ distance);
+
+            //((TextView) findViewById(R.id.text_result)).setText(format.format(result));
+        } else {
+            isOnTrip = false;
+            mOpenGMap.setVisibility(View.GONE);
+            mpayAndRating.setVisibility(View.VISIBLE);
+            mCustomerInfo.setVisibility(View.GONE);
+            if(price == 1) {
+                mAmount.setText(getString(R.string.collect_payment) + " " + getString(R.string.sdg));
+                updateResponse(TRIP_COMPLETED);
+            } else {
+                price = roundTwoDecimals(price);
+                mAmount.setText(getString(R.string.collect_payment) + price + getString(R.string.sdg));
+                send(TRIP_COMPLETED, distance, duration, price);
+            }
+        }
+    }
+
+    private double roundTwoDecimals(double d) {
+        return new BigDecimal(d).setScale(2, RoundingMode.HALF_UP).doubleValue();
+    }
+
+    private final Runnable recordTripRunnable = new Runnable() {
+        @Override
+        public void run() {
+            /*long millis = System.currentTimeMillis() - startTime;
+            int seconds = (int) (millis / 1000);
+            int minutes = seconds / 60;
+            seconds = seconds % 60;
+            mTripTimer.setText(String.format("%d:%02d", minutes, seconds));*/
+            //double dis =
+            //distance += getDistance(tempLatLng.latitude,tempLatLng.longitude,mLastLocation.getLatitude(),mLastLocation.getLongitude())/1000;
+            //duration = (getCurrentTimestamp() - tripStartTime) / 60;
+            //Log.i(TAG,"Distance : "+distance);
+            //Log.i(TAG,"Duration : "+duration);
+            MySharedPreference.getInstance(MapActivity.this)
+                    .recordTrip(tripId,tripStartTime,(float) distance);
+            //tempLatLng = new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude());
+            tripRecordHandler.postDelayed(this, 120000);
+        }
+    };
+
+    private final Runnable timerRunnable = new Runnable() {
+        @Override
+        public void run() {
+            long millis = System.currentTimeMillis() - startTime;
+            int seconds = (int) (millis / 1000);
+            int minutes = seconds / 60;
+            seconds = seconds % 60;
+            mTripTimer.setText(String.format("%d:%02d", minutes, seconds));
+            timerHandler.postDelayed(this, 500);
+        }
+    };
+
+
+    private void startTrip() {
+        startTime = System.currentTimeMillis();
+        timerHandler.postDelayed(timerRunnable, 0);
+        tripStartTime = startTime / 1000;
+        isOnTrip = true;
+        //mMap.clear();
+        //pickupLatLng = new LatLng(g.getLat(), g.getLng());
+        //destinationLatLng = new LatLng(g.getDestLat(), g.getDestLng());
+        swipeButtonSettings.setActionConfirmText(getString(R.string.end_trip));
+        mSwipeButton.setSwipeButtonCustomItems(swipeButtonSettings);
+        //mSwipeButton.setText(R.string.end_trip);
+        mOpenGMap.setVisibility(View.VISIBLE);
+        if (g.getDestLat() > 0) {
+            //getDirectionDistance();
+        } else {
+            mOpenGMap.setVisibility(View.GONE);
+        }
+        if(price == 0) {
+            //tempLatLng = pickupLatLng;
+            distance = 0;
+            tripRecordHandler.postDelayed(recordTripRunnable,0);
+        }
+    }
+
+
+    private void callDriver() {
+        //Log.i(TAG,"Call driver called");
+        //Log.i(TAG,"Phone number : "+phoneNumber);
+        Intent intent = new Intent(Intent.ACTION_CALL);
+        intent.setData(Uri.parse("tel:" + phoneNumber));
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, "Permission denied to make call", Toast.LENGTH_LONG).show();
+            return;
+        }
+        this.startActivity(intent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        final Intent intent = getMyIntent();
+        if(MySharedPreference.getInstance(this).isCaptainOnline()) {
+            bindMyService(intent);
+        }
+        //bindService(intent, mViewModel.getServiceConnection(), Context.BIND_AUTO_CREATE);
+    }
+
+    private Intent getMyIntent() {
+        Context context = getContext();
+        return new Intent(context, ServerConnection.class);
+    }
+
+    private void connect() {
+        //Log.i(TAG, "Main thread Id " + Thread.currentThread().getId());
+        //mViewModel.setIsConnected(true);
+        if(!isMyServiceRunning(ServerConnection.class)) {
+            MySharedPreference.getInstance(this).setCaptainOnline(true);
+            final Intent intent = getMyIntent();
+            intent.setAction(Constants.STARTFOREGROUND_ACTION);
+            ContextCompat.startForegroundService(getContext(), intent);
+            bindMyService(intent);
+        }
+
+        //receiver = new NetworkStateReceiver();
+        //IntentFilter filter1 = new IntentFilter();
+        //filter1.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        //registerReceiver(receiver, filter1);
+        //LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(ServerConnection.ACTION_MSG_RECEIVED));
+        //MyBase.getInstance(this).addToRequestQueue(insLoc);
+    }
+
+    private void bindMyService(Intent intent) {
+        MySharedPreference.getInstance(this).setBind(true);
+        bindService(intent, mViewModel.getServiceConnection(), Context.BIND_AUTO_CREATE);
+    }
+
+    private void unBindMyService() {
+        if(MySharedPreference.getInstance(this).isBinded()) {
+            MySharedPreference.getInstance(this).setBind(false);
+            unbindService(mViewModel.getServiceConnection());
+        }
+    }
+
+    private Context getContext() {
+        return MwmApplication.get().getApplicationContext();
+    }
+
+    private void disconnect() {
+        //if(mFusedLocationClient != null){
+        //mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+        //}
+        //if (receiver != null) {
+            //unregisterReceiver(receiver);
+        //}
+        Log.i(TAG, "Stop service called ");
+        //if(isMyServiceRunning(ServerConnection.class)) {
+        MySharedPreference.getInstance(this).setCaptainOnline(false);
+        Intent stopIntent = getMyIntent();
+        unBindMyService();
+        stopIntent.setAction(Constants.STOPFOREGROUND_ACTION);
+        ContextCompat.startForegroundService(getContext(), stopIntent);
+        //startService(stopIntent);
+        //stopService(new Intent(this, ServerConnection.class));
+        Log.i(TAG, "Stop service called inside");
+        //}
+        //LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+    }
 
     //________________________empty methods
     @Override

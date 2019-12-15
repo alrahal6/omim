@@ -49,7 +49,7 @@ public class SplashActivity extends AppCompatActivity
   private static final String EXTRA_CURRENT_ONBOARDING_STEP = "extra_current_onboarding_step";
   private static final Logger LOGGER = LoggerFactory.INSTANCE.getLogger(LoggerFactory.Type.MISC);
   private static final String TAG = SplashActivity.class.getSimpleName();
-  private static final String EXTRA_ACTIVITY_TO_START = "extra_activity_to_start";
+  public static final String EXTRA_ACTIVITY_TO_START = "extra_activity_to_start";
   public static final String EXTRA_INITIAL_INTENT = "extra_initial_intent";
   private static final int REQUEST_PERMISSIONS = 1;
   private static final long FIRST_START_DELAY = 300;

@@ -54,8 +54,9 @@ class GoogleFusedLocationProvider extends BaseLocationProvider
     mLocationRequest.setInterval(interval);
     LOGGER.d(TAG, "Request Google fused provider to provide locations at this interval = "
                   + interval + " ms");
-    mLocationRequest.setFastestInterval(interval / 2);
-
+    //mLocationRequest.setFastestInterval(interval / 2);
+    mLocationRequest.setFastestInterval(interval);
+    //mLocationRequest.setSmallestDisplacement(20.0F);
     mGoogleApiClient.connect();
     setActive(true);
   }

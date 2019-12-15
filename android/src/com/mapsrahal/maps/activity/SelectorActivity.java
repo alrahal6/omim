@@ -14,7 +14,7 @@ import com.mapsrahal.util.UiUtils;
 public class SelectorActivity extends AppCompatActivity implements View.OnClickListener {
 
     Button mPassengerCab,mPassengerPool,mPassengerAny,mCaptainCab,mCaptainPool,mCaptainAny;
-    private static final String PASSENGER_CAPTAIN_SELECTOR = "passenger_captain_selector";
+    public static final String PASSENGER_CAPTAIN_SELECTOR = "passenger_captain_selector";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -10,6 +10,8 @@ public class MySharedPreference {
     private static final String KEY_PHONE = "phone";
     private static final String KEY_HAVE_TOKEN = "haveToken";
     private static final String KEY_USER_NAME = "userName";
+    private static final String KEY_CAPTAIN_ONLINE = "captainOnline";
+    private static final String KEY_BINDED = "serviceBinded";
     private static final String KEY_USER_ID = "userid";
     private static final String KEY_USER_TYPE = "usertype";
     private static final String KEY_MESSAGE = "keyMessage";
@@ -102,6 +104,24 @@ public class MySharedPreference {
         editor.apply();
     }
 
+    public void setCaptainOnline(boolean online) {
+        //SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = getSharedPreference().edit();
+        editor.putBoolean(KEY_CAPTAIN_ONLINE, online);
+        editor.apply();
+    }
+
+    public void setBind(boolean binded) {
+        //SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = getSharedPreference().edit();
+        editor.putBoolean(KEY_BINDED, binded);
+        editor.apply();
+    }
+
+    public boolean isBinded() {
+        return getSharedPreference().getBoolean(KEY_BINDED, false);
+    }
+
     public String getUserMessage() {
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         return sharedPreferences.getString(KEY_MESSAGE, null);
@@ -115,6 +135,10 @@ public class MySharedPreference {
     // todo return real value
     public boolean isCaptain() {
         return true;
+    }
+
+    public boolean isCaptainOnline() {
+        return getSharedPreference().getBoolean(KEY_CAPTAIN_ONLINE, false);
     }
 
     public void logout() {

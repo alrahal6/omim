@@ -2935,4 +2935,30 @@
     <string name="title_activity_my_rides">MyRidesActivity</string>
     <string name="tab_text_1">Ongoing</string>
     <string name="tab_text_2">Completed</string>
+
+    <string name="title_activity_driver_maps" translatable="false">Map</string>
+    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
+    <string name="you_are_online" translatable="false">ONLINE</string>
+    <string name="open_google_map" translatable="false">Open Google Map</string>
+    <string name="rate_ride" translatable="false">Rate Your Ride!</string>
+    <string name="reached_customer" translatable="false"> >> Reached Customer >></string>
+    <string name="customer_phone" translatable="false">Customer Phone:</string>
+    <string name="accept_request" translatable="false">Accept Request</string>
+    <string name="busy" translatable="false">Busy</string>
+    <string name="change_password" translatable="false">Change Password</string>
+    <string name="getting_location" translatable="false">Getting Location…</string>
+    <string name="price" translatable="false">Price :</string>
+    <string name="pickup" translatable="false">Pickup Address :</string>
+    <string name="destination" translatable="false">Destination :</string>
+    <string name="distance" translatable="false">- Distance :</string>
+    <string name="passenger_cancel" translatable="false">Sorry! Passenger Canceled the request</string>
+    <string name="passenger_request" translatable="false">Passenger Request</string>
+    <string name="end_trip" translatable="false">End Trip</string>
+    <string name="collect_payment" translatable="false">Collect Payment :</string>
+    <string name="sdg" translatable="false">SDG</string>
+    <string name="start_trip" translatable="false">Start Trip</string>
+    <string name="please_connect_internet" translatable="false">Please connect to internet and try again</string>
+    <string name="enable_location_permission" translatable="false">Please enable location permission to access</string>
+    <string name="pay" translatable="false">Pay :</string>
 </resources>

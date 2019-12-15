@@ -10,6 +10,8 @@ public final class Constants
   public static final int KB = 1024;
   public static final int MB = 1024 * 1024;
   public static final int GB = 1024 * 1024 * 1024;
+  public static final String STARTFOREGROUND_ACTION = "startForeground";
+  public static final String STOPFOREGROUND_ACTION = "stopForeground";
 
   static final int CONNECTION_TIMEOUT_MS = 5000;
   static final int READ_TIMEOUT_MS = 30000;
@@ -22,8 +24,10 @@ public final class Constants
     public static final String MAIL_BODY = "&body=";
     public static final String HTTP_GE0_PREFIX = "http://ge0.me/";
 
-    public static final String HTTP_BASE_URL = "http://3.18.30.74:3003/";
-    //public static final String HTTP_BASE_URL = "http://192.168.43.214:3002/";
+    //public static final String HTTP_BASE_URL = "http://3.18.30.74:3003/";
+    //public static final String SERVER_WS_URL = "ws://3.18.30.74:3003/";
+    public static final String HTTP_BASE_URL = "http://192.168.43.214:3002/";
+    public static final String SERVER_WS_URL = "ws://192.168.43.214:3002/x";
 
     public static final String PLAY_MARKET_HTTPS_APP_PREFIX = "https://play.google.com/store/apps/details?id=";
 
@@ -42,7 +46,8 @@ public final class Constants
     public static final String OSM_RECOVER_PASSWORD = "https://www.openstreetmap.org/user/forgot-password";
     public static final String OSM_ABOUT = "https://wiki.openstreetmap.org/wiki/About_OpenStreetMap";
 
-    private Url() {}
+
+      private Url() {}
   }
 
   public static class Email

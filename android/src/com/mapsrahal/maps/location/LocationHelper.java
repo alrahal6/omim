@@ -35,7 +35,7 @@ public enum LocationHelper
   private static final long INTERVAL_FOLLOW_AND_ROTATE_MS = 3000;
   private static final long INTERVAL_FOLLOW_MS = 1000;
   private static final long INTERVAL_NOT_FOLLOW_MS = 3000;
-  private static final long INTERVAL_NAVIGATION_VEHICLE_MS = 500;
+  private static final long INTERVAL_NAVIGATION_VEHICLE_MS = 5000;
 
   // TODO (trashkalmar): Correct value
   private static final long INTERVAL_NAVIGATION_BICYCLE_MS = 1000;
