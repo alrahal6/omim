@@ -59,6 +59,23 @@ public final class Constants
     private Email() {}
   }
 
+  public static class Notification {
+    public static final int PASSENGER_REQUEST = 1;
+    public static final int PASSENGER_ACCEPTED = 2;
+    public static final int PASSENGER_REFUSED = 3;
+    public static final int PASSENGER_CANCELLED = 4;
+    public static final int DRIVER_INVITE = 5;
+    public static final int DRIVER_ACCEPTED = 6;
+    public static final int DRIVER_REFUSED = 7;
+    public static final int DRIVER_CANCELLED = 8;
+    public static final int DRIVER_REACHED = 9;
+    public static final int PASSENGER_DELAY = 10;
+    public static final int DRIVER_DELAY = 11;
+    public static final int TRIP_STARTED = 12;
+    public static final int TRIP_COMPLETED = 13;
+    private Notification() {}
+  }
+
   public static class Package
   {
     public static final String FB_PACKAGE = "com.facebook.katana";

@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.widget.Switch;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
@@ -14,6 +15,7 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.mapsrahal.maps.MySharedPreference;
 import com.mapsrahal.maps.R;
 import com.mapsrahal.maps.SplashActivity;
+import com.mapsrahal.util.Constants;
 
 import java.util.Map;
 
@@ -45,18 +47,20 @@ public class FCMListenerService extends FirebaseMessagingService {
                                   Map<String, String> data) {
         String title;
         String body;
+        String flag;
         // todo get real data to process
         // ex: data.get("itemName")+" "+data.get("itemPrice")
-        if(notification == null){
-            title = data.get("title");
-            body = data.get("body");
-        } else{
+        if(notification == null) {
+            flag = data.get("mFlag");
+            title = getFlagTitle(flag);
+            body = getFlagBody(flag);
+        } else {
             title = notification.getTitle();
             body  = notification.getBody();
         }
         //Log.d(TAG, "Message from server " + title + body);
         Intent intent = new Intent(this,  SplashActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
@@ -72,6 +76,38 @@ public class FCMListenerService extends FirebaseMessagingService {
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         notificationManager.notify(0, notificationBuilder.build());
+    }
+
+    private String getFlagTitle(String flag) {
+        String title = "";
+    
+        int mFlag = Integer.parseInt(flag);
+        switch (mFlag) {
+            case Constants.Notification.PASSENGER_REQUEST:
+                title = "Passenger Request";
+                break;
+            case Constants.Notification.PASSENGER_ACCEPTED:
+                title = "Passenger Accepted";
+                break;
+            
+        }
+        return title;
+    }
+
+    private String getFlagBody(String flag) {
+        String body = "";
+
+        int mFlag = Integer.parseInt(flag);
+        switch (mFlag) {
+            case Constants.Notification.PASSENGER_REQUEST:
+                body = "Passenger Request";
+                break;
+            case Constants.Notification.PASSENGER_ACCEPTED:
+                body = "Passenger Accepted";
+                break;
+
+        }
+        return body;
     }
 
 }

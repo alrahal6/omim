@@ -17,6 +17,7 @@ public class Post {
     private String destinationAddress;
     private double srcDistDiff;
     private double destDistDiff;
+    private String phone;
 
     public double getSrcDistDiff() {
         return srcDistDiff;
@@ -51,7 +52,7 @@ public class Post {
     }
 
     public Post(Integer id,int userId, double srcLat, double srcLng, double destLat, double destLng,
-                double tripDistance, String sourceAddress, String destinationAddress,Date startTime) {
+                double tripDistance, String sourceAddress, String destinationAddress,Date startTime,String phone) {
         this.id = id;
         this.userId = userId;
         this.srcLat = srcLat;
@@ -63,6 +64,7 @@ public class Post {
         this.destinationAddress = destinationAddress;
         this.startTime = startTime;
         //this.endTime = endTime;
+        this.phone = phone;
     }
 
     public Integer getId() {
@@ -135,5 +137,13 @@ public class Post {
 
     public void setEndTime(String endTime) {
         this.endTime = endTime;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

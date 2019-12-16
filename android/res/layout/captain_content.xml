@@ -10,13 +10,13 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
+            <!--<TextView
                 android:id="@+id/workingSwitch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="5dp"
                 android:text="you_are_online"
-                android:textColor="@android:color/holo_green_dark" />
+                android:textColor="@android:color/holo_green_dark" />-->
 
             <Button
                 android:id="@+id/openGMap"
@@ -24,8 +24,7 @@
                 android:layout_height="wrap_content"
                 android:text="open_google_map"
                 android:textColor="@android:color/holo_green_dark"
-                android:visibility="gone"
-                />
+                android:visibility="gone" />
             <TextView
                 android:id="@+id/tripTimer"
                 android:layout_width="wrap_content"

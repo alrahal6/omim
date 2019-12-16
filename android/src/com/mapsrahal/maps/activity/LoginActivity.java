@@ -86,7 +86,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         // Get new Instance ID token
                         String token = task.getResult().getToken();
                         int id = MySharedPreference.getInstance(getApplicationContext()).getUserId();
-                        //Log.d("id token", ""+id +" "+ token);
+                        Log.d("id token", ""+id +" "+ token);
                         NewToken newToken = new NewToken(id, token);
                         Call<NewToken> call = tokenApi.sendToken(newToken);
                         call.enqueue(new Callback<NewToken>() {

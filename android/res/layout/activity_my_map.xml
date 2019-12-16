@@ -22,9 +22,11 @@
         android:id="@+id/send_request_test"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:text="Send Request"/>
     <Switch
         android:id="@+id/switch2"
+        android:visibility="gone"
         android:layout_below="@+id/send_request_test"
         android:layout_margin="@dimen/space20"
         android:layout_width="wrap_content"

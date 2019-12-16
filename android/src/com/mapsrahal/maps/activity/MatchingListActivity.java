@@ -23,6 +23,7 @@ import com.mapsrahal.maps.model.MatchMaker;
 import com.mapsrahal.maps.model.MatchingItem;
 import com.mapsrahal.maps.model.Post;
 import com.mapsrahal.maps.model.UserMessage;
+import com.mapsrahal.util.Constants;
 import com.mapsrahal.util.DateUtils;
 import com.mapsrahal.util.UiUtils;
 import com.mapsrahal.util.Utils;
@@ -39,7 +40,7 @@ import retrofit2.Response;
 public class MatchingListActivity extends AppCompatActivity {
 
     private ArrayList<MatchingItem> mMatchingList;
-    private int requestToId;
+    //private int requestToId;
 
     private RecyclerView mRecyclerView;
     private MatchingAdapter mAdapter;
@@ -55,7 +56,7 @@ public class MatchingListActivity extends AppCompatActivity {
     private PostApi postApi;
     private UserMessageApi userMessageApi;
     private String mMatchingPercentage;
-
+    private UserMessage userMessage;
     private MatchMaker mMatchMaker;
 
     @Override
@@ -84,7 +85,8 @@ public class MatchingListActivity extends AppCompatActivity {
                 mMyTripDistance,
                 MySharedPreference.getInstance(this).getFrmAddress().trim(),
                 MySharedPreference.getInstance(this).getToAddress().trim(),
-                new Date(MySharedPreference.getInstance(this).getStartTime()));
+                new Date(MySharedPreference.getInstance(this).getStartTime()),
+                MySharedPreference.getInstance(this).getPhoneNumber());
 
         Call<List<Post>> call = postApi.createPost(post);
 
@@ -123,7 +125,7 @@ public class MatchingListActivity extends AppCompatActivity {
                     mMatchingList.add(new MatchingItem(post.getId(),post.getUserId(),
                             post.getSourceAddress(), post.getDestinationAddress(),
                             post.getTripDistance(), DateUtils.formatDateStr(post.getStartTime()), totDist, totDistTxt,
-                            amount,extraDistance,mMyTripDistance));
+                            amount,extraDistance,mMyTripDistance,post.getEndTime()));
                 }
             } else {
                 if (isPassengerEligible(mMyTripDistance, totDist, post.getSrcDistDiff(), post.getDestDistDiff(), post.getTripDistance())) {
@@ -131,7 +133,7 @@ public class MatchingListActivity extends AppCompatActivity {
                     mMatchingList.add(new MatchingItem(post.getId(),post.getUserId(),
                             post.getSourceAddress(), post.getDestinationAddress(),
                             post.getTripDistance(),  DateUtils.formatDateStr(post.getStartTime()), totDist, totDistTxt,
-                            amount,extraDistance,mMyTripDistance));
+                            amount,extraDistance,mMyTripDistance,post.getEndTime()));
                 }
             }
         }
@@ -195,10 +197,28 @@ public class MatchingListActivity extends AppCompatActivity {
         mAdapter.setOnItemClickListener(position -> sendRequest(position));
     }
 
+    private int getFlag() {
+        return Constants.Notification.PASSENGER_REQUEST;
+    }
+
     public void sendRequest(int position) {
         //mMatchingList.get(position).changeText1(text);
         //mMatchingList.get(position).
-        requestToId = mMatchingList.get(position).getUserId();
+        userMessage = new UserMessage(
+        MySharedPreference.getInstance(this).getUserId(),
+                mMatchingList.get(position).getUserId(),
+                getFlag(),mMatchingList.get(position).getId(),
+                mMatchingList.get(position).getmTripDistance(),
+                mMatchingList.get(position).getmTripTime(),
+                mMatchingList.get(position).getmAmount(),
+                mMatchingList.get(position).getmPhone(),
+                mMatchingList.get(position).getmPhone(),
+                mMatchingList.get(position).getmText1(),
+                mMatchingList.get(position).getmText2(),
+                mMatchingList.get(position).getmPhone(),
+                0.0d,0.0d,0.0d,0.0d
+        );
+        //requestToId = mMatchingList.get(position).getUserId();
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Are you sure? Send Request!").setPositiveButton("Yes", dialogClickListener)
                 .setNegativeButton("No", dialogClickListener).show();
@@ -221,19 +241,17 @@ public class MatchingListActivity extends AppCompatActivity {
     };
 
     private void sendMessage() {
-        UserMessage userMessage = new UserMessage(requestToId,"You have ride request","You got matching ride");
-
         Call<UserMessage> call = userMessageApi.sentMessage(userMessage);
 
         call.enqueue(new Callback<UserMessage>() {
             @Override
             public void onResponse(Call<UserMessage> call, Response<UserMessage> response) {
-                Toast.makeText(MatchingListActivity.this, "Request Send Successfully " +requestToId, Toast.LENGTH_LONG).show();
+                Toast.makeText(MatchingListActivity.this, "Request Send Successfully ", Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onFailure(Call<UserMessage> call, Throwable t) {
-                Toast.makeText(MatchingListActivity.this, "Request Send Failed! " +requestToId, Toast.LENGTH_LONG).show();
+                Toast.makeText(MatchingListActivity.this, "Request Send Failed! ", Toast.LENGTH_LONG).show();
 
             }
         });

@@ -12,6 +12,7 @@ public class MatchingItem implements Comparable<MatchingItem> {
     private String mTotDistTxt;
     private String mAmount;
     private String mExtraDistance;
+    private String mPhone;
 
     public double getmYourDistance() {
         return mYourDistance;
@@ -29,7 +30,7 @@ public class MatchingItem implements Comparable<MatchingItem> {
     }
 
     public MatchingItem(int id,int userId, String mText1, String mText2, Double mTripDistance, String mTripTime,
-                        Double mTotTripDistance, String mTotDistTxt,String mAmount, String mExtraDistance,double mYourDistance) {
+                        Double mTotTripDistance, String mTotDistTxt,String mAmount, String mExtraDistance,double mYourDistance,String mPhone) {
         this.id = id;
         this.userId = userId;
         this.mText1 = mText1;
@@ -41,6 +42,7 @@ public class MatchingItem implements Comparable<MatchingItem> {
         this.mAmount = mAmount;
         this.mExtraDistance = mExtraDistance;
         this.mYourDistance = mYourDistance;
+        this.mPhone = mPhone;
     }
 
     public int getUserId() {
@@ -89,6 +91,14 @@ public class MatchingItem implements Comparable<MatchingItem> {
 
     public void setmText2(String mText2) {
         this.mText2 = mText2;
+    }
+
+    public String getmPhone() {
+        return mPhone;
+    }
+
+    public void setmPhone(String mPhone) {
+        this.mPhone = mPhone;
     }
 
     @Override
