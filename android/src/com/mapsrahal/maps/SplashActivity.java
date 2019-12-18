@@ -502,6 +502,7 @@ public class SplashActivity extends AppCompatActivity
     Intent input = getIntent();
     //Intent result = new Intent(this, DownloadResourcesLegacyActivity.class);
     //Intent result = new Intent(this, MwmActivity.class);
+    //Intent result = new Intent(this, LoginActivity.class);
     Intent result = new Intent(this, LoginActivity.class);
     if (input != null)
     {

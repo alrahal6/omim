@@ -9,15 +9,24 @@ import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StyleRes;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
+import com.google.android.material.navigation.NavigationView;
 import com.mapsrahal.maps.MwmApplication;
+import com.mapsrahal.maps.MySharedPreference;
 import com.mapsrahal.maps.R;
 import com.mapsrahal.maps.SplashActivity;
+import com.mapsrahal.maps.activity.ContactActivity;
+import com.mapsrahal.maps.activity.MyRidesActivity;
+import com.mapsrahal.maps.activity.ProfileActivity;
 import com.mapsrahal.util.Config;
 import com.mapsrahal.util.PermissionsUtils;
 import com.mapsrahal.util.ThemeUtils;
@@ -27,11 +36,12 @@ import com.mapsrahal.util.log.Logger;
 import com.mapsrahal.util.log.LoggerFactory;
 
 public abstract class BaseMwmFragmentActivity extends AppCompatActivity
-                                  implements BaseActivity
+                                  implements BaseActivity, NavigationView.OnNavigationItemSelectedListener
 {
   private final BaseActivityDelegate mBaseDelegate = new BaseActivityDelegate(this);
   private boolean mSafeCreated;
-
+  public TextView mpPhone;
+  protected DrawerLayout mDrawerLayout;
   @Override
   @NonNull
   public Activity get()
@@ -43,13 +53,13 @@ public abstract class BaseMwmFragmentActivity extends AppCompatActivity
   @StyleRes
   public int getThemeResourceId(@NonNull String theme)
   {
-    if (ThemeUtils.isDefaultTheme(theme))
+    //if (ThemeUtils.isDefaultTheme(theme))
         return R.style.MwmTheme;
 
-    if (ThemeUtils.isNightTheme(theme))
-      return R.style.MwmTheme_Night;
+    //if (ThemeUtils.isNightTheme(theme))
+      //return R.style.MwmTheme_Night;
 
-    throw new IllegalArgumentException("Attempt to apply unsupported theme: " + theme);
+    //throw new IllegalArgumentException("Attempt to apply unsupported theme: " + theme);
   }
 
   /**
@@ -325,6 +335,39 @@ public abstract class BaseMwmFragmentActivity extends AppCompatActivity
       if (completionListener != null)
         completionListener.run();
     }
+  }
+
+  @Override
+  public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+    Intent intent;
+    switch (item.getItemId()) {
+      case R.id.nav_settings:
+        break;
+      case R.id.nav_trip_history:
+        intent = new Intent(this, MyRidesActivity.class);
+        startActivity(intent);
+        break;
+      //case R.id.nav_chat:
+      //intent = new Intent(this, ChatActivity.class);
+      //startActivity(intent);
+      //break;
+      case R.id.nav_profile:
+        intent = new Intent(this, ProfileActivity.class);
+        startActivity(intent);
+        break;
+      case R.id.nav_vehicle:
+        //intent = new Intent(this, ProfileActivity.class);
+        //startActivity(intent);
+        break;
+      case R.id.nav_contact_us:
+        intent = new Intent(this, ContactActivity.class);
+        startActivity(intent);
+        break;
+      default:
+        throw new IllegalStateException("Unexpected value: " + item.getItemId());
+    }
+    mDrawerLayout.closeDrawer(GravityCompat.START);
+    return true;
   }
 
   /**

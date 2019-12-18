@@ -70,7 +70,7 @@ dependencies {
     //implementation 'com.facebook.android:audience-network-sdk:4.28.2'
     implementation 'com.google.code.gson:gson:2.6.1'
     implementation 'com.pushwoosh:pushwoosh:5.19.7'
-    implementation 'com.pushwoosh:pushwoosh-gcm:5.12.1'
+    //implementation 'com.pushwoosh:pushwoosh-gcm:5.12.1'
     implementation 'com.my.tracker:mytracker-sdk:1.5.3'
     implementation('com.my.target:mytarget-sdk:5.2.2') {
         exclude group: 'com.google.android.exoplayer', module: 'exoplayer-core'
@@ -268,14 +268,14 @@ android {
 
         google {
             dimension "default"
-            versionName = android.defaultConfig.versionName + '-Google'
-            buildConfigField 'String', 'SUPPORT_MAIL', '"googleplay@maps.me"'
+            versionName = android.defaultConfig.versionName
+            buildConfigField 'String', 'SUPPORT_MAIL', '"sadeem.sudan@gmail.com"'
         }
 
         preinstall {
             dimension "default"
-            versionName = android.defaultConfig.versionName + '-Preinstall'
-            buildConfigField 'String', 'SUPPORT_MAIL', '"googleplay@maps.me"'
+            versionName = android.defaultConfig.versionName
+            buildConfigField 'String', 'SUPPORT_MAIL', '"sadeem.sudan@gmail.com"'
         }
     }
 

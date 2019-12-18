@@ -2934,7 +2934,7 @@
     </string-array>
     <string name="title_activity_my_rides">MyRidesActivity</string>
     <string name="tab_text_1">Ongoing</string>
-    <string name="tab_text_2">Completed</string>
+    <string name="tab_text_2">History</string>
 
     <string name="title_activity_driver_maps" translatable="false">Map</string>
     <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>

@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.multidex.MultiDex;
 
 import com.appsflyer.AppsFlyerLib;
+import com.crashlytics.android.Crashlytics;
 import com.mapsrahal.maps.analytics.ExternalLibrariesMediator;
 import com.mapsrahal.maps.background.AppBackgroundTracker;
 import com.mapsrahal.maps.background.NotificationChannelFactory;
@@ -47,6 +48,7 @@ import com.mapsrahal.util.log.Logger;
 import com.mapsrahal.util.log.LoggerFactory;
 import com.mapsrahal.util.statistics.Statistics;
 
+import io.fabric.sdk.android.Fabric;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -175,6 +177,7 @@ public class MwmApplication extends Application implements AppBackgroundTracker.
   public void onCreate()
   {
     super.onCreate();
+    Fabric.with(this, new Crashlytics());
     //UiUtils.setupColorStatusBar(sSelf.getApplicationContext(), R.color.bg_statusbar);
     LoggerFactory.INSTANCE.initialize(this);
     mLogger = LoggerFactory.INSTANCE.getLogger(LoggerFactory.Type.MISC);

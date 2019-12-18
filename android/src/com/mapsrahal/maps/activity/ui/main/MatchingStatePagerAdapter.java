@@ -7,6 +7,7 @@ import androidx.annotation.StringRes;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import com.mapsrahal.maps.R;
 
@@ -15,13 +16,13 @@ import com.mapsrahal.maps.R;
  * A [FragmentPagerAdapter] that returns a fragment corresponding to
  * one of the sections/tabs/pages.
  */
-public class SectionsPagerAdapter extends FragmentPagerAdapter {
+public class MatchingStatePagerAdapter extends FragmentStatePagerAdapter {
 
     @StringRes
     private static final int[] TAB_TITLES = new int[]{R.string.tab_text_1, R.string.tab_text_2};
     private final Context mContext;
 
-    public SectionsPagerAdapter(Context context, FragmentManager fm) {
+    public MatchingStatePagerAdapter(Context context, FragmentManager fm) {
         super(fm);
         mContext = context;
     }
@@ -39,7 +40,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
             return null;
         }
          */
-        return PlaceholderFragment.newInstance(position + 1);
+        return MatchingListFragment.newInstance(position + 1);
     }
 
     @Nullable
@@ -51,6 +52,6 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         // Show 2 total pages.
-        return 2;
+        return 20;
     }
 }

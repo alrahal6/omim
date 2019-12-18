@@ -49,6 +49,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.viewpager.widget.ViewPager;
 
 import com.github.florent37.singledateandtimepicker.dialog.SingleDateAndTimePickerDialog;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -58,7 +59,9 @@ import com.mapsrahal.maps.activity.ContactActivity;
 import com.mapsrahal.maps.activity.MatchingListActivity;
 import com.mapsrahal.maps.activity.MyRidesActivity;
 import com.mapsrahal.maps.activity.ProfileActivity;
+import com.mapsrahal.maps.activity.ui.main.MatchingStatePagerAdapter;
 import com.mapsrahal.maps.api.ParsedMwmRequest;
+import com.mapsrahal.maps.base.BaseMwmFragmentActivity;
 import com.mapsrahal.maps.bookmarks.data.MapObject;
 import com.mapsrahal.maps.intent.MapTask;
 import com.mapsrahal.maps.location.CompassData;
@@ -75,6 +78,7 @@ import com.mapsrahal.maps.taxi.TaxiInfo;
 import com.mapsrahal.maps.taxi.TaxiManager;
 import com.mapsrahal.maps.websocket.ServerConnection;
 import com.mapsrahal.maps.websocket.WebSocketViewModel;
+import com.mapsrahal.maps.widget.menu.BaseMenu;
 import com.mapsrahal.maps.widget.menu.MyPositionButton;
 import com.mapsrahal.util.Constants;
 import com.mapsrahal.util.DateUtils;
@@ -91,32 +95,32 @@ import java.math.RoundingMode;
 import java.util.Date;
 import java.util.Stack;
 
-public class MapActivity extends AppCompatActivity
+public class MapActivity extends BaseMwmFragmentActivity
                          implements View.OnTouchListener,
                                     MapRenderingListener,
                                     LocationHelper.UiCallback,
                                     RoutingController.Container,
                                     Framework.MapObjectListener,
                                     View.OnClickListener,
-                                    NavigationView.OnNavigationItemSelectedListener,
                                     NavigationButtonsAnimationController.OnTranslationChangedListener,
-                                    AdapterView.OnItemSelectedListener
+                                    AdapterView.OnItemSelectedListener,
+                                    ServerConnection.ServerListener
 
 {
 
     public TextView tvDropOff,tvPickup,tvDistance,mDateTime,mRequiredSeats,mSetPickup,mSetDrop;
-    public TextView mpPhone;
     private Button btRequest,mMore;
     private boolean mIsTabletLayout = false,isPickupSearch = true,isResultBySearch = false;
     private ImageButton mAddressToggle,mMainMenu;
     private ImageView mAddSeat,mRemoveSeat;
     private Date startingTime;
+    private boolean mIsFullscreen;
     private MapObject tempLocation,fromLocation,toLocation;
     LinearLayout mllForm,mMnuForm;
     private int seatCount = 1;
     @Nullable
     private Dialog mLocationErrorDialog;
-    private DrawerLayout mDrawerLayout;
+    //private DrawerLayout mDrawerLayout;
     private boolean mLocationErrorDialogAnnoying = false;
     @Nullable
     private MapFragment mMapFragment;
@@ -139,7 +143,7 @@ public class MapActivity extends AppCompatActivity
     @NonNull
     private NavigationController mNavigationController;
     private static final String PASSENGER_CAPTAIN_SELECTOR = "passenger_captain_selector";
-
+    private String receivedMessage;
 
     private FusedLocationProviderClient mFusedLocationClient;
     private Location mLastLocation;
@@ -151,7 +155,7 @@ public class MapActivity extends AppCompatActivity
     private Boolean isOnTrip = false;
     private String usrId;
     private LinearLayout mCustomerInfo, mAcceptBusyInfo, mSwipeLayout, mpayAndRating;
-    private int requestingPassenger = 0;
+
     private TextView mAmount, mTripTimer;
     private TextView mCustomerName;
     private TextView mCustomerPhone;
@@ -161,7 +165,7 @@ public class MapActivity extends AppCompatActivity
     private Ringtone r;
     //MediaPlayer mediaPlayer;
     private CountDownTimer mCountDownTimer;
-    private static final long START_TIME_IN_MILLIS = 20000;
+
     private int requestResponse = 3;
     private static final int SEND_BUSY = 2;
     private static final int ACCEPT_REQUEST = 3;
@@ -172,15 +176,15 @@ public class MapActivity extends AppCompatActivity
     private static final int DISTANCE_NOTIFY = 50;
     private Long tripStartTime;
     private String phoneNumber;
-    private boolean mTimerRunning;
+
     private NetworkStateReceiver receiver;
-    private UserTripInfo g;
+
     private final Gson gSon = new Gson();
     private static final String TAG = MapActivity.class.getSimpleName();
-    private String tripId;
+
     private float base, km, mins;
     private int minDis;
-
+    private ViewPager mViewPager;
     private SwipeButtonCustomItems swipeButtonSettings;
     private double distance, duration, price;
     private long startTime = 0;
@@ -189,13 +193,14 @@ public class MapActivity extends AppCompatActivity
     private UserTripInfo userTripInfo;
     private Button mSendRequest;
     private Switch mSwitch;
+    private String tripId;
 
     private ServerConnection mService;
     private WebSocketViewModel mViewModel;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void  onSafeCreate(Bundle savedInstanceState) {
+        super.onSafeCreate(savedInstanceState);
         setContentView(R.layout.activity_my_map);
         Intent intent = getIntent();
         int message = intent.getIntExtra(PASSENGER_CAPTAIN_SELECTOR,1);
@@ -208,6 +213,13 @@ public class MapActivity extends AppCompatActivity
         } else {
             mSwitch.setChecked(false);
         }
+        mSendRequest = findViewById(R.id.send_request_test);
+        mSendRequest.setOnClickListener(this);
+
+        MatchingStatePagerAdapter matchingStateAdapter = new MatchingStatePagerAdapter(this, getSupportFragmentManager());
+        mViewPager = findViewById(R.id.matching_list_vp);
+        mViewPager.setAdapter(matchingStateAdapter);
+        mViewPager.setVisibility(View.GONE);
         //mSwitch.setOnT
         tvPickup.setOnClickListener(this);
         tvDropOff.setOnClickListener(this);
@@ -269,9 +281,14 @@ public class MapActivity extends AppCompatActivity
             case 4:
                 hideFromTo();
                 onlineAsCaptain();
-                break;
+                //break;
             /*default:
                 break;*/
+        }
+
+        if(MySharedPreference.getInstance(this).isCaptainOnline()) {
+            hideFromTo();
+            onlineAsCaptain();
         }
 
         try {
@@ -292,8 +309,7 @@ public class MapActivity extends AppCompatActivity
         //SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         //mapFragment.getMapAsync(this);
         //mapView = mapFragment.getView();
-        mSendRequest = findViewById(R.id.send_request_test);
-        mSendRequest.setOnClickListener(this);
+
         mCustomerInfo = findViewById(R.id.customerInfo);
         mOpenGMap = findViewById(R.id.openGMap);
         mAcceptBusyInfo = findViewById(R.id.acceptBusyInfo);
@@ -347,7 +363,7 @@ public class MapActivity extends AppCompatActivity
         mRideStatus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                acceptRequest();
+                //acceptRequest();
             }
         });
 
@@ -395,6 +411,11 @@ public class MapActivity extends AppCompatActivity
             } else {
                 //Log.d(TAG, "onChanged: bound to service.");
                 mService = myBinder.getService();
+                mService.registerListener(this);
+                /*if(mService.isMessageReceived()) {
+                    processMessage(mService.receivedMessage());
+                    mService.setIsReceivedFalse();
+                }*/
             }
         });
     }
@@ -411,11 +432,15 @@ public class MapActivity extends AppCompatActivity
     }
 
     private void listMatch() {
-        Intent intent = new Intent(this, MatchingListActivity.class);
-        startActivity(intent);
+        setFullscreen(!mIsFullscreen);
+
+        //Intent intent = new Intent(this, MatchingListActivity.class);
+        //startActivity(intent);
     }
 
     private void onlineAsCaptain() {
+        mSwitch.setVisibility(View.VISIBLE);
+        mSendRequest.setVisibility(View.VISIBLE);
         // todo online as captain
     }
 
@@ -425,6 +450,7 @@ public class MapActivity extends AppCompatActivity
         mAddressToggle.setVisibility(View.GONE);
         mllForm.setVisibility(View.GONE);
         btRequest.setVisibility(View.GONE);
+        mDateTime.setVisibility(View.GONE);
         //mMore.setVisibility(View.GONE);
     }
 
@@ -863,39 +889,12 @@ public class MapActivity extends AppCompatActivity
         }
     }
 
-    @Override
+    /*@Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        Intent intent;
-        switch (item.getItemId()) {
-            case R.id.nav_settings:
-                break;
-            case R.id.nav_trip_history:
-                intent = new Intent(this, MyRidesActivity.class);
-                startActivity(intent);
-                break;
-            //case R.id.nav_chat:
-                //intent = new Intent(this, ChatActivity.class);
-                //startActivity(intent);
-                //break;
-            case R.id.nav_profile:
-                intent = new Intent(this, ProfileActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.nav_vehicle:
-                //intent = new Intent(this, ProfileActivity.class);
-                //startActivity(intent);
-                break;
-            case R.id.nav_contact_us:
-                intent = new Intent(this, ContactActivity.class);
-                startActivity(intent);
-                break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + item.getItemId());
-        }
-
+        super.onNavigationItemSelected(item);
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
-    }
+    }*/
 
     private class CurrentPositionClickListener implements View.OnClickListener
     {
@@ -989,13 +988,6 @@ public class MapActivity extends AppCompatActivity
         return simpleDateFormat.format(afterAddingMins);
     }*/
 
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        //disconnect();
-    }
-
     private void openInGoogleMap() {
         /*String url = "http://maps.google.com/maps?saddr=" + pickupLatLng.latitude + ","
                 + pickupLatLng.longitude + "&daddr=" + destinationLatLng.latitude + "," + destinationLatLng.longitude + "&mode=driving";
@@ -1004,9 +996,10 @@ public class MapActivity extends AppCompatActivity
         startActivity(intent);*/
     }
 
-    private void acceptRequest() {
+    private void acceptRequest(UserTripInfo g) {
         try {
-            r.stop();
+            //r.stop();
+            mService.stopRingTone();
             send(ACCEPT_REQUEST, 0, 0, 0);
             mAcceptBusyInfo.setVisibility(View.GONE);
             mSwipeLayout.setVisibility(View.VISIBLE);
@@ -1017,13 +1010,13 @@ public class MapActivity extends AppCompatActivity
             km = g.getKm();
             mins = g.getMins();
             minDis = g.getMinDis();
-            tripId = String.valueOf(g.getTripId());
+            //tripId = String.valueOf(g.getTripId());
             distance = g.getDistance();
             duration = g.getDuration();
             price = g.getPrice();
-            if (mTimerRunning) {
+            /*if (mTimerRunning) {
                 stopTimer();
-            }
+            }*/
             // todo register accepted driver with trip id
             // tripId
             prepareGoToCustomer();
@@ -1032,28 +1025,7 @@ public class MapActivity extends AppCompatActivity
         }
     }
 
-    private void startTimer() {
-        mCountDownTimer = new CountDownTimer(START_TIME_IN_MILLIS, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                //Log.i(TAG,"Timer Started...");
-            }
 
-            @Override
-            public void onFinish() {
-                mTimerRunning = false;
-                respondBusy();
-                //Log.i(TAG,"Finished timer");
-            }
-        }.start();
-        mTimerRunning = true;
-    }
-
-    private void stopTimer() {
-        mCountDownTimer.cancel();
-        mTimerRunning = false;
-        //Log.i(TAG,"Timer Stopped");
-    }
 
     private void prepareGoToCustomer() {
         //pickupLatLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
@@ -1072,7 +1044,7 @@ public class MapActivity extends AppCompatActivity
 
     private void send(int flag, double distance, double duration, double price) {
         try {
-            mService.sendMessage(flag, requestingPassenger, distance, duration, price);
+            //mService.sendMessage(flag, requestingPassenger, distance, duration, price);
             updateResponse(flag);
         } catch (Exception e) {
             Log.d(TAG, "Error sending message " + e.getMessage());
@@ -1091,7 +1063,7 @@ public class MapActivity extends AppCompatActivity
 
         try {
             UserTripInfo userTripInfo = new UserTripInfo(
-                    26,
+                    27,
                     "912391525",
                     "dhayal");
             userTripInfo.setDriverId(25);
@@ -1102,172 +1074,21 @@ public class MapActivity extends AppCompatActivity
         //startTimer();
     }
 
-    private void processMessage(String myMsg) {
-        g = gSon.fromJson(myMsg, UserTripInfo.class);
-        int flag = g.getMyFlag();
-        requestingPassenger = g.getUserId();
-        tripId = String.valueOf(g.getTripId());
-        //Log.i(TAG,"request received");
-        switch (flag) {
-            case 4:
-                r.play();
-                //mediaPlayer.start();
-                mCustomerInfo.setVisibility(View.VISIBLE);
-                mAcceptBusyInfo.setVisibility(View.VISIBLE);
-                mSwipeButton.setText("Reached Customer");
-                mSwipeLayout.setVisibility(View.GONE);
-                mCustomerName.setText(getString(R.string.name) + g.getCustomerName());
-                mCustomerPickup.setText(getString(R.string.pickup) + g.getPickupAddress());
-                mCustomerDestination.setText(getString(R.string.destination) + g.getDestAddress());
-                phoneNumber = "0" + g.getPhone();
-                mCustomerPhone.setText(getString(R.string.customer_phone) + g.getPhone());
-                mTripDistance.setText(getString(R.string.price) + g.getPrice() + getString(R.string.distance) + g.getDistance());
-                if (!mTimerRunning) {
-                    startTimer();
-                }
-                break;
-            case 5:
-                //r.play();
-                mCustomerInfo.setVisibility(View.VISIBLE);
-                mSwipeLayout.setVisibility(View.GONE);
-                mCustomerName.setText(R.string.passenger_cancel);
-                mCustomerPickup.setText("");
-                mCustomerDestination.setText("");
-                //mCustomerPhone.setText("");
-                mTripDistance.setText("");
-                mAcceptBusyInfo.setVisibility(View.GONE);
-                updateResponse(TRIP_CANCELLED);
-                MyNotificationManager.getInstance(MapActivity.this).displayNotification("Request Cancelled", "Sorry! request cancelled by passenger");
-                if (r.isPlaying()) {
-                    r.stop();
-                }
-                if (mTimerRunning) {
-                    stopTimer();
-                }
-                cancelCall();
-                break;
-            /*case 13:
-                mCustomerInfo.setVisibility(View.GONE);
-                updateResponse(TRIP_COMPLETED);
-                // todo display payment details
-                break;*/
-            case 3:
-                /*removeRequest();
-                // mCancelRequest.setVisibility(View.GONE);
-                mDriverInfo.setVisibility(View.VISIBLE);
-                //mDriverName.setText("Driver Phone: "+g.getPhone());
-                //Log.i(TAG,g.getUserId() + " D - " +g.getDriverId());
-                g.setMyFlag(9);
-                try {
-                    mService.sendMessage(g);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                mDriverPhone.setVisibility(View.VISIBLE);
-                mDriverPhone.setText("Driver Phone: " + g.getPhone());
-                MyNotificationManager.getInstance(MapActivity.this).displayNotification("Driver Found", "Driver Coming to you");
-                //mRequest.setText("Driver Found, Coming to you");
-                phoneNumber = "0" + g.getPhone();
-                isDriverAccepted = true;
-                isRequestInProgress = false;
-                erasePolylines();*/
-                //if(mMap != null) {
-                //mMap.clear();
-                //}
-                break;
-            case 2:
-                //isDriverBusy = true;
-                //isRequestInProgress = false;
-                //removeRequest();
-                //requestHandler.removeCallbacks(requestRunnable);
-                //requestHandler.postDelayed(requestRunnable, 0);
-                //if (requestCounter < 9) {
-                //getClosestDriver();
-                //} else {
-                //mRequest.setText("Sorry! Driver Not Found");
-                //}
-                break;
-            case 11:
-                MyNotificationManager.getInstance(MapActivity.this).displayNotification("Driver Reached", "Driver Reached your place");
-                break;
-            case 9:
-                //Log.i(TAG," receiving driver current location"+ g);
-                //LatLng newLocation;
-                //double oldLat = oldLocation.latitude;
-                //double oldLng = oldLocation.longitude;
-                //double newLat = g.getLat();
-                //double newLng = g.getLng();
-                //LatLng newLocation = new LatLng(g.getLat(), g.getLng());
-                //if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                //float rotation = (float) SphericalUtil.computeHeading(oldLocation, newLocation);
-                //rotateMarker(mDriverMarker, newLocation, rotation);
-                //oldLocation = newLocation;
-                //} else {
-                //updateDriverLocMarker(newLocation);
-                //}
-                // break;
-                break;
-            case 6:
-                MyNotificationManager.getInstance(MapActivity.this).displayNotification("Trip Canceled", "Trip Cancelled by driver");
-                //mDriverPhone.setVisibility(View.VISIBLE);
-                //mCustomerInfo.setVisibility(View.VISIBLE);
-                //mCustomerName.setText("");
-                //mCustomerPickup.setText("");
-                //mCustomerDestination.setText("");
-                //mCustomerPhone.setText("Sorry! Passenger Canceled the carPriceArray");
-                //mTripDistance.setText("");
-                break;
-            case 12:
-                //mCancelRequest.setVisibility(View.GONE);
-                MyNotificationManager.getInstance(MapActivity.this).displayNotification("Trip Started", "Trip Started by driver");
-                startTime = System.currentTimeMillis();
-                timerHandler.postDelayed(timerRunnable, 0);
-                //mCustomerInfo.setVisibility(View.VISIBLE);
-                //mCustomerName.setText("Trip Started");
-                break;
-            case 13:
-                //onEndtrip(Double.valueOf(g.getPhone()));
-                timerHandler.removeCallbacks(timerRunnable);
-                //mDriverInfo.setVisibility(View.GONE);
-                mpayAndRating.setVisibility(View.VISIBLE);
-                mAmount.setText("Pay Driver : " + g.getPhone() + " SDG");
-                MyNotificationManager.getInstance(MapActivity.this).displayNotification("Trip Completed", "Trip Completed");
-                // mCustomerInfo.setVisibility(View.GONE);
-                // todo display payment details
-                break;
-            case 99:
-                //userTripInfo.setDriverId(driverId);
-                break;
-        }
-    }
 
-    private void cancelCall() {
-        final MediaPlayer[] player = {null};
-        if (player[0] == null) {
-            player[0] = MediaPlayer.create(this, R.raw.cancel_alarm);
-            player[0].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mp) {
-                    if (player[0] != null) {
-                        player[0].release();
-                        player[0] = null;
-                    }
-                }
-            });
-        }
-        player[0].start();
-    }
+
+
 
     private void respondBusy() {
         try {
-            r.stop();
+            //r.stop();
+            mService.stopRingTone();
             send(SEND_BUSY, 0, 0, 0);
             mCustomerInfo.setVisibility(View.GONE);
             mCustomerName.setText("");
             mCustomerPhone.setText("");
-            if (mTimerRunning) {
-                stopTimer();
-            }
+            //if (mTimerRunning) {
+                //stopTimer();
+            //}
         } catch (Exception e) {
             Log.d(TAG, "Error respond busy " + e.getMessage());
         }
@@ -1289,12 +1110,7 @@ public class MapActivity extends AppCompatActivity
         if(MySharedPreference.getInstance(this).isCaptainOnline()) {
             connect();
         }
-        String msg = MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).getUserMessage();
-        //Log.i(TAG,"Shared message : "+msg);
-        if (msg != null) {
-            processMessage(msg);
-            MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).userMessage(null);
-        }
+
 
         String tripId = MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).getTripId();
         if(tripId != null) {
@@ -1409,8 +1225,7 @@ public class MapActivity extends AppCompatActivity
             //duration = (getCurrentTimestamp() - tripStartTime) / 60;
             //Log.i(TAG,"Distance : "+distance);
             //Log.i(TAG,"Duration : "+duration);
-            MySharedPreference.getInstance(MapActivity.this)
-                    .recordTrip(tripId,tripStartTime,(float) distance);
+            MySharedPreference.getInstance(MapActivity.this).recordTrip(tripId,tripStartTime,(float) distance);
             //tempLatLng = new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude());
             tripRecordHandler.postDelayed(this, 120000);
         }
@@ -1441,11 +1256,11 @@ public class MapActivity extends AppCompatActivity
         mSwipeButton.setSwipeButtonCustomItems(swipeButtonSettings);
         //mSwipeButton.setText(R.string.end_trip);
         mOpenGMap.setVisibility(View.VISIBLE);
-        if (g.getDestLat() > 0) {
+        /*if (g.getDestLat() > 0) {
             //getDirectionDistance();
         } else {
             mOpenGMap.setVisibility(View.GONE);
-        }
+        }*/
         if(price == 0) {
             //tempLatLng = pickupLatLng;
             distance = 0;
@@ -1469,6 +1284,17 @@ public class MapActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
+        /*if(receivedMessage != null) {
+            processMessage(receivedMessage);
+            receivedMessage = null;
+        }*/
+        /*String msg = MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).getUserMessage();
+        //Log.i(TAG,"Shared message : "+msg);
+        if (msg != null) {
+            processMessage(msg);
+            MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).userMessage(null);
+        }*/
+
         final Intent intent = getMyIntent();
         if(MySharedPreference.getInstance(this).isCaptainOnline()) {
             bindMyService(intent);
@@ -1481,6 +1307,22 @@ public class MapActivity extends AppCompatActivity
         return new Intent(context, ServerConnection.class);
     }
 
+    @Override
+    public void onNewMessage(String message) {
+        //mMessageFromServer.setText(message);
+        receivedMessage = message;
+        //processMessage(message);
+    }
+
+    @Override
+    public void onStatusChange(ServerConnection.ConnectionStatus status) {
+
+        /*String statusMsg = (status == ServerConnection.ConnectionStatus.CONNECTED ?
+                //getString(R.string.connected) : getString(R.string.disconnected));
+        //mConnectionStatus.setText(statusMsg);
+        //mSendMessageButton.setEnabled(status == ServerConnection.ConnectionStatus.CONNECTED);*/
+    }
+
     private void connect() {
         //Log.i(TAG, "Main thread Id " + Thread.currentThread().getId());
         //mViewModel.setIsConnected(true);
@@ -1490,6 +1332,7 @@ public class MapActivity extends AppCompatActivity
             intent.setAction(Constants.STARTFOREGROUND_ACTION);
             ContextCompat.startForegroundService(getContext(), intent);
             bindMyService(intent);
+
         }
 
         //receiver = new NetworkStateReceiver();
@@ -1535,6 +1378,24 @@ public class MapActivity extends AppCompatActivity
         Log.i(TAG, "Stop service called inside");
         //}
         //LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+    }
+
+    private void setFullscreen(boolean isFullscreen) {
+        mIsFullscreen = isFullscreen;
+        if (isFullscreen) {
+            mViewPager.setVisibility(View.VISIBLE);
+            if (mNavAnimationController != null)
+                mNavAnimationController.disappearZoomButtons();
+            if (mNavMyPosition != null)
+                mNavMyPosition.hide();
+        } else {
+            mViewPager.setVisibility(View.GONE);
+
+            if (mNavAnimationController != null)
+                mNavAnimationController.appearZoomButtons();
+            if (mNavMyPosition != null)
+                mNavMyPosition.show();
+        }
     }
 
     //________________________empty methods

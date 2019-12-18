@@ -60,8 +60,7 @@
         <activity android:name=".activity.ContactActivity" />
         <activity
             android:name=".activity.MyRidesActivity"
-            android:label="@string/title_activity_my_rides"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:label="@string/title_activity_my_rides" />
         <activity android:name=".activity.ProfileActivity" />
         <activity android:name=".activity.ChatActivity" />
         <activity android:name=".activity.LoginActivity" />
@@ -86,7 +85,7 @@
             android:value="@string/facebook_app_id" />
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="${FABRIC_API_KEY}" />
+            android:value="d071e2b1ef011b1ac36122a8866f77ecc3e4e677" />
         <meta-data
             android:name="PW_APPID"
             android:value="${PW_APPID}" />
