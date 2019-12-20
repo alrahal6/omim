@@ -1118,7 +1118,7 @@
     <string name="search_hotel_filter_hotel">Hotel</string>
     <string name="search_hotel_filter_motel">Motel</string>
     <string name="create_campaign_button">Claim this business</string>
-    <string name="view_campaign_button">Business is advertised</string>
+    <string name="view_campaign_button">Location is Visible</string>
     <string name="search_hotel_filters_type">Type</string>
     <!-- Settings: "Send general feedback" button -->
     <string name="feedback_general">General Feedback</string>
@@ -1591,7 +1591,7 @@
     </plurals>
     <string name="type.cuisine.uzbek">Uzbek cuisine</string>
     <string name="onboarding_welcome_title">Plan and travel with Al Rahal6</string>
-    <string name="onboarding_welcome_first_subtitle">Bookmark interesting places, book hotels, calculate routes offline</string>
+    <string name="onboarding_welcome_first_subtitle">Book Taxi,plan carpool save fuel, money and time,This is an assistant app,Sometimes location accuracy may be compromised </string>
     <string name="onboarding_guide_direct_download_title">Guide is ready for download</string>
     <string name="onboarding_guide_direct_download_subtitle">It will be displayed on the map and work offline</string>
     <string name="onboarding_guide_direct_download_button">Download</string>

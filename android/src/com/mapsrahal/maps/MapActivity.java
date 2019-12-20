@@ -94,6 +94,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Date;
 import java.util.Stack;
+import java.util.concurrent.TimeUnit;
 
 public class MapActivity extends BaseMwmFragmentActivity
                          implements View.OnTouchListener,
@@ -155,7 +156,7 @@ public class MapActivity extends BaseMwmFragmentActivity
     private Boolean isOnTrip = false;
     private String usrId;
     private LinearLayout mCustomerInfo, mAcceptBusyInfo, mSwipeLayout, mpayAndRating;
-
+    private int requestingPassenger = 0;
     private TextView mAmount, mTripTimer;
     private TextView mCustomerName;
     private TextView mCustomerPhone;
@@ -165,7 +166,7 @@ public class MapActivity extends BaseMwmFragmentActivity
     private Ringtone r;
     //MediaPlayer mediaPlayer;
     private CountDownTimer mCountDownTimer;
-
+    private static final long START_TIME_IN_MILLIS = 20000;
     private int requestResponse = 3;
     private static final int SEND_BUSY = 2;
     private static final int ACCEPT_REQUEST = 3;
@@ -176,12 +177,12 @@ public class MapActivity extends BaseMwmFragmentActivity
     private static final int DISTANCE_NOTIFY = 50;
     private Long tripStartTime;
     private String phoneNumber;
-
+    private boolean mTimerRunning;
     private NetworkStateReceiver receiver;
-
+    private UserTripInfo g;
     private final Gson gSon = new Gson();
     private static final String TAG = MapActivity.class.getSimpleName();
-
+    private String tripId;
     private float base, km, mins;
     private int minDis;
     private ViewPager mViewPager;
@@ -193,7 +194,6 @@ public class MapActivity extends BaseMwmFragmentActivity
     private UserTripInfo userTripInfo;
     private Button mSendRequest;
     private Switch mSwitch;
-    private String tripId;
 
     private ServerConnection mService;
     private WebSocketViewModel mViewModel;
@@ -281,7 +281,7 @@ public class MapActivity extends BaseMwmFragmentActivity
             case 4:
                 hideFromTo();
                 onlineAsCaptain();
-                //break;
+                break;
             /*default:
                 break;*/
         }
@@ -346,7 +346,7 @@ public class MapActivity extends BaseMwmFragmentActivity
             public void onClick(View view) {
                 mpayAndRating.setVisibility(View.GONE);
                 //if (mMap != null) {
-                    //mMap.clear();
+                //mMap.clear();
                 //}
                 // todo save rating
             }
@@ -363,7 +363,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         mRideStatus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //acceptRequest();
+                acceptRequest();
             }
         });
 
@@ -409,13 +409,22 @@ public class MapActivity extends BaseMwmFragmentActivity
             if (myBinder == null) {
                 //Log.d(TAG, "onChanged: unbound from service");
             } else {
-                //Log.d(TAG, "onChanged: bound to service.");
+                Log.d(TAG, "onChanged: bound to service.");
                 mService = myBinder.getService();
-                mService.registerListener(this);
-                /*if(mService.isMessageReceived()) {
-                    processMessage(mService.receivedMessage());
+
+                /*long s = MySharedPreference.getInstance(MwmApplication.get().getApplicationContext())
+                        .getMsgRcvdTime();
+                if(s > 0 && (s > (getCurrentTimestamp() + 20))) {
                     mService.setIsReceivedFalse();
-                }*/
+                    receivedMessage = null;
+                } else {*/
+                    /*if (mService.isMessageReceived()) {
+                        processMessage(mService.receivedMessage());
+                        mService.setIsReceivedFalse();
+                        receivedMessage = null;
+                    }*/
+                /*}*/
+                mService.registerListener(this);
             }
         });
     }
@@ -934,11 +943,17 @@ public class MapActivity extends BaseMwmFragmentActivity
         RoutingController.get().attach(this);
         if (MapFragment.nativeIsEngineCreated())
             LocationHelper.INSTANCE.attach(this);
+
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        //if (mService.isMessageReceived()) {
+            //mService.setIsReceivedFalse();
+            //processMessage(mService.receivedMessage());
+            //receivedMessage = null;
+        //}
         unBindMyService();
     }
 
@@ -947,7 +962,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         super.onStop();
 
         //if(mViewModel.getBinder() != null) {
-            //unbindService(mViewModel.getServiceConnection());
+        //unbindService(mViewModel.getServiceConnection());
         //}
         //disconnect();
         //SearchEngine.INSTANCE.removeListener(this);
@@ -996,10 +1011,10 @@ public class MapActivity extends BaseMwmFragmentActivity
         startActivity(intent);*/
     }
 
-    private void acceptRequest(UserTripInfo g) {
+    private void acceptRequest() {
         try {
-            //r.stop();
-            mService.stopRingTone();
+            r.stop();
+            //mService.stopRingTone();
             send(ACCEPT_REQUEST, 0, 0, 0);
             mAcceptBusyInfo.setVisibility(View.GONE);
             mSwipeLayout.setVisibility(View.VISIBLE);
@@ -1010,13 +1025,13 @@ public class MapActivity extends BaseMwmFragmentActivity
             km = g.getKm();
             mins = g.getMins();
             minDis = g.getMinDis();
-            //tripId = String.valueOf(g.getTripId());
+            tripId = String.valueOf(g.getTripId());
             distance = g.getDistance();
             duration = g.getDuration();
             price = g.getPrice();
-            /*if (mTimerRunning) {
+            if (mTimerRunning) {
                 stopTimer();
-            }*/
+            }
             // todo register accepted driver with trip id
             // tripId
             prepareGoToCustomer();
@@ -1025,7 +1040,29 @@ public class MapActivity extends BaseMwmFragmentActivity
         }
     }
 
+    private void startTimer() {
+        mCountDownTimer = new CountDownTimer(START_TIME_IN_MILLIS, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                //Log.i(TAG,"Timer Started...");
+            }
 
+            @Override
+            public void onFinish() {
+                mTimerRunning = false;
+                //mService.stopRingTone();
+                respondBusy();
+                //Log.i(TAG,"Finished timer");
+            }
+        }.start();
+        mTimerRunning = true;
+    }
+
+    private void stopTimer() {
+        mCountDownTimer.cancel();
+        mTimerRunning = false;
+        //Log.i(TAG,"Timer Stopped");
+    }
 
     private void prepareGoToCustomer() {
         //pickupLatLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
@@ -1044,7 +1081,7 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     private void send(int flag, double distance, double duration, double price) {
         try {
-            //mService.sendMessage(flag, requestingPassenger, distance, duration, price);
+            mService.sendMessage(flag, requestingPassenger, distance, duration, price);
             updateResponse(flag);
         } catch (Exception e) {
             Log.d(TAG, "Error sending message " + e.getMessage());
@@ -1074,21 +1111,173 @@ public class MapActivity extends BaseMwmFragmentActivity
         //startTimer();
     }
 
+    private void processMessage(String myMsg) {
+        g = gSon.fromJson(myMsg, UserTripInfo.class);
+        int flag = g.getMyFlag();
+        requestingPassenger = g.getUserId();
+        tripId = String.valueOf(g.getTripId());
+        //Log.i(TAG,"request received");
+        switch (flag) {
+            case 4:
+                r.play();
+                //mediaPlayer.start();
+                mCustomerInfo.setVisibility(View.VISIBLE);
+                mAcceptBusyInfo.setVisibility(View.VISIBLE);
+                mSwipeButton.setText("Reached Customer");
+                mSwipeLayout.setVisibility(View.GONE);
+                mCustomerName.setText(getString(R.string.name) + g.getCustomerName());
+                mCustomerPickup.setText(getString(R.string.pickup) + g.getPickupAddress());
+                mCustomerDestination.setText(getString(R.string.destination) + g.getDestAddress());
+                phoneNumber = "0" + g.getPhone();
+                mCustomerPhone.setText(getString(R.string.customer_phone) + g.getPhone());
+                mTripDistance.setText(getString(R.string.price) + g.getPrice() + getString(R.string.distance) + g.getDistance());
+                if (!mTimerRunning) {
+                    startTimer();
+                }
+                break;
+            case 5:
+                //r.play();
+                mCustomerInfo.setVisibility(View.VISIBLE);
+                mSwipeLayout.setVisibility(View.GONE);
+                mCustomerName.setText(R.string.passenger_cancel);
+                mCustomerPickup.setText("");
+                mCustomerDestination.setText("");
+                //mCustomerPhone.setText("");
+                mTripDistance.setText("");
+                mAcceptBusyInfo.setVisibility(View.GONE);
+                updateResponse(TRIP_CANCELLED);
+                MyNotificationManager.getInstance(MapActivity.this).displayNotification("Request Cancelled", "Sorry! request cancelled by passenger");
+                if (r.isPlaying()) {
+                    r.stop();
+                }
+                if (mTimerRunning) {
+                    stopTimer();
+                }
+                cancelCall();
+                break;
+            /*case 13:
+                mCustomerInfo.setVisibility(View.GONE);
+                updateResponse(TRIP_COMPLETED);
+                // todo display payment details
+                break;*/
+            case 3:
+                /*removeRequest();
+                // mCancelRequest.setVisibility(View.GONE);
+                mDriverInfo.setVisibility(View.VISIBLE);
+                //mDriverName.setText("Driver Phone: "+g.getPhone());
+                //Log.i(TAG,g.getUserId() + " D - " +g.getDriverId());
+                g.setMyFlag(9);
+                try {
+                    mService.sendMessage(g);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                mDriverPhone.setVisibility(View.VISIBLE);
+                mDriverPhone.setText("Driver Phone: " + g.getPhone());
+                MyNotificationManager.getInstance(MapActivity.this).displayNotification("Driver Found", "Driver Coming to you");
+                //mRequest.setText("Driver Found, Coming to you");
+                phoneNumber = "0" + g.getPhone();
+                isDriverAccepted = true;
+                isRequestInProgress = false;
+                erasePolylines();*/
+                //if(mMap != null) {
+                //mMap.clear();
+                //}
+                break;
+            case 2:
+                //isDriverBusy = true;
+                //isRequestInProgress = false;
+                //removeRequest();
+                //requestHandler.removeCallbacks(requestRunnable);
+                //requestHandler.postDelayed(requestRunnable, 0);
+                //if (requestCounter < 9) {
+                //getClosestDriver();
+                //} else {
+                //mRequest.setText("Sorry! Driver Not Found");
+                //}
+                break;
+            case 11:
+                MyNotificationManager.getInstance(MapActivity.this).displayNotification("Driver Reached", "Driver Reached your place");
+                break;
+            case 9:
+                //Log.i(TAG," receiving driver current location"+ g);
+                //LatLng newLocation;
+                //double oldLat = oldLocation.latitude;
+                //double oldLng = oldLocation.longitude;
+                //double newLat = g.getLat();
+                //double newLng = g.getLng();
+                //LatLng newLocation = new LatLng(g.getLat(), g.getLng());
+                //if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                //float rotation = (float) SphericalUtil.computeHeading(oldLocation, newLocation);
+                //rotateMarker(mDriverMarker, newLocation, rotation);
+                //oldLocation = newLocation;
+                //} else {
+                //updateDriverLocMarker(newLocation);
+                //}
+                // break;
+                break;
+            case 6:
+                MyNotificationManager.getInstance(MapActivity.this).displayNotification("Trip Canceled", "Trip Cancelled by driver");
+                //mDriverPhone.setVisibility(View.VISIBLE);
+                //mCustomerInfo.setVisibility(View.VISIBLE);
+                //mCustomerName.setText("");
+                //mCustomerPickup.setText("");
+                //mCustomerDestination.setText("");
+                //mCustomerPhone.setText("Sorry! Passenger Canceled the carPriceArray");
+                //mTripDistance.setText("");
+                break;
+            case 12:
+                //mCancelRequest.setVisibility(View.GONE);
+                MyNotificationManager.getInstance(MapActivity.this).displayNotification("Trip Started", "Trip Started by driver");
+                startTime = System.currentTimeMillis();
+                timerHandler.postDelayed(timerRunnable, 0);
+                //mCustomerInfo.setVisibility(View.VISIBLE);
+                //mCustomerName.setText("Trip Started");
+                break;
+            case 13:
+                //onEndtrip(Double.valueOf(g.getPhone()));
+                timerHandler.removeCallbacks(timerRunnable);
+                //mDriverInfo.setVisibility(View.GONE);
+                mpayAndRating.setVisibility(View.VISIBLE);
+                mAmount.setText("Pay Driver : " + g.getPhone() + " SDG");
+                MyNotificationManager.getInstance(MapActivity.this).displayNotification("Trip Completed", "Trip Completed");
+                // mCustomerInfo.setVisibility(View.GONE);
+                // todo display payment details
+                break;
+            case 99:
+                //userTripInfo.setDriverId(driverId);
+                break;
+        }
+    }
 
-
-
+    private void cancelCall() {
+        final MediaPlayer[] player = {null};
+        if (player[0] == null) {
+            player[0] = MediaPlayer.create(this, R.raw.cancel_alarm);
+            player[0].setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    if (player[0] != null) {
+                        player[0].release();
+                        player[0] = null;
+                    }
+                }
+            });
+        }
+        player[0].start();
+    }
 
     private void respondBusy() {
         try {
-            //r.stop();
-            mService.stopRingTone();
+            r.stop();
+            //mService.stopRingTone();
             send(SEND_BUSY, 0, 0, 0);
             mCustomerInfo.setVisibility(View.GONE);
             mCustomerName.setText("");
             mCustomerPhone.setText("");
-            //if (mTimerRunning) {
-                //stopTimer();
-            //}
+            if (mTimerRunning) {
+                stopTimer();
+            }
         } catch (Exception e) {
             Log.d(TAG, "Error respond busy " + e.getMessage());
         }
@@ -1110,7 +1299,21 @@ public class MapActivity extends BaseMwmFragmentActivity
         if(MySharedPreference.getInstance(this).isCaptainOnline()) {
             connect();
         }
+        String msg = MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).getUserMessage();
+        //Log.i(TAG,"Shared message : "+msg);
+        if (msg != null) {
+            processMessage(msg);
+            MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).userMessage(null);
+        }
 
+
+
+        /*String msg = MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).getUserMessage();
+        //Log.i(TAG,"Shared message : "+msg);
+        if (msg != null) {
+            processMessage(msg);
+            MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).userMessage(null);
+        }*/
 
         String tripId = MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).getTripId();
         if(tripId != null) {
@@ -1137,7 +1340,6 @@ public class MapActivity extends BaseMwmFragmentActivity
             mService = binder.getService();
             //mService.registerListener(DriverMapsActivity.this);
         }
-
         @Override
         public void onServiceDisconnected(ComponentName name) {
             //Log.i(TAG, "onServiceDisconnected");
@@ -1159,7 +1361,8 @@ public class MapActivity extends BaseMwmFragmentActivity
     private Long getCurrentTimestamp() {
         // Long timestamp = System.currentTimeMillis()/1000;
         //return timestamp;
-        return System.currentTimeMillis() / 1000;
+        long timeMillis = System.currentTimeMillis();
+        return TimeUnit.MILLISECONDS.toSeconds(timeMillis);
     }
 
     private void endTrip() {
@@ -1256,11 +1459,11 @@ public class MapActivity extends BaseMwmFragmentActivity
         mSwipeButton.setSwipeButtonCustomItems(swipeButtonSettings);
         //mSwipeButton.setText(R.string.end_trip);
         mOpenGMap.setVisibility(View.VISIBLE);
-        /*if (g.getDestLat() > 0) {
+        if (g.getDestLat() > 0) {
             //getDirectionDistance();
         } else {
             mOpenGMap.setVisibility(View.GONE);
-        }*/
+        }
         if(price == 0) {
             //tempLatLng = pickupLatLng;
             distance = 0;
@@ -1364,7 +1567,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         //mFusedLocationClient.removeLocationUpdates(mLocationCallback);
         //}
         //if (receiver != null) {
-            //unregisterReceiver(receiver);
+        //unregisterReceiver(receiver);
         //}
         Log.i(TAG, "Stop service called ");
         //if(isMyServiceRunning(ServerConnection.class)) {

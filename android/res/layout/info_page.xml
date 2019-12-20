@@ -21,7 +21,7 @@
         android:layout_marginBottom="@dimen/margin_base"
         android:layout_gravity="center_horizontal"
         android:tag="@string/tag_height_limited"
-        tools:src="@drawable/img_welcome"/>
+        tools:src="@drawable/welcome_bg"/>
       <TextView
         android:id="@+id/tv__title"
         android:layout_width="wrap_content"

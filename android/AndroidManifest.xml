@@ -35,6 +35,7 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.BATTERY_STATS" />
 
@@ -70,6 +71,7 @@
         <activity android:name=".activity.SelectorActivity" />
         <activity
             android:name=".MapActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="intent.mycustom.action" />
@@ -534,6 +536,11 @@ meta-data
             android:exported="true">
             <intent-filter>
                 <action android:name="com.android.vending.INSTALL_REFERRER" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".NetworkStateReceiver" >
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
         <!--

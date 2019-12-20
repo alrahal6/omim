@@ -6,14 +6,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
-
 import com.mapsrahal.maps.activity.LoginActivity;
 import com.mapsrahal.maps.ads.Banner;
 import com.mapsrahal.maps.analytics.AdvertisingObserver;
@@ -52,7 +50,7 @@ public class SplashActivity extends AppCompatActivity
   public static final String EXTRA_ACTIVITY_TO_START = "extra_activity_to_start";
   public static final String EXTRA_INITIAL_INTENT = "extra_initial_intent";
   private static final int REQUEST_PERMISSIONS = 1;
-  private static final long FIRST_START_DELAY = 300;
+  private static final long FIRST_START_DELAY = 100;
   private static final long DELAY = 100;
 
   private View mIvLogo;

@@ -6,15 +6,13 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
-
 import com.mapsrahal.maps.MwmApplication;
 import com.mapsrahal.util.permissions.PermissionsResult;
-
 import java.util.HashMap;
 import java.util.Map;
-
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.CALL_PHONE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale;
 
@@ -24,7 +22,8 @@ public final class PermissionsUtils
       {
           WRITE_EXTERNAL_STORAGE,
           ACCESS_COARSE_LOCATION,
-          ACCESS_FINE_LOCATION
+          ACCESS_FINE_LOCATION,
+          CALL_PHONE
       };
 
   private static final String[] LOCATION_PERMISSIONS = new String[]

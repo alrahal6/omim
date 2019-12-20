@@ -187,8 +187,8 @@ public class WelcomeDialogFragment extends BaseMwmDialogFragment implements View
       boolean hasManySteps = args.containsKey(ARG_HAS_MANY_STEPS);
       if (hasManySteps)
       {
-        mOnboardingSteps.push(OnboardingStep.SHARE_EMOTIONS);
-        mOnboardingSteps.push(OnboardingStep.EXPERIENCE);
+        //mOnboardingSteps.push(OnboardingStep.SHARE_EMOTIONS);
+        //mOnboardingSteps.push(OnboardingStep.EXPERIENCE);
         mOnboardingSteps.push(OnboardingStep.DREAM_AND_PLAN);
       }
 

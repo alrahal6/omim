@@ -33,7 +33,7 @@
 	<string name="downloading">جاري التنزيل…</string>
 	<string name="get_it_now">احصل عليه الآن</string>
 	<!-- Text to show occasionaly with a proposal to Like our program on Facebook -->
-	<string name="share_on_facebook_text">شكرا لاستخدامك MAPS.ME! هل يعجبك التطبيق؟ أخبر أصدقاءك عن التطبيق! سيكون ذلك هو غاية الامتنان بالنسبة لنا.</string>
+	<string name="share_on_facebook_text">شكرا لاستخدامك Al Rahal6! هل يعجبك التطبيق؟ أخبر أصدقاءك عن التطبيق! سيكون ذلك هو غاية الامتنان بالنسبة لنا.</string>
 	<!-- Settings/Downloader - size string, only strings different from English should be translated -->
 	<string name="kb">ك.ب.</string>
 	<!-- Choose measurement on first launch alert - choose metric system button -->
@@ -94,7 +94,7 @@
 	<string name="country_status_download_failed">فشلت عملية تنزيل</string>
 	<!-- Button text for the button under the country_status_download_failed message -->
 	<string name="try_again">محاولة مرة أخرى</string>
-	<string name="about_menu_title">حول MAPS.ME</string>
+	<string name="about_menu_title">حول Al Rahal6</string>
 	<string name="downloading_touch_to_cancel">جاري تنزيل %d%% ، انقر للإلغاء</string>
 	<string name="downloaded_touch_to_delete">تم تنزيل (%s)، انقر للحذف</string>
 	<string name="connection_settings">اعدادات الاتصال</string>
@@ -103,7 +103,7 @@
 	<string name="unsupported_phone">أنت بحاجة الى OpenGL بأجهزة تسريع. لسوء الحظ جهازك لا يدعم هذه الخاصية.</string>
 	<string name="download">تنزيل</string>
 	<string name="external_storage_is_not_available">خاصية التخزين بواسطة البطاقة الرقمية الآمنة\الناقل التسلسلي الشامل غير متاحة مع الخرائط التي تم تنزيلها.</string>
-	<string name="disconnect_usb_cable">الرجاء فصل كابل الناقل التسلسلي الشامل أو إدخال بطاقة الذاكرة من أجل استخدام MAPS.ME.</string>
+	<string name="disconnect_usb_cable">الرجاء فصل كابل الناقل التسلسلي الشامل أو إدخال بطاقة الذاكرة من أجل استخدام Al Rahal6.</string>
 	<string name="not_enough_free_space_on_sdcard">الرجاء إخلاء بعض المساحة في تخزين البطاقة الرقمية الآمنة\الناقل التسلسلي الشامل أولا من أجل استخدام هذا التطبيق.</string>
 	<string name="not_enough_memory">لا يوجد ذاكرة كافية لتشغيل التطبيق.</string>
 	<string name="free_space_for_country">الرجاء إخلاء %1$s على جهازك أولا من أجل تنزيل %2$s</string>
@@ -130,7 +130,7 @@
 	<!-- Show popup notification on app start when we have out-of-date maps -->
 	<string name="advise_update_maps">هناك تحديثات متوافرة للخرائط التالية:</string>
 	<!-- Show popup notification in Pro version that Lite can be deleted -->
-	<string name="suggest_uninstall_lite">أنت لست بحاجة الى  MAPS.ME Lite بعد الآن، لذلك يمكنك إلغاء تثبيته.</string>
+	<string name="suggest_uninstall_lite">أنت لست بحاجة الى  Al Rahal6 Lite بعد الآن، لذلك يمكنك إلغاء تثبيته.</string>
 	<!-- Show popup notification on top of the map when country was downloaded. -->
 	<string name="download_country_success">تم تنزيل %s بنجاح.</string>
 	<!-- Show popup notification on top of the map when country download has failed. -->
@@ -160,9 +160,9 @@
 	<!-- Add bookmark dialog - bookmark set, Bookmarks dialog - Bookmark set cell -->
 	<string name="set">المجموعة</string>
 	<!-- Text hint in Bookmarks dialog when no any bookmarks are added -->
-	<string name="bookmarks_usage_hint">ليس لديك أي إشارات مرجعية بعد.\nانقر على أي مكان على الخريطة لإضافة إشارة مرجعية.\nيمكنك أيضا استيراد الإشارات المرجعية من المصادر الأخرى وعرضها في MAPS.ME. افتح ملف KML/KMZ الذي يحتوي على الدبابيس المحفوظة من البريد الالكتروني، دروب بوكس أو ويب لينك.</string>
+	<string name="bookmarks_usage_hint">ليس لديك أي إشارات مرجعية بعد.\nانقر على أي مكان على الخريطة لإضافة إشارة مرجعية.\nيمكنك أيضا استيراد الإشارات المرجعية من المصادر الأخرى وعرضها في Al Rahal6. افتح ملف KML/KMZ الذي يحتوي على الدبابيس المحفوظة من البريد الالكتروني، دروب بوكس أو ويب لينك.</string>
 	<!-- Text hint in Bookmarks dialog when at least one bookmark is added -->
-	<string name="bookmarks_usage_hint_import_only">يمكن استيراد الإشارات المرجعية من المصادر الأخرى و عرضها على MAPS.ME. افتح ملف KML/KMZ الذي يحتوي على الإشارات المرجعية المحفوظة من البريد الالكتروني، دروب بوكس أو ويب لينك.</string>
+	<string name="bookmarks_usage_hint_import_only">يمكن استيراد الإشارات المرجعية من المصادر الأخرى و عرضها على Al Rahal6. افتح ملف KML/KMZ الذي يحتوي على الإشارات المرجعية المحفوظة من البريد الالكتروني، دروب بوكس أو ويب لينك.</string>
 	<!-- Settings button in system menu -->
 	<string name="settings">الإعدادات</string>
 	<!-- Header of settings activity where user defines storage path -->
@@ -230,7 +230,7 @@
 	<!-- Button text -->
 	<string name="share_by_email">مشاركة بواسطة البريد الالكتروني</string>
 	<!-- Email Subject when sharing bookmarks category -->
-	<string name="share_bookmarks_email_subject">تم مشاركة اشارات MAPS.ME المرجعية معك</string>
+	<string name="share_bookmarks_email_subject">تم مشاركة اشارات Al Rahal6 المرجعية معك</string>
 	<!-- message title of loading file -->
 	<string name="load_kmz_title">تحميل الإشارات المرجعية</string>
 	<!-- Kmz file successful loading -->
@@ -250,19 +250,19 @@
 	<!-- Alert message that downloading is in progress. -->
 	<string name="downloading_is_active">جاري الآن تنزيل الدولة</string>
 	<!-- Message that will be shown in alert view, when we ask user to leave review on App Store -->
-	<string name="appStore_message">نأمل أن تكون قد استمتعت باستخدام MAPS.ME! إذا كان الأمر كذلك، الرجاء تقييم التطبيق في App Store. يستغرق ذلك أقل من دقيقة لكنه يفيدنا بالفعل. شكرا لك على دعمك!</string>
+	<string name="appStore_message">نأمل أن تكون قد استمتعت باستخدام Al Rahal6! إذا كان الأمر كذلك، الرجاء تقييم التطبيق في App Store. يستغرق ذلك أقل من دقيقة لكنه يفيدنا بالفعل. شكرا لك على دعمك!</string>
 	<!-- No, thanks -->
 	<string name="no_thanks">لا، شكرا</string>
 	<!-- Share one specific bookmark using SMS, %1$@ contains ge0:// and %2$@ http://ge0.me link. @NOTE non-ascii symbols in the link will make 70 bytes sms instead of 140 -->
-	<string name="bookmark_share_sms">هاي، تفقد الدبوس الخاص بي على MAPS.ME! %1$s أو %2$s. ليس لديك أي خرائط تعمل بدون الاتصال مع الانترنت مثبتة على جهازك؟ قم بتحميلها من هنا: http://maps.me/get</string>
+	<string name="bookmark_share_sms">هاي، تفقد الدبوس الخاص بي على Al Rahal6! %1$s أو %2$s. ليس لديك أي خرائط تعمل بدون الاتصال مع الانترنت مثبتة على جهازك؟ قم بتحميلها من هنا: http://maps.me/get</string>
 	<!-- Share my position using SMS, %1$@ contains ge0:// and %2$@ http://ge0.me link WITHOUT NAME. @NOTE non-ascii symbols in the link will make 70 bytes sms instead of 140 -->
-	<string name="my_position_share_sms">هاي، تفقد الموقع الخاص بي على MAPS.ME! %1$s أو %2$s. ليس لديك أي خرائط تعمل بدون الاتصال مع الانترنت مثبتة على جهازك؟ قم بتحميلها من هنا: http://maps.me/get</string>
+	<string name="my_position_share_sms">هاي، تفقد الموقع الخاص بي على Al Rahal6! %1$s أو %2$s. ليس لديك أي خرائط تعمل بدون الاتصال مع الانترنت مثبتة على جهازك؟ قم بتحميلها من هنا: http://maps.me/get</string>
 	<!-- Subject for emailed bookmark -->
-	<string name="bookmark_share_email_subject">هاي، تفقد الدبوس الخاص بي على خريطة MAPS.ME!</string>
+	<string name="bookmark_share_email_subject">هاي، تفقد الدبوس الخاص بي على خريطة Al Rahal6!</string>
 	<!-- Share one specific bookmark using EMail, %1$@ is bookmark's name, %2$@ is ge0:// link and %3$@ http://ge0.me -->
-	<string name="bookmark_share_email">مرحبا،\n\nقمت بوضع دبوس: %1$s على MAPS.ME، خرائط العالم بدون الاتصال مع الانترنت. انقر على هذا الرابط %2$s أو الرابط التالي %3$s لمشاهدة الموقع على الخريطة.\n\nشكرا لك.</string>
+	<string name="bookmark_share_email">مرحبا،\n\nقمت بوضع دبوس: %1$s على Al Rahal6، خرائط العالم بدون الاتصال مع الانترنت. انقر على هذا الرابط %2$s أو الرابط التالي %3$s لمشاهدة الموقع على الخريطة.\n\nشكرا لك.</string>
 	<!-- Subject for emailed position -->
-	<string name="my_position_share_email_subject">يا هلا، تحقق من موقعي الحالي على خريطة MAPS.ME!</string>
+	<string name="my_position_share_email_subject">يا هلا، تحقق من موقعي الحالي على خريطة Al Rahal6!</string>
 	<!-- Share my position using EMail, %1$@ is ge0:// and %2$@ is http://ge0.me link WITHOUT NAME -->
 	<string name="my_position_share_email">مرحبا،\n\nأنا هنا الآن: %1$s. انقر على هذا الرابط %2$s أو ذلك الرابط %3$s لمشاهدة المكان على الخريطة.\n\nشكرا لك.</string>
 	<!-- Android share by Message/SMS button text (including SMS) -->
@@ -348,7 +348,7 @@
 	<string name="placepage_unsorted">لم يتم فرزها</string>
 	<string name="search_show_on_map">مشاهدة على الخريطة</string>
 	<!-- Used to warn user when fixing KitKat issue -->
-	<string name="kitkat_migrate_ok">تم تحسين وسيلة تخزين بيانات الخريطة. الرجاء اعادة تشغيل التطبيق .\n\nلا حاجة بعد الآن لمجلد MAPS.ME في البطاقة الرقمية الآمنة، يمكنك حذفه.</string>
+	<string name="kitkat_migrate_ok">تم تحسين وسيلة تخزين بيانات الخريطة. الرجاء اعادة تشغيل التطبيق .\n\nلا حاجة بعد الآن لمجلد Al Rahal6 في البطاقة الرقمية الآمنة، يمكنك حذفه.</string>
 	<!-- Used to warn user when fixing KitKat issue -->
 	<string name="kitkat_migrate_failed">بسبب التغييرات في نظام أندرويد4.4 ، نحن بحاجة لتحسين وسيلة تخزين بيانات الخريطة، لكن لا يوجد حيز كافٍ لنسخ بيانات الخريطة.\n\nالرجاء إخلاء الذاكرة، وإلا ستتوافر الخرائط في وضع القراءة فقط.</string>
 	<!-- Used to warn user when fixing KitKat issue -->
@@ -370,19 +370,19 @@
 	<!-- text of notification -->
 	<string name="download_map_notification">تنزيل خريطة المكان الذي توجد فيه</string>
 	<!-- text of notification -->
-	<string name="pro_version_is_free_today">تطبيق MAPS.ME مجاني اليوم! قم بتنزيله الآن وأخبر أصدقائك.</string>
+	<string name="pro_version_is_free_today">تطبيق Al Rahal6 مجاني اليوم! قم بتنزيله الآن وأخبر أصدقائك.</string>
 	<!-- Dialog for transferring maps from lite to pro. -->
-	<string name="move_lite_maps_to_pro">نحن ننقل خرائط التنزيلات الخاصة بك من MAPS.ME Lite إلى MAPS.ME. يمكن أن يستغرق بضع دقائق</string>
+	<string name="move_lite_maps_to_pro">نحن ننقل خرائط التنزيلات الخاصة بك من Al Rahal6 Lite إلى Al Rahal6. يمكن أن يستغرق بضع دقائق</string>
 	<!-- Message to display when maps moved. -->
-	<string name="move_lite_maps_to_pro_ok">تم بنجاح نقل خرائطك التي تم تنزيلها إلى MAPS.ME.</string>
+	<string name="move_lite_maps_to_pro_ok">تم بنجاح نقل خرائطك التي تم تنزيلها إلى Al Rahal6.</string>
 	<!-- Message to display when maps move failed. -->
-	<string name="move_lite_maps_to_pro_failed">فشل نقل خرائطك يُرجى حذف MAPS.ME Lite وتنزيل الخرائط مرة أخرى.</string>
+	<string name="move_lite_maps_to_pro_failed">فشل نقل خرائطك يُرجى حذف Al Rahal6 Lite وتنزيل الخرائط مرة أخرى.</string>
 	<!-- Text in menu -->
 	<string name="settings_and_more">الإعدادات والمزيد</string>
 	<!-- Text in menu -->
 	<string name="website">الموقع الإلكتروني</string>
 	<!-- Text in menu -->
-	<string name="maps_me_community">مجتمع MAPS.ME</string>
+	<string name="maps_me_community">مجتمع Al Rahal6</string>
 	<!-- Text in menu -->
 	<string name="like_on_facebook">أعجبني على الفيسبوك</string>
 	<!-- Text in menu -->
@@ -402,11 +402,11 @@
 	<!-- Text in menu -->
 	<string name="report_a_bug">الإبلاغ عن خطأ</string>
 	<!-- Email subject -->
-	<string name="subscribe_me_subject">يرجى اشتراكي في النشرة البريدية لدى MAPS.ME</string>
+	<string name="subscribe_me_subject">يرجى اشتراكي في النشرة البريدية لدى Al Rahal6</string>
 	<!-- Email body -->
 	<string name="subscribe_me_body">أريد أن أكون أول من يعرف آخر الأخبار والتحديثات والترقيات. يمكنني إلغاء اشتراكي في أي وقت.</string>
 	<!-- About text -->
-	<string name="about_text">توفر لكم MAPS.ME أحدث الخرائط دون الاتصال بالإنترنت لكافة دول وكافة مدن العالم. سافر وتمتع بالثقة التامة: إينما كنت، تساعدك MAPS.ME على تحديد مكانك على الخريطة، والعثور على أقرب مطعم أو فندق أو بنك أو محطة غاز الخ لا يتطلب الاتصال بالإنترنت.\n\nنحن نعمل دوماً على إدخال مزايا جديدة على التطبيق ونود أن نسمع منك رأيك عن الكيفية التي يمكن بها تحسين تطبيق MAPS.ME في رأيك. إذا واجهتك أي مشاكل مع التطبيق، لا تتردد في الاتصال بنا على support\@maps.me. نحن نرد على كافة الطلبات.\n\nهل أعجبك تطبيق MAPS.ME وترغب في دعمنا؟ هناك بعض الطرق السهلة والمجانية بالكامل لعمل ذلك.\n\n- انشر رأيك على متجر التطبيقات الخاص بك\n- اعجب بصفحتنا على موقع Facebook http://www.facebook.com/mapsrahal\n- أو أخبر والدتك وأصدقائك وزملائك عن تطبيق MAPS.ME :)\n\nشكراً لك على وجودك معنا. نحن نقدر جداً دعمك لنا!\n\nيُرجى ملاحظة نحن نستقي بيانات الخرائط من OpenStreetMap، مشروع خرائط يشبه موسوعة Wikipedia ويتيح هذا المشروع للمستخدمين إنشاء وتحرير الخرائط. إذا كنت ترى أن هناك خطأ ما أو شيء غير موجود على الخريطة، يمكنك تصحيح الخرائط مباشرة على https://www.openstreetmap.org، وسوف تظهر تغييراتك على تطبيق MAPS.ME في الإصدار القادم للتطبيق.</string>
+	<string name="about_text">توفر لكم Al Rahal6 أحدث الخرائط دون الاتصال بالإنترنت لكافة دول وكافة مدن العالم. سافر وتمتع بالثقة التامة: إينما كنت، تساعدك Al Rahal6 على تحديد مكانك على الخريطة، والعثور على أقرب مطعم أو فندق أو بنك أو محطة غاز الخ لا يتطلب الاتصال بالإنترنت.\n\nنحن نعمل دوماً على إدخال مزايا جديدة على التطبيق ونود أن نسمع منك رأيك عن الكيفية التي يمكن بها تحسين تطبيق Al Rahal6 في رأيك. إذا واجهتك أي مشاكل مع التطبيق، لا تتردد في الاتصال بنا على support\@maps.me. نحن نرد على كافة الطلبات.\n\nهل أعجبك تطبيق Al Rahal6 وترغب في دعمنا؟ هناك بعض الطرق السهلة والمجانية بالكامل لعمل ذلك.\n\n- انشر رأيك على متجر التطبيقات الخاص بك\n- اعجب بصفحتنا على موقع Facebook http://www.facebook.com/mapsrahal\n- أو أخبر والدتك وأصدقائك وزملائك عن تطبيق Al Rahal6 :)\n\nشكراً لك على وجودك معنا. نحن نقدر جداً دعمك لنا!\n\nيُرجى ملاحظة نحن نستقي بيانات الخرائط من OpenStreetMap، مشروع خرائط يشبه موسوعة Wikipedia ويتيح هذا المشروع للمستخدمين إنشاء وتحرير الخرائط. إذا كنت ترى أن هناك خطأ ما أو شيء غير موجود على الخريطة، يمكنك تصحيح الخرائط مباشرة على https://www.openstreetmap.org، وسوف تظهر تغييراتك على تطبيق Al Rahal6 في الإصدار القادم للتطبيق.</string>
 	<!-- Alert text -->
 	<string name="email_error_body">لم يتم تعيين البريد الإلكتروني للعميل. يرجى تكوينه أو استخدام أي وسيلة أخرى للاتصال بنا على %s</string>
 	<!-- Alert title -->
@@ -418,7 +418,7 @@
 	<!-- Update map suggestion -->
 	<string name="routing_map_outdated">يرجى تحديث الخريطة لإنشاء مسار.</string>
 	<!-- Update maps suggestion -->
-	<string name="routing_update_maps">إصدار MAPS.ME الجديد يسمح بإنشاء مسارات انطلاقاً من موقعك الحالي نحو المكان الذي تتجه إليه. يرجى تحديث الخرائط لاستخدام هذه الميزة.</string>
+	<string name="routing_update_maps">إصدار Al Rahal6 الجديد يسمح بإنشاء مسارات انطلاقاً من موقعك الحالي نحو المكان الذي تتجه إليه. يرجى تحديث الخرائط لاستخدام هذه الميزة.</string>
 	<!-- Update all button text -->
 	<string name="downloader_update_all_button">تحديث الكل</string>
 	<!-- Cancel all button text -->
@@ -435,7 +435,7 @@
 	<string name="downloader_downloading">يتم تنزيل:</string>
 	<string name="downloader_search_results">تم العثور على</string>
 	<!-- Disclaimer message -->
-	<string name="routing_disclaimer">عند إنشاء مسارات الطرق في تطبيق MAPS.ME، يرجى أخذ التالي في الحسبان:\n\n  - المسارات المقترحة تعتبر مجرد اقتراحات فقط.\n - حالة الطريق وقوانينه والإشارات الموجودة فيه لها الأولولية أثناء تقديم نصائح الملاحة.\n - قد تكون الخريطة خاطئة أو قديمة، لذا فإنه يمكن ألا تُرسم المسارات بالشكل الأمثل.\n\n  كن آمنا على الطريق وانتبه لتفسك!</string>
+	<string name="routing_disclaimer">عند إنشاء مسارات الطرق في تطبيق Al Rahal6، يرجى أخذ التالي في الحسبان:\n\n  - المسارات المقترحة تعتبر مجرد اقتراحات فقط.\n - حالة الطريق وقوانينه والإشارات الموجودة فيه لها الأولولية أثناء تقديم نصائح الملاحة.\n - قد تكون الخريطة خاطئة أو قديمة، لذا فإنه يمكن ألا تُرسم المسارات بالشكل الأمثل.\n\n  كن آمنا على الطريق وانتبه لتفسك!</string>
 	<!-- Outdated maps category -->
 	<string name="downloader_outdated_maps">انتهت صلاحيته</string>
 	<!-- Up to date maps category -->
@@ -490,9 +490,9 @@
 	<!-- Text for rating dialog -->
 	<string name="rating_just_rated">لقد قمت بتقييم تطبيقك للتو</string>
 	<!-- Text for rating dialog -->
-	<string name="rating_user_since">أنا مستخدم لتطبيق MAPS.ME منذ %s</string>
+	<string name="rating_user_since">أنا مستخدم لتطبيق Al Rahal6 منذ %s</string>
 	<!-- Text for rating dialog -->
-	<string name="rating_do_like_maps">هل تطبيق MAPS.ME يعجبك؟</string>
+	<string name="rating_do_like_maps">هل تطبيق Al Rahal6 يعجبك؟</string>
 	<!-- Text for rating dialog -->
 	<string name="rating_tap_star">انقر على النجمة لتقييم التطبيق.</string>
 	<!-- Text for rating dialog -->
@@ -508,7 +508,7 @@
 	<!-- Text for routing error dialog -->
 	<string name="routing_download_map">Scarica la mappa</string>
 	<!-- Text for routing error dialog -->
-	<string name="routing_download_map_and_routing">Scarica la mappa aggiornata e i dati del percorso per ottenere tutte le funzionalità MAPS.ME.</string>
+	<string name="routing_download_map_and_routing">Scarica la mappa aggiornata e i dati del percorso per ottenere tutte le funzionalità Al Rahal6.</string>
 	<!-- Text for routing error dialog -->
 	<string name="routing_get_routing_data">Ottieni i dati del percorso</string>
 	<!-- Text for routing error dialog -->
@@ -624,7 +624,7 @@
 	<!-- Text for routing::RouterResultCode::FileTooOld dialog. -->
 	<string name="dialog_routing_download_and_update_maps">لإنشاء مسار، يرجى تنزيل وتحديث جميع الخرائط على امتداد الطريق.</string>
 	<string name="rate_alert_title">يعجبك التطبيق؟</string>
-	<string name="rate_alert_default_message">شكرا لاستخدامك MAPS.ME. من فضلك، أَعْطِ تقييمك للتطبيق. ملاحظاتك تساعدنا على أن نصبح أفضل.</string>
+	<string name="rate_alert_default_message">شكرا لاستخدامك Al Rahal6. من فضلك، أَعْطِ تقييمك للتطبيق. ملاحظاتك تساعدنا على أن نصبح أفضل.</string>
 	<string name="rate_alert_five_star_message">مرحا! نحن أيضا نحبك!</string>
 	<string name="rate_alert_four_star_message">شكرا لك، سوف نبذل قصارى جهدنا!</string>
 	<string name="rate_alert_less_than_four_star_message">لديك أي فكرة حول كيف يمكننا أن نجعله أفضل؟</string>
@@ -679,7 +679,7 @@
 	<string name="editor_report_problem_no_place_title">المكان غير موجودٍ</string>
 	<string name="editor_report_problem_under_construction_title">مغلق للصيانة</string>
 	<string name="editor_report_problem_duplicate_place_title">مكان متكرر</string>
-	<string name="first_launch_congrats_title">MAPS.ME جاهز للاستخدام</string>
+	<string name="first_launch_congrats_title">Al Rahal6 جاهز للاستخدام</string>
 	<string name="first_launch_congrats_text">ابحث وتصفح كل مكان في العالم بدون اتصال, مجانا.</string>
 	<string name="migrate_title">هام!</string>
 	<!-- Android uses image instead of text. -->
@@ -783,18 +783,18 @@
 	<string name="whatsnew_search_message">لقد طورنا كليا البحث بالعنوان. فلترى بنفسك.</string>
 	<string name="whatsnew_editor_title">تعديل الخريطة *</string>
 	<string name="whatsnew_editor_message_1">قم بإضافة أماكن جديدة للخريطة، وعدل أماكن حالية مباشرة من التطبيق.</string>
-	<string name="whatsnew_editor_message_2">*تستخدم MAPS.ME البيانات الخاصة بخريطة OpenStreetMap.</string>
+	<string name="whatsnew_editor_message_2">*تستخدم Al Rahal6 البيانات الخاصة بخريطة OpenStreetMap.</string>
 	<string name="onboarding_offline_navigation_title">لن تضل الطريق أبدا بعد الآن</string>
 	<string name="onboarding_offline_navigation_message">قم بتخطيط أفضل طرق السيارات والمشاة، حتى مع عدم وجود اتصال بالإنترنت!</string>
 	<string name="onboarding_offline_navigation_title_2">الملاحة في وضع غير متصل</string>
 	<string name="onboarding_offline_navigation_message_2">خطط أفضل طرق السيارات والمشاة.</string>
-	<string name="onboarding_offline_maps_title">MAPS.ME — وصول إلى الخرائط على مستوى العالم دون إنترنت</string>
+	<string name="onboarding_offline_maps_title">Al Rahal6 — وصول إلى الخرائط على مستوى العالم دون إنترنت</string>
 	<string name="onboarding_offline_maps_message">قم بتنزيل خرائط للمنطقة المطلوب مرة واحدة، واستخدم وظائف الملاحة والبحث دون الحاجة للاتصال بالإنترنت.</string>
 	<string name="onboarding_notifications_message">تابع إخطارات التحديث للحصول على أحدث الخرائط</string>
 	<string name="onboarding_notifications_title">تفعيل إخطارات التحديث</string>
 	<string name="onboarding_location_title">ساعدنا في العثور عليك</string>
 	<string name="onboarding_location_message">لاستخدام الملاحة والميزات الأخرى، فنحن بحاجة إلى تحديد موقعك الجغرافي.</string>
-	<string name="onboarding_permissions_title">السماح لـ MAPS.ME بالوصول إلى ذاكرة التخزين والموقع</string>
+	<string name="onboarding_permissions_title">السماح لـ Al Rahal6 بالوصول إلى ذاكرة التخزين والموقع</string>
 	<string name="onboarding_permissions_message">من ثم يمكنك تنزيل الخرائط وعرض الأماكن وحركة المرور القريبة منك استخدام الملاحة.</string>
 	<string name="onboarding_welcome_second_subtitle">من خلال إطلاق التطبيق، فإنك توافق على &lt;a href="%1$s">شروط الاستخدام&lt;/a> و&lt;a href="%2$s">سياسة الخصوصية&lt;/a>.</string>
 	<string name="dialog_incorrect_feature_position">تغيير الموقع</string>
@@ -803,7 +803,7 @@
 	<string name="no_migration_during_navigation">التحديث ممنوع أثناء الملاحة.</string>
 	<!-- Error dialog no space -->
 	<string name="migration_no_space_message">للتنزيل، فأنت تحتاج إلى توفير مساحة أكبر. من فضلك، احذف البيانات غير الضرورية.</string>
-	<string name="editor_sharing_title">لقد قمت بتحديث خرائط تطبيق MAPS.ME</string>
+	<string name="editor_sharing_title">لقد قمت بتحديث خرائط تطبيق Al Rahal6</string>
 	<string name="editor_comment_will_be_sent">سوف نرسل تعليقك إلى فريق رسم الخرائط.</string>
 	<string name="editor_unsupported_category_message">لقد قمت بإضافة مكان ينتمي لفئة غير متوفرة لدينا بعد. سوف تظهر على الخريطة لاحقا.</string>
 	<!-- Downloaded 10 **of** 20 <- it is that "of" -->
@@ -820,7 +820,7 @@
 	<string name="core_placepage_unknown_place">مكان غير معروف</string>
 	<string name="editor_other_info">أُرْسِلْتِ ملحوظة إلى وَسِيط OSM</string>
 	<string name="editor_detailed_description_hint">تعليق مفصل</string>
-	<string name="editor_detailed_description">سيتم إرسال التغييرات التي اقترحتها إلى مجتمع OpenStreetMap. اذكر التفاصيل التي لا يمكن تحريرها في MAPS.ME</string>
+	<string name="editor_detailed_description">سيتم إرسال التغييرات التي اقترحتها إلى مجتمع OpenStreetMap. اذكر التفاصيل التي لا يمكن تحريرها في Al Rahal6</string>
 	<string name="editor_more_about_osm">المزيد عن OpenStreetMap</string>
 	<string name="editor_operator">معامل</string>
 	<string name="editor_tag_description">أدخل الشركة أو المؤسسة أو الشخص المسؤول عن المنشآت.</string>
@@ -841,7 +841,7 @@
 	<string name="current_location_unknown_error_title">الموقع الحالي غير معروف.</string>
 	<string name="current_location_unknown_error_message">حدث خطأ أثناء البحث عن موقعك. تأكد من أن جهازك يعمل بشكل صحيح وأعد المحاولة لاحقًا.</string>
 	<string name="whatsnew_update_editor_title">لقد قمنا بتحديث محرر الخريطة</string>
-	<string name="whatsnew_update_editor_message">قام مستخدمو MAPS.ME بإجراء 200000 تغيير على الخرائط. معًا سنحصل على الخرائط الأكثر تفصيلاً في العالم. انضم إلينا!</string>
+	<string name="whatsnew_update_editor_message">قام مستخدمو Al Rahal6 بإجراء 200000 تغيير على الخرائط. معًا سنحصل على الخرائط الأكثر تفصيلاً في العالم. انضم إلينا!</string>
 	<!-- Additional text in whats new -->
 	<string name="whatsnew_update_editor_message_update">لاستخدام مُحَرّر الخريطة، يرجى تحديث جميع الخرائط.</string>
 	<string name="location_services_disabled_header">تم تعطيل تحديد الموقع</string>
@@ -929,7 +929,7 @@
 	<!-- For sharing via SMS and so on -->
 	<string name="sharing_call_action_look">انظر</string>
 	<string name="continue_recent_track_background_button">استمرار</string>
-	<string name="recent_track_background_dialog_message">يستخدم MAPS.ME موقعك الجغرافي في الخلفية لتسجيل مسار سفرك الأخير.</string>
+	<string name="recent_track_background_dialog_message">يستخدم Al Rahal6 موقعك الجغرافي في الخلفية لتسجيل مسار سفرك الأخير.</string>
 	<string name="whatsnew_car_navigation_header">ملاحة المركبات سهلة الاستخدام</string>
 	<string name="whatsnew_car_navigation_message">• تستحوذ عناصر الملاحة على مساحة أقل.\n• نحن نعرض السرعة كما وأضفنا كذلك التكبير التلقائي.</string>
 	<string name="whatsnew_cycle_navigation_2_header">ملاحة الدراجات</string>
@@ -937,15 +937,15 @@
 	<string name="whatsnew_booking_2_header">البحث بسهولة عن فندق</string>
 	<string name="whatsnew_booking_2_message">تظهر نتائج البحث التقييم والفئة السعرية للفندق.</string>
 	<string name="whatsnew_cycle_navigation_header">التوجيه الملاحي مع الدراجات (إصدار تجريبي)</string>
-	<string name="whatsnew_cycle_navigation_message">نختبر الآن التوجيه الملاحي مع الدراجات للموسم الجديد. جرب طريق الدراجات المفضل لديك باستخدام MAPS.ME، واطلعنا على رأيك.</string>
+	<string name="whatsnew_cycle_navigation_message">نختبر الآن التوجيه الملاحي مع الدراجات للموسم الجديد. جرب طريق الدراجات المفضل لديك باستخدام Al Rahal6، واطلعنا على رأيك.</string>
 	<!-- Rate on Google Play (Android only) -->
 	<string name="rate_gp">تصنيف على Google Play</string>
 	<!-- Share with friends: menu item title -->
 	<string name="tell_friends">أخبر صديق</string>
 	<!-- Share with friends: sharing text -->
-	<string name="tell_friends_text">مرحبًا! تثبيت MAPS.ME!</string>
+	<string name="tell_friends_text">مرحبًا! تثبيت Al Rahal6!</string>
 	<!-- About short text (below logo) -->
-	<string name="about_description">MAPS.ME هو تطبيق أساسي للسفر بدون اتصال بالإنترنت. يعتمد برنامج MAPS.ME على بيانات OpenStreetMap ويتيح تحريرها.</string>
+	<string name="about_description">Al Rahal6 هو تطبيق أساسي للسفر بدون اتصال بالإنترنت. يعتمد برنامج Al Rahal6 على بيانات OpenStreetMap ويتيح تحريرها.</string>
 	<!-- Text in menu -->
 	<string name="blog">المدونة</string>
 	<!-- Hint near allow statictics checkbox -->
@@ -1000,7 +1000,7 @@
 	<string name="chat">Geochat</string>
 	<!-- Verb. Text on a button that opens the chat. -->
 	<string name="chat_open">فتح</string>
-	<string name="whatsnew_uber_header">MAPS.ME وUber</string>
+	<string name="whatsnew_uber_header">Al Rahal6 وUber</string>
 	<string name="whatsnew_uber_message">اطلب تاكسي Uber مباشرة من التطبيق!</string>
 	<string name="dialog_taxi_offline">طلب تاكسي غير متاح في وضع الطيران.</string>
 	<string name="dialog_taxi_error">طلب تاكسي غير متاح مؤقتا.</string>
@@ -1015,7 +1015,7 @@
 	<string name="traffic_update_maps_text">لعرض البيانات المرورية، يجب تحديث الخرائط.</string>
 	<string name="traffic_outdated">البيانات المرورية قديمة.</string>
 	<string name="big_font">زيادة حجم الخط على الخريطة</string>
-	<string name="traffic_update_app">الرجاء تحديث MAPS.ME</string>
+	<string name="traffic_update_app">الرجاء تحديث Al Rahal6</string>
 	<!-- "traffic" as in road congestion -->
 	<string name="traffic_update_app_message">لعرض البيانات المرورية، يجب تحديث التطبيق.</string>
 	<!-- "traffic" as in "road congestion" -->
@@ -1092,7 +1092,7 @@
 	<string name="search_hotel_filter_hotel">الفندق</string>
 	<string name="search_hotel_filter_motel">موتيل</string>
 	<string name="create_campaign_button">مطالبة هذه الشركة</string>
-	<string name="view_campaign_button">تم عمل إعلان عن الشركة</string>
+	<string name="view_campaign_button">Location is Visible</string>
 	<string name="search_hotel_filters_type">النوع</string>
 	<!-- Settings: "Send general feedback" button -->
 	<string name="feedback_general">تعقيب عام</string>
@@ -1113,9 +1113,9 @@
 	<string name="button_accept_and_continue">قبول ومتابعة</string>
 	<string name="button_learn_more">تعلم المزيد</string>
 	<string name="onboarding_storage_permissions_title">منح حق الوصول</string>
-	<string name="onboarding_storage_permissions_message">قم بتغيير إعدادات الأذونات في جهازك. يلزم الوصول إلى ذاكرة التخزين لاستخدام MAPS.ME.</string>
+	<string name="onboarding_storage_permissions_message">قم بتغيير إعدادات الأذونات في جهازك. يلزم الوصول إلى ذاكرة التخزين لاستخدام Al Rahal6.</string>
 	<string name="button_exit">خروج</string>
-	<string name="onboarding_detail_permissions_title">MAPS.ME يحتاج إلى الوصول إلى</string>
+	<string name="onboarding_detail_permissions_title">Al Rahal6 يحتاج إلى الوصول إلى</string>
 	<!-- Default permission's name from Android settings. -->
 	<string name="onboarding_detail_permissions_storage_title">ذاكرة التخزين</string>
 	<string name="onboarding_detail_permissions_storage_message">لحفظ الخرائط المنزلة واستخدامها بدون اتصال وحفظ الإشارات المرجعية.</string>
@@ -1281,16 +1281,16 @@
 	<string name="sign_message_gdpr">للمتابعة يجب عليك قبول شروط الاستخدام وسياسة الخصوصية الخاصة بنا. يرجى قراءتها بعناية.</string>
 	<string name="sign_agree_pp_gdpr">أوافق على &lt;a href="%s">سياسة الخصوصية&lt;/a></string>
 	<string name="sign_agree_tof_gdpr">أوافق على &lt;a href="%s">شروط الاستخدام&lt;/a></string>
-	<string name="sign_agree_news_gdpr">أوافق على تلقي آخر الأخبار حول منتجات MAPS.ME</string>
+	<string name="sign_agree_news_gdpr">أوافق على تلقي آخر الأخبار حول منتجات Al Rahal6</string>
 	<string name="whats_new_localbiz_title">تستحق الأعمال الصغيرة العناية</string>
-	<string name="whats_new_localbiz_message">ومن المقاهي المحلية والفنادق المريحة والمحلات التجارية التي من خلالها لم ننسى رحلاتنا. سنقوم بتحسين صفحتك في MAPS.ME لنجعلها ذات تميز.</string>
+	<string name="whats_new_localbiz_message">ومن المقاهي المحلية والفنادق المريحة والمحلات التجارية التي من خلالها لم ننسى رحلاتنا. سنقوم بتحسين صفحتك في Al Rahal6 لنجعلها ذات تميز.</string>
 	<string name="whats_new_order_button">اترك طلب</string>
 	<string name="bookmarks_page_downloaded">تم تحميل</string>
 	<string name="bookmarks_page_my">الخاص بي</string>
 	<string name="routes_and_bookmarks">الطرق والإشارات</string>
 	<string name="bookmarks_webview_success_toast">تم تحميل الإشارات بنجاح</string>
 	<string name="cached_bookmarks_placeholder_title">تحميل أماكن جديدة</string>
-	<string name="cached_bookmarks_placeholder_subtitle">اضغط على الزر لتحميل الآلاف من الأماكن المثيرة للاهتمام والطرق التي تم إنشاؤها من قبل لمستخدمين MAPS.ME. سوف تحتاج إلى اتصال بالإنترنت.</string>
+	<string name="cached_bookmarks_placeholder_subtitle">اضغط على الزر لتحميل الآلاف من الأماكن المثيرة للاهتمام والطرق التي تم إنشاؤها من قبل لمستخدمين Al Rahal6. سوف تحتاج إلى اتصال بالإنترنت.</string>
 	<string name="downloader_download_routers">تحميل الإشارات</string>
 	<string name="bookmarks_groups_cached">القوائم التي تم تنزيلها</string>
 	<string name="author_name_by_prefix">بواسطة%s</string>
@@ -1310,7 +1310,7 @@
 	<string name="opt_out_flurry">الإحصاء</string>
 	<string name="opt_out_mopub">الإعلان الشخصي</string>
 	<string name="opt_out_fabric">تقرير الحادث</string>
-	<string name="opt_out_fabric_description">قد نستخدم بياناتك لتحسين تجربة MAPS.ME. سوف تكون التغييرات نافذة المفعول بعد إعادة تشغيل التطبيق.</string>
+	<string name="opt_out_fabric_description">قد نستخدم بياناتك لتحسين تجربة Al Rahal6. سوف تكون التغييرات نافذة المفعول بعد إعادة تشغيل التطبيق.</string>
 	<string name="opt_out_help_ios_1">يمكن أن يوفر جهازك الجوّال إعداد \"\"تقييد الإعلان المخصص\"\" أو \"\"تعطيل الإعلان الذي يستهدف الاهتمامات\"\".</string>
 	<string name="opt_out_help_ios_2">نظام تشغيل آي 9 فما فوق</string>
 	<string name="opt_out_help_ios_3">انتقل إلى إعداداتك ← الخصوصية ← الإعلانات ← تمكين إعداد \"\"تحديد تتبع الإعلانات\"\"</string>
@@ -1331,7 +1331,7 @@
 	<string name="category_desc_more">…المزيد</string>
 	<string name="title_error_downloading_bookmarks">حدث خطأ</string>
 	<string name="subtitle_error_downloading_bookmarks">لم يتم تنزيل الإشارات</string>
-	<string name="whats_new_bookmarks_catalog_title">MAPS.ME لديها الآن كتاب الطريق</string>
+	<string name="whats_new_bookmarks_catalog_title">Al Rahal6 لديها الآن كتاب الطريق</string>
 	<string name="whats_new_bookmarks_catalog_message">تحدد المئات من الطرق التفصيلية في جميع أنحاء العالم: إلى أين نذهب و ماذا نرى و مكان لتناول الطعام.</string>
 	<string name="whats_new_popularity_label_title">مواقع شعبية قريبة</string>
 	<string name="whats_new_popularity_label_message">سيساعدك قسم \"اكتشاف الجوار في العثور على الأماكن الأكثر شعبية في المدينة.</string>
@@ -1347,15 +1347,15 @@
 	<string name="guide_downloaded_subtitle">اضغط \"العرض على الخريطة\" لاستكشاف الدليل</string>
 	<string name="bookmarks_guides">العلامات المرجعية والأدلة</string>
 	<string name="remove_ads">ازالة الاعلانات</string>
-	<string name="remove_ads_title">إزالة جميع الإعلانات ودعم MAPS.ME</string>
+	<string name="remove_ads_title">إزالة جميع الإعلانات ودعم Al Rahal6</string>
 	<string name="paybtn_title">دفع%s/ سنة</string>
 	<string name="paybtn_subtitle">حفظ%s/ سنة</string>
 	<string name="options_dropdown_title">مزيد من الخيارات</string>
-	<string name="why_support">لماذا تدعم MAPS.ME؟</string>
+	<string name="why_support">لماذا تدعم Al Rahal6؟</string>
 	<string name="options_dropdown_item1">%1$s/الشهر (حفظ%2$s/سنة)</string>
 	<string name="options_dropdown_item2">%s/أسبوع  (بدون توفير)</string>
 	<string name="why_support_item1">سنقوم بإزالة جميع الإعلانات لك</string>
-	<string name="why_support_item2">أنت تساعدنا على تحسين MAPS.ME</string>
+	<string name="why_support_item2">أنت تساعدنا على تحسين Al Rahal6</string>
 	<string name="why_support_item3">يمكنك مساعدتنا في تحسين خرائط مفتوحة OpenStreetMap.org</string>
 	<string name="purchase_processing">جار معالجة عملية الشراء الخاصة بك…</string>
 	<string name="tips_bookmarks_catalog_title">أدلة دون اتصال لكل نوع من الرحلة</string>
@@ -1390,7 +1390,7 @@
 	<string name="ugc_route_tags_progress_msg">جارٍ تحميل العلامات…</string>
 	<string name="public_access">إطلاع الجمهور</string>
 	<string name="limited_access">محدودية فرص حصول</string>
-	<string name="upload_and_publish_desc">سيتم تحميل هذا الدليل إلى كتالوج MAPS.ME العام وسيكون متاحًا للمستخدمين الآخرين</string>
+	<string name="upload_and_publish_desc">سيتم تحميل هذا الدليل إلى كتالوج Al Rahal6 العام وسيكون متاحًا للمستخدمين الآخرين</string>
 	<string name="upload_and_publish">تحميل ونشر</string>
 	<string name="upload_and_get_direct_link">حمل واحصل على رابط مباشر</string>
 	<string name="get_direct_link_desc">سيكون دليلك متاحًا لأي شخص لديه الرابط</string>
@@ -1441,12 +1441,12 @@
 	<string name="notification_channel_downloader">محمل الخريطة</string>
 	<string name="notification_leave_review_title">- كيف كان ذلك؟%s</string>
 	<string name="notification_leave_review_content">مساعدة المسافرين من خلال ترك رأي!</string>
-	<string name="share_bookmarks_email_body_link">مرحبًا!\n\nللوصول إلى التطبيق: http://maps.me/get?kmzهذا هو الرابط الذي يمكنك من خلاله تنزيل إشاراتك المرجعية: %s. افتح القائمة عبر MAPS.ME واستمتع برحلتك!\n\n</string>
+	<string name="share_bookmarks_email_body_link">مرحبًا!\n\nللوصول إلى التطبيق: http://maps.me/get?kmzهذا هو الرابط الذي يمكنك من خلاله تنزيل إشاراتك المرجعية: %s. افتح القائمة عبر Al Rahal6 واستمتع برحلتك!\n\n</string>
 	<string name="warning_speedcams_title">سوف يحذرك المستكشف من الكاميرات عندما تتجاوز الحد الأقصى للسرعة %d كم / س</string>
 	<string name="warning_speedcams_subtitle">يرجى مراعاة قواعد القيادة في البلد الذي تنوي السفر إليه.</string>
 	<string name="speedcams_notice_message">السيارات- تحذير على الرادارات إذا كان هناك خطر تجاوز الحد الأقصى للسرعة\nدائما - احذر دائما من كاميرات السرعة\nمطلقا - أبدا تحذير من كاميرات السرعة</string>
 	<string name="whats_new_ugc_routes_title">من السهل مشاركة انطباعاتك</string>
-	<string name="whats_new_ugc_routes_subtitle">يمكنك حفظ الأماكن التي لا تنسى وإنشاء مسارات باستخدام الإشارات المرجعية ومشاركتها مع الجميع في كتالوج MAPS.ME</string>
+	<string name="whats_new_ugc_routes_subtitle">يمكنك حفظ الأماكن التي لا تنسى وإنشاء مسارات باستخدام الإشارات المرجعية ومشاركتها مع الجميع في كتالوج Al Rahal6</string>
 	<string name="whats_new_webeditor_title">حوّل مساراتك إلى قصص</string>
 	<string name="whats_new_ugc_routes_message2">أضفْ صور وقصص مفصلة في محرر الويب</string>
 	<string name="whatsnew_standard_routes_title">المسارات القياسية</string>
@@ -1463,7 +1463,7 @@
 	<string name="notification_leave_review_v2_title">ضع تقييمًا لمكان زيارتك و ساعد المسافرين!</string>
 	<string name="error_public_not_enought_title">لا يوجد معلمات كافية</string>
 	<string name="error_public_not_enought_subtitle">يجب أن يكون هناك 3 معلمات على الأقل لرفع دليلك إلى الدليل العام</string>
-	<string name="bookmark_public_upload_alert_title">أنت على بعد خطوات قليلة لمشاركة معلماتك مع جميع مسافري MAPS.ME!</string>
+	<string name="bookmark_public_upload_alert_title">أنت على بعد خطوات قليلة لمشاركة معلماتك مع جميع مسافري Al Rahal6!</string>
 	<string name="bookmark_public_upload_alert_subtitle">يرجي التأكد من وجود اسم ووصف محدد لقائمتك، و جميع المعلمات تحتوي على بعض المعلومات عن الأماكن. بهذه الطريقة يمكن العثور على قائمتك و استخدامها بواسطة الآخرين.</string>
 	<string name="bookmark_public_upload_alert_ok_button">نعم، أنا متأكد!</string>
 	<string name="name_title">إدخل اسم دليلك</string>
@@ -1493,7 +1493,7 @@
 	<string name="power_managment_setting_never">أبدًا</string>
 	<string name="power_managment_setting_auto">تلقائي</string>
 	<string name="power_managment_setting_manual_max">توفير الطاقة القصوى</string>
-	<string name="enable_logging_warning_message">يتحول الخيار إلى التسجيل لإغراض التشخيص. يمكن أن يكون مفيدًا لفريق الدعم الخاص بنا الذين يعملون على استكشاف أخطاء التطبيق وإصلاحها. قم بتفعيل هذا الخيار فقط في حالة طلب الدعم من MAPS.ME.</string>
+	<string name="enable_logging_warning_message">يتحول الخيار إلى التسجيل لإغراض التشخيص. يمكن أن يكون مفيدًا لفريق الدعم الخاص بنا الذين يعملون على استكشاف أخطاء التطبيق وإصلاحها. قم بتفعيل هذا الخيار فقط في حالة طلب الدعم من Al Rahal6.</string>
 	<string name="html_error_upload_message_try_again">يرجى التحقق من إعدادات الشبكة الخاصة بك و حاول مرة أخرى</string>
 	<string name="html_error_upload_title_try_again">لا يوجد اتصال بالانترنت</string>
 	<string name="notification_leave_review_v2_android_short_title">ضع تعليق وساعد المسافرين!</string>
@@ -1525,7 +1525,7 @@
 	<string name="avoid_toll_roads_placepage">تجنب نقاط تحصيل الرسوم</string>
 	<string name="avoid_unpaved_roads_placepage">تجنب الطرق الغير ممهدة</string>
 	<string name="avoid_ferry_crossing_placepage">تجنب تقاطع العبارات</string>
-	<string name="cached_guides_placeholder_subtitle">توفر MAPS.ME دلائل جاهزة لإماكن مختارة مع الصور والوصف الذي يتم عرضه على الخريطة وهو متاح بدون اتصال بالانترنت.</string>
+	<string name="cached_guides_placeholder_subtitle">توفر Al Rahal6 دلائل جاهزة لإماكن مختارة مع الصور والوصف الذي يتم عرضه على الخريطة وهو متاح بدون اتصال بالانترنت.</string>
 	<string name="guides_catalogue_title">قائمة الدلائل</string>
 	<string name="download_guides_button">إلى الفهرس</string>
 	<plurals name="placepage_summary_rating_description">
@@ -1533,12 +1533,12 @@
 	  <item quantity="other">بناءًا على %d مراجعات</item>
 	</plurals>
 	<string name="type.cuisine.uzbek">مطعم أوزبكي</string>
-	<string name="onboarding_welcome_title">خطط وسافر مع MAPS.ME</string>
-	<string name="onboarding_welcome_first_subtitle">ضع علامة مرجعية على الأماكن المثيرة للاهتمام، احجز الفنادق، احسب الطرق بدون اتصال بالانترنت</string>
+	<string name="onboarding_welcome_title">خطط وسافر مع Al Rahal6</string>
+	<string name="onboarding_welcome_first_subtitle">Book Taxi,plan carpool save fuel, money and time</string>
 	<string name="onboarding_guide_direct_download_title">الدليل جاهز للتحميل</string>
 	<string name="onboarding_guide_direct_download_subtitle">سيتم عرضه على الخريطة وبدون اتصال بالانترنت</string>
 	<string name="onboarding_guide_direct_download_button">تحميل</string>
-	<string name="onboarding_bydeeplink_guide_title">دلائل جاهزة للاستخدام في MAPS.ME</string>
+	<string name="onboarding_bydeeplink_guide_title">دلائل جاهزة للاستخدام في Al Rahal6</string>
 	<string name="onboarding_bydeeplink_guide_subtitle">أفضل الأماكن لزيارتها معروضة على الخريطة مع الصور والوصف. يعمل بدون اتصال بالانترنت.</string>
 	<string name="whats_new_auto_update_bydeeplink_title">قبل الدخول إلى الدليل…</string>
 	<string name="whats_new_auto_update_bydeeplink_message">قم بتحديث الخرائط للحصول على أحدث المعلومات!</string>
@@ -1569,11 +1569,11 @@
 	<string name="ok">موافق</string>
 	<string name="booking_button_toolbar">اختر فندقًا على الخريطة</string>
 	<string name="popup_booking_download_guides_title">هل حجزت فندقًا؟</string>
-	<string name="popup_booking_download_guides_message">خطط لوجهتك باستخدام دلائل جاهزة من MAPS.ME</string>
+	<string name="popup_booking_download_guides_message">خطط لوجهتك باستخدام دلائل جاهزة من Al Rahal6</string>
 	<string name="popup_mwm_download_guides_title">أدلة المدينة غير متصلة</string>
 	<string name="popup_mwm_download_guides_cta">اختر واحدة</string>
 	<string name="popup_mwm_download_guides_cta_1">الق نظرة</string>
-	<string name="gallery_pp_download_guides_offline_title">خطط لعطلتك مع MAPS.ME!</string>
+	<string name="gallery_pp_download_guides_offline_title">خطط لعطلتك مع Al Rahal6!</string>
 	<string name="gallery_pp_download_guides_offline_subtitle">لا تفوت أي شىء مع دلائل تم اعدادها بواسطة خبراء السفر</string>
 	<string name="gallery_pp_download_guides_offline_cta">فعل الانترنت</string>
 	<string name="gallery_pp_download_guides_title">الدلائل</string>
@@ -1602,7 +1602,7 @@
 	<string name="buy_btn_for_subscription_ios_only_year">وصول غير محدود %s/سنة</string>
 	<string name="subscription_terms_guides">سيتم خصم المدفوعات من حساب iTunes الخاص بك مع تأكيد عملية الشراء. سيتم تجديد الاشتراك تلقائيًا ما لم يتم تعطيل خاصية التجديد التلقائي قبل 24 ساعة من انتهاء فترة الاشتراك الحالية. سيتم خصم قيمة الاشتراك طبقًا لخطة الاشتراك الخاصة بك للتجديد خلال 24 ساعة قبل انتهاء فترة الاشتراك الحالية. يمكنك ادارة أو تعطيل خاصية التجديد التلقائي في حساب Apple ID الخاص بك في أي وقت بعد شرائك. يمكنك استخدام الدلائل التي تم تحميلها فقط عن طريق اشتراكك حتى تاريخ انتهاء الاشتراك  سيتم حذف الدلائل والعلامات المميزة عليها تلقائيًا بعد 30 يومًا من انتهاء فترة الاشتراك.</string>
 	<string name="subscription_terms">سيتم خصم المبلغ من حساب iTunes الخاص بك عند تأكيد عملية الشراء. سيتم تجديد الاشتراك تلقائياً ما لم يتم إيقاف التجديد التلقائي قبل 24 ساعة على الأقل من نهاية الفترة الحالية. سيتم الخصم من حسابك وفقاً لخطة التجديد الخاصة بك وذلك خلال 24 ساعة قبل انتهاء الفترة الحالية. يمكنك إدارة أو إيقاف التجديد التلقائي عبر إعدادات حساب Apple ID الخاص بك في أي وقت عند الشراء.</string>
-	<string name="whatsnew_carplay_title">نظام ملاحة السيارات MAPS.ME في CarPlay!</string>
+	<string name="whatsnew_carplay_title">نظام ملاحة السيارات Al Rahal6 في CarPlay!</string>
 	<string name="whatsnew_carplay_message">خصائص تحديد علامات الأماكن، والبحث، وكاميرات السرعة والمسارات متاحة بدون اتصال بالانترنت</string>
 	<string name="whatsnew_subscription_title">كل العالم بواسطة الاشتراك!</string>
 	<string name="whatsnew_subscription_message">الوصول الغير محدود لفهرس الدلائل مربح أكثر من الشراء لمرة واحدة</string>
@@ -1616,7 +1616,7 @@
 	<string name="avoid_tolls_carplay_2">تجنب الرسوم</string>
 	<string name="speedcams_alert_title_carplay_1">كاميرا سريعة</string>
 	<string name="speedcams_alert_title_carplay_2">تحذير سريع</string>
-	<string name="download_map_carplay">يُرجى تحميل الخرائط في تطبيق MAPS.ME على جهازك</string>
+	<string name="download_map_carplay">يُرجى تحميل الخرائط في تطبيق Al Rahal6 على جهازك</string>
 	<string name="carplay_roundabout_exit">المخرج رقم %s</string>
 	<!-- max. 10 symbols, both iOS and Android -->
 	<string name="sort">تريتب…</string>
@@ -1667,7 +1667,7 @@
 	<string name="whatsnew_bookmarks_search_sort_title">ترتيب الإشارات المرجعية لرحلة مريحة</string>
 	<string name="whatsnew_bookmarks_search_sort_message">رتب الأماكن المفضلة حسب الفئة والموقع وترتيبها الزمني، وكذلك البحث عن إشارات مرجعية محددة بسرعة حسب اسمهم</string>
 	<string name="popup_subscription_success_map_title">يا للروعة، لقد قمت بالاشتراك!</string>
-	<string name="popup_subscription_success_map_message">اكتشف الآن أفضل المعالم السياحية في كتالوج MAPS.ME</string>
+	<string name="popup_subscription_success_map_message">اكتشف الآن أفضل المعالم السياحية في كتالوج Al Rahal6</string>
 	<string name="popup_subscription_success_map_start_button">ابدأ البحث</string>
 	<string name="popup_subscription_success_map_not_now_button">ليس الآن</string>
 	<string name="religious_places">أماكن دينية</string>
@@ -1699,9 +1699,9 @@
 	<string name="new_onboarding_step5.1_header">شيء آخر قبل أن تبدأ…</string>
 	<string name="new_onboarding_step5.1_message">لا تنس زيارة قائمة الدلائل الجديد الخاصة بنا لتجد دليل رحلتك القادمة بدون اتصال!</string>
 	<string name="new_onboarding_step5.1_button">افتح القائمة</string>
-	<string name="new_onboarding_step5.2_message">الاشتراك في قائمة دلائل MAPS.ME ذو قيمة كبيرة. احصل على الوصول الكامل إلى دلائل المدينة والمناطق الخارجية في جميع أنحاء العالم!</string>
+	<string name="new_onboarding_step5.2_message">الاشتراك في قائمة دلائل Al Rahal6 ذو قيمة كبيرة. احصل على الوصول الكامل إلى دلائل المدينة والمناطق الخارجية في جميع أنحاء العالم!</string>
 	<string name="new_onboarding_step5.2_button">تحقق من الشروط</string>
-	<string name="new_onboarding_step5.3_message">تحقق من عينات مجانية لمسارات جاهزة للمدن والمناطق الخارجية مع مجموعة مختارة مجانية من MAPS.ME!</string>
+	<string name="new_onboarding_step5.3_message">تحقق من عينات مجانية لمسارات جاهزة للمدن والمناطق الخارجية مع مجموعة مختارة مجانية من Al Rahal6!</string>
 	<string name="new_onboarding_step5.3_button">تحميل مجاني</string>
 	<string name="new_onboarding_additional_steps_later_button">لاحقًا</string>
 	<string name="all_pass_subscription_header">اشتراك في الدلائل</string>
@@ -1727,7 +1727,7 @@
 	<string name="dialog_pedestrian_route_is_long">طريق المشاة إلى نقطة ركوب وسيلة النقل طويل جدًا</string>
 	<string name="whatsnew_outdoor_guides_title">أضفنا أكثر من 15000 مسار خارجي!</string>
 	<string name="whatsnew_outdoor_guides_message">تتواجد الطرق من Outdooractive لرحلات الشتاء والصيف في القائمة!</string>
-	<string name="whatsnew_guides_galleries_title">خطط لرحلتك القادمة مع MAPS.ME</string>
+	<string name="whatsnew_guides_galleries_title">خطط لرحلتك القادمة مع Al Rahal6</string>
 	<string name="whatsnew_guides_galleries_message">يمكنك الآن العثور على دلائل موصى بها في صفحات الأماكن للمدن والمعالم السياحية الشهيرة</string>
 
 	<!-- SECTION: Types -->

@@ -27,6 +27,7 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -66,7 +67,7 @@ public class ServerConnection extends Service {
     //public static final String ACTION_MSG_SEND = "msgReceived";
     private static final String RECONNECT_IF_BROKEN = "reconnectIfBroken";
     public static final String ACTION_NETWORK_STATE_CHANGED = "networkStateChanged";
-    private static final long INTERVAL_FIVE_MINS = 60 * 1000;
+    private static final long INTERVAL_FIVE_MINS = 3 * 60 * 1000;
     private static final String TAG = ServerConnection.class.getSimpleName();
     private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 15000;
     private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = 15000;
@@ -102,12 +103,18 @@ public class ServerConnection extends Service {
     private static final int TRIP_STARTED = 12;
     private static final int TRIP_COMPLETED = 13;
     private static final int DISTANCE_NOTIFY = 50;
+    //private WebSocketViewModel mViewModel;
 
-    public void stopRingTone() {
+    /*public void stopRingTone() {
         if(r.isPlaying()) {
             r.stop();
         }
-    }
+        setIsReceivedFalse();
+        //isHaveMessage = false;
+        //if (mTimerRunning) {
+            //stopTimer();
+        //}
+    }*/
 
     private void reachedCustomer() {
         //send(REACHED_CUSTOMER, 0, 0, 0);
@@ -116,6 +123,8 @@ public class ServerConnection extends Service {
         //mSwipeButton.setSwipeButtonCustomItems(swipeButtonSettings);
         //mSwipeButton.setText(R.string.start_trip);
     }
+
+
 
     private void acceptRequest(UserTripInfo g) {
         /*try {
@@ -148,14 +157,14 @@ public class ServerConnection extends Service {
 
     private void respondBusy() {
         try {
-            r.stop();
+            //r.stop();
             //mService.stopRingTone();
             sendMessage(SEND_BUSY, requestingPassenger,0, 0, 0);
             //mCustomerInfo.setVisibility(View.GONE);
             //mCustomerName.setText("");
             //mCustomerPhone.setText("");
             if (mTimerRunning) {
-                stopTimer();
+                //stopTimer();
             }
         } catch (Exception e) {
             Log.d(TAG, "Error respond busy " + e.getMessage());
@@ -168,7 +177,7 @@ public class ServerConnection extends Service {
     }
 
     public interface ServerListener {
-        void onNewMessage(String message);
+        void onNewMessage(String myFlag);
         void onStatusChange(ConnectionStatus status);
     }
 
@@ -176,6 +185,7 @@ public class ServerConnection extends Service {
         @Override
         public void onReceive(Context context, Intent intent) {
             boolean networkIsOn = intent.getBooleanExtra(ACTION_NETWORK_STATE_CHANGED, false);
+            //Log.i(TAG," network is on "+ networkIsOn);
             if (networkIsOn) {
                 connect();
             } //else {
@@ -218,12 +228,13 @@ public class ServerConnection extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        //mViewModel = ViewModelProviders.of(getApplicationContext()).get(WebSocketViewModel.class);
         PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
         wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyWakelockTag");
         wakeLock.acquire();
         try {
             //Uri notificationRaw = Uri.parse("android.resource://" + this.getPackageName() + "/raw/driver_call.mp3");
-            //Log.i(TAG,"Uri "+ notificationRaw);
+            //Log.i(TAG,"Uri "+ notificationRaw);get
             Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
             //mediaPlayer = MediaPlayer.create(getApplicationContext(), notification);
             r = RingtoneManager.getRingtone(this, notification);
@@ -263,7 +274,7 @@ public class ServerConnection extends Service {
                             currentLocation.getLongitude(),
                             1, 1, phone);
                     sendMe("" + gSon.toJson(userLocation));
-                    Log.i(TAG,"Connection Count "+mClient.connectionPool().connectionCount());
+                    //Log.i(TAG,"Connection Count "+mClient.connectionPool().connectionCount());
                     //Log.i(TAG,"Idle Connection Count "+mClient.connectionPool().idleConnectionCount());
                     //Log.i(TAG,"location coordinates "+ currentLocation.getLatitude() + " - " + currentLocation.getLongitude());
                 }
@@ -272,15 +283,17 @@ public class ServerConnection extends Service {
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(MwmApplication.get().getApplicationContext());
         start();
+        //setAlarm();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
         if (intent.getAction().equals( Constants.STOPFOREGROUND_ACTION)) {
-            Log.i(TAG, "Received Stop Foreground Intent");
+            //Log.i(TAG, "Received Stop Foreground Intent");
             //your end servce code
             disconnect();
+            //cancelAlarm();
             stopForeground(true);
             stopSelf();
         }
@@ -295,11 +308,11 @@ public class ServerConnection extends Service {
                 .build();
 
         startForeground(1, notification);
-        Log.i(TAG,"Service thread Id Connect : "+ Thread.currentThread().getId());
+        //Log.i(TAG,"Service thread Id Connect : "+ Thread.currentThread().getId());
 
         connect();
         start();
-        //setAlarm();
+        setAlarm();
         //Log.i(TAG,"Service thread Id "+ Thread.currentThread().getId());
         return START_REDELIVER_INTENT;
     }
@@ -324,7 +337,7 @@ public class ServerConnection extends Service {
 
     @Override
     public void onDestroy() {
-        disconnect();
+        //disconnect();
         super.onDestroy();
     }
 
@@ -379,67 +392,61 @@ public class ServerConnection extends Service {
         //Log.i(TAG,"Alarm Cancelled");
     }
 
-    private void sendMessageReceivedEvent(String myMsg) {
-        //MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).userMessage(myMsg);
-        isMessageReceived = true;
-        receivedMessage = myMsg;
-        processMessage(myMsg);
-        Intent intent = new Intent(this, SplashActivity.class);
-        intent.putExtra(EXTRA_ACTIVITY_TO_START, MapActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK );
-        //intent.putExtra(PASSENGER_CAPTAIN_SELECTOR,4);
-        //intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        //intent.setAction(Intent.ACTION_MAIN);
-        //intent.setAction("intent.mycustom.action");
-        //intent.addCategory(Intent.CATEGORY_DEFAULT);
-        startActivity(intent);
-        //Message m = mMessageHandler.obtainMessage(0, myMsg);
-        //mMessageHandler.sendMessage(m);
-        //mListener.onNewMessage(myMsg);
-        //Message msg = mMessageHandler.obtainMessage(0, myMsg);
-        //mHandler.sendMessage(msg);
-        //Intent intent = new Intent(ACTION_MSG_RECEIVED);
-        //intent.putExtra("MyDriverMessage", myMsg);
-        //LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-        //MyNotificationManager.getInstance(this).displayNotification("Amgad app", "Client Request");
+    private Long getCurrentTimestamp() {
+        // Long timestamp = System.currentTimeMillis()/1000;
+        //return timestamp;
+        long timeMillis = System.currentTimeMillis();
+        return TimeUnit.MILLISECONDS.toSeconds(timeMillis);
+        //return System.currentTimeMillis() / 1000L;
     }
 
-    private void processMessage(String myMsg) {
+    private void sendMessageReceivedEvent(String myMsg) {
+        MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).userMessage(myMsg);
+        isMessageReceived = true;
+        receivedMessage = myMsg;
+        //receivedMessage = myMsg;
+        Intent intent = new Intent(this, MapActivity.class);
+        //Intent intent = new Intent(this, SplashActivity.class);
+        //intent.putExtra(EXTRA_ACTIVITY_TO_START, MapActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK );
+        intent.setAction("intent.mycustom.action");
+        intent.addCategory(Intent.CATEGORY_DEFAULT);
         g = gSon.fromJson(myMsg, UserTripInfo.class);
         int flag = g.getMyFlag();
+        //mBinder.pingBinder()
+        if(flag == 4) {
+            //MySharedPreference.getInstance(MwmApplication.get().getApplicationContext())
+                    //.setMsgRcvdTime(getCurrentTimestamp());
+            //r.play();
+            /*long endTime = System.currentTimeMillis() + 20000L;
+            while (System.currentTimeMillis() < endTime) {
+                //loop
+            }
+            stopRingTone();*/
+        } /*else {
+            //MySharedPreference.getInstance(MwmApplication.get().getApplicationContext())
+                    //.setMsgRcvdTime(0);
+        }*/
+        startActivity(intent);
+        /*if (!mTimerRunning) {
+            startTimer();
+        }*/
+        //receivedMessage = flag;
+        /*startActivity(intent);
         requestingPassenger = g.getUserId();
         tripId = String.valueOf(g.getTripId());
         //Log.i(TAG,"request received");
         switch (flag) {
             case 4:
                 r.play();
+                //mListener.onNewMessage(4);
                 //mediaPlayer.start();
-                /*mCustomerInfo.setVisibility(View.VISIBLE);
-                mAcceptBusyInfo.setVisibility(View.VISIBLE);
-                mSwipeButton.setText("Reached Customer");
-                mSwipeLayout.setVisibility(View.GONE);
-                mCustomerName.setText(getString(R.string.name) + g.getCustomerName());
-                mCustomerPickup.setText(getString(R.string.pickup) + g.getPickupAddress());
-                mCustomerDestination.setText(getString(R.string.destination) + g.getDestAddress());
-                phoneNumber = "0" + g.getPhone();
-                mCustomerPhone.setText(getString(R.string.customer_phone) + g.getPhone());
-                mTripDistance.setText(getString(R.string.price) + g.getPrice() + getString(R.string.distance) + g.getDistance());
-                */
-                if (!mTimerRunning) {
-                    startTimer();
-                }
+                //if (!mTimerRunning) {
+                    //startTimer();
+                //}
                 break;
             case 5:
                 //r.play();
-                /*mCustomerInfo.setVisibility(View.VISIBLE);
-                mSwipeLayout.setVisibility(View.GONE);
-                mCustomerName.setText(R.string.passenger_cancel);
-                mCustomerPickup.setText("");
-                mCustomerDestination.setText("");
-                //mCustomerPhone.setText("");
-                mTripDistance.setText("");
-                mAcceptBusyInfo.setVisibility(View.GONE);
-                updateResponse(TRIP_CANCELLED);*/
                 MyNotificationManager.getInstance(this).displayNotification("Request Cancelled", "Sorry! request cancelled by passenger");
                 if (r.isPlaying()) {
                     r.stop();
@@ -449,31 +456,7 @@ public class ServerConnection extends Service {
                 }
                 cancelCall();
                 break;
-            /*case 13:
-                mCustomerInfo.setVisibility(View.GONE);
-                updateResponse(TRIP_COMPLETED);
-                // todo display payment details
-                break;*/
             case 3:
-                /*removeRequest();
-                // mCancelRequest.setVisibility(View.GONE);
-                mDriverInfo.setVisibility(View.VISIBLE);
-                //mDriverName.setText("Driver Phone: "+g.getPhone());
-                //Log.i(TAG,g.getUserId() + " D - " +g.getDriverId());
-                g.setMyFlag(9);
-                try {
-                    mService.sendMessage(g);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                mDriverPhone.setVisibility(View.VISIBLE);
-                mDriverPhone.setText("Driver Phone: " + g.getPhone());
-                MyNotificationManager.getInstance(MapActivity.this).displayNotification("Driver Found", "Driver Coming to you");
-                //mRequest.setText("Driver Found, Coming to you");
-                phoneNumber = "0" + g.getPhone();
-                isDriverAccepted = true;
-                isRequestInProgress = false;
-                erasePolylines();*/
                 //if(mMap != null) {
                 //mMap.clear();
                 //}
@@ -541,7 +524,7 @@ public class ServerConnection extends Service {
             case 99:
                 //userTripInfo.setDriverId(driverId);
                 break;
-        }
+        }*/
     }
 
     private void cancelCall() {
@@ -571,7 +554,9 @@ public class ServerConnection extends Service {
             @Override
             public void onFinish() {
                 mTimerRunning = false;
-                respondBusy();
+                isHaveMessage = false;
+                r.stop();
+                //respondBusy();
                 //Log.i(TAG,"Finished timer");
             }
         }.start();
@@ -580,6 +565,7 @@ public class ServerConnection extends Service {
 
     private void stopTimer() {
         mCountDownTimer.cancel();
+        isHaveMessage = false;
         mTimerRunning = false;
         //Log.i(TAG,"Timer Stopped");
     }
@@ -591,13 +577,13 @@ public class ServerConnection extends Service {
                     .url(Constants.Url.SERVER_WS_URL + "?token=" + userId)
                     .build();
             mWebSocket = mClient.newWebSocket(request, new SocketListener());
-            mMessageHandler = new Handler(msg -> {
+            /*mMessageHandler = new Handler(msg -> {
                 mListener.onNewMessage((String) msg.obj);
                 return true;
-            });
+            });*/
             //Log.i(TAG," First connection");
             // todo check later
-            mClient.dispatcher().executorService().shutdown();
+            //mClient.dispatcher().executorService().shutdown();
             isHaveMessage = true;
         }
         start();
@@ -630,9 +616,9 @@ public class ServerConnection extends Service {
             mWebSocket = null;
         }
         mListener = null;
-        mMessageHandler.removeCallbacksAndMessages(null);
+        //mMessageHandler.removeCallbacksAndMessages(null);
         stop();
-        //cancelAlarm();
+        cancelAlarm();
     }
 
     public void sendReq(UserTripInfo userTripInfo) {
@@ -689,14 +675,14 @@ public class ServerConnection extends Service {
 
         @Override
         public void onMessage(WebSocket webSocket, String text) {
-            Log.i(TAG, "Message (String) received: " + text);
+            //Log.i(TAG, "Message (String) received: " + text);
             sendMessageReceivedEvent(text);
         }
 
         @Override
         public void onClosed(WebSocket webSocket, int code, String reason) {
             Log.i(TAG, "Code: " + code + " - Reason: " + reason);
-            disconnect();
+            //disconnect();
             //sendMessageReceivedEvent();
         }
 
@@ -704,7 +690,7 @@ public class ServerConnection extends Service {
         public void onFailure(WebSocket webSocket, Throwable t, Response response) {
             //Log.i(TAG, ""+ response.message());
             Log.i(TAG, "Websocket onFailure()");
-            disconnect();
+            //disconnect();
         }
     }
 }
