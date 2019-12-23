@@ -122,24 +122,24 @@ public class MatchingListActivity extends AppCompatActivity {
             if(MySharedPreference.getInstance(this).isCaptain()) {
                 if (isCaptainEligible(mMyTripDistance, totDist, post.getSrcDistDiff(), post.getDestDistDiff(), post.getTripDistance())) {
                     // todo get accurate distance and add
-                    mMatchingList.add(new MatchingItem(post.getId(),post.getUserId(),
+                    /*mMatchingList.add(new MatchingItem(post.getId(),post.getUserId(),
                             post.getSourceAddress(), post.getDestinationAddress(),
                             post.getTripDistance(), DateUtils.formatDateStr(post.getStartTime()), totDist, totDistTxt,
-                            amount,extraDistance,mMyTripDistance,post.getEndTime()));
+                            amount,extraDistance,mMyTripDistance,post.getEndTime()));*/
                 }
             } else {
                 if (isPassengerEligible(mMyTripDistance, totDist, post.getSrcDistDiff(), post.getDestDistDiff(), post.getTripDistance())) {
                     // todo get accurate distance and add
-                    mMatchingList.add(new MatchingItem(post.getId(),post.getUserId(),
+                    /*mMatchingList.add(new MatchingItem(post.getId(),post.getUserId(),
                             post.getSourceAddress(), post.getDestinationAddress(),
                             post.getTripDistance(),  DateUtils.formatDateStr(post.getStartTime()), totDist, totDistTxt,
-                            amount,extraDistance,mMyTripDistance,post.getEndTime()));
+                            amount,extraDistance,mMyTripDistance,post.getEndTime()));*/
                 }
             }
         }
-        Collections.sort(mMatchingList);
-        Collections.reverse(mMatchingList);
-        buildRecyclerView();
+        //Collections.sort(mMatchingList);
+        //Collections.reverse(mMatchingList);
+        //buildRecyclerView();
     }
 
     private double getPercentage(double a,double b) {
@@ -208,7 +208,7 @@ public class MatchingListActivity extends AppCompatActivity {
         MySharedPreference.getInstance(this).getUserId(),
                 mMatchingList.get(position).getUserId(),
                 getFlag(),mMatchingList.get(position).getId(),
-                mMatchingList.get(position).getmTripDistance(),
+                0.0d,
                 mMatchingList.get(position).getmTripTime(),
                 mMatchingList.get(position).getmAmount(),
                 mMatchingList.get(position).getmPhone(),

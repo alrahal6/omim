@@ -9,7 +9,7 @@ import androidx.room.RoomDatabase;
 import com.mapsrahal.maps.model.User;
 import com.mapsrahal.maps.model.dao.UserDao;
 
-@Database(entities = {User.class}, version = 1)
+//@Database(entities = {User.class}, version = 1)
 public abstract class UserDatabase extends RoomDatabase {
 
     private static UserDatabase instance;

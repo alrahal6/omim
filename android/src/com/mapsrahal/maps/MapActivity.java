@@ -20,9 +20,11 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -41,13 +43,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
@@ -55,17 +61,27 @@ import com.github.florent37.singledateandtimepicker.dialog.SingleDateAndTimePick
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.mapsrahal.maps.activity.ContactActivity;
 import com.mapsrahal.maps.activity.MatchingListActivity;
 import com.mapsrahal.maps.activity.MyRidesActivity;
 import com.mapsrahal.maps.activity.ProfileActivity;
+import com.mapsrahal.maps.activity.ui.main.MatchingListFragment;
 import com.mapsrahal.maps.activity.ui.main.MatchingStatePagerAdapter;
+import com.mapsrahal.maps.activity.ui.main.PageViewModel;
+import com.mapsrahal.maps.activity.ui.main.ViewModelFactory;
+import com.mapsrahal.maps.api.ApiClient;
 import com.mapsrahal.maps.api.ParsedMwmRequest;
+import com.mapsrahal.maps.api.PostApi;
+import com.mapsrahal.maps.api.UserMessageApi;
 import com.mapsrahal.maps.base.BaseMwmFragmentActivity;
 import com.mapsrahal.maps.bookmarks.data.MapObject;
 import com.mapsrahal.maps.intent.MapTask;
 import com.mapsrahal.maps.location.CompassData;
 import com.mapsrahal.maps.location.LocationHelper;
+import com.mapsrahal.maps.model.MatchingItem;
+import com.mapsrahal.maps.model.Post;
+import com.mapsrahal.maps.model.UserMessage;
 import com.mapsrahal.maps.onboarding.OnboardingTip;
 import com.mapsrahal.maps.routing.NavigationController;
 import com.mapsrahal.maps.routing.RoutingController;
@@ -86,15 +102,23 @@ import com.mapsrahal.util.PermissionsUtils;
 import com.mapsrahal.util.SwipeButton;
 import com.mapsrahal.util.SwipeButtonCustomItems;
 import com.mapsrahal.util.UiUtils;
+import com.mapsrahal.util.Utils;
 import com.mapsrahal.util.sharing.TargetUtils;
 import com.mapsrahal.util.statistics.AlohaHelper;
 import com.mapsrahal.util.statistics.Statistics;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Stack;
 import java.util.concurrent.TimeUnit;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MapActivity extends BaseMwmFragmentActivity
                          implements View.OnTouchListener,
@@ -194,16 +218,32 @@ public class MapActivity extends BaseMwmFragmentActivity
     private UserTripInfo userTripInfo;
     private Button mSendRequest;
     private Switch mSwitch;
-
+    PageViewModel pageViewModel;
+    MatchingStatePagerAdapter mAdapter;
+    private CardView mNotificationCard;
+    TextView mDriverName;
+    private TextView mDriverPhone;
+    private TextView mCancelRequest;
+    private LinearLayout mDriverInfo;
+    private boolean isDriverAccepted = false;
+    private boolean isDriverBusy = false;
     private ServerConnection mService;
     private WebSocketViewModel mViewModel;
-
+    private boolean isRequestInProgress = false, isStartedCounter = false;
     @Override
     protected void  onSafeCreate(Bundle savedInstanceState) {
         super.onSafeCreate(savedInstanceState);
         setContentView(R.layout.activity_my_map);
         Intent intent = getIntent();
         int message = intent.getIntExtra(PASSENGER_CAPTAIN_SELECTOR,1);
+        mDriverInfo = findViewById(R.id.driverInfo);
+        mNotificationCard = findViewById(R.id.notification_req_res);
+        //mDriverName = (TextView) view.findViewById(R.id.driverName);
+        mDriverPhone = findViewById(R.id.driverPhone);
+        mDriverPhone.setOnClickListener(this);
+        mDriverPhone.setVisibility(View.GONE);
+        mCancelRequest = findViewById(R.id.cancelRequest);
+        mCancelRequest.setOnClickListener(this);
         mllForm = findViewById(R.id.ll_form);
         tvDropOff = findViewById(R.id.tv_dropoff);
         tvPickup = findViewById(R.id.tv_pickup);
@@ -215,11 +255,17 @@ public class MapActivity extends BaseMwmFragmentActivity
         }
         mSendRequest = findViewById(R.id.send_request_test);
         mSendRequest.setOnClickListener(this);
+        //MatchingStatePagerAdapter matchingStateAdapter = new MatchingStatePagerAdapter(this, getSupportFragmentManager());
+        /*pageViewModel = ViewModelProviders.of(this,
+                new ViewModelFactory(getActivity().getApplication()))
+                .get(PageViewModel.class);*/
+        pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
 
-        MatchingStatePagerAdapter matchingStateAdapter = new MatchingStatePagerAdapter(this, getSupportFragmentManager());
         mViewPager = findViewById(R.id.matching_list_vp);
-        mViewPager.setAdapter(matchingStateAdapter);
+        //mViewPager.setAdapter(matchingStateAdapter);
         mViewPager.setVisibility(View.GONE);
+        userMessageApi = ApiClient.getClient().create(UserMessageApi.class);
+        //matchingStateAdapter.createPost();
         //mSwitch.setOnT
         tvPickup.setOnClickListener(this);
         tvDropOff.setOnClickListener(this);
@@ -555,6 +601,8 @@ public class MapActivity extends BaseMwmFragmentActivity
                 toLocation.getLat(),
                 toLocation.getLon(),myDistance,mSourceAddress,mDestinationAddress,
                 startingTime);
+        //pageViewModel.createPost();
+        createPost();
         listMatch();
     }
 
@@ -1100,15 +1148,115 @@ public class MapActivity extends BaseMwmFragmentActivity
 
         try {
             UserTripInfo userTripInfo = new UserTripInfo(
-                    27,
+                    25,
                     "912391525",
                     "dhayal");
-            userTripInfo.setDriverId(25);
+            userTripInfo.setDriverId(27);
             mService.sendReq(userTripInfo);
         } catch (Exception e) {
             e.printStackTrace();
         }
         //startTimer();
+    }
+
+    private int getFlag() {
+        return Constants.Notification.DRIVER_ACCEPTED;
+    }
+
+    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            switch (which){
+                case DialogInterface.BUTTON_POSITIVE:
+                    sendMessage();
+                    break;
+
+                case DialogInterface.BUTTON_NEGATIVE:
+                    Toast.makeText(MapActivity.this, "Request not Send", Toast.LENGTH_LONG).show();
+                    break;
+            }
+        }
+    };
+
+    private void sendMessage() {
+        int temp = userMessage.getfUserId();
+        userMessage.setfUserId(userMessage.gettUserId());
+        userMessage.settUserId(temp);
+        //userMessage.setmFlag(getFlag());
+        UserMessageApi userMessageApi = ApiClient.getClient().create(UserMessageApi.class);
+        Call<UserMessage> call = userMessageApi.sentMessage(userMessage);
+
+        call.enqueue(new Callback<UserMessage>() {
+            @Override
+            public void onResponse(Call<UserMessage> call, Response<UserMessage> response) {
+                Toast.makeText(MapActivity.this, "Request Send Successfully ", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onFailure(Call<UserMessage> call, Throwable t) {
+                Toast.makeText(MapActivity.this, "Request Send Failed! ", Toast.LENGTH_LONG).show();
+
+            }
+        });
+    }
+
+    private void processNotification(String myNotification) {
+        //java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
+        //HashMap<String, String> usrNotification = gSon.fromJson(myNotification, type);
+        //int mFlag = Integer.parseInt(usrNotification.get("mFlag"));
+        userMessage = gSon.fromJson(myNotification, UserMessage.class);
+        double tripId = userMessage.getTripId();
+        TextView from = findViewById(R.id.n_textView);
+        TextView to = findViewById(R.id.n_textView);
+        Button accept = findViewById(R.id.n_accept_request);
+        Button reject = findViewById(R.id.n_deny_request);
+        from.setText(userMessage.getfAddress());
+        to.setText(userMessage.gettAddress());
+        /*Log.d(TAG,myNotification+"");
+        Log.d(TAG,u +"");
+        Log.d(TAG,"Flag : "+ u.getmFlag());
+        Log.d(TAG,"From : "+ u.getfAddress());
+        Log.d(TAG,"to : "+ u.gettAddress());
+        Log.d(TAG,"tripId : "+ u.getTripId());
+        Log.d(TAG,"distance : "+ u.getDistance());*/
+        int mFlag = userMessage.getmFlag();
+        if(mFlag !=0 ) {
+            mNotificationCard.setVisibility(View.VISIBLE);
+        }
+        /*switch(mFlag) {
+            case 1:
+                mNotificationCard.setVisibility(View.VISIBLE);
+                break;
+        }*/
+
+        accept.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                userMessage.setmFlag(Constants.Notification.DRIVER_ACCEPTED);
+                alertDialog();
+            }
+        });
+
+        reject.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                userMessage.setmFlag(Constants.Notification.DRIVER_REFUSED);
+                alertDialog();
+            }
+        });
+
+
+        //notification_req_res
+
+    }
+
+    private void alertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this);
+        builder.setMessage("Are you sure? Send Request!").setPositiveButton("Yes", dialogClickListener)
+                .setNegativeButton("No", dialogClickListener).show();
+
     }
 
     private void processMessage(String myMsg) {
@@ -1161,14 +1309,14 @@ public class MapActivity extends BaseMwmFragmentActivity
                 // todo display payment details
                 break;*/
             case 3:
-                /*removeRequest();
+                //removeRequest();
                 // mCancelRequest.setVisibility(View.GONE);
                 mDriverInfo.setVisibility(View.VISIBLE);
                 //mDriverName.setText("Driver Phone: "+g.getPhone());
                 //Log.i(TAG,g.getUserId() + " D - " +g.getDriverId());
                 g.setMyFlag(9);
                 try {
-                    mService.sendMessage(g);
+                    mService.sendMe(""+g);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -1179,14 +1327,14 @@ public class MapActivity extends BaseMwmFragmentActivity
                 phoneNumber = "0" + g.getPhone();
                 isDriverAccepted = true;
                 isRequestInProgress = false;
-                erasePolylines();*/
+                //erasePolylines();
                 //if(mMap != null) {
                 //mMap.clear();
                 //}
                 break;
             case 2:
-                //isDriverBusy = true;
-                //isRequestInProgress = false;
+                isDriverBusy = true;
+                isRequestInProgress = false;
                 //removeRequest();
                 //requestHandler.removeCallbacks(requestRunnable);
                 //requestHandler.postDelayed(requestRunnable, 0);
@@ -1218,16 +1366,9 @@ public class MapActivity extends BaseMwmFragmentActivity
                 break;
             case 6:
                 MyNotificationManager.getInstance(MapActivity.this).displayNotification("Trip Canceled", "Trip Cancelled by driver");
-                //mDriverPhone.setVisibility(View.VISIBLE);
-                //mCustomerInfo.setVisibility(View.VISIBLE);
-                //mCustomerName.setText("");
-                //mCustomerPickup.setText("");
-                //mCustomerDestination.setText("");
-                //mCustomerPhone.setText("Sorry! Passenger Canceled the carPriceArray");
-                //mTripDistance.setText("");
                 break;
             case 12:
-                //mCancelRequest.setVisibility(View.GONE);
+                mCancelRequest.setVisibility(View.GONE);
                 MyNotificationManager.getInstance(MapActivity.this).displayNotification("Trip Started", "Trip Started by driver");
                 startTime = System.currentTimeMillis();
                 timerHandler.postDelayed(timerRunnable, 0);
@@ -1237,7 +1378,7 @@ public class MapActivity extends BaseMwmFragmentActivity
             case 13:
                 //onEndtrip(Double.valueOf(g.getPhone()));
                 timerHandler.removeCallbacks(timerRunnable);
-                //mDriverInfo.setVisibility(View.GONE);
+                mDriverInfo.setVisibility(View.GONE);
                 mpayAndRating.setVisibility(View.VISIBLE);
                 mAmount.setText("Pay Driver : " + g.getPhone() + " SDG");
                 MyNotificationManager.getInstance(MapActivity.this).displayNotification("Trip Completed", "Trip Completed");
@@ -1306,7 +1447,12 @@ public class MapActivity extends BaseMwmFragmentActivity
             MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).userMessage(null);
         }
 
+        String notify =MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).getUserNotification();
 
+        if (notify != null) {
+            processNotification(notify);
+            MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).userNotification(null);
+        }
 
         /*String msg = MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).getUserMessage();
         //Log.i(TAG,"Shared message : "+msg);
@@ -1585,6 +1731,8 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     private void setFullscreen(boolean isFullscreen) {
         mIsFullscreen = isFullscreen;
+        //MatchingListFragment fragment = new MatchingListFragment();
+        //fragment.createPost();
         if (isFullscreen) {
             mViewPager.setVisibility(View.VISIBLE);
             if (mNavAnimationController != null)
@@ -1646,5 +1794,126 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     @Override
     public void onStartRouteBuilding() { }
+
+    private double mMyTripDistance;
+    ArrayList<MatchingItem> mMatchingList = new ArrayList<>();
+    private static double ELEGIBLE_LIMIT = 1.4d;
+    private UserMessage userMessage;
+    private UserMessageApi userMessageApi;
+
+    private void my() {
+        mAdapter = new MatchingStatePagerAdapter(mMatchingList, this,getSupportFragmentManager());
+        //mViewPager = findViewById(R.id.viewPager);
+        mViewPager.setAdapter(mAdapter);
+    }
+
+    public void createPost() {
+        mMyTripDistance = Double.parseDouble(MySharedPreference.getInstance(this).getTripDistance().trim());
+        PostApi postApi = ApiClient.getClient().create(PostApi.class);
+        Post post = new Post(null, MySharedPreference.getInstance(this).getUserId(),
+                MySharedPreference.getInstance(this).getFrmLat(),
+                MySharedPreference.getInstance(this).getFrmLng(),
+                MySharedPreference.getInstance(this).getToLat(),
+                MySharedPreference.getInstance(this).getToLng(),
+                mMyTripDistance,
+                MySharedPreference.getInstance(this).getFrmAddress().trim(),
+                MySharedPreference.getInstance(this).getToAddress().trim(),
+                new Date(MySharedPreference.getInstance(this).getStartTime()),
+                MySharedPreference.getInstance(this).getPhoneNumber());
+
+        Call<List<Post>> call = postApi.createPost(post);
+
+        call.enqueue(new Callback<List<Post>>() {
+            @Override
+            public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
+                if (!response.isSuccessful()) {
+                    return;
+                }
+                mMatchingList = new ArrayList<>();
+                createMatchList(response.body());
+                my();
+            }
+            @Override
+            public void onFailure(Call<List<Post>> call, Throwable t) {
+                Toast.makeText(MapActivity.this,"Some Error occured! Try Later",Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    public void createMatchList(List<Post> body) {
+        for (Post post : body) {
+            String totDistTxt = "";
+            /*String totDistTxt = prepareRouteDistance(Utils.roundTwoDecimals(post.getSrcDistDiff()),
+                    Utils.roundTwoDecimals(post.getTripDistance()),Utils.roundTwoDecimals(post.getDestDistDiff()));*/
+            double totDist = Utils.roundTwoDecimals(post.getSrcDistDiff()+post.getTripDistance()+post.getDestDistDiff());
+            double extra = 0;
+            if(mMyTripDistance < totDist) {
+                extra = totDist - mMyTripDistance;
+            }
+
+            String amount = "" + post.getTripDistance() * 2;
+            String extraDistance = "" + Utils.roundTwoDecimals(extra);
+            //mMatchMaker.getMatchingList();
+            if(MySharedPreference.getInstance(this).isCaptain()) {
+                if (isCaptainEligible(mMyTripDistance, totDist, post.getSrcDistDiff(), post.getDestDistDiff(), post.getTripDistance())) {
+                    // insert post
+                    // todo get accurate distance and add
+                    insert(new MatchingItem(post.getId(),post.getUserId(),
+                            post.getSourceAddress(), post.getDestinationAddress(),
+                            Double.toString(post.getTripDistance()), DateUtils.formatDateStr(post.getStartTime()), Double.toString(totDist), totDistTxt,
+                            amount,extraDistance,mMyTripDistance));
+                    //insert(mMatchingList);
+                }
+            } else {
+                if (isPassengerEligible(mMyTripDistance, totDist, post.getSrcDistDiff(), post.getDestDistDiff(), post.getTripDistance())) {
+                    // insert post
+                    // todo get accurate distance and add
+                    insert(new MatchingItem(post.getId(),post.getUserId(),
+                            post.getSourceAddress(), post.getDestinationAddress(),
+                            Double.toString(post.getTripDistance()), DateUtils.formatDateStr(post.getStartTime()), Double.toString(totDist), totDistTxt,
+                            amount,extraDistance,mMyTripDistance));
+                }
+            }
+        }
+    }
+
+    private boolean isCaptainEligible(double mMyTripDistance, double totDist, double srcDistDiff,
+                                      double destDistDiff, double tripDistance) {
+        // my trip distance is greater than my distance
+        if (mMyTripDistance >= totDist) {
+            return true;
+        } else {
+            // my trip distance is less than my distance
+            // so i have to travel more as a captain
+            double percentage = getPercentage(mMyTripDistance,totDist);
+            if(percentage > ELEGIBLE_LIMIT)
+                return false;
+            return true;
+        }
+    }
+
+    // todo check later
+    private boolean isPassengerEligible(double mMyTripDistance, double totDist, double srcDistDiff,
+                                        double destDistDiff, double tripDistance) {
+        // my trip distance is greater than my distance
+        if (mMyTripDistance <= totDist) {
+            return true;
+            // totDist
+        } else {
+            double percentage = getPercentage(totDist,mMyTripDistance);
+            if(percentage > ELEGIBLE_LIMIT)
+                return false;
+            return true;
+        }
+    }
+
+    private double getPercentage(double a,double b) {
+        return ((b * 100d) / a)/100d;
+    }
+
+    private void insert(MatchingItem matchingItem) {
+        mMatchingList.add(matchingItem);
+        //matchDao.insert(matchingItem);
+    }
 
 }

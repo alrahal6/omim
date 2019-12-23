@@ -79,10 +79,10 @@ public class MatchingAdapter extends RecyclerView.Adapter<MatchingAdapter.Matchi
         //holder.mImageView.setImageResource(currentItem.getId());
         holder.mTextView1.setText(currentItem.getmText1());
         holder.mTextView2.setText(currentItem.getmText2());
-        holder.mTripDistance.setText("Trip Distance : "+currentItem.getmTripDistance());
+        holder.mTripDistance.setText("Trip Distance : ");
         holder.mTripTime.setText("Time : "+currentItem.getmTripTime());
         holder.mAmount.setText("Amount : "+currentItem.getmAmount());
-        holder.mYourDistance.setText("Your Distance : "+ currentItem.getmYourDistance());
+        holder.mYourDistance.setText("Your Distance : ");
         holder.mExtraDistance.setText("Extra Distance : "+currentItem.getmExtraDistance());
         holder.mTripRoute.setText(""+currentItem.getmTotDistTxt());
         //itemStateArray.put(position,false);

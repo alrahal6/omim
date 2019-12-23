@@ -13,7 +13,7 @@
     android:layout_alignParentLeft="true"
     android:layout_alignParentStart="true"
     android:layout_alignParentTop="true"
-    android:visibility="invisible"
+    android:visibility="gone"
     tools:src="@drawable/anim_traffic_loading"/>
 
   <ImageButton
@@ -22,7 +22,7 @@
     android:layout_alignParentLeft="true"
     android:layout_alignParentStart="true"
     android:layout_alignParentTop="true"
-    android:visibility="invisible"
+    android:visibility="gone"
     android:background="?attr/nav_bg_subway"
     tools:src="@drawable/anim_traffic_loading"/>
 
@@ -31,8 +31,8 @@
     style="@style/MwmWidget.MapButton"
     android:layout_alignParentEnd="true"
     android:layout_alignParentRight="true"
-    android:layout_alignParentBottom="true"
-    android:layout_marginBottom="@dimen/nav_my_position_bottom"
+    android:layout_marginTop="@dimen/nav_zoom_top"
+    android:layout_alignParentTop="true"
     android:contentDescription="@string/core_my_position"
     android:tint="@null"/>
 
@@ -48,9 +48,9 @@
     android:id="@id/nav_zoom_in"
     style="@style/MwmWidget.MapButton"
     android:src="@drawable/ic_zoom_in"
-    android:layout_marginTop="@dimen/nav_zoom_top"
-    android:layout_alignParentTop="true"
-    android:layout_alignParentRight="true"
+    android:layout_below="@+id/my_position"
+    android:layout_marginTop="@dimen/space5"
+    android:layout_marginBottom="@dimen/space5"
     android:layout_alignParentEnd="true"/>
 
   <FrameLayout
@@ -78,6 +78,6 @@
       android:layout_width="wrap_content"
       android:layout_gravity="center"
         android:visibility="gone"
-        android:src="@drawable/ic_dog"/>
+        android:src="@drawable/ic_car"/>
   </FrameLayout>
 </RelativeLayout>

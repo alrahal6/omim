@@ -1090,6 +1090,21 @@ Java_com_mapsrahal_maps_Framework_nativeFormatLatLonToArr(JNIEnv * env, jclass, 
 
   return arr;
 }
+//public static final String HTTP_BASE_URL = "http://3.18.30.74:3003/";
+//public static final String SERVER_WS_URL = "ws://3.18.30.74:3003/";
+//public static final String HTTP_BASE_URL = "http://192.168.43.214:3002/";
+//public static final String SERVER_WS_URL = "ws://192.168.43.214:3002/x";
+JNIEXPORT jstring JNICALL
+Java_com_mapsrahal_maps_Framework_nativeGetBaseUrl(JNIEnv * env, jclass)
+{
+  return jni::ToJavaString(env, "http://192.168.43.214:3002/");
+}
+
+JNIEXPORT jstring JNICALL
+Java_com_mapsrahal_maps_Framework_nativeGetWsUrl(JNIEnv * env, jclass)
+{
+  return jni::ToJavaString(env, "ws://192.168.43.214:3002/x");
+}
 
 JNIEXPORT jobject JNICALL
 Java_com_mapsrahal_maps_Framework_nativeFormatAltitude(JNIEnv * env, jclass, jdouble alt)

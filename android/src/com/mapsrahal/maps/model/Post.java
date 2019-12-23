@@ -1,5 +1,7 @@
 package com.mapsrahal.maps.model;
 
+import androidx.room.Entity;
+
 import java.util.Date;
 
 public class Post {

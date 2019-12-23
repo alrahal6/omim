@@ -37,6 +37,7 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.gson.Gson;
+import com.mapsrahal.maps.Framework;
 import com.mapsrahal.maps.MapActivity;
 import com.mapsrahal.maps.MwmApplication;
 import com.mapsrahal.maps.MyNotificationManager;
@@ -105,72 +106,6 @@ public class ServerConnection extends Service {
     private static final int DISTANCE_NOTIFY = 50;
     //private WebSocketViewModel mViewModel;
 
-    /*public void stopRingTone() {
-        if(r.isPlaying()) {
-            r.stop();
-        }
-        setIsReceivedFalse();
-        //isHaveMessage = false;
-        //if (mTimerRunning) {
-            //stopTimer();
-        //}
-    }*/
-
-    private void reachedCustomer() {
-        //send(REACHED_CUSTOMER, 0, 0, 0);
-        //isOnWaytoCustomer = false;
-        //swipeButtonSettings.setActionConfirmText(getString(R.string.start_trip));
-        //mSwipeButton.setSwipeButtonCustomItems(swipeButtonSettings);
-        //mSwipeButton.setText(R.string.start_trip);
-    }
-
-
-
-    private void acceptRequest(UserTripInfo g) {
-        /*try {
-            //r.stop();
-            mService.stopRingTone();
-            send(ACCEPT_REQUEST, 0, 0, 0);
-            mAcceptBusyInfo.setVisibility(View.GONE);
-            mSwipeLayout.setVisibility(View.VISIBLE);
-            mOpenGMap.setVisibility(View.VISIBLE);
-            //mCustomerName.setText("");
-            //mCustomerPhone.setText("");
-            base = g.getBase();
-            km = g.getKm();
-            mins = g.getMins();
-            minDis = g.getMinDis();
-            //tripId = String.valueOf(g.getTripId());
-            distance = g.getDistance();
-            duration = g.getDuration();
-            price = g.getPrice();
-            if (mTimerRunning) {
-                stopTimer();
-            }
-            // todo register accepted driver with trip id
-            // tripId
-            prepareGoToCustomer();
-        } catch (Exception e) {
-            Log.d(TAG, "Error accept request " + e.getMessage());
-        }*/
-    }
-
-    private void respondBusy() {
-        try {
-            //r.stop();
-            //mService.stopRingTone();
-            sendMessage(SEND_BUSY, requestingPassenger,0, 0, 0);
-            //mCustomerInfo.setVisibility(View.GONE);
-            //mCustomerName.setText("");
-            //mCustomerPhone.setText("");
-            if (mTimerRunning) {
-                //stopTimer();
-            }
-        } catch (Exception e) {
-            Log.d(TAG, "Error respond busy " + e.getMessage());
-        }
-    }
-
     public enum ConnectionStatus {
         DISCONNECTED,
         CONNECTED
@@ -189,7 +124,6 @@ public class ServerConnection extends Service {
             if (networkIsOn) {
                 connect();
             } //else {
-            //disconnect();
             //}
         }
     };
@@ -283,7 +217,7 @@ public class ServerConnection extends Service {
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(MwmApplication.get().getApplicationContext());
         start();
-        //setAlarm();
+        setAlarm();
     }
 
     @Override
@@ -312,7 +246,7 @@ public class ServerConnection extends Service {
 
         connect();
         start();
-        setAlarm();
+        //setAlarm();
         //Log.i(TAG,"Service thread Id "+ Thread.currentThread().getId());
         return START_REDELIVER_INTENT;
     }
@@ -337,7 +271,6 @@ public class ServerConnection extends Service {
 
     @Override
     public void onDestroy() {
-        //disconnect();
         super.onDestroy();
     }
 
@@ -411,10 +344,10 @@ public class ServerConnection extends Service {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK );
         intent.setAction("intent.mycustom.action");
         intent.addCategory(Intent.CATEGORY_DEFAULT);
-        g = gSon.fromJson(myMsg, UserTripInfo.class);
-        int flag = g.getMyFlag();
+        //g = gSon.fromJson(myMsg, UserTripInfo.class);
+        //int flag = g.getMyFlag();
         //mBinder.pingBinder()
-        if(flag == 4) {
+        //if(flag == 4) {
             //MySharedPreference.getInstance(MwmApplication.get().getApplicationContext())
                     //.setMsgRcvdTime(getCurrentTimestamp());
             //r.play();
@@ -423,7 +356,8 @@ public class ServerConnection extends Service {
                 //loop
             }
             stopRingTone();*/
-        } /*else {
+        //}
+        /*else {
             //MySharedPreference.getInstance(MwmApplication.get().getApplicationContext())
                     //.setMsgRcvdTime(0);
         }*/
@@ -544,37 +478,11 @@ public class ServerConnection extends Service {
         player[0].start();
     }
 
-    private void startTimer() {
-        mCountDownTimer = new CountDownTimer(START_TIME_IN_MILLIS, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                //Log.i(TAG,"Timer Started...");
-            }
-
-            @Override
-            public void onFinish() {
-                mTimerRunning = false;
-                isHaveMessage = false;
-                r.stop();
-                //respondBusy();
-                //Log.i(TAG,"Finished timer");
-            }
-        }.start();
-        mTimerRunning = true;
-    }
-
-    private void stopTimer() {
-        mCountDownTimer.cancel();
-        isHaveMessage = false;
-        mTimerRunning = false;
-        //Log.i(TAG,"Timer Stopped");
-    }
-
     //@SuppressLint("HandlerLeak")
     private void connect() {
         if (!isHaveMessage) {
             Request request = new Request.Builder()
-                    .url(Constants.Url.SERVER_WS_URL + "?token=" + userId)
+                    .url(Framework.nativeGetWsUrl() + "?token=" + userId)
                     .build();
             mWebSocket = mClient.newWebSocket(request, new SocketListener());
             /*mMessageHandler = new Handler(msg -> {
@@ -589,16 +497,7 @@ public class ServerConnection extends Service {
         start();
     }
 
-    /*@SuppressLint("HandlerLeak")
-    Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            //mMessageHandler.sendMessage(msg);
-            mListener.onNewMessage((String) msg.obj);
-        }
-    };*/
-
-    private void sendMe(String message) {
+    public void sendMe(String message) {
         try {
             mWebSocket.send(message);
         } catch (Exception e) {
@@ -682,7 +581,6 @@ public class ServerConnection extends Service {
         @Override
         public void onClosed(WebSocket webSocket, int code, String reason) {
             Log.i(TAG, "Code: " + code + " - Reason: " + reason);
-            //disconnect();
             //sendMessageReceivedEvent();
         }
 
@@ -690,7 +588,6 @@ public class ServerConnection extends Service {
         public void onFailure(WebSocket webSocket, Throwable t, Response response) {
             //Log.i(TAG, ""+ response.message());
             Log.i(TAG, "Websocket onFailure()");
-            //disconnect();
         }
     }
 }

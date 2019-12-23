@@ -91,17 +91,20 @@
             android:visibility="gone">
 
             <LinearLayout
+                android:visibility="gone"
                 android:id="@+id/swipeLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:visibility="gone">
+                android:gravity="center_horizontal">
 
                 <com.mapsrahal.util.SwipeButton
                     android:id="@+id/swipeButton"
-                    android:layout_width="0dp"
+                    android:padding="@dimen/space10"
+                    android:layout_marginLeft="@dimen/space10"
+                    android:layout_marginRight="@dimen/space10"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:background="@android:color/holo_green_dark"
                     android:text="reached_customer"
                     android:textColor="@android:color/black" />

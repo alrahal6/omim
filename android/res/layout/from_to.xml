@@ -184,7 +184,7 @@
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/matching_list_vp"
         android:layout_width="match_parent"
-        android:layout_height="200dp"/>
+        android:layout_height="190dp"/>
         <!--<RadioGroup
             android:paddingBottom="@dimen/space5"
             android:orientation="horizontal"

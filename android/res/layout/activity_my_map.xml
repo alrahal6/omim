@@ -34,6 +34,8 @@
         android:text="Is Online" />
     <include layout="@layout/from_to"/>
     <include layout="@layout/captain_content" />
+    <include layout="@layout/fragment_driver_request" />
+    <include layout="@layout/notification_list_items" />
     <include
         android:id="@+id/navigation_buttons"
         layout="@layout/map_navigation_buttons"/>

@@ -8,11 +8,12 @@ import android.net.Uri;
 import androidx.core.app.NotificationCompat;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
+import static com.mapsrahal.maps.MwmApplication.CHANNEL_ID_CALL_CAPTAIN;
 
 public class MyNotificationManager {
     private static MyNotificationManager mInstance;
     private final Context mCtx;
-    private static final String CHANNEL_ID_CALL_CAPTAIN = "call_captatin" ;
+
 
     private MyNotificationManager(Context context) {
         mCtx = context.getApplicationContext();

@@ -12,6 +12,9 @@ import androidx.core.app.NotificationCompat;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.google.gson.Gson;
+import com.mapsrahal.maps.MapActivity;
+import com.mapsrahal.maps.MwmApplication;
 import com.mapsrahal.maps.MySharedPreference;
 import com.mapsrahal.maps.R;
 import com.mapsrahal.maps.SplashActivity;
@@ -23,7 +26,7 @@ import static com.mapsrahal.maps.MwmApplication.CHANNEL_ID;
 
 public class FCMListenerService extends FirebaseMessagingService {
     private static final String TAG = FCMListenerService.class.getSimpleName();
-
+    Gson gson = new Gson();
     @Override
     public void onNewToken(@NonNull String s) {
         super.onNewToken(s);
@@ -58,8 +61,20 @@ public class FCMListenerService extends FirebaseMessagingService {
             title = notification.getTitle();
             body  = notification.getBody();
         }
+        String usrNotification = gson.toJson(data);
+        MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).userNotification(usrNotification);
+
         //Log.d(TAG, "Message from server " + title + body);
-        Intent intent = new Intent(this,  SplashActivity.class);
+        Intent intent = new Intent(this,  MapActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK );
+        intent.setAction("intent.mycustom.action");
+        intent.addCategory(Intent.CATEGORY_DEFAULT);
+
+        boolean isForeground = MwmApplication.backgroundTracker(MwmApplication.get().getApplicationContext()).isForeground();
+        if(isForeground) {
+            startActivity(intent);
+            return;
+        }
         //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
                 PendingIntent.FLAG_ONE_SHOT);
@@ -89,14 +104,24 @@ public class FCMListenerService extends FirebaseMessagingService {
             case Constants.Notification.PASSENGER_ACCEPTED:
                 title = "Passenger Accepted";
                 break;
-            
+            case Constants.Notification.PASSENGER_REFUSED:
+                title = "Passenger Rejected";
+                break;
+            case Constants.Notification.DRIVER_INVITE:
+                title = "Driver Invite";
+                break;
+            case Constants.Notification.DRIVER_ACCEPTED:
+                title = "Driver Accepted";
+                break;
+            case Constants.Notification.DRIVER_REFUSED:
+                title = "Driver Rejected";
+                break;
         }
         return title;
     }
 
     private String getFlagBody(String flag) {
         String body = "";
-
         int mFlag = Integer.parseInt(flag);
         switch (mFlag) {
             case Constants.Notification.PASSENGER_REQUEST:
@@ -104,6 +129,18 @@ public class FCMListenerService extends FirebaseMessagingService {
                 break;
             case Constants.Notification.PASSENGER_ACCEPTED:
                 body = "Passenger Accepted";
+                break;
+            case Constants.Notification.PASSENGER_REFUSED:
+                body = "Passenger Rejected your request";
+                break;
+            case Constants.Notification.DRIVER_INVITE:
+                body = "Driver Invited for trip!";
+                break;
+            case Constants.Notification.DRIVER_ACCEPTED:
+                body = "Driver Accepted you request!";
+                break;
+            case Constants.Notification.DRIVER_REFUSED:
+                body = "Driver Rejected your request!";
                 break;
 
         }

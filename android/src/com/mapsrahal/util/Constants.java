@@ -24,11 +24,6 @@ public final class Constants
     public static final String MAIL_BODY = "&body=";
     public static final String HTTP_GE0_PREFIX = "http://ge0.me/";
 
-    //public static final String HTTP_BASE_URL = "http://3.18.30.74:3003/";
-    //public static final String SERVER_WS_URL = "ws://3.18.30.74:3003/";
-    public static final String HTTP_BASE_URL = "http://192.168.43.214:3002/";
-    public static final String SERVER_WS_URL = "ws://192.168.43.214:3002/x";
-
     public static final String PLAY_MARKET_HTTPS_APP_PREFIX = "https://play.google.com/store/apps/details?id=";
 
     public static final String FB_MAPSME_COMMUNITY_HTTP = "http://www.facebook.com/MapsWithMe";

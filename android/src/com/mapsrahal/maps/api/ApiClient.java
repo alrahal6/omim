@@ -1,5 +1,6 @@
 package com.mapsrahal.maps.api;
 
+import com.mapsrahal.maps.Framework;
 import com.mapsrahal.util.Constants;
 
 import okhttp3.OkHttpClient;
@@ -14,7 +15,7 @@ public class ApiClient {
     public static Retrofit getClient() {
         if (retrofit==null) {
             retrofit = new Retrofit.Builder()
-                    .baseUrl(Constants.Url.HTTP_BASE_URL)
+                    .baseUrl(Framework.nativeGetBaseUrl())
                     .client(okHttpClient)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();

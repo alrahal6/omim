@@ -16,6 +16,7 @@ public class MySharedPreference {
     private static final String KEY_USER_ID = "userid";
     private static final String KEY_USER_TYPE = "usertype";
     private static final String KEY_MESSAGE = "keyMessage";
+    private static final String KEY_NOTIFICATION = "keyNotification";
     private static final String KEY_TRIP_ID = "tripId";
     private static final String KEY_DISTANCE = "distance";
     private static final String KEY_START_TIME = "tripStartTime";
@@ -103,6 +104,18 @@ public class MySharedPreference {
         SharedPreferences.Editor editor = getSharedPreference().edit();
         editor.putString(KEY_MESSAGE, message);
         editor.apply();
+    }
+
+    public void userNotification(String message) {
+        //SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = getSharedPreference().edit();
+        editor.putString(KEY_NOTIFICATION, message);
+        editor.apply();
+    }
+
+    public String getUserNotification() {
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getString(KEY_NOTIFICATION, null);
     }
 
     public void setCaptainOnline(boolean online) {

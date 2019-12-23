@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/notification_req_res"
+    android:layout_gravity="center_vertical"
+
+    app:cardCornerRadius="10dp"
+    android:layout_margin="8dp">
+
+
+    <RelativeLayout
+        android:layout_marginTop="@dimen/space20"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="4dp">
+
+        <ImageView
+            android:id="@+id/n_imageView"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/ic_person_black_24dp"
+            android:layout_margin="@dimen/space5"
+            android:padding="2dp" />
+        <ImageView
+            android:id="@+id/n_closable"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/ic_close"
+            android:layout_margin="@dimen/space5"
+            android:padding="2dp" />
+        <TextView
+            android:id="@+id/n_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/n_imageView"
+            android:text="Name : "
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_toRightOf="@+id/n_imageView" />
+        <TextView
+            android:id="@+id/n_textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/n_textView"
+            android:layout_marginStart="8dp"
+            android:layout_toEndOf="@+id/n_imageView"
+            android:text="Address : "
+            android:textSize="15sp"
+            android:layout_marginLeft="8dp"
+            android:layout_toRightOf="@+id/n_imageView" />
+        <TextView
+            android:id="@+id/n_start_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/n_textView2"
+            android:text="Start Time : "
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/n_your_distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/n_start_time"
+            android:text="Your Distance : "
+            android:textSize="15sp" />
+        <TextView
+            android:id="@+id/n_extra_distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/n_your_distance"
+            android:text="Extra Distance : "
+            android:textSize="15sp"/>
+        <TextView
+            android:id="@+id/n_trip_route_plan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/n_extra_distance"
+            android:text="Trip Plan "
+            android:textSize="15sp"/>
+        <LinearLayout
+            android:id="@+id/ll__req"
+            android:layout_below="@+id/n_trip_route_plan"
+            android:orientation="horizontal"
+            android:weightSum="5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/n_trip_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="Amount : "
+                android:textSize="15sp"/>
+            <TextView
+                android:id="@+id/n_trip_distance"
+                android:layout_width="wrap_content"
+                android:layout_weight="2"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/n_start_time"
+                android:text="Distance : "
+                android:textSize="15sp" />
+            <!--<Button
+                android:id="@+id/n_request_match"
+                android:layout_weight="1"
+                android:layout_height="32dp"
+                android:layout_width="wrap_content"
+                android:textColor="@color/base_green"
+                android:background="@layout/rounded_border_edittext"
+                android:text="Request"/>-->
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll__button"
+            android:layout_below="@+id/ll__req"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/space10"
+            android:weightSum="2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/n_accept_request"
+                android:layout_weight="1"
+                android:layout_height="32dp"
+                android:layout_width="wrap_content"
+                android:textColor="@color/base_green"
+                android:background="@layout/rounded_border_edittext"
+                android:text="Accept"/>
+            <Button
+                android:id="@+id/n_deny_request"
+                android:layout_weight="1"
+                android:layout_height="32dp"
+                android:layout_marginLeft="@dimen/space20"
+                android:layout_width="wrap_content"
+                android:textColor="@color/base_red"
+                android:background="@layout/rounded_border_edittext"
+                android:text="Reject"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_below="@+id/ll__button"
+            android:id="@+id/n_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/n_notification_received"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:text="Notification Received"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

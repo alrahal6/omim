@@ -240,6 +240,10 @@ public class Framework
     nativeSetSpeedCamManagerMode(mode.ordinal());
   }
 
+  public static native String nativeGetBaseUrl();
+
+  public static native String nativeGetWsUrl();
+
   public static native void nativeShowTrackRect(long track);
 
   public static native int nativeGetDrawScale();
