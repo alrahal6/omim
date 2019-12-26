@@ -1,42 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/notification_req_res"
     android:layout_gravity="center_vertical"
-
-    app:cardCornerRadius="10dp"
+    android:orientation="vertical"
+    android:background="@color/white_60"
     android:layout_margin="8dp">
 
-
-    <RelativeLayout
+    <LinearLayout
+        android:id="@+id/accept_reject"
         android:layout_marginTop="@dimen/space20"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         android:layout_margin="4dp">
 
+        <TextView
+            android:id="@+id/n_notification_title"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:text="Ride Yet To Start"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
         <ImageView
+            android:layout_below="@+id/n_notification_title"
             android:id="@+id/n_imageView"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@drawable/ic_person_black_24dp"
             android:layout_margin="@dimen/space5"
             android:padding="2dp" />
-        <ImageView
+        <!--<ImageView
             android:id="@+id/n_closable"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_alignParentEnd="true"
             android:background="@drawable/ic_close"
             android:layout_margin="@dimen/space5"
-            android:padding="2dp" />
+            android:padding="2dp" />-->
         <TextView
             android:id="@+id/n_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
             android:layout_toEndOf="@+id/n_imageView"
+            android:layout_below="@+id/n_notification_title"
             android:text="Name : "
             android:textColor="@android:color/black"
             android:textSize="20sp"
@@ -139,21 +149,18 @@
                 android:textColor="@color/base_red"
                 android:background="@layout/rounded_border_edittext"
                 android:text="Reject"/>
-
         </LinearLayout>
-        <LinearLayout
-            android:layout_below="@+id/ll__button"
-            android:id="@+id/n_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/n_notification_received"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:text="Notification Received"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
-    </RelativeLayout>
-</androidx.cardview.widget.CardView>
+            <Button
+                android:visibility="gone"
+                android:id="@+id/n_cancel_request"
+                android:layout_height="32dp"
+                android:layout_marginLeft="@dimen/space20"
+                android:layout_width="wrap_content"
+                android:textColor="@color/base_red"
+                android:background="@layout/rounded_border_edittext"
+                android:text="Cancel"/>
+
+    </LinearLayout>
+
+</LinearLayout>

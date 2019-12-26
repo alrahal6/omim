@@ -69,12 +69,6 @@ public class FCMListenerService extends FirebaseMessagingService {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK );
         intent.setAction("intent.mycustom.action");
         intent.addCategory(Intent.CATEGORY_DEFAULT);
-
-        boolean isForeground = MwmApplication.backgroundTracker(MwmApplication.get().getApplicationContext()).isForeground();
-        if(isForeground) {
-            startActivity(intent);
-            return;
-        }
         //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
                 PendingIntent.FLAG_ONE_SHOT);
@@ -91,6 +85,11 @@ public class FCMListenerService extends FirebaseMessagingService {
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         notificationManager.notify(0, notificationBuilder.build());
+        boolean isForeground = MwmApplication.backgroundTracker(MwmApplication.get().getApplicationContext()).isForeground();
+        if(isForeground) {
+            startActivity(intent);
+            //return;
+        }
     }
 
     private String getFlagTitle(String flag) {
@@ -99,22 +98,22 @@ public class FCMListenerService extends FirebaseMessagingService {
         int mFlag = Integer.parseInt(flag);
         switch (mFlag) {
             case Constants.Notification.PASSENGER_REQUEST:
-                title = "Passenger Request";
+                title = getString(R.string.passenger_request);
                 break;
             case Constants.Notification.PASSENGER_ACCEPTED:
-                title = "Passenger Accepted";
+                title = getString(R.string.passenger_accepted_request);
                 break;
             case Constants.Notification.PASSENGER_REFUSED:
-                title = "Passenger Rejected";
+                title = getString(R.string.passenger_cancel);
                 break;
             case Constants.Notification.DRIVER_INVITE:
-                title = "Driver Invite";
+                title = getString(R.string.captain_invitation);
                 break;
             case Constants.Notification.DRIVER_ACCEPTED:
-                title = "Driver Accepted";
+                title = getString(R.string.captain_accepted);
                 break;
             case Constants.Notification.DRIVER_REFUSED:
-                title = "Driver Rejected";
+                title = getString(R.string.captain_cancelled);
                 break;
         }
         return title;

@@ -71,6 +71,7 @@ import com.mapsrahal.maps.activity.ui.main.MatchingStatePagerAdapter;
 import com.mapsrahal.maps.activity.ui.main.PageViewModel;
 import com.mapsrahal.maps.activity.ui.main.ViewModelFactory;
 import com.mapsrahal.maps.api.ApiClient;
+import com.mapsrahal.maps.api.FindDriverApi;
 import com.mapsrahal.maps.api.ParsedMwmRequest;
 import com.mapsrahal.maps.api.PostApi;
 import com.mapsrahal.maps.api.UserMessageApi;
@@ -79,6 +80,7 @@ import com.mapsrahal.maps.bookmarks.data.MapObject;
 import com.mapsrahal.maps.intent.MapTask;
 import com.mapsrahal.maps.location.CompassData;
 import com.mapsrahal.maps.location.LocationHelper;
+import com.mapsrahal.maps.model.FindDriver;
 import com.mapsrahal.maps.model.MatchingItem;
 import com.mapsrahal.maps.model.Post;
 import com.mapsrahal.maps.model.UserMessage;
@@ -103,6 +105,7 @@ import com.mapsrahal.util.SwipeButton;
 import com.mapsrahal.util.SwipeButtonCustomItems;
 import com.mapsrahal.util.UiUtils;
 import com.mapsrahal.util.Utils;
+import com.mapsrahal.util.push.FCMListenerService;
 import com.mapsrahal.util.sharing.TargetUtils;
 import com.mapsrahal.util.statistics.AlohaHelper;
 import com.mapsrahal.util.statistics.Statistics;
@@ -220,7 +223,7 @@ public class MapActivity extends BaseMwmFragmentActivity
     private Switch mSwitch;
     PageViewModel pageViewModel;
     MatchingStatePagerAdapter mAdapter;
-    private CardView mNotificationCard;
+    private LinearLayout mNotificationCard;
     TextView mDriverName;
     private TextView mDriverPhone;
     private TextView mCancelRequest;
@@ -230,6 +233,15 @@ public class MapActivity extends BaseMwmFragmentActivity
     private ServerConnection mService;
     private WebSocketViewModel mViewModel;
     private boolean isRequestInProgress = false, isStartedCounter = false;
+    private final int[] requestedDrivers = new int[10];
+    private int requestCounter = 0;
+    private int driverId = 0;
+    private static final int NEW_REQUEST = 4;
+    private static final int CANCEL_DRIVER = 5;
+    private static final int END_TRIP = 13;
+    private final Handler requestHandler = new Handler();
+
+
     @Override
     protected void  onSafeCreate(Bundle savedInstanceState) {
         super.onSafeCreate(savedInstanceState);
@@ -253,6 +265,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         } else {
             mSwitch.setChecked(false);
         }
+        //requestHandler.postDelayed(requestRunnable, 0);
         mSendRequest = findViewById(R.id.send_request_test);
         mSendRequest.setOnClickListener(this);
         //MatchingStatePagerAdapter matchingStateAdapter = new MatchingStatePagerAdapter(this, getSupportFragmentManager());
@@ -331,6 +344,8 @@ public class MapActivity extends BaseMwmFragmentActivity
             /*default:
                 break;*/
         }
+        requestCounter = 0;
+        //requestedDrivers[requestCounter] = userTripInfo.getUserId();
 
         if(MySharedPreference.getInstance(this).isCaptainOnline()) {
             hideFromTo();
@@ -645,7 +660,8 @@ public class MapActivity extends BaseMwmFragmentActivity
                 dateTime();
                 break;
             case R.id.send_request_test:
-                sendMe();
+                //sendMe();
+                getNearestDriver();
                 break;
             case R.id.add_seat:
                 if(seatCount < 4) {
@@ -1141,32 +1157,12 @@ public class MapActivity extends BaseMwmFragmentActivity
         //MyBase.getInstance(this).addToRequestQueue(updateIsOnReq);
     }
 
-    private void sendMe() {
-        //mDriverInfo.setVisibility(View.GONE);
-        //mDriverPhone.setText("");
-        //Log.i(TAG , "" +userTripInfo);
 
-        try {
-            UserTripInfo userTripInfo = new UserTripInfo(
-                    25,
-                    "912391525",
-                    "dhayal");
-            userTripInfo.setDriverId(27);
-            mService.sendReq(userTripInfo);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        //startTimer();
-    }
-
-    private int getFlag() {
-        return Constants.Notification.DRIVER_ACCEPTED;
-    }
 
     DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            switch (which){
+            switch (which) {
                 case DialogInterface.BUTTON_POSITIVE:
                     sendMessage();
                     break;
@@ -1198,6 +1194,7 @@ public class MapActivity extends BaseMwmFragmentActivity
 
             }
         });
+        mNotificationCard.setVisibility(View.GONE);
     }
 
     private void processNotification(String myNotification) {
@@ -1212,6 +1209,8 @@ public class MapActivity extends BaseMwmFragmentActivity
         Button reject = findViewById(R.id.n_deny_request);
         from.setText(userMessage.getfAddress());
         to.setText(userMessage.gettAddress());
+        TextView mTextView = findViewById(R.id.n_notification_title);
+        LinearLayout linearLayout = findViewById(R.id.ll__button);
         /*Log.d(TAG,myNotification+"");
         Log.d(TAG,u +"");
         Log.d(TAG,"Flag : "+ u.getmFlag());
@@ -1223,11 +1222,43 @@ public class MapActivity extends BaseMwmFragmentActivity
         if(mFlag !=0 ) {
             mNotificationCard.setVisibility(View.VISIBLE);
         }
-        /*switch(mFlag) {
-            case 1:
-                mNotificationCard.setVisibility(View.VISIBLE);
+        switch(mFlag) {
+            case Constants.Notification.PASSENGER_REQUEST:
+                //n_notification_title
+                //FCMListenerService.getFlagTitle(Constants.Notification.PASSENGER_REQUEST);
+                mTextView.setText(getString(R.string.passenger_ride_request));
                 break;
-        }*/
+            case Constants.Notification.PASSENGER_ACCEPTED:
+                mTextView.setText(getString(R.string.passenger_accepted_request));
+                break;
+            case Constants.Notification.PASSENGER_CANCELLED:
+                linearLayout.setVisibility(View.GONE);
+                mTextView.setText(getString(R.string.passenger_cancel));
+                //mNotificationCard.setVisibility(View.VISIBLE);
+                break;
+            case Constants.Notification.DRIVER_INVITE:
+                mTextView.setText(getString(R.string.captain_invitation));
+                break;
+            case Constants.Notification.DRIVER_ACCEPTED:
+                mTextView.setText(getString(R.string.captain_accepted));
+                //mNotificationCard.setVisibility(View.VISIBLE);
+                break;
+            case Constants.Notification.DRIVER_CANCELLED:
+                linearLayout.setVisibility(View.GONE);
+                mTextView.setText(getString(R.string.captain_cancelled));
+                //mNotificationCard.setVisibility(View.VISIBLE);
+                break;
+            case Constants.Notification.DRIVER_REACHED:
+                linearLayout.setVisibility(View.GONE);
+                mTextView.setText(getString(R.string.captain_reached));
+                //mNotificationCard.setVisibility(View.VISIBLE);
+                break;
+            case Constants.Notification.TRIP_STARTED:
+                linearLayout.setVisibility(View.GONE);
+                mTextView.setText(getString(R.string.trip_started));
+                //mNotificationCard.setVisibility(View.VISIBLE);
+                break;
+        }
 
         accept.setOnClickListener(new View.OnClickListener() {
 
@@ -1915,5 +1946,209 @@ public class MapActivity extends BaseMwmFragmentActivity
         mMatchingList.add(matchingItem);
         //matchDao.insert(matchingItem);
     }
+
+    private String getNotIn() {
+        StringBuilder argsBuilder = new StringBuilder();
+        argsBuilder.append("(");
+        final int argsCount = requestedDrivers.length;
+        for (int i = 0; i < argsCount; i++) {
+            argsBuilder.append(requestedDrivers[i]);
+            if (i < argsCount - 1) {
+                argsBuilder.append(",");
+            }
+        }
+        argsBuilder.append(")");
+        return argsBuilder.toString();
+    }
+
+    private void bringBackDriver() {
+        if(driverId > 0) {
+            // send cancel to previous request
+            if(!isDriverBusy) {
+                userTripInfo.setMyFlag(CANCEL_DRIVER);
+                sendMe();
+            }
+
+            // todo bring driver back online
+            //MyBase.getInstance(mContext).addToRequestQueue(bringBackDriver);
+        }
+    }
+
+    List<FindDriver> mNearestDriver = new ArrayList<>();
+
+    private void sendMe() {
+        try {
+            /*UserTripInfo userTripInfo = new UserTripInfo(
+                    27,
+                    "912391525",
+                    "dhayal");
+            userTripInfo.setDriverId(25);*/
+            mService.sendReq(userTripInfo);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getNearestDriver() {
+        String notIn = getNotIn();
+
+        double lat = 11.1017168d;
+        double lng = 77.3792759d;
+        FindDriver findDriver = new FindDriver(
+                MySharedPreference.getInstance(this).getUserId(),lat,lng,
+                0
+        );
+        FindDriverApi findDriverApi = ApiClient.getClient().create(FindDriverApi.class);
+        Call<List<FindDriver>> call = findDriverApi.findDriver(findDriver);
+
+        call.enqueue(new Callback<List<FindDriver>>() {
+            @Override
+            public void onResponse(Call<List<FindDriver>> call, Response<List<FindDriver>> response) {
+                if (response.isSuccessful()) {
+                    mNearestDriver = response.body();
+                    requestHandler.postDelayed(requestRunnable, 0);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<FindDriver>> call, Throwable t) {
+                Toast.makeText(MapActivity.this,"Sorry! No Drivers found! Try Later",Toast.LENGTH_LONG).show();
+            }
+
+        });
+    }
+
+
+
+    private final Runnable requestRunnable = new Runnable() {
+        @Override
+        public void run() {
+            for (FindDriver driverList : mNearestDriver) {
+                int dId = driverList.getUserId();
+                if (dId > 0) {
+                    userTripInfo = new UserTripInfo(MySharedPreference.getInstance(MapActivity.this).getUserId(),
+                            MySharedPreference.getInstance(getApplicationContext()).getPhoneNumber(),
+                            MySharedPreference.getInstance(getApplicationContext()).getUserName()
+                            );
+                    double dLat = driverList.getLat();
+                    double dLng = driverList.getLng();
+                    driverId = dId;
+                    userTripInfo.setDriverId(driverId);
+                    //addMarker(new LatLng(dLat, dLng));
+                    mCancelRequest.setVisibility(View.VISIBLE);
+                    requestedDrivers[++requestCounter] = driverId;
+                    isRequestInProgress = true;
+                    if (!isDriverAccepted) {
+                        userTripInfo.setMyFlag(NEW_REQUEST);
+                        sendMe();
+                        isDriverBusy = false;
+                    }
+                    requestHandler.postDelayed(requestRunnable, 25000);
+                } else {
+                    isRequestInProgress = false;
+                    requestCounter = 9;
+                    removeRequest();
+                    Toast.makeText(MapActivity.this, "Sorry! No drivers found", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+    };
+
+    private void removeRequest() {
+        requestHandler.removeCallbacks(requestRunnable);
+    }
+    /*
+    private final Runnable requestRunnable = new Runnable() {
+        @Override
+        public void run() {
+            final String pLat = Double.toString(userTripInfo.getLat());
+            final String pLng = Double.toString(userTripInfo.getLng());
+            //Log.i(TAG,"lat "+ pLat);
+            final String notIn = getNotIn();
+
+            Map<String, String> params = new HashMap();
+            params.put("passengerId", Integer.toString(userTripInfo.getUserId()));
+            params.put("tripId", Double.toString(userTripInfo.getTripId()));
+            params.put("lat", pLat);
+            params.put("car", userTripInfo.getCar());
+            params.put("lng", pLng);
+            params.put("notIn", notIn);
+
+            JSONObject parameters = new JSONObject(params);
+            bringBackDriver();
+            //Log.i(TAG,"json "+ parameters);
+            //Toast.makeText(getApplicationContext(),"param : "+parameters, Toast.LENGTH_LONG).show();
+            JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST,
+                    MyUrl.URL_GET_NEAR_DRIVER, parameters, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        jsonArray = response.getJSONArray("nearDrivers");
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject driverList;
+                            driverList = jsonArray.getJSONObject(i);
+                            int dId = Integer.parseInt(driverList.getString("driverId"));
+                            if (dId > 0) {
+                                erasePolylines();
+                                double dLat = Double.parseDouble(driverList.getString("dLat"));
+                                double dLng = Double.parseDouble(driverList.getString("dLng"));
+                                //String destDistance = String.format("%.2f",distanceToDestination());
+                                //getRouteToMarker(dLat,dLng);
+                                //oldLocation = new LatLng(dLat, dLng);
+                                mDriverMarker = mMap.addMarker(new MarkerOptions()
+                                        .position(new LatLng(dLat, dLng)).title("your driver").flat(true)
+                                        .icon(BitmapDescriptorFactory.fromResource(R.mipmap.car_top)));
+                                drawPolylines(dLat, dLng);
+                                driverId = Integer.parseInt(driverList.getString("driverId"));
+                                userTripInfo.setDriverId(driverId);
+                                //addMarker(new LatLng(dLat, dLng));
+                                mCancelRequest.setVisibility(View.VISIBLE);
+                                requestedDrivers[++requestCounter] = driverId;
+                                isRequestInProgress = true;
+                                if(!isDriverAccepted) {
+                                    userTripInfo.setMyFlag(NEW_REQUEST);
+                                    sendMe();
+                                    isDriverBusy = false;
+                                }
+                                //Log.i(TAG,"request thread id : " +Thread.currentThread().getId());
+                                //Thread.sleep(25000);
+                                //if(isDriverAccepted) {
+                                //isDriverBusy = false;
+                                //getClosestDriver();
+                                //} //else {
+                                //removeRequest();
+                                //}
+                                requestHandler.postDelayed(requestRunnable, 25000);
+                            } else {
+                                isRequestInProgress = false;
+                                if (mDriverMarker != null) {
+                                    mDriverMarker.remove();
+                                }
+                                erasePolylines();
+                                requestCounter = 9;
+                                //mRequest.setText("Sorry! Driver Not Found");
+                                removeRequest();
+                                //removeRequest();
+                                Toast.makeText(mContext, "Sorry! No drivers found", Toast.LENGTH_LONG).show();
+                            }
+
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } //catch (InterruptedException e) {
+                    //e.printStackTrace();
+                    //}
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    //error.printStackTrace();
+                    Toast.makeText(mContext, error.getMessage(), Toast.LENGTH_LONG).show();
+                    //TODO: handle failure
+                }
+            });
+            MyBase.getInstance(mContext).addToRequestQueue(jsonRequest);
+        }
+    };*/
 
 }
