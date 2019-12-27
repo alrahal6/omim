@@ -63,9 +63,9 @@ import static com.mapsrahal.maps.activity.SelectorActivity.PASSENGER_CAPTAIN_SEL
 
 public class ServerConnection extends Service {
 
-    //public static final String ACTION_MSG_RECEIVED = "msgReceived";
-    //public static final String ACTION_MSG_ACCEPTED = "requestAccepted";
-    //public static final String ACTION_MSG_SEND = "msgReceived";
+    public static final String ACTION_MSG_RECEIVED = "msgReceived";
+    public static final String ACTION_MSG_ACCEPTED = "requestAccepted";
+    public static final String ACTION_MSG_SEND = "msgReceived";
     private static final String RECONNECT_IF_BROKEN = "reconnectIfBroken";
     public static final String ACTION_NETWORK_STATE_CHANGED = "networkStateChanged";
     private static final long INTERVAL_FIVE_MINS = 3 * 60 * 1000;
@@ -333,8 +333,14 @@ public class ServerConnection extends Service {
         //return System.currentTimeMillis() / 1000L;
     }
 
+    private void sendMessageReceivedBroadcast(String myMsg) {
+        Intent intent = new Intent(ACTION_MSG_RECEIVED);
+        intent.putExtra("MyDriverMessage",myMsg);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
+
     private void sendMessageReceivedEvent(String myMsg) {
-        MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).userMessage(myMsg);
+
         isMessageReceived = true;
         receivedMessage = myMsg;
         //receivedMessage = myMsg;
@@ -344,10 +350,15 @@ public class ServerConnection extends Service {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK );
         intent.setAction("intent.mycustom.action");
         intent.addCategory(Intent.CATEGORY_DEFAULT);
-        //g = gSon.fromJson(myMsg, UserTripInfo.class);
-        //int flag = g.getMyFlag();
+        g = gSon.fromJson(myMsg, UserTripInfo.class);
+        int flag = g.getMyFlag();
         //mBinder.pingBinder()
-        //if(flag == 4) {
+        if(flag == 4) {
+            MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).userMessage(myMsg);
+            startActivity(intent);
+        } else {
+            sendMessageReceivedBroadcast(myMsg);
+        }
             //MySharedPreference.getInstance(MwmApplication.get().getApplicationContext())
                     //.setMsgRcvdTime(getCurrentTimestamp());
             //r.play();
@@ -361,7 +372,7 @@ public class ServerConnection extends Service {
             //MySharedPreference.getInstance(MwmApplication.get().getApplicationContext())
                     //.setMsgRcvdTime(0);
         }*/
-        startActivity(intent);
+
         /*if (!mTimerRunning) {
             startTimer();
         }*/
@@ -482,7 +493,7 @@ public class ServerConnection extends Service {
     private void connect() {
         if (!isHaveMessage) {
             Request request = new Request.Builder()
-                    .url(Framework.nativeGetWsUrl() + "?token=" + userId)
+                    .url(Framework.nativeGetWsUrl() + "?token=" + userId +"&is="+MySharedPreference.getInstance(this).isCaptainOnline())
                     .build();
             mWebSocket = mClient.newWebSocket(request, new SocketListener());
             /*mMessageHandler = new Handler(msg -> {

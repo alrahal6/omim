@@ -2962,10 +2962,11 @@
     <string name="enable_location_permission" translatable="false">Please enable location permission to access</string>
     <string name="pay" translatable="false">Pay :</string>
     <string name="passenger_ride_request">Requested For Ride</string>
-    <string name="passenger_accepted_request">Requested Accepted Ride</string>
+    <string name="passenger_accepted_request">Passenger Accepted Ride</string>
     <string name="captain_invitation">Captain Invite For Ride</string>
     <string name="captain_accepted">Captain Accepted Ride</string>
     <string name="captain_cancelled">Captain Cancelled Ride</string>
+    <string name="captain_refused">Captain Refused Ride</string>
     <string name="captain_reached">Your Captain Reached</string>
     <string name="trip_started">Your Trip Started</string>
 </resources>
