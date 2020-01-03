@@ -8,6 +8,7 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.mapsrahal.maps.MapActivity;
+import com.mapsrahal.maps.MySharedPreference;
 import com.mapsrahal.maps.R;
 import com.mapsrahal.util.UiUtils;
 
@@ -15,6 +16,14 @@ public class SelectorActivity extends AppCompatActivity implements View.OnClickL
 
     Button mPassengerCab,mPassengerPool,mPassengerAny,mCaptainCab,mCaptainPool,mCaptainAny;
     public static final String PASSENGER_CAPTAIN_SELECTOR = "passenger_captain_selector";
+
+    public static final int PASSENGER_TAXI_ONLY = 1;
+    public static final int PASSENGER_SHARE_ONLY = 2;
+    public static final int PASSENGER_ANY = 3;
+    public static final int CAPTAIN_TAXI_ONLY = 4;
+    public static final int CAPTAIN_SHARE_ONLY = 5;
+    public static final int CAPTAIN_ANY = 6;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,27 +49,28 @@ public class SelectorActivity extends AppCompatActivity implements View.OnClickL
 
         switch (v.getId()) {
             case R.id.passenger_cab_only:
-                startActivity(1);
+                startActivity(PASSENGER_TAXI_ONLY);
                 break;
             case R.id.passenger_pool_only:
-                startActivity(2);
+                startActivity(PASSENGER_SHARE_ONLY);
                 break;
             case R.id.passenger_any:
-                startActivity(3);
+                startActivity(PASSENGER_ANY);
                 break;
             case R.id.captain_cab_only:
-                startActivity(4);
+                startActivity(CAPTAIN_TAXI_ONLY);
                 break;
             case R.id.captain_pool_only:
-                startActivity(5);
+                startActivity(CAPTAIN_SHARE_ONLY);
                 break;
             case R.id.captain_any:
-                startActivity(6);
+                startActivity(CAPTAIN_ANY);
                 break;
         }
     }
 
     private void startActivity(int v) {
+        MySharedPreference.getInstance(getApplicationContext()).setSelectorId(v);
         Intent intent = new Intent(this, MapActivity.class);
         intent.putExtra(PASSENGER_CAPTAIN_SELECTOR,v);
         startActivity(intent);

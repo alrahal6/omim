@@ -141,8 +141,8 @@ public class ServerConnection extends Service {
 
     public ServerConnection() {
         //mListener = listener;
-        userId = MySharedPreference.getInstance(this).getUserId();
-        phone = MySharedPreference.getInstance(this).getPhoneNumber();
+        userId = MySharedPreference.getInstance(this.getApplicationContext()).getUserId();
+        phone = MySharedPreference.getInstance(this.getApplicationContext()).getPhoneNumber();
     }
 
     public boolean isMessageReceived() {

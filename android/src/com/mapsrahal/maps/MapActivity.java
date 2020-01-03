@@ -3,33 +3,26 @@ package com.mapsrahal.maps;
 import android.app.ActivityManager;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
-import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.os.IBinder;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -43,18 +36,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
@@ -63,15 +49,7 @@ import com.github.florent37.singledateandtimepicker.dialog.SingleDateAndTimePick
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.mapsrahal.maps.activity.ContactActivity;
-import com.mapsrahal.maps.activity.MatchingListActivity;
-import com.mapsrahal.maps.activity.MyRidesActivity;
-import com.mapsrahal.maps.activity.ProfileActivity;
-import com.mapsrahal.maps.activity.ui.main.MatchingListFragment;
 import com.mapsrahal.maps.activity.ui.main.MatchingStatePagerAdapter;
-import com.mapsrahal.maps.activity.ui.main.PageViewModel;
-import com.mapsrahal.maps.activity.ui.main.ViewModelFactory;
 import com.mapsrahal.maps.api.ApiClient;
 import com.mapsrahal.maps.api.FindDriverApi;
 import com.mapsrahal.maps.api.ParsedMwmRequest;
@@ -98,7 +76,6 @@ import com.mapsrahal.maps.taxi.TaxiInfo;
 import com.mapsrahal.maps.taxi.TaxiManager;
 import com.mapsrahal.maps.websocket.ServerConnection;
 import com.mapsrahal.maps.websocket.WebSocketViewModel;
-import com.mapsrahal.maps.widget.menu.BaseMenu;
 import com.mapsrahal.maps.widget.menu.MyPositionButton;
 import com.mapsrahal.util.Constants;
 import com.mapsrahal.util.DateUtils;
@@ -107,7 +84,6 @@ import com.mapsrahal.util.SwipeButton;
 import com.mapsrahal.util.SwipeButtonCustomItems;
 import com.mapsrahal.util.UiUtils;
 import com.mapsrahal.util.Utils;
-import com.mapsrahal.util.push.FCMListenerService;
 import com.mapsrahal.util.sharing.TargetUtils;
 import com.mapsrahal.util.statistics.AlohaHelper;
 import com.mapsrahal.util.statistics.Statistics;
@@ -116,8 +92,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 import java.util.concurrent.TimeUnit;
@@ -125,6 +99,11 @@ import java.util.concurrent.TimeUnit;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.mapsrahal.maps.activity.SelectorActivity.CAPTAIN_TAXI_ONLY;
+import static com.mapsrahal.maps.activity.SelectorActivity.PASSENGER_ANY;
+import static com.mapsrahal.maps.activity.SelectorActivity.PASSENGER_SHARE_ONLY;
+import static com.mapsrahal.maps.activity.SelectorActivity.PASSENGER_TAXI_ONLY;
 
 public class MapActivity extends BaseMwmFragmentActivity
                          implements View.OnTouchListener,
@@ -139,64 +118,32 @@ public class MapActivity extends BaseMwmFragmentActivity
 
 {
 
-    public TextView tvDropOff,tvPickup,tvDistance,mDateTime,mRequiredSeats,mSetPickup,mSetDrop;
-    private Button btRequest,mMore;
-    private boolean mIsTabletLayout = false,isPickupSearch = true,isResultBySearch = false;
-    private ImageButton mAddressToggle,mMainMenu;
-    private ImageView mAddSeat,mRemoveSeat;
-    private Date startingTime;
-    private boolean mIsFullscreen;
-    private MapObject tempLocation,fromLocation,toLocation;
-    LinearLayout mllForm,mMnuForm;
-    private int seatCount = 1;
-    @Nullable
-    private Dialog mLocationErrorDialog;
-    //private DrawerLayout mDrawerLayout;
-    private boolean mLocationErrorDialogAnnoying = false;
-    @Nullable
-    private MapFragment mMapFragment;
-    @Nullable
-    private SearchFilterController mFilterController;
-    private static final int REQ_CODE_LOCATION_PERMISSION = 1;
-    boolean isLaunchByDeepLink = false;
-    private String myDistance,mSourceAddress,mDestinationAddress,mAddressToggleStr;
-    @Nullable
-    private MyPositionButton mNavMyPosition;
-    @Nullable
-    private NavigationButtonsAnimationController mNavAnimationController;
-    //private View myView;
-    private RoutingPlanInplaceController mRoutingPlanInplaceController;
-    @NonNull
-    private final View.OnClickListener mOnMyPositionClickListener = new MapActivity.CurrentPositionClickListener();
-    // Map tasks that we run AFTER rendering initialized
-    private final Stack<MapTask> mTasks = new Stack<>();
-    @SuppressWarnings("NullableProblems")
-    @NonNull
-    private NavigationController mNavigationController;
-    private static final String PASSENGER_CAPTAIN_SELECTOR = "passenger_captain_selector";
-    private String receivedMessage;
+    private TextView tvDropOff,tvPickup,tvDistance,mDateTime,mRequiredSeats,mSetPickup,mSetDrop;
+    private TextView mAmount, mTripTimer,mCustomerName,mCustomerPhone,mCustomerPickup;
+    private TextView mCustomerDestination,mTripDistance;
+    private TextView mDriverName,mDriverPhone,mCancelRequest;
 
-    private FusedLocationProviderClient mFusedLocationClient;
-    private Location mLastLocation;
+    private Button btRequest,mOpenGMap;
     private SwipeButton mSwipeButton;
-    private Button mOpenGMap;
-    private ProgressBar mProgressbar;
+    private ImageButton mAddressToggle,mMainMenu;
 
+    private ImageView mAddSeat,mRemoveSeat;
+
+    private LinearLayout mNotificationCard,mDriverInfo,mllForm,mMnuForm;
+    private LinearLayout mCustomerInfo, mAcceptBusyInfo, mSwipeLayout, mpayAndRating;
+    private ProgressBar mMyprogress;
+
+    private boolean mIsTabletLayout = false,isPickupSearch = true,isResultBySearch = false;
+    private boolean mIsFullscreen,mLocationErrorDialogAnnoying = false;
+    private boolean mTimerRunning,isLaunchByDeepLink = false;
+    private boolean isDriverAccepted = false,isDriverBusy = false;
+    private boolean isRequestInProgress = false, isStartedCounter = false;
     private Boolean isOnWaytoCustomer = false;
     private Boolean isOnTrip = false;
-    private String usrId;
-    private LinearLayout mCustomerInfo, mAcceptBusyInfo, mSwipeLayout, mpayAndRating;
+
+    private int seatCount = 1;
+    private static final int REQ_CODE_LOCATION_PERMISSION = 1;
     private int requestingPassenger = 0;
-    private TextView mAmount, mTripTimer;
-    private TextView mCustomerName;
-    private TextView mCustomerPhone;
-    private TextView mCustomerPickup;
-    private TextView mCustomerDestination;
-    private TextView mTripDistance;
-    private Ringtone r;
-    //MediaPlayer mediaPlayer;
-    private CountDownTimer mCountDownTimer;
-    private static final long START_TIME_IN_MILLIS = 20000;
     private int requestResponse = 3;
     private static final int SEND_BUSY = 2;
     private static final int ACCEPT_REQUEST = 3;
@@ -205,16 +152,52 @@ public class MapActivity extends BaseMwmFragmentActivity
     private static final int TRIP_STARTED = 12;
     private static final int TRIP_COMPLETED = 13;
     private static final int DISTANCE_NOTIFY = 50;
+    private int minDis,requestCounter = 0,driverId = 0;
+    private static final int NEW_REQUEST = 4;
+    private static final int CANCEL_DRIVER = 5;
+    private static final int END_TRIP = 13;
+    private final int[] requestedDrivers = new int[10];
+    private int mSelector;
+
+    private static final String PASSENGER_CAPTAIN_SELECTOR = "passenger_captain_selector";
+    private String receivedMessage,usrId;
+    private String myDistance,mSourceAddress,mDestinationAddress,mAddressToggleStr;
+
+    private Date startingTime;
+    private MapObject tempLocation,fromLocation,toLocation;
+    @Nullable
+    private Dialog mLocationErrorDialog;
+    @Nullable
+    private MapFragment mMapFragment;
+    @Nullable
+    private SearchFilterController mFilterController;
+    @Nullable
+    private MyPositionButton mNavMyPosition;
+    @Nullable
+    private NavigationButtonsAnimationController mNavAnimationController;
+    private RoutingPlanInplaceController mRoutingPlanInplaceController;
+    @NonNull
+    private final View.OnClickListener mOnMyPositionClickListener = new MapActivity.CurrentPositionClickListener();
+    // Map tasks that we run AFTER rendering initialized
+    private final Stack<MapTask> mTasks = new Stack<>();
+    @SuppressWarnings("NullableProblems")
+    @NonNull
+    private NavigationController mNavigationController;
+    private FusedLocationProviderClient mFusedLocationClient;
+    private Location mLastLocation;
+    private ProgressBar mProgressbar;
+    private Ringtone ringtone;
+    //MediaPlayer mediaPlayer;
+    private CountDownTimer mCountDownTimer;
+    private static final long START_TIME_IN_MILLIS = 20000;
     private Long tripStartTime;
     private String phoneNumber;
-    private boolean mTimerRunning;
     private NetworkStateReceiver receiver;
     private UserTripInfo g;
     private final Gson gSon = new Gson();
     private static final String TAG = MapActivity.class.getSimpleName();
     private String tripId;
     private float base, km, mins;
-    private int minDis;
     private ViewPager mViewPager;
     private SwipeButtonCustomItems swipeButtonSettings;
     private double distance, duration, price;
@@ -222,37 +205,69 @@ public class MapActivity extends BaseMwmFragmentActivity
     private final Handler timerHandler = new Handler();
     private final Handler tripRecordHandler = new Handler();
     private UserTripInfo userTripInfo;
-    private Button mSendRequest;
     private Switch mSwitch;
-    PageViewModel pageViewModel;
-    MatchingStatePagerAdapter mAdapter;
-    private LinearLayout mNotificationCard;
-    TextView mDriverName;
-    private TextView mDriverPhone;
-    private TextView mCancelRequest;
-    private LinearLayout mDriverInfo;
-    private boolean isDriverAccepted = false;
-    private boolean isDriverBusy = false;
+    private MatchingStatePagerAdapter mAdapter;
     private ServerConnection mService;
     private WebSocketViewModel mViewModel;
-    private boolean isRequestInProgress = false, isStartedCounter = false;
-    private final int[] requestedDrivers = new int[10];
-    private int requestCounter = 0;
-    private int driverId = 0;
-    private static final int NEW_REQUEST = 4;
-    private static final int CANCEL_DRIVER = 5;
-    private static final int END_TRIP = 13;
     private final Handler requestHandler = new Handler();
-    private int mSelector;
+
+    private void prepareForAll() {
+        // show hide for all
+        // validation for all
+    }
+
+    private void prepareForFrom() {
+        hideExceptFromTo();
+        showBtnRequest();
+    }
+
+    private void prepareForNone() {
+        hideFromTo();
+        onlineAsCaptain();
+        initRingTone();
+    }
+
+    private void onlineAsCaptain() {
+        mSwitch.setVisibility(View.VISIBLE);
+    }
+
+    private void hideExceptFromTo() {
+        mllForm.setVisibility(View.GONE);
+        hideBtnRequest();
+        mDateTime.setVisibility(View.GONE);
+    }
+
+    private void hideBtnRequest() {
+        btRequest.setVisibility(View.GONE);
+    }
+
+    private void showBtnRequest() {
+        btRequest.setVisibility(View.VISIBLE);
+    }
+
+    private void hideFromTo() {
+        tvDropOff.setVisibility(View.GONE);
+        tvPickup.setVisibility(View.GONE);
+        mAddressToggle.setVisibility(View.GONE);
+        hideExceptFromTo();
+    }
+
+    private void initRingTone() {
+        try {
+            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+            ringtone = RingtoneManager.getRingtone(this, notification);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     protected void  onSafeCreate(Bundle savedInstanceState) {
         super.onSafeCreate(savedInstanceState);
         setContentView(R.layout.activity_my_map);
-        Intent intent = getIntent();
-        mSelector = intent.getIntExtra(PASSENGER_CAPTAIN_SELECTOR,1);
         mDriverInfo = findViewById(R.id.driverInfo);
         mNotificationCard = findViewById(R.id.notification_req_res);
+        mMyprogress = findViewById(R.id.myProgress);
         //mDriverName = (TextView) view.findViewById(R.id.driverName);
         mDriverPhone = findViewById(R.id.driverPhone);
         mDriverPhone.setOnClickListener(this);
@@ -268,14 +283,8 @@ public class MapActivity extends BaseMwmFragmentActivity
         } else {
             mSwitch.setChecked(false);
         }
-        //requestHandler.postDelayed(requestRunnable, 0);
-        mSendRequest = findViewById(R.id.send_request_test);
-        mSendRequest.setOnClickListener(this);
-        //MatchingStatePagerAdapter matchingStateAdapter = new MatchingStatePagerAdapter(this, getSupportFragmentManager());
-        /*pageViewModel = ViewModelProviders.of(this,
-                new ViewModelFactory(getActivity().getApplication()))
-                .get(PageViewModel.class);*/
-        pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
+        //mSendRequest = findViewById(R.id.send_request_test);
+        //mSendRequest.setOnClickListener(this);
 
         mViewPager = findViewById(R.id.matching_list_vp);
         //mViewPager.setAdapter(matchingStateAdapter);
@@ -319,61 +328,28 @@ public class MapActivity extends BaseMwmFragmentActivity
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mMainMenu = findViewById(R.id.mainMenu);
         mMainMenu.setOnClickListener(this);
-        //Button buttonOpenBottomSheet = findViewById(R.id.more);
-        /*buttonOpenBottomSheet.setOnClickListener(v -> {
-            BottomSheetMoreSettings bottomSheet = new BottomSheetMoreSettings();
-            bottomSheet.show(getSupportFragmentManager(), "MoreSetting");
-        });*/
-        //removeBookmark();
-        //Log.d("MAP", "instance id new token is " + FirebaseInstanceId.getInstance().getToken());
-        mMapFragment = (MapFragment) getSupportFragmentManager().findFragmentByTag(MapFragment.class.getName());
-
+        mMapFragment = (MapFragment) getSupportFragmentManager()
+                .findFragmentByTag(MapFragment.class.getName());
 
         View container = findViewById(R.id.map_fragment_container);
         //myView = findViewById(R.id.map_fragment_container);
-        if (container != null)
-        {
+        if (container != null) {
             container.setOnTouchListener(this);
         }
         adjustCompass(0);
         mNavigationController = new NavigationController(this);
         initNavigationButtons();
         //myPositionClick();
-        switch (mSelector) {
-            case 4:
-                hideFromTo();
-                onlineAsCaptain();
-                break;
-            /*default:
-                break;*/
-        }
         requestCounter = 0;
         //requestedDrivers[requestCounter] = userTripInfo.getUserId();
-
-        if(MySharedPreference.getInstance(this).isCaptainOnline()) {
+        /*if(MySharedPreference.getInstance(this).isCaptainOnline()) {
             hideFromTo();
             onlineAsCaptain();
-        }
+        }*/
 
-        try {
-            //Uri notificationRaw = Uri.parse("android.resource://" + this.getPackageName() + "/raw/driver_call.mp3");
-            //Log.i(TAG,"Uri "+ notificationRaw);
-            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
-            //mediaPlayer = MediaPlayer.create(getApplicationContext(), notification);
-            r = RingtoneManager.getRingtone(this, notification);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
         mViewModel = ViewModelProviders.of(this).get(WebSocketViewModel.class);
         setObservers();
-        //Bundle bundle = this.getArguments();
-        //String s = (String) bundle.getSerializable("userTripInfo");
-        //userTripInfo = gSon.fromJson(s, UserTripInfo.class);
-        //mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        //SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        //mapFragment.getMapAsync(this);
-        //mapView = mapFragment.getView();
-
         mCustomerInfo = findViewById(R.id.customerInfo);
         mOpenGMap = findViewById(R.id.openGMap);
         mAcceptBusyInfo = findViewById(R.id.acceptBusyInfo);
@@ -397,56 +373,39 @@ public class MapActivity extends BaseMwmFragmentActivity
         mAmount = findViewById(R.id.payAmount);
         Button mSendFeedback = findViewById(R.id.submitRating);
         //checkLocationPermission();
+        //Intent intent = getIntent();
+        //mSelector = intent.getIntExtra(PASSENGER_CAPTAIN_SELECTOR,1);
+        mSelector = MySharedPreference.getInstance(getApplicationContext()).getSelectorId();
+        switch (mSelector) {
+            case PASSENGER_TAXI_ONLY:
+                prepareForFrom();
+                break;
+            case PASSENGER_SHARE_ONLY:
+            case PASSENGER_ANY:
+                prepareForAll();
+                break;
+            case CAPTAIN_TAXI_ONLY:
+                prepareForNone();
+                break;
+        }
 
-        mOpenGMap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openInGoogleMap();
-            }
+        mOpenGMap.setOnClickListener(v -> openInGoogleMap());
+
+        mSendFeedback.setOnClickListener(view -> {
+            mpayAndRating.setVisibility(View.GONE);
+            // todo save rating
         });
 
-        mSendFeedback.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mpayAndRating.setVisibility(View.GONE);
-                //if (mMap != null) {
-                //mMap.clear();
-                //}
-                // todo save rating
-            }
-        });
-
-        mCustomerPhone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                callDriver();
-            }
-        });
+        mCustomerPhone.setOnClickListener(v -> callDriver());
 
         Button mRideStatus = findViewById(R.id.rideStatus);
-        mRideStatus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                acceptRequest();
-            }
-        });
+        mRideStatus.setOnClickListener(v -> acceptRequest());
 
         Button mBusyResponse = findViewById(R.id.busyResponse);
-        mBusyResponse.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                requestResponse = 2;
-                respondBusy();
-            }
+        mBusyResponse.setOnClickListener(v -> {
+            requestResponse = 2;
+            respondBusy();
         });
-
-        /*mSwipeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                swipeButtonPressed();
-            }
-        });*/
-        //SwipeButton mSwipeButton = findViewById(R.id.my_swipe_button);
 
         swipeButtonSettings = new SwipeButtonCustomItems() {
             @Override
@@ -475,19 +434,6 @@ public class MapActivity extends BaseMwmFragmentActivity
             } else {
                 Log.d(TAG, "onChanged: bound to service.");
                 mService = myBinder.getService();
-
-                /*long s = MySharedPreference.getInstance(MwmApplication.get().getApplicationContext())
-                        .getMsgRcvdTime();
-                if(s > 0 && (s > (getCurrentTimestamp() + 20))) {
-                    mService.setIsReceivedFalse();
-                    receivedMessage = null;
-                } else {*/
-                    /*if (mService.isMessageReceived()) {
-                        processMessage(mService.receivedMessage());
-                        mService.setIsReceivedFalse();
-                        receivedMessage = null;
-                    }*/
-                /*}*/
                 mService.registerListener(this);
             }
         });
@@ -506,26 +452,9 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     private void listMatch() {
         setFullscreen(!mIsFullscreen);
-
-        //Intent intent = new Intent(this, MatchingListActivity.class);
-        //startActivity(intent);
     }
 
-    private void onlineAsCaptain() {
-        mSwitch.setVisibility(View.VISIBLE);
-        mSendRequest.setVisibility(View.VISIBLE);
-        // todo online as captain
-    }
 
-    private void hideFromTo() {
-        tvDropOff.setVisibility(View.GONE);
-        tvPickup.setVisibility(View.GONE);
-        mAddressToggle.setVisibility(View.GONE);
-        mllForm.setVisibility(View.GONE);
-        btRequest.setVisibility(View.GONE);
-        mDateTime.setVisibility(View.GONE);
-        //mMore.setVisibility(View.GONE);
-    }
 
     void adjustCompass(int offsetY)
     {
@@ -613,15 +542,35 @@ public class MapActivity extends BaseMwmFragmentActivity
         }
     }
 
+    private boolean isValidateFrom() {
+        showProgress(false);
+        if(fromLocation != null) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isValidateFromAndTo() {
+        showProgress(false);
+        if(fromLocation != null && toLocation != null && tvDistance != null) {
+            return true;
+        }
+        return false;
+    }
+
     private void saveAndSearchPost() {
-        MySharedPreference.getInstance(this).userTripInfo(fromLocation.getLat(),
-                fromLocation.getLon(),
-                toLocation.getLat(),
-                toLocation.getLon(),myDistance,mSourceAddress,mDestinationAddress,
-                startingTime);
-        //pageViewModel.createPost();
-        createPost();
-        listMatch();
+        showProgress(true);
+        if(isValidateFromAndTo()) {
+            MySharedPreference.getInstance(this).userTripInfo(fromLocation.getLat(),
+                    fromLocation.getLon(),
+                    toLocation.getLat(),
+                    toLocation.getLon(), myDistance, mSourceAddress, mDestinationAddress,
+                    startingTime);
+            createPost();
+            listMatch();
+        } else {
+            Toast.makeText(this,"Please enter valid address",Toast.LENGTH_LONG).show();
+        }
     }
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {
@@ -632,6 +581,14 @@ public class MapActivity extends BaseMwmFragmentActivity
             }
         }
         return false;
+    }
+
+    private void showProgress(boolean isTrue) {
+        if(isTrue) {
+            mMyprogress.setVisibility(View.VISIBLE);
+        } else {
+            mMyprogress.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -656,16 +613,20 @@ public class MapActivity extends BaseMwmFragmentActivity
                 //mMainMenu.animate().rotation(mMainMenu.getRotation()+360).start();
                 break;
             case R.id.bt_request:
-                //createPost();
-                saveAndSearchPost();
+                showProgress(true);
+                if (mSelector == PASSENGER_TAXI_ONLY) {
+                    getNearestDriver();
+                } else {
+                    saveAndSearchPost();
+                }
                 break;
             case R.id.date_time:
                 dateTime();
                 break;
-            case R.id.send_request_test:
+            //case R.id.send_request_test:
                 //sendMe();
-                getNearestDriver();
-                break;
+                //getNearestDriver();
+                //break;
             case R.id.add_seat:
                 if(seatCount < 4) {
                     seatCount++;
@@ -682,16 +643,20 @@ public class MapActivity extends BaseMwmFragmentActivity
                 break;
             case R.id.tv_pickup:
                 isPickupSearch = true;
+                showProgress(true);
                 showSearch();
                 break;
             case R.id.tv_dropoff:
                 isPickupSearch = false;
+                showProgress(true);
                 showSearch();
                 break;
             case R.id.set_pickup:
+                showProgress(true);
                 setPickup();
                 break;
             case R.id.set_drop:
+                showProgress(true);
                 setDropoff();
                 break;
         }
@@ -739,6 +704,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 setDropoff();
             }
         }
+        showProgress(false);
     }
 
     private void showMenu() {
@@ -756,6 +722,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         tvPickup.setText(mSourceAddress);
         hideMenu();
         RoutingController.get().setStartPoint(fromLocation);
+        hideBtnRequest();
     }
 
     private void setDropoff() {
@@ -765,6 +732,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         tvDropOff.setText(mDestinationAddress);
         hideMenu();
         RoutingController.get().setEndPoint(toLocation);
+        hideBtnRequest();
     }
 
     /*private void addTestBookMark() {
@@ -963,6 +931,7 @@ public class MapActivity extends BaseMwmFragmentActivity
             String units = rinfo.distToTarget +" "+rinfo.targetUnits;
             tvDistance.setText(units);
         }
+        showBtnRequest();
     }
 
     /*@Override
@@ -1080,7 +1049,7 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     private void acceptRequest() {
         try {
-            r.stop();
+            ringtone.stop();
             //mService.stopRingTone();
             send(ACCEPT_REQUEST, 0, 0, 0);
             mAcceptBusyInfo.setVisibility(View.GONE);
@@ -1193,7 +1162,7 @@ public class MapActivity extends BaseMwmFragmentActivity
 
             @Override
             public void onFailure(Call<UserMessage> call, Throwable t) {
-                Toast.makeText(MapActivity.this, "Request Send Failed! ", Toast.LENGTH_LONG).show();
+                //Toast.makeText(MapActivity.this, "Request Send Failed! ", Toast.LENGTH_LONG).show();
 
             }
         });
@@ -1287,10 +1256,7 @@ public class MapActivity extends BaseMwmFragmentActivity
             userMessage.setmFlag(finalRejectButtonFlag);
             alertDialog();
         });
-
-
         //notification_req_res
-
     }
 
     private void alertDialog() {
@@ -1308,7 +1274,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         //Log.i(TAG,"request received");
         switch (flag) {
             case 4:
-                r.play();
+                ringtone.play();
                 //mediaPlayer.start();
                 mCustomerInfo.setVisibility(View.VISIBLE);
                 mAcceptBusyInfo.setVisibility(View.VISIBLE);
@@ -1325,7 +1291,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 }
                 break;
             case 5:
-                //r.play();
+                //ringtone.play();
                 mCustomerInfo.setVisibility(View.VISIBLE);
                 mSwipeLayout.setVisibility(View.GONE);
                 mCustomerName.setText(R.string.passenger_cancel);
@@ -1336,8 +1302,8 @@ public class MapActivity extends BaseMwmFragmentActivity
                 mAcceptBusyInfo.setVisibility(View.GONE);
                 updateResponse(TRIP_CANCELLED);
                 MyNotificationManager.getInstance(MapActivity.this).displayNotification("Request Cancelled", "Sorry! request cancelled by passenger");
-                if (r.isPlaying()) {
-                    r.stop();
+                if (ringtone.isPlaying()) {
+                    ringtone.stop();
                 }
                 if (mTimerRunning) {
                     stopTimer();
@@ -1458,7 +1424,7 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     private void respondBusy() {
         try {
-            r.stop();
+            ringtone.stop();
             //mService.stopRingTone();
             send(SEND_BUSY, 0, 0, 0);
             mCustomerInfo.setVisibility(View.GONE);
@@ -1475,8 +1441,7 @@ public class MapActivity extends BaseMwmFragmentActivity
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        if (mMapFragment == null)
-        {
+        if (mMapFragment == null) {
             Bundle args = new Bundle();
             args.putBoolean(MapFragment.ARG_LAUNCH_BY_DEEP_LINK, isLaunchByDeepLink);
             mMapFragment = (MapFragment) MapFragment.instantiate(this, MapFragment.class.getName(), args);
@@ -1484,6 +1449,8 @@ public class MapActivity extends BaseMwmFragmentActivity
                     .beginTransaction()
                     .replace(R.id.map_fragment_container, mMapFragment, MapFragment.class.getName())
                     .commit();
+        } else {
+            mMapFragment.getView().setBackgroundColor(Color.WHITE);
         }
         if(MySharedPreference.getInstance(this).isCaptainOnline()) {
             connect();
@@ -1879,6 +1846,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 if (!response.isSuccessful()) {
                     return;
                 }
+                showProgress(false);
                 mMatchingList = new ArrayList<>();
                 createMatchList(response.body());
                 my();
@@ -2010,39 +1978,43 @@ public class MapActivity extends BaseMwmFragmentActivity
         }
     }
 
-
     private void getNearestDriver() {
+        showProgress(true);
         //String notIn = getNotIn();
+        if(isValidateFrom()) {
+            double lat = fromLocation.getLat();
+            double lng = fromLocation.getLon();
+            FindDriver findDriver = new FindDriver(
+                    MySharedPreference.getInstance(this).getUserId(), lat, lng,
+                    0
+            );
+            FindDriverApi findDriverApi = ApiClient.getClient().create(FindDriverApi.class);
+            Call<List<FindDriver>> call = findDriverApi.findDriver(findDriver);
 
-        double lat = 11.1017168d;
-        double lng = 77.3792759d;
-        FindDriver findDriver = new FindDriver(
-                MySharedPreference.getInstance(this).getUserId(),lat,lng,
-                0
-        );
-        FindDriverApi findDriverApi = ApiClient.getClient().create(FindDriverApi.class);
-        Call<List<FindDriver>> call = findDriverApi.findDriver(findDriver);
-
-        call.enqueue(new Callback<List<FindDriver>>() {
-            @Override
-            public void onResponse(Call<List<FindDriver>> call, Response<List<FindDriver>> response) {
-                if (response.isSuccessful()) {
-                    removeRequest();
-                    mNearestDriver = new ArrayList<>();
-                    mNearestDriver = response.body();
-                    listCurrent = 0;
-                    listSize = mNearestDriver.size();
-                    Log.d(TAG,"Sizze "+ mNearestDriver.size());
-                    requestHandler.postDelayed(requestRunnable, 0);
+            call.enqueue(new Callback<List<FindDriver>>() {
+                @Override
+                public void onResponse(Call<List<FindDriver>> call, Response<List<FindDriver>> response) {
+                    if (response.isSuccessful()) {
+                        showProgress(false);
+                        removeRequest();
+                        mNearestDriver = new ArrayList<>();
+                        mNearestDriver = response.body();
+                        listCurrent = 0;
+                        listSize = mNearestDriver.size();
+                        Log.d(TAG, "Sizze " + mNearestDriver.size());
+                        requestHandler.postDelayed(requestRunnable, 0);
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<List<FindDriver>> call, Throwable t) {
-                Toast.makeText(MapActivity.this,"Sorry! No Drivers found! Try Later",Toast.LENGTH_LONG).show();
-            }
+                @Override
+                public void onFailure(Call<List<FindDriver>> call, Throwable t) {
+                    Toast.makeText(MapActivity.this, "Sorry! No Drivers found! Try Later", Toast.LENGTH_LONG).show();
+                }
 
-        });
+            });
+        } else {
+            Toast.makeText(this,"Please enter valid address",Toast.LENGTH_LONG).show();
+        }
     }
 
     private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {

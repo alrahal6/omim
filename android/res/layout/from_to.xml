@@ -218,6 +218,7 @@
             android:paddingLeft="@dimen/space5"
             android:paddingRight="@dimen/space5"
             android:weightSum="4"
+            android:gravity="center_horizontal"
             android:layout_alignParentBottom="true">
             <!--<EditText
                 android:id="@+id/your_price"

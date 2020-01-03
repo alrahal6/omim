@@ -13,6 +13,7 @@ public class MySharedPreference {
     private static final String KEY_CAPTAIN_ONLINE = "captainOnline";
     private static final String KEY_BINDED = "serviceBinded";
     private static final String KEY_MSG_TIME = "msgTime";
+    private static final String KEY_SELECTOR = "keySelector";
     private static final String KEY_USER_ID = "userid";
     private static final String KEY_USER_TYPE = "usertype";
     private static final String KEY_MESSAGE = "keyMessage";
@@ -137,6 +138,18 @@ public class MySharedPreference {
         SharedPreferences.Editor editor = getSharedPreference().edit();
         editor.putLong(KEY_MSG_TIME, msgTime);
         editor.apply();
+    }
+
+    public void setSelectorId(int id) {
+        //SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = getSharedPreference().edit();
+        editor.putInt(KEY_SELECTOR, id);
+        editor.apply();
+    }
+
+    public int getSelectorId() {
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getInt(KEY_SELECTOR, 0);
     }
 
     public long getMsgRcvdTime() {
