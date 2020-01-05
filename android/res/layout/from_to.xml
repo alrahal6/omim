@@ -179,8 +179,40 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/white"
         android:orientation="vertical"
         android:layout_alignParentBottom="true">
+        <LinearLayout
+            android:layout_margin="@dimen/space5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+        <TextView
+            style="@style/TextView14spGrayPad"
+            android:id="@+id/list_count"
+            android:text="Seats : "
+            android:padding="@dimen/space5"
+            android:layout_marginRight="@dimen/space20"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            style="@style/TextView14spGrayPad"
+            android:padding="@dimen/space5"
+            android:id="@+id/list_amount"
+            android:layout_marginRight="@dimen/space20"
+            android:text="Amount : "
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:background="@layout/rounded_border_edittext"
+            android:text="Confirm List"
+            android:textColor="@color/base_green"
+            android:padding="@dimen/space5"
+            android:id="@+id/confirm_list"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"/>
+        </LinearLayout>
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/matching_list_vp"
         android:layout_width="match_parent"
@@ -256,6 +288,6 @@
                 android:text="Find"
                 style="@style/ButtonOrange"/>
         </LinearLayout>
-
     </LinearLayout>
+
 </RelativeLayout>

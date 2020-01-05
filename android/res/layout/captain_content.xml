@@ -197,9 +197,5 @@
                     android:text="busy"
                     android:textColor="@android:color/black" />
             </LinearLayout>
-
         </LinearLayout>
-
-
-
 </LinearLayout>

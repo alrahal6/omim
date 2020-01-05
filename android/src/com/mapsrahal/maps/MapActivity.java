@@ -92,7 +92,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 import java.util.concurrent.TimeUnit;
 
@@ -100,6 +102,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.mapsrahal.maps.activity.SelectorActivity.CAPTAIN_ANY;
+import static com.mapsrahal.maps.activity.SelectorActivity.CAPTAIN_SHARE_ONLY;
 import static com.mapsrahal.maps.activity.SelectorActivity.CAPTAIN_TAXI_ONLY;
 import static com.mapsrahal.maps.activity.SelectorActivity.PASSENGER_ANY;
 import static com.mapsrahal.maps.activity.SelectorActivity.PASSENGER_SHARE_ONLY;
@@ -114,7 +118,8 @@ public class MapActivity extends BaseMwmFragmentActivity
                                     View.OnClickListener,
                                     NavigationButtonsAnimationController.OnTranslationChangedListener,
                                     AdapterView.OnItemSelectedListener,
-                                    ServerConnection.ServerListener
+                                    ServerConnection.ServerListener,
+                                    MatchingStatePagerAdapter.MatchingSelectionListener
 
 {
 
@@ -122,8 +127,9 @@ public class MapActivity extends BaseMwmFragmentActivity
     private TextView mAmount, mTripTimer,mCustomerName,mCustomerPhone,mCustomerPickup;
     private TextView mCustomerDestination,mTripDistance;
     private TextView mDriverName,mDriverPhone,mCancelRequest;
+    private TextView mListCount, mListAmount;
 
-    private Button btRequest,mOpenGMap;
+    private Button btRequest,mOpenGMap,mConfirmList;
     private SwipeButton mSwipeButton;
     private ImageButton mAddressToggle,mMainMenu;
 
@@ -211,9 +217,155 @@ public class MapActivity extends BaseMwmFragmentActivity
     private WebSocketViewModel mViewModel;
     private final Handler requestHandler = new Handler();
 
+    Map<Integer,Integer> selectionList = new HashMap<>();
+    private double totAmount = 0d;
+
     private void prepareForAll() {
         // show hide for all
         // validation for all
+    }
+
+    private void prepareList() {
+        mListCount = findViewById(R.id.list_count);
+        mListAmount = findViewById(R.id.list_amount);
+        mConfirmList = findViewById(R.id.confirm_list);
+        mConfirmList.setOnClickListener(this);
+    }
+
+    @Override
+    public void selectMatch(int position,boolean isAdd) {
+        //MatchingItem matchingItems = mMatchingList.get(position);
+        //matchingList[matchingCounter] = position;
+        //Log.d(TAG,"List Id "+ mMatchingList.get(position).getmText1());
+        //Log.d(TAG,"List Id "+ mMatchingList.get(position).getId());
+        double amount =   Double. parseDouble(mMatchingList.get(position).getmAmount());
+        roundTwoDecimals(amount);
+        if(isAdd) {
+            totAmount += amount;
+            //totAmount = roundTwoDecimals(totAmount);
+            selectionList.put(position,mMatchingList.get(position).getId());
+            //double distance = mMatchingList.get(position).mMyTripDistance;
+            //matchingList[matchingCounter] = mMatchingList.get(position).getId();
+            //matchingCounter++;
+            mListCount.setText("Seats : " + selectionList.size());
+            mListAmount.setText(totAmount+" SDG");
+        } else {
+            totAmount -= amount;
+            //totAmount = roundTwoDecimals(totAmount);
+            selectionList.remove(position);
+            //matchingCounter--;
+            mListCount.setText("Seats : " + selectionList.size());
+            mListAmount.setText(totAmount+" SDG");
+            //if(matchingList[mMatchingList.get(position).getId()] != 0) {
+            //}
+        }
+        //mListAmount.setText("Distance : "+matchingCounter);
+    }
+
+    private void sendConfirmList() {
+        // todo send confirm list to all
+        //for (int i = 0; i < matchingCounter;i++) {
+           // Log.d(TAG,"Confirmed List "+selectionList.);
+        //}
+        alertDialog();
+        /*for (Map.Entry<Integer, Integer> entry : selectionList.entrySet()) {
+            Integer key = entry.getKey();
+            Integer value = entry.getValue();
+            Log.d(TAG, "Confirmed List Key : " + key);
+            Log.d(TAG, "Confirmed List Value : " + value);
+        }*/
+    }
+
+    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE:
+                    sendConfirmation();
+                    break;
+
+                case DialogInterface.BUTTON_NEGATIVE:
+                    Toast.makeText(MapActivity.this, "Request not Send", Toast.LENGTH_LONG).show();
+                    break;
+            }
+        }
+    };
+
+    private int getFlag() {
+        return Constants.Notification.DRIVER_ACCEPTED;
+    }
+
+    private void sendConfirmation() {
+
+        List<UserMessage> userMessageList = new ArrayList<>();
+        //Gson gson = new Gson();
+        //String jsonString = gson.toJson(selectionList);
+        //Log.d(TAG,"Json "+ jsonString);
+        for (Map.Entry<Integer, Integer> entry : selectionList.entrySet()) {
+            Integer position = entry.getKey();
+            Integer value = entry.getValue();
+            userMessage = new UserMessage(
+                    MySharedPreference.getInstance(this).getUserId(),
+                    mMatchingList.get(position).getUserId(),
+                    getFlag(),mMatchingList.get(position).getId(),
+                    0.0d,
+                    mMatchingList.get(position).getmTripTime(),
+                    mMatchingList.get(position).getmAmount(),
+                    mMatchingList.get(position).getmPhone(),
+                    mMatchingList.get(position).getmPhone(),
+                    mMatchingList.get(position).getmText1(),
+                    mMatchingList.get(position).getmText2(),
+                    mMatchingList.get(position).getmPhone(),
+                    0.0d,0.0d,0.0d,0.0d
+            );
+            userMessageList.add(userMessage);
+            Log.d(TAG, "Confirmed List Key : " + position);
+            Log.d(TAG, "Confirmed List Value : " + value);
+        }
+        UserMessageApi userMessageApi = ApiClient.getClient().create(UserMessageApi.class);
+        Call<UserMessage> call = userMessageApi.sendConfirmation(userMessageList);
+
+        call.enqueue(new Callback<UserMessage>() {
+            @Override
+            public void onResponse(Call<UserMessage> call, Response<UserMessage> response) {
+                Toast.makeText(MapActivity.this, "Request Send Successfully ", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onFailure(Call<UserMessage> call, Throwable t) {
+                //Toast.makeText(MapActivity.this, "Request Send Failed! ", Toast.LENGTH_LONG).show();
+            }
+        });
+        //mNotificationCard.setVisibility(View.GONE);
+    }
+
+    /*private void sendMessage() {
+        int temp = userMessage.getfUserId();
+        userMessage.setfUserId(userMessage.gettUserId());
+        userMessage.settUserId(temp);
+        //userMessage.setmFlag(getFlag());
+        UserMessageApi userMessageApi = ApiClient.getClient().create(UserMessageApi.class);
+        Call<UserMessage> call = userMessageApi.sentMessage(userMessage);
+
+        call.enqueue(new Callback<UserMessage>() {
+            @Override
+            public void onResponse(Call<UserMessage> call, Response<UserMessage> response) {
+                Toast.makeText(MapActivity.this, "Request Send Successfully ", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onFailure(Call<UserMessage> call, Throwable t) {
+                //Toast.makeText(MapActivity.this, "Request Send Failed! ", Toast.LENGTH_LONG).show();
+            }
+        });
+        mNotificationCard.setVisibility(View.GONE);
+    }*/
+
+    private void alertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this);
+        builder.setMessage("Are you sure? Send Confirmation!").setPositiveButton("Yes", dialogClickListener)
+                .setNegativeButton("No", dialogClickListener).show();
+
     }
 
     private void prepareForFrom() {
@@ -376,6 +528,9 @@ public class MapActivity extends BaseMwmFragmentActivity
         //Intent intent = getIntent();
         //mSelector = intent.getIntExtra(PASSENGER_CAPTAIN_SELECTOR,1);
         mSelector = MySharedPreference.getInstance(getApplicationContext()).getSelectorId();
+        if(mSelector == CAPTAIN_SHARE_ONLY || mSelector == CAPTAIN_ANY) {
+            prepareList();
+        }
         switch (mSelector) {
             case PASSENGER_TAXI_ONLY:
                 prepareForFrom();
@@ -559,8 +714,8 @@ public class MapActivity extends BaseMwmFragmentActivity
     }
 
     private void saveAndSearchPost() {
-        showProgress(true);
         if(isValidateFromAndTo()) {
+            showProgress(true);
             MySharedPreference.getInstance(this).userTripInfo(fromLocation.getLat(),
                     fromLocation.getLon(),
                     toLocation.getLat(),
@@ -603,6 +758,9 @@ public class MapActivity extends BaseMwmFragmentActivity
                 break;
             case R.id.addressToggle:
                 toggleAddress();
+                break;
+            case R.id.confirm_list:
+                sendConfirmList();
                 break;
             case R.id.mainMenu:
                 if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -925,8 +1083,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         // @todo
         //mRoutingPlanInplaceController.updateBuildProgress(progress, router);
         final RoutingInfo rinfo = RoutingController.get().getCachedRoutingInfo();
-        if (rinfo != null)
-        {
+        if (rinfo != null) {
             myDistance = rinfo.distToTarget;
             String units = rinfo.distToTarget +" "+rinfo.targetUnits;
             tvDistance.setText(units);
@@ -1129,46 +1286,6 @@ public class MapActivity extends BaseMwmFragmentActivity
         //MyBase.getInstance(this).addToRequestQueue(updateIsOnReq);
     }
 
-
-
-    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-            switch (which) {
-                case DialogInterface.BUTTON_POSITIVE:
-                    sendMessage();
-                    break;
-
-                case DialogInterface.BUTTON_NEGATIVE:
-                    Toast.makeText(MapActivity.this, "Request not Send", Toast.LENGTH_LONG).show();
-                    break;
-            }
-        }
-    };
-
-    private void sendMessage() {
-        int temp = userMessage.getfUserId();
-        userMessage.setfUserId(userMessage.gettUserId());
-        userMessage.settUserId(temp);
-        //userMessage.setmFlag(getFlag());
-        UserMessageApi userMessageApi = ApiClient.getClient().create(UserMessageApi.class);
-        Call<UserMessage> call = userMessageApi.sentMessage(userMessage);
-
-        call.enqueue(new Callback<UserMessage>() {
-            @Override
-            public void onResponse(Call<UserMessage> call, Response<UserMessage> response) {
-                Toast.makeText(MapActivity.this, "Request Send Successfully ", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onFailure(Call<UserMessage> call, Throwable t) {
-                //Toast.makeText(MapActivity.this, "Request Send Failed! ", Toast.LENGTH_LONG).show();
-
-            }
-        });
-        mNotificationCard.setVisibility(View.GONE);
-    }
-
     private void processNotification(String myNotification) {
         //java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
         //HashMap<String, String> usrNotification = gSon.fromJson(myNotification, type);
@@ -1248,22 +1365,15 @@ public class MapActivity extends BaseMwmFragmentActivity
         int finalAcceptButtonFlag = acceptButtonFlag;
         accept.setOnClickListener(view -> {
             userMessage.setmFlag(finalAcceptButtonFlag);
-            alertDialog();
+
         });
 
         int finalRejectButtonFlag = rejectButtonFlag;
         reject.setOnClickListener(view -> {
             userMessage.setmFlag(finalRejectButtonFlag);
-            alertDialog();
+
         });
         //notification_req_res
-    }
-
-    private void alertDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this);
-        builder.setMessage("Are you sure? Send Request!").setPositiveButton("Yes", dialogClickListener)
-                .setNegativeButton("No", dialogClickListener).show();
-
     }
 
     private void processMessage(String myMsg) {
@@ -1849,11 +1959,12 @@ public class MapActivity extends BaseMwmFragmentActivity
                 showProgress(false);
                 mMatchingList = new ArrayList<>();
                 createMatchList(response.body());
+                //matchingCounter = 0;
                 my();
             }
             @Override
             public void onFailure(Call<List<Post>> call, Throwable t) {
-                Toast.makeText(MapActivity.this,"Some Error occured! Try Later",Toast.LENGTH_LONG).show();
+                Toast.makeText(MapActivity.this,"Some Error occurred! Try Later",Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -1871,6 +1982,7 @@ public class MapActivity extends BaseMwmFragmentActivity
 
             String amount = "" + post.getTripDistance() * 2;
             String extraDistance = "" + Utils.roundTwoDecimals(extra);
+            //Log.d(TAG,"Post Id : " +post.getId());
             //mMatchMaker.getMatchingList();
             if(MySharedPreference.getInstance(this).isCaptain()) {
                 if (isCaptainEligible(mMyTripDistance, totDist, post.getSrcDistDiff(), post.getDestDistDiff(), post.getTripDistance())) {

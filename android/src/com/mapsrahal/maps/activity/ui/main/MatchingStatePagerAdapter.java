@@ -2,6 +2,7 @@ package com.mapsrahal.maps.activity.ui.main;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,9 +39,16 @@ public class MatchingStatePagerAdapter extends PagerAdapter {
     private LayoutInflater layoutInflater;
     private Context mContext;
     private UserMessage userMessage;
+    private MatchingSelectionListener matchingListener;
+    private final int[] matchingList = new int[20];
+
+    public interface MatchingSelectionListener {
+        void selectMatch(int position,boolean isAdd);
+    }
 
     public MatchingStatePagerAdapter(ArrayList<MatchingItem> matchingItems,Context context, FragmentManager fm) {
         //super(fm);
+        matchingListener = (MatchingSelectionListener) context;
         this.mContext = context;
         this.matchingItems = matchingItems;
     }
@@ -69,7 +77,7 @@ public class MatchingStatePagerAdapter extends PagerAdapter {
         View view = layoutInflater.inflate(R.layout.matching_list_items, container, false);
 
         TextView mTextView1,mTripRoute, mTextView2,mTripDistance,mTripTime,mAmount,mYourDistance,mExtraDistance;
-        Button mRequestMatch;
+        Button mRequestMatch,mRemoveMatch;
         mTextView1 = view.findViewById(R.id.textView);
         mTextView2 = view.findViewById(R.id.textView2);
         mTripDistance = view.findViewById(R.id.trip_distance);
@@ -79,6 +87,8 @@ public class MatchingStatePagerAdapter extends PagerAdapter {
         mExtraDistance = view.findViewById(R.id.extra_distance);
         mYourDistance = view.findViewById(R.id.your_distance);
         mRequestMatch = view.findViewById(R.id.request_match);
+        //mRemoveMatch = view.findViewById(R.id.remove_match);
+
 
         mTextView1.setText(matchingItems.get(position).getmText1());
         mTextView2.setText(matchingItems.get(position).getmText2());
@@ -88,11 +98,48 @@ public class MatchingStatePagerAdapter extends PagerAdapter {
         mYourDistance.setText("Your Distance : ");
         mExtraDistance.setText("Extra Distance : "+matchingItems.get(position).getmExtraDistance());
         mTripRoute.setText(""+matchingItems.get(position).getmTotDistTxt());
-        mRequestMatch.setOnClickListener(v -> this.sendRequest(position));
-
+        if(matchingList[position] != 1) {
+            mRequestMatch.setText("Add");
+            mRequestMatch.setTextColor(Color.GREEN);
+        } else {
+            mRequestMatch.setText("Remove");
+            mRequestMatch.setTextColor(Color.RED);
+        }
+        //mRequestMatch.setOnClickListener(v -> this.sendRequest(position));
+        mRequestMatch.setOnClickListener(
+                        v -> {
+                            if(matchingList[position] != 1) {
+                                this.addToMatch(position, true);
+                                matchingList[position] = 1;
+                                mRequestMatch.setText("Remove");
+                                mRequestMatch.setTextColor(Color.RED);
+                            } else if(matchingList[position] == 1) {
+                                this.addToMatch(position, false);
+                                matchingList[position] = 2;
+                                mRequestMatch.setText("Add");
+                                mRequestMatch.setTextColor(Color.GREEN);
+                            }
+                        }
+        );
+        /*mRemoveMatch.setOnClickListener(v ->
+                {
+                    if(matchingList[position] == 1 ) {
+                        this.addToMatch(position, false);
+                        matchingList[position] = 2;
+                    }
+                }
+        );*/
         container.addView(view, 0);
         return view;
     }
+
+    public void addToMatch(int position,boolean isAdd) {
+        matchingListener.selectMatch(position,isAdd);
+    }
+
+    /*public void addToMatch(int position) {
+        matchingListener.selectMatch(position);
+    }*/
 
     public void sendRequest(int position) {
         //mMatchingList.get(position).changeText1(text);
@@ -119,7 +166,7 @@ public class MatchingStatePagerAdapter extends PagerAdapter {
     }
 
     private int getFlag() {
-        return Constants.Notification.PASSENGER_REQUEST;
+        return Constants.Notification.DRIVER_ACCEPTED;
     }
 
     DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
