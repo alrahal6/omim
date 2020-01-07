@@ -141,8 +141,8 @@ public class ServerConnection extends Service {
 
     public ServerConnection() {
         //mListener = listener;
-        userId = MySharedPreference.getInstance(this.getApplicationContext()).getUserId();
-        phone = MySharedPreference.getInstance(this.getApplicationContext()).getPhoneNumber();
+        userId = MySharedPreference.getInstance(this).getUserId();
+        phone = MySharedPreference.getInstance(this).getPhoneNumber();
     }
 
     public boolean isMessageReceived() {
@@ -255,9 +255,11 @@ public class ServerConnection extends Service {
     private void start() {
         if (!isUpdating) {
             //Log.i(TAG, "Started location tracking");
-            mFusedLocationClient.requestLocationUpdates(locationRequest,
-                    locationCallback, Looper.myLooper());
-            isUpdating = true;
+            if(MySharedPreference.getInstance(this).isCaptainOnline()) {
+                mFusedLocationClient.requestLocationUpdates(locationRequest,
+                        locationCallback, Looper.myLooper());
+                isUpdating = true;
+            }
         }
     }
 

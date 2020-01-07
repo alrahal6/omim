@@ -183,6 +183,7 @@
         android:orientation="vertical"
         android:layout_alignParentBottom="true">
         <LinearLayout
+            android:id="@+id/confirm_layout"
             android:layout_margin="@dimen/space5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -203,15 +204,24 @@
             android:text="Amount : "
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
+            <Button
+                android:background="@layout/rounded_border_edittext"
+                android:text="Confirm List"
+                android:textColor="@color/base_green"
+                android:padding="@dimen/space5"
+                android:id="@+id/confirm_list"
+                android:layout_width="wrap_content"
+                android:layout_marginRight="@dimen/space5"
+                android:layout_height="32dp"/>
 
-        <Button
-            android:background="@layout/rounded_border_edittext"
-            android:text="Confirm List"
-            android:textColor="@color/base_green"
-            android:padding="@dimen/space5"
-            android:id="@+id/confirm_list"
-            android:layout_width="wrap_content"
-            android:layout_height="32dp"/>
+            <ImageView
+                android:id="@+id/closable"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentEnd="true"
+                android:background="@drawable/ic_arrow_drop_down"
+                android:layout_marginLeft="@dimen/space5"
+                android:padding="2dp" />
         </LinearLayout>
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/matching_list_vp"

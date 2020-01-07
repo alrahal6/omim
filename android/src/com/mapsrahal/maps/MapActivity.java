@@ -135,7 +135,7 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     private ImageView mAddSeat,mRemoveSeat;
 
-    private LinearLayout mNotificationCard,mDriverInfo,mllForm,mMnuForm;
+    private LinearLayout mNotificationCard,mDriverInfo,mllForm,mMnuForm,mConfirmLayout;
     private LinearLayout mCustomerInfo, mAcceptBusyInfo, mSwipeLayout, mpayAndRating;
     private ProgressBar mMyprogress;
 
@@ -238,11 +238,13 @@ public class MapActivity extends BaseMwmFragmentActivity
         //matchingList[matchingCounter] = position;
         //Log.d(TAG,"List Id "+ mMatchingList.get(position).getmText1());
         //Log.d(TAG,"List Id "+ mMatchingList.get(position).getId());
-        double amount =   Double. parseDouble(mMatchingList.get(position).getmAmount());
-        roundTwoDecimals(amount);
+        double amount =   Double.parseDouble(mMatchingList.get(position).getmAmount());
+        //roundTwoDecimals(amount);
         if(isAdd) {
+            // todo add seats
             totAmount += amount;
-            //totAmount = roundTwoDecimals(totAmount);
+            Log.d(TAG,"Id : "+ mMatchingList.get(position).getId());
+            totAmount = roundTwoDecimals(totAmount);
             selectionList.put(position,mMatchingList.get(position).getId());
             //double distance = mMatchingList.get(position).mMyTripDistance;
             //matchingList[matchingCounter] = mMatchingList.get(position).getId();
@@ -250,8 +252,9 @@ public class MapActivity extends BaseMwmFragmentActivity
             mListCount.setText("Seats : " + selectionList.size());
             mListAmount.setText(totAmount+" SDG");
         } else {
+            // todo add seats
             totAmount -= amount;
-            //totAmount = roundTwoDecimals(totAmount);
+            totAmount = roundTwoDecimals(totAmount);
             selectionList.remove(position);
             //matchingCounter--;
             mListCount.setText("Seats : " + selectionList.size());
@@ -439,8 +442,10 @@ public class MapActivity extends BaseMwmFragmentActivity
         //mSendRequest.setOnClickListener(this);
 
         mViewPager = findViewById(R.id.matching_list_vp);
+        mConfirmLayout = findViewById(R.id.confirm_layout);
         //mViewPager.setAdapter(matchingStateAdapter);
         mViewPager.setVisibility(View.GONE);
+        mConfirmLayout.setVisibility(View.GONE);
         userMessageApi = ApiClient.getClient().create(UserMessageApi.class);
         //matchingStateAdapter.createPost();
         //mSwitch.setOnT
@@ -534,6 +539,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         switch (mSelector) {
             case PASSENGER_TAXI_ONLY:
                 prepareForFrom();
+                connect();
                 break;
             case PASSENGER_SHARE_ONLY:
             case PASSENGER_ANY:
@@ -1154,6 +1160,9 @@ public class MapActivity extends BaseMwmFragmentActivity
     protected void onStop() {
         super.onStop();
         removeRequest();
+        if(mSelector == PASSENGER_TAXI_ONLY) {
+            disconnect();
+        }
         //if(mViewModel.getBinder() != null) {
         //unbindService(mViewModel.getServiceConnection());
         //}
@@ -1452,8 +1461,8 @@ public class MapActivity extends BaseMwmFragmentActivity
             case 2:
                 isDriverBusy = true;
                 isRequestInProgress = false;
-                //listCurrent++;
-                if(listCurrent > listSize) {
+                listCurrent++;
+                if(listCurrent >= listSize) {
                     removeRequest();
                     Toast.makeText(this,"Sorry! No drivers found",Toast.LENGTH_LONG).show();
                 } else {
@@ -1768,9 +1777,8 @@ public class MapActivity extends BaseMwmFragmentActivity
             processMessage(msg);
             MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).userMessage(null);
         }*/
-
         final Intent intent = getMyIntent();
-        if(MySharedPreference.getInstance(this).isCaptainOnline()) {
+        if(MySharedPreference.getInstance(this).isCaptainOnline() || mSelector == PASSENGER_TAXI_ONLY) {
             bindMyService(intent);
             LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(ServerConnection.ACTION_MSG_RECEIVED));
         }
@@ -1802,12 +1810,13 @@ public class MapActivity extends BaseMwmFragmentActivity
         //Log.i(TAG, "Main thread Id " + Thread.currentThread().getId());
         //mViewModel.setIsConnected(true);
         if(!isMyServiceRunning(ServerConnection.class)) {
-            MySharedPreference.getInstance(this).setCaptainOnline(true);
+            if(mSelector != PASSENGER_TAXI_ONLY) {
+                MySharedPreference.getInstance(this).setCaptainOnline(true);
+            }
             final Intent intent = getMyIntent();
             intent.setAction(Constants.STARTFOREGROUND_ACTION);
             ContextCompat.startForegroundService(getContext(), intent);
             bindMyService(intent);
-
         }
 
         //receiver = new NetworkStateReceiver();
@@ -1862,13 +1871,14 @@ public class MapActivity extends BaseMwmFragmentActivity
         //fragment.createPost();
         if (isFullscreen) {
             mViewPager.setVisibility(View.VISIBLE);
+            mConfirmLayout.setVisibility(View.VISIBLE);
             if (mNavAnimationController != null)
                 mNavAnimationController.disappearZoomButtons();
             if (mNavMyPosition != null)
                 mNavMyPosition.hide();
         } else {
             mViewPager.setVisibility(View.GONE);
-
+            mConfirmLayout.setVisibility(View.GONE);
             if (mNavAnimationController != null)
                 mNavAnimationController.appearZoomButtons();
             if (mNavMyPosition != null)
@@ -2093,6 +2103,7 @@ public class MapActivity extends BaseMwmFragmentActivity
     private void getNearestDriver() {
         showProgress(true);
         //String notIn = getNotIn();
+        Log.d(TAG,"User Id"+ MySharedPreference.getInstance(this).getUserId());
         if(isValidateFrom()) {
             double lat = fromLocation.getLat();
             double lng = fromLocation.getLon();
@@ -2114,7 +2125,11 @@ public class MapActivity extends BaseMwmFragmentActivity
                         listCurrent = 0;
                         listSize = mNearestDriver.size();
                         Log.d(TAG, "Sizze " + mNearestDriver.size());
-                        requestHandler.postDelayed(requestRunnable, 0);
+                        if(listSize > 0) {
+                            requestHandler.postDelayed(requestRunnable, 0);
+                        } else {
+                            Toast.makeText(MapActivity.this, "Sorry! No Drivers found! Try Later", Toast.LENGTH_LONG).show();
+                        }
                     }
                 }
 
@@ -2173,7 +2188,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                     isDriverBusy = true;
                     isRequestInProgress = false;
                     listCurrent++;
-                    if(listCurrent > listSize) {
+                    if(listCurrent >= listSize) {
                         removeRequest();
                         Toast.makeText(MapActivity.this,"Sorry! No drivers found",Toast.LENGTH_LONG).show();
                     } else {
