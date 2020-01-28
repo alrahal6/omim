@@ -126,8 +126,9 @@ public class MapActivity extends BaseMwmFragmentActivity
     private TextView tvDropOff,tvPickup,tvDistance,mDateTime,mRequiredSeats,mSetPickup,mSetDrop;
     private TextView mAmount, mTripTimer,mCustomerName,mCustomerPhone,mCustomerPickup;
     private TextView mCustomerDestination,mTripDistance;
-    private TextView mDriverName,mDriverPhone,mCancelRequest;
-    private TextView mListCount, mListAmount;
+    private TextView mDriverName,mDriverPhone;
+    private TextView mListCount, mListAmount,mCallingCaptain;
+    private Button mCancelRequest;
 
     private Button btRequest,mOpenGMap,mConfirmList;
     private SwipeButton mSwipeButton;
@@ -428,6 +429,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         mDriverPhone.setOnClickListener(this);
         mDriverPhone.setVisibility(View.GONE);
         mCancelRequest = findViewById(R.id.cancelRequest);
+        mCallingCaptain = findViewById(R.id.callingCaptain);
         mCancelRequest.setOnClickListener(this);
         mllForm = findViewById(R.id.ll_form);
         tvDropOff = findViewById(R.id.tv_dropoff);
@@ -696,8 +698,7 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     @Override
     public void onFadeOutZoomButtons() {
-        if (RoutingController.get().isPlanning() || RoutingController.get().isNavigating())
-        {
+        if (RoutingController.get().isPlanning() || RoutingController.get().isNavigating()) {
             if (!UiUtils.isLandscape(this))
                 mNavigationController.fadeOutSearchButtons();
         }
@@ -1153,19 +1154,17 @@ public class MapActivity extends BaseMwmFragmentActivity
             //processMessage(mService.receivedMessage());
             //receivedMessage = null;
         //}
-        unBindMyService();
+        //unBindMyService();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        removeRequest();
-        if(mSelector == PASSENGER_TAXI_ONLY) {
-            disconnect();
+        if(!MySharedPreference.getInstance(this).isCaptainOnline()) {
+            if (mViewModel.getBinder() != null) {
+                unbindService(mViewModel.getServiceConnection());
+            }
         }
-        //if(mViewModel.getBinder() != null) {
-        //unbindService(mViewModel.getServiceConnection());
-        //}
         //disconnect();
         //SearchEngine.INSTANCE.removeListener(this);
         Framework.nativeRemoveMapObjectListener();
@@ -1502,6 +1501,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 break;
             case 12:
                 mCancelRequest.setVisibility(View.GONE);
+                mCallingCaptain.setVisibility(View.GONE);
                 MyNotificationManager.getInstance(MapActivity.this).displayNotification("Trip Started", "Trip Started by driver");
                 startTime = System.currentTimeMillis();
                 timerHandler.postDelayed(timerRunnable, 0);
@@ -2278,7 +2278,9 @@ public class MapActivity extends BaseMwmFragmentActivity
                     Log.d(TAG,"driver id "+ driverId);
                     userTripInfo.setDriverId(driverId);
                     //addMarker(new LatLng(dLat, dLng));
+                    btRequest.setVisibility(View.GONE);
                     mCancelRequest.setVisibility(View.VISIBLE);
+                    mCallingCaptain.setVisibility(View.VISIBLE);
                     //requestedDrivers[++requestCounter] = driverId;
                     isRequestInProgress = true;
                     if (!isDriverAccepted) {

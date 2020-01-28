@@ -27,6 +27,7 @@
         android:text="Send Request"/>
     <Switch
         android:id="@+id/switch2"
+        android:gravity="center_horizontal"
         android:visibility="gone"
         android:layout_below="@+id/send_request_test"
         android:layout_margin="@dimen/space20"
