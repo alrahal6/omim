@@ -30,6 +30,12 @@ public class SelectorActivity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_selector);
         UiUtils.setupColorStatusBar(this, R.color.bg_statusbar);
+        /*
+         todo check is have
+          1. confirmed list
+          2. confirmed trip
+          3. isCaptain online
+         */
         mPassengerCab = findViewById(R.id.passenger_cab_only);
         mPassengerCab.setOnClickListener(this);
         mPassengerPool = findViewById(R.id.passenger_pool_only);

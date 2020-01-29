@@ -54,6 +54,13 @@ public final class Constants
     private Email() {}
   }
 
+  public static class ActiveProcess {
+    public static final int NO_PROCESS = 0;
+    public static final int CAPTAIN_ONLINE = 1;
+    public static final int PASSENGER_HAVE_ACTIVE_RIDE = 2;
+    public static final int CAPTAIN_HAVE_CONFIRMED_LIST = 3;
+  }
+
   public static class Notification {
     public static final int PASSENGER_REQUEST = 1;
     public static final int PASSENGER_ACCEPTED = 2;

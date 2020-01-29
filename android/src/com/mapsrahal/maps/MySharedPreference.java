@@ -2,8 +2,15 @@ package com.mapsrahal.maps;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
 
+import com.google.gson.Gson;
+import com.mapsrahal.maps.model.UserMessage;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 public class MySharedPreference {
     private static final String SHARED_PREF_NAME = "mypref";
@@ -28,6 +35,8 @@ public class MySharedPreference {
     private static final String KEY_TRIP_DISTANCE = "tripDistance";
     private static final String KEY_FROM_ADDRESS = "frmAddress";
     private static final String KEY_TO_ADDRESS = "toAddress";
+
+    private static final String KEY_ACTIVE_PROCESS_ID = "activeprocessid";
 
     private static MySharedPreference mInstance;
     private static Context mCtx;
@@ -260,4 +269,72 @@ public class MySharedPreference {
         editor.putBoolean(KEY_HAVE_TOKEN,false);
         editor.apply();
     }
+
+    public void addActiveProcess(int activeProcessId) {
+        SharedPreferences.Editor editor = getSharedPreference().edit();
+        editor.putInt(KEY_ACTIVE_PROCESS_ID, activeProcessId);
+        editor.apply();
+    }
+
+    public int getActiveProcess() {
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getInt(KEY_ACTIVE_PROCESS_ID, 0);
+    }
+
+    public void putListConfirmed(String key, List<UserMessage> objArray){
+    	checkForNullKey(key);
+    	Gson gson = new Gson();
+    	ArrayList<String> objStrings = new ArrayList<>();
+    	for(Object obj : objArray){
+    		objStrings.add(gson.toJson(obj));
+    	}
+    	putListString(key, objStrings);
+    }
+
+    public void putListString(String key, ArrayList<String> stringList) {
+        checkForNullKey(key);
+        String[] myStringList = stringList.toArray(new String[stringList.size()]);
+        getSharedPreference().edit().putString(key, TextUtils.join("‚‗‚", myStringList)).apply();
+    }
+
+    public void checkForNullKey(String key) {
+        if (key == null) {
+            throw new NullPointerException();
+        }
+    }
+
+    public ArrayList<UserMessage> getListConfirmed(String key) {
+    	Gson gson = new Gson();
+
+    	ArrayList<String> objStrings = getListString(key);
+    	ArrayList<UserMessage> objects = new ArrayList<>();
+
+    	for(String jObjString : objStrings) {
+            UserMessage value  = gson.fromJson(jObjString,  UserMessage.class);
+    		objects.add(value);
+    	}
+    	return objects;
+    }
+
+    public ArrayList<String> getListString(String key) {
+        return new ArrayList<String>(Arrays.asList(TextUtils.split(getSharedPreference().getString(key, ""), "‚‗‚")));
+    }
+
+    /*
+    public
+    MyObject myObject = new MyObject;
+//set variables of 'myObject', etc.
+
+Editor prefsEditor = mPrefs.edit();
+Gson gson = new Gson();
+String json = gson.toJson(myObject);
+prefsEditor.putString("MyObject", json);
+prefsEditor.commit();
+     */
+
+    /*
+    Gson gson = new Gson();
+String json = mPrefs.getString("MyObject", "");
+MyObject obj = gson.fromJson(json, MyObject.class);
+     */
 }

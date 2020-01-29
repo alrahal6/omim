@@ -49,6 +49,7 @@ import com.github.florent37.singledateandtimepicker.dialog.SingleDateAndTimePick
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
+import com.mapsrahal.maps.activity.ui.main.ConfirmedListPagerAdapter;
 import com.mapsrahal.maps.activity.ui.main.MatchingStatePagerAdapter;
 import com.mapsrahal.maps.api.ApiClient;
 import com.mapsrahal.maps.api.FindDriverApi;
@@ -152,6 +153,8 @@ public class MapActivity extends BaseMwmFragmentActivity
     private static final int REQ_CODE_LOCATION_PERMISSION = 1;
     private int requestingPassenger = 0;
     private int requestResponse = 3;
+    private static final String CONFIRMED_LIST_KEY = "confirmedlistkey";
+    //private static final String CONFIRMED_LIST_KEY = "confirmedlistkey";
     private static final int SEND_BUSY = 2;
     private static final int ACCEPT_REQUEST = 3;
     private static final int TRIP_CANCELLED = 5;
@@ -214,9 +217,11 @@ public class MapActivity extends BaseMwmFragmentActivity
     private UserTripInfo userTripInfo;
     private Switch mSwitch;
     private MatchingStatePagerAdapter mAdapter;
+    private ConfirmedListPagerAdapter mConfirmedAdapter;
     private ServerConnection mService;
     private WebSocketViewModel mViewModel;
     private final Handler requestHandler = new Handler();
+    ArrayList<UserMessage> confirmedUserList;
 
     Map<Integer,Integer> selectionList = new HashMap<>();
     private double totAmount = 0d;
@@ -301,6 +306,7 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     private void sendConfirmation() {
 
+        // selectionList
         List<UserMessage> userMessageList = new ArrayList<>();
         //Gson gson = new Gson();
         //String jsonString = gson.toJson(selectionList);
@@ -326,6 +332,8 @@ public class MapActivity extends BaseMwmFragmentActivity
             Log.d(TAG, "Confirmed List Key : " + position);
             Log.d(TAG, "Confirmed List Value : " + value);
         }
+        MySharedPreference.getInstance(this).addActiveProcess(Constants.ActiveProcess.CAPTAIN_HAVE_CONFIRMED_LIST);
+        MySharedPreference.getInstance(this).putListConfirmed(CONFIRMED_LIST_KEY,userMessageList);
         UserMessageApi userMessageApi = ApiClient.getClient().create(UserMessageApi.class);
         Call<UserMessage> call = userMessageApi.sendConfirmation(userMessageList);
 
@@ -538,6 +546,15 @@ public class MapActivity extends BaseMwmFragmentActivity
         if(mSelector == CAPTAIN_SHARE_ONLY || mSelector == CAPTAIN_ANY) {
             prepareList();
         }
+
+        int activeProcess = MySharedPreference.getInstance(this).getActiveProcess();
+
+        if(activeProcess == Constants.ActiveProcess.CAPTAIN_HAVE_CONFIRMED_LIST) {
+            setFullscreen(true);
+            confirmedUserList = new ArrayList<>();
+            confirmedUserList = MySharedPreference.getInstance(this).getListConfirmed(CONFIRMED_LIST_KEY);
+        }
+
         switch (mSelector) {
             case PASSENGER_TAXI_ONLY:
                 prepareForFrom();
@@ -1158,13 +1175,14 @@ public class MapActivity extends BaseMwmFragmentActivity
     }
 
     @Override
+    protected void onSafeDestroy() {
+        super.onSafeDestroy();
+        disconnect();
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
-        if(!MySharedPreference.getInstance(this).isCaptainOnline()) {
-            if (mViewModel.getBinder() != null) {
-                unbindService(mViewModel.getServiceConnection());
-            }
-        }
         //disconnect();
         //SearchEngine.INSTANCE.removeListener(this);
         Framework.nativeRemoveMapObjectListener();
@@ -1610,6 +1628,16 @@ public class MapActivity extends BaseMwmFragmentActivity
             //mCustomerPhone.setText(getString(R.string.customer_phone) + g.getPhone());
             // endTrip();
         }
+
+        int activeProcessid = MySharedPreference.getInstance(this).getActiveProcess();
+        if(activeProcessid == Constants.ActiveProcess.CAPTAIN_HAVE_CONFIRMED_LIST) {
+            displayConfirmedList();
+        }
+    }
+
+    private void displayConfirmedList() {
+        mConfirmedAdapter = new ConfirmedListPagerAdapter(confirmedUserList,this,getSupportFragmentManager());
+        mViewPager.setAdapter(mConfirmedAdapter);
     }
 
     /*private final ServiceConnection mConnection = new ServiceConnection() {
