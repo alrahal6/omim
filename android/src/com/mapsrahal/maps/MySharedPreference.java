@@ -37,6 +37,7 @@ public class MySharedPreference {
     private static final String KEY_TO_ADDRESS = "toAddress";
 
     private static final String KEY_ACTIVE_PROCESS_ID = "activeprocessid";
+    private static final String CAPTAIN_TICKET_DTLS = "captainticketdtls";
 
     private static MySharedPreference mInstance;
     private static Context mCtx;
@@ -317,24 +318,20 @@ public class MySharedPreference {
     }
 
     public ArrayList<String> getListString(String key) {
-        return new ArrayList<String>(Arrays.asList(TextUtils.split(getSharedPreference().getString(key, ""), "‚‗‚")));
+        return new ArrayList<>(Arrays.asList(TextUtils.split(getSharedPreference().getString(key, ""), "‚‗‚")));
     }
 
-    /*
-    public
-    MyObject myObject = new MyObject;
-//set variables of 'myObject', etc.
+    public void putCaptainTicketDtls(UserMessage userMessage) {
+        Gson gson = new Gson();
+        String json = gson.toJson(userMessage);
+        getSharedPreference().edit().putString(CAPTAIN_TICKET_DTLS, json).apply();
+    }
 
-Editor prefsEditor = mPrefs.edit();
-Gson gson = new Gson();
-String json = gson.toJson(myObject);
-prefsEditor.putString("MyObject", json);
-prefsEditor.commit();
-     */
+    public UserMessage getCaptainTicketDtls() {
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString(CAPTAIN_TICKET_DTLS, "");
+        return gson.fromJson(json, UserMessage.class);
+    }
 
-    /*
-    Gson gson = new Gson();
-String json = mPrefs.getString("MyObject", "");
-MyObject obj = gson.fromJson(json, MyObject.class);
-     */
 }

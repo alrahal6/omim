@@ -21,7 +21,7 @@
         android:layout_marginTop="10dp"
         android:textColor="@color/white_primary"
         android:background="@drawable/button_corner"
-        android:text="Cab Only" />
+        android:text="Taxi" />
     <Button
         android:id="@+id/passenger_pool_only"
         android:layout_width="match_parent"
@@ -29,15 +29,7 @@
         android:background="@drawable/button_corner"
         android:layout_marginTop="10dp"
         android:textColor="@color/white_primary"
-        android:text="Car Pool Only" />
-    <Button
-        android:id="@+id/passenger_any"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:textColor="@color/white_primary"
-        android:background="@drawable/button_corner"
-        android:text="Any" />
+        android:text="Car Pool / Share" />
 
     <TextView
         android:textSize="19sp"
@@ -54,7 +46,7 @@
         android:layout_marginTop="10dp"
         android:textColor="@color/white_primary"
         android:background="@drawable/button_corner"
-        android:text="Cab Only" />
+        android:text="Taxi" />
     <Button
         android:id="@+id/captain_pool_only"
         android:layout_width="match_parent"
@@ -62,7 +54,25 @@
         android:layout_marginTop="10dp"
         android:textColor="@color/white_primary"
         android:background="@drawable/button_corner"
-        android:text="Car Pool Only" />
+        android:text="Car Pool / Share" />
+
+    <TextView
+        android:textSize="19sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/space5"
+        android:textColor="@color/black"
+        android:text="Cargo / Logistics"/>
+
+    <Button
+        android:id="@+id/passenger_any"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/white_primary"
+        android:background="@drawable/button_corner"
+        android:text="Provider" />
+
     <Button
         android:id="@+id/captain_any"
         android:layout_width="match_parent"
@@ -70,5 +80,5 @@
         android:layout_marginTop="10dp"
         android:textColor="@color/white_primary"
         android:background="@drawable/button_corner"
-        android:text="Any" />
+        android:text="Consumer" />
 </LinearLayout>

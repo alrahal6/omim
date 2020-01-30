@@ -110,6 +110,8 @@ public class FCMListenerService extends FirebaseMessagingService {
                 title = getString(R.string.captain_invitation);
                 break;
             case Constants.Notification.DRIVER_ACCEPTED:
+                MySharedPreference.getInstance(MwmApplication.get().getApplicationContext())
+                        .addActiveProcess(Constants.ActiveProcess.PASSENGER_HAVE_ACTIVE_RIDE);
                 title = getString(R.string.captain_accepted);
                 break;
             case Constants.Notification.DRIVER_REFUSED:

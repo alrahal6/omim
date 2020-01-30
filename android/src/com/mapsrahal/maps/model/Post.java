@@ -20,6 +20,15 @@ public class Post {
     private double srcDistDiff;
     private double destDistDiff;
     private String phone;
+    private int selectorFlag;
+
+    public int getSelectorFlag() {
+        return selectorFlag;
+    }
+
+    public void setSelectorFlag(int selectorFlag) {
+        this.selectorFlag = selectorFlag;
+    }
 
     public double getSrcDistDiff() {
         return srcDistDiff;

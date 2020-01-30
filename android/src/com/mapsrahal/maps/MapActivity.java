@@ -476,12 +476,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         mRemoveSeat = findViewById(R.id.remove_seat);
         mRemoveSeat.setOnClickListener(this);
         mRequiredSeats = findViewById(R.id.required_seats);
-        Spinner spinner = findViewById(R.id.gender_spinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.select_gender, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(this);
+
         //mMore = findViewById(R.id.more);
         btRequest = findViewById(R.id.bt_request);
         btRequest.setOnClickListener(this);
@@ -547,14 +542,6 @@ public class MapActivity extends BaseMwmFragmentActivity
             prepareList();
         }
 
-        int activeProcess = MySharedPreference.getInstance(this).getActiveProcess();
-
-        if(activeProcess == Constants.ActiveProcess.CAPTAIN_HAVE_CONFIRMED_LIST) {
-            setFullscreen(true);
-            confirmedUserList = new ArrayList<>();
-            confirmedUserList = MySharedPreference.getInstance(this).getListConfirmed(CONFIRMED_LIST_KEY);
-        }
-
         switch (mSelector) {
             case PASSENGER_TAXI_ONLY:
                 prepareForFrom();
@@ -568,6 +555,27 @@ public class MapActivity extends BaseMwmFragmentActivity
                 prepareForNone();
                 break;
         }
+
+        ArrayAdapter<CharSequence> adapter;
+
+        Spinner spinner = findViewById(R.id.gender_spinner);
+        if(mSelector == CAPTAIN_ANY || mSelector == PASSENGER_ANY) {
+            adapter = ArrayAdapter.createFromResource(this,
+                    R.array.select_cargo, android.R.layout.simple_spinner_item);
+            // hide seats
+            ImageView imageView = findViewById(R.id.remove_seat);
+            imageView.setVisibility(View.GONE);
+            TextView textView = findViewById(R.id.required_seats);
+            textView.setVisibility(View.GONE);
+            ImageView imageView1 = findViewById(R.id.add_seat);
+            imageView1.setVisibility(View.GONE);
+        } else {
+            adapter = ArrayAdapter.createFromResource(this,
+                    R.array.select_gender, android.R.layout.simple_spinner_item);
+        }
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(this);
 
         mOpenGMap.setOnClickListener(v -> openInGoogleMap());
 
@@ -1177,7 +1185,9 @@ public class MapActivity extends BaseMwmFragmentActivity
     @Override
     protected void onSafeDestroy() {
         super.onSafeDestroy();
-        disconnect();
+        if(mSelector == PASSENGER_TAXI_ONLY) {
+            disconnect();
+        }
     }
 
     @Override
@@ -1592,11 +1602,20 @@ public class MapActivity extends BaseMwmFragmentActivity
         if(MySharedPreference.getInstance(this).isCaptainOnline()) {
             connect();
         }
+        int activeProcess = MySharedPreference.getInstance(this).getActiveProcess();
         String msg = MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).getUserMessage();
+        if(activeProcess == Constants.ActiveProcess.CAPTAIN_HAVE_CONFIRMED_LIST) {
+            setFullscreen(true);
+            confirmedUserList = new ArrayList<>();
+            confirmedUserList = MySharedPreference.getInstance(this).getListConfirmed(CONFIRMED_LIST_KEY);
+        }
+
         //Log.i(TAG,"Shared message : "+msg);
         if (msg != null) {
             processMessage(msg);
-            MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).userMessage(null);
+            if(activeProcess != Constants.ActiveProcess.PASSENGER_HAVE_ACTIVE_RIDE) {
+                MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).userMessage(null);
+            }
         }
 
         String notify =MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).getUserNotification();
@@ -1985,6 +2004,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 MySharedPreference.getInstance(this).getToAddress().trim(),
                 new Date(MySharedPreference.getInstance(this).getStartTime()),
                 MySharedPreference.getInstance(this).getPhoneNumber());
+        post.setSelectorFlag(mSelector);
 
         Call<List<Post>> call = postApi.createPost(post);
 
@@ -1995,10 +2015,15 @@ public class MapActivity extends BaseMwmFragmentActivity
                     return;
                 }
                 showProgress(false);
-                mMatchingList = new ArrayList<>();
-                createMatchList(response.body());
-                //matchingCounter = 0;
-                my();
+                if(mSelector == PASSENGER_SHARE_ONLY) {
+                    Toast.makeText(MapActivity.this,"Sucessfully posted your request",Toast.LENGTH_LONG).show();
+                    MySharedPreference.getInstance(MapActivity.this).addActiveProcess(Constants.ActiveProcess.PASSENGER_HAVE_ACTIVE_RIDE);
+                } else {
+                    mMatchingList = new ArrayList<>();
+                    createMatchList(response.body());
+                    //matchingCounter = 0;
+                    my();
+                }
             }
             @Override
             public void onFailure(Call<List<Post>> call, Throwable t) {

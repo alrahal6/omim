@@ -2932,6 +2932,13 @@
         <item>Female</item>
         <item>Any</item>
     </string-array>
+    <string-array name="select_cargo">
+        <item>تكتك - Tok Tok</item>
+        <item>بوكس - Box</item>
+        <item>سحاب - carrier</item>
+        <item>دفار - Daffar</item>
+        <item>شاحنة - Truck</item>
+    </string-array>
     <string name="title_activity_my_rides">MyRidesActivity</string>
     <string name="tab_text_1">Ongoing</string>
     <string name="tab_text_2">History</string>
