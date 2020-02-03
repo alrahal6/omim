@@ -176,6 +176,7 @@
     <string name="wait_several_minutes">This can take several minutes.\nPlease wait…</string>
     <!-- Show bookmarks from this category on a map or not -->
     <string name="visible">Visible</string>
+    <string name="visible_me">Visible Me</string>
     <!-- Toast which is displayed when GPS has been deactivated -->
     <string name="gps_is_disabled_long_text">GPS is disabled. Please enable it in Settings.</string>
     <!-- Measurement units title in settings activity -->
@@ -1317,8 +1318,8 @@
     <string name="error_system_message"> An unknown error occurred</string>
     <string name="restore">Restore</string>
     <string name="sign_message_gdpr">To continue you must accept our Terms of Use and Privacy Policy. Please read them carefully.</string>
-    <string name="sign_agree_pp_gdpr">I agree to the &lt;a href="%s">Privacy Policy&lt;/a></string>
-    <string name="sign_agree_tof_gdpr">I agree to the &lt;a href="%s">Terms of Use&lt;/a></string>
+    <string name="sign_agree_pp_gdpr">I agree &lt;a href="%s">Privacy Policy&lt;/a></string>
+    <string name="sign_agree_tof_gdpr">I agree &lt;a href="%s">Terms of Use&lt;/a></string>
     <string name="sign_agree_news_gdpr">I agree to receive the latest news about Al Rahal6 products</string>
     <string name="whats_new_localbiz_title">Small business deserves attention</string>
     <string name="whats_new_localbiz_message">It is local cafes, cozy hostels and shops that make our journeys unforgettable. We will optimize your page in Al Rahal6 to make it stand out.</string>

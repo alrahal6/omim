@@ -35,7 +35,7 @@ public enum OnboardingStep
   DREAM_AND_PLAN(R.string.visible,
                  UiUtils.NO_ID,
                  R.string.view_campaign_button,
-                 R.string.visible,
+                 R.string.visible_me,
                  R.drawable.img_dream_and_plan, false),
   PERMISSION_EXPLANATION(R.string.visible,
                          R.string.visible,

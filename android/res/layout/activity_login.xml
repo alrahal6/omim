@@ -31,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
-            android:text="Login  "
+            android:text="Enter User Info  "
             android:textAlignment="center"
             android:textSize="20dp" />
 
@@ -101,7 +101,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="15dp"
             android:background="@drawable/round_corner_button"
-            android:text="Login" />
+            android:text="User Login" />
         <ProgressBar
             android:id="@+id/loginProgressOtp"
             style="?android:attr/progressBarStyle"

@@ -24,6 +24,7 @@
       android:layout_marginStart="@dimen/margin_base_plus"
       android:gravity="center_vertical"
       android:text="@string/sign_agree_pp_gdpr"
+      android:labelFor="@+id/privacy_policy_welcome_checkbox"
       android:textAppearance="@style/MwmTextAppearance.Body1.Secondary"
       android:textColor="?android:textColorPrimary" />
   </LinearLayout>
@@ -42,6 +43,7 @@
       android:id="@+id/term_of_use_welcome"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+        android:labelFor="@+id/term_of_use_welcome_checkbox"
       android:layout_marginStart="@dimen/margin_base_plus"
       android:gravity="center_vertical"
       android:text="@string/sign_agree_tof_gdpr"

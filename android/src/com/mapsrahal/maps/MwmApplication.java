@@ -64,6 +64,7 @@ public class MwmApplication extends Application implements AppBackgroundTracker.
   private Logger mLogger;
   public final static String TAG = "MwmApplication";
   private static final String FILE_NAME = "Sudan_West.mwm";
+  private static final String FILE_NAME_EAST = "Sudan_East.mwm";
   private static MwmApplication sSelf;
   private SharedPreferences mPrefs;
   private AppBackgroundTracker mBackgroundTracker;
@@ -231,8 +232,8 @@ public class MwmApplication extends Application implements AppBackgroundTracker.
     }
   }
 
-  private boolean isFileExist() {
-    String filePath = StorageUtils.getSettingsPath()+FILE_NAME;
+  private boolean isFileExist(String locFile) {
+    String filePath = StorageUtils.getSettingsPath()+locFile;
     File file = new File(filePath);
     if(file.exists())
       return true;
@@ -240,7 +241,7 @@ public class MwmApplication extends Application implements AppBackgroundTracker.
       return false;
   }
 
-  private void copyAssets() {
+  private void copyAssets(String locFile) {
     /*AssetManager assetManager = getAssets();
     String[] files = null;
     try {
@@ -252,11 +253,11 @@ public class MwmApplication extends Application implements AppBackgroundTracker.
     InputStream in = null;
     OutputStream out = null;
     try {
-      in = getAssets().open(FILE_NAME);
+      in = getAssets().open(locFile);
 
       String outDir = StorageUtils.getSettingsPath();
 
-      File outFile = new File(outDir, FILE_NAME);
+      File outFile = new File(outDir, locFile);
 
       out = new FileOutputStream(outFile);
       copyFile(in, out);
@@ -266,7 +267,7 @@ public class MwmApplication extends Application implements AppBackgroundTracker.
       out.close();
       out = null;
     } catch(IOException e) {
-      Log.e("tag", "Failed to copy asset file: " + FILE_NAME, e);
+      Log.e("tag", "Failed to copy asset file: " + locFile, e);
     }
     //}
   }
@@ -340,8 +341,11 @@ public class MwmApplication extends Application implements AppBackgroundTracker.
     Editor.init(this);
     UGC.init(this);
     mPlatformInitialized = true;
-    if(!isFileExist()) {
-      copyAssets();
+    if(!isFileExist(FILE_NAME)) {
+      copyAssets(FILE_NAME);
+    }
+    if(!isFileExist(FILE_NAME_EAST)) {
+      copyAssets(FILE_NAME_EAST);
     }
   }
 
