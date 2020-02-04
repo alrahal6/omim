@@ -1098,14 +1098,16 @@ JNIEXPORT jstring JNICALL
 Java_com_mapsrahal_maps_Framework_nativeGetBaseUrl(JNIEnv * env, jclass)
 {
   //return jni::ToJavaString(env, "http://192.168.43.214:3002/");
-  return jni::ToJavaString(env, "http://3.18.30.74:3003/");
+  //return jni::ToJavaString(env, "http://3.18.30.74:3003/");
+  return jni::ToJavaString(env, "http://alrahal.info:3003/");
 }
 
 JNIEXPORT jstring JNICALL
 Java_com_mapsrahal_maps_Framework_nativeGetWsUrl(JNIEnv * env, jclass)
 {
   //return jni::ToJavaString(env, "ws://192.168.43.214:3002/x");
-  return jni::ToJavaString(env, "ws://3.18.30.74:3003/x");
+  //return jni::ToJavaString(env, "ws://3.18.30.74:3003/x");
+  return jni::ToJavaString(env, "ws://alrahal.info:3003/x");
 }
 
 JNIEXPORT jobject JNICALL
