@@ -512,6 +512,7 @@ public class ServerConnection extends Service {
 
     public void sendMe(String message) {
         try {
+            //Log.d(TAG,message);
             mWebSocket.send(message);
         } catch (Exception e) {
             //connect();

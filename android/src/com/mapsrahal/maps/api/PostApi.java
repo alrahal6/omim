@@ -1,6 +1,7 @@
 package com.mapsrahal.maps.api;
 
 import com.mapsrahal.maps.model.Post;
+import com.mapsrahal.maps.model.Price;
 
 import java.util.List;
 
@@ -12,6 +13,9 @@ public interface PostApi {
 
     @POST("posts")
     Call<List<Post>> createPost(@Body Post post);
+
+    @POST("price")
+    Call<Price> createPrice(@Body Price price);
 
     /*
     @GET("posts")

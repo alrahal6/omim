@@ -64,6 +64,7 @@ import com.mapsrahal.maps.location.LocationHelper;
 import com.mapsrahal.maps.model.FindDriver;
 import com.mapsrahal.maps.model.MatchingItem;
 import com.mapsrahal.maps.model.Post;
+import com.mapsrahal.maps.model.Price;
 import com.mapsrahal.maps.model.UserMessage;
 import com.mapsrahal.maps.onboarding.OnboardingTip;
 import com.mapsrahal.maps.routing.NavigationController;
@@ -128,7 +129,8 @@ public class MapActivity extends BaseMwmFragmentActivity
     private TextView mAmount, mTripTimer,mCustomerName,mCustomerPhone,mCustomerPickup;
     private TextView mCustomerDestination,mTripDistance;
     private TextView mDriverName,mDriverPhone;
-    private TextView mListCount, mListAmount,mCallingCaptain;
+    private TextView mListCount, mListAmount,mCallingCaptain,mPriceText;
+    private double tripPrice;
     private Button mCancelRequest;
 
     private Button btRequest,mOpenGMap,mConfirmList;
@@ -138,7 +140,7 @@ public class MapActivity extends BaseMwmFragmentActivity
     private ImageView mAddSeat,mRemoveSeat;
 
     private LinearLayout mNotificationCard,mDriverInfo,mllForm,mMnuForm,mConfirmLayout;
-    private LinearLayout mCustomerInfo, mAcceptBusyInfo, mSwipeLayout, mpayAndRating;
+    private LinearLayout mCustomerInfo, mAcceptBusyInfo, mSwipeLayout, mpayAndRating,mPriceLayout;
     private ProgressBar mMyprogress;
 
     private boolean mIsTabletLayout = false,isPickupSearch = true,isResultBySearch = false;
@@ -407,6 +409,7 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     private void showBtnRequest() {
         btRequest.setVisibility(View.VISIBLE);
+        showProgress(false);
     }
 
     private void hideFromTo() {
@@ -512,6 +515,8 @@ public class MapActivity extends BaseMwmFragmentActivity
 
         mViewModel = ViewModelProviders.of(this).get(WebSocketViewModel.class);
         setObservers();
+        mPriceLayout = findViewById(R.id.ll_form_price);
+        mPriceText = findViewById(R.id.tv_price);
         mCustomerInfo = findViewById(R.id.customerInfo);
         mOpenGMap = findViewById(R.id.openGMap);
         mAcceptBusyInfo = findViewById(R.id.acceptBusyInfo);
@@ -803,6 +808,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 //mMainMenu.animate().rotation(mMainMenu.getRotation()+360).start();
                 break;
             case R.id.bt_request:
+                hideBtnRequest();
                 showProgress(true);
                 if (mSelector == PASSENGER_TAXI_ONLY) {
                     getNearestDriver();
@@ -849,7 +855,65 @@ public class MapActivity extends BaseMwmFragmentActivity
                 showProgress(true);
                 setDropoff();
                 break;
+            case R.id.cancelRequest:
+                    cancelDriver();
+                break;
         }
+    }
+
+    private void cancelRequest() {
+        //ringtone.play();
+        mCustomerInfo.setVisibility(View.VISIBLE);
+        mSwipeLayout.setVisibility(View.GONE);
+        mCustomerName.setText(R.string.passenger_cancel);
+        mCustomerPickup.setText("");
+        mCustomerDestination.setText("");
+        //mCustomerPhone.setText("");
+        mTripDistance.setText("");
+        mAcceptBusyInfo.setVisibility(View.GONE);
+        updateResponse(TRIP_CANCELLED);
+        MyNotificationManager.getInstance(MapActivity.this).displayNotification("Request Cancelled", "Sorry! request cancelled by passenger");
+        if (ringtone.isPlaying()) {
+            ringtone.stop();
+        }
+        if (mTimerRunning) {
+            stopTimer();
+        }
+        cancelCall();
+    }
+
+    private void cancelDriver() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setMessage("Do you want to cancel the current Trip?");
+        alertDialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                userTripInfo.setMyFlag(CANCEL_DRIVER);
+                // todo handle below code for different cancel
+                if (isRequestInProgress && !isDriverAccepted) {
+                    sendMe();
+                    isRequestInProgress = false;
+                }
+
+                if (isDriverAccepted) {
+                    sendMe();
+                    isDriverAccepted = false;
+                }
+
+                removeRequest();
+                bringBackDriver();
+                //MyBase.getInstance(mContext).addToRequestQueue(updateIsOnReq);
+                //iPassengerMapsActivity.setRating(userTripInfo.getTripId(), 1.2f);
+            }
+        });
+        alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 
     private void setSeat() {
@@ -1120,7 +1184,31 @@ public class MapActivity extends BaseMwmFragmentActivity
             String units = rinfo.distToTarget +" "+rinfo.targetUnits;
             tvDistance.setText(units);
         }
+        getPrice(myDistance,mSelector);
         showBtnRequest();
+    }
+
+    private void getPrice(String myDistance,int mSelector) {
+        PostApi postApi = ApiClient.getClient().create(PostApi.class);
+        Price price = new Price(0.0,myDistance,mSelector);
+        Call<Price> call = postApi.createPrice(price);
+        call.enqueue(new Callback<Price>() {
+            @Override
+            public void onResponse(Call<Price> call, Response<Price> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(MapActivity.this,"Sorry! Error in calculating Price",Toast.LENGTH_LONG).show();
+                    return;
+                }
+                tripPrice = roundTwoDecimals(response.body().getPrice());
+                mPriceLayout.setVisibility(View.VISIBLE);
+                mPriceText.setText(""+tripPrice+" SDG");
+            }
+
+            @Override
+            public void onFailure(Call<Price> call, Throwable t) {
+                Toast.makeText(MapActivity.this,"Sorry! Error in calculating Price",Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     /*@Override
@@ -1437,7 +1525,8 @@ public class MapActivity extends BaseMwmFragmentActivity
                 }
                 break;
             case 5:
-                //ringtone.play();
+                cancelRequest();
+                /* //ringtone.play();
                 mCustomerInfo.setVisibility(View.VISIBLE);
                 mSwipeLayout.setVisibility(View.GONE);
                 mCustomerName.setText(R.string.passenger_cancel);
@@ -1454,7 +1543,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 if (mTimerRunning) {
                     stopTimer();
                 }
-                cancelCall();
+                cancelCall();*/
                 break;
             /*case 13:
                 mCustomerInfo.setVisibility(View.GONE);
@@ -1475,6 +1564,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 }
                 mDriverPhone.setVisibility(View.VISIBLE);
                 mDriverPhone.setText("Driver Phone: " + g.getPhone());
+                mCallingCaptain.setText("Captain Found, on the way");
                 MyNotificationManager.getInstance(MapActivity.this).displayNotification("Driver Found", "Driver Coming to you");
                 //mRequest.setText("Driver Found, Coming to you");
                 phoneNumber = "0" + g.getPhone();
@@ -1491,6 +1581,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 listCurrent++;
                 if(listCurrent >= listSize) {
                     removeRequest();
+                    mCallingCaptain.setText("Sorry! No Drivers Found");
                     Toast.makeText(this,"Sorry! No drivers found",Toast.LENGTH_LONG).show();
                 } else {
                     requestHandler.postDelayed(requestRunnable, 0);
@@ -1505,6 +1596,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 //}
                 break;
             case 11:
+                mCallingCaptain.setText("Captain Reached!");
                 MyNotificationManager.getInstance(MapActivity.this).displayNotification("Driver Reached", "Driver Reached your place");
                 break;
             case 9:
@@ -1528,6 +1620,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 MyNotificationManager.getInstance(MapActivity.this).displayNotification("Trip Canceled", "Trip Cancelled by driver");
                 break;
             case 12:
+                mCallingCaptain.setText("Trip Started!");
                 mCancelRequest.setVisibility(View.GONE);
                 mCallingCaptain.setVisibility(View.GONE);
                 MyNotificationManager.getInstance(MapActivity.this).displayNotification("Trip Started", "Trip Started by driver");
@@ -1613,16 +1706,16 @@ public class MapActivity extends BaseMwmFragmentActivity
         //Log.i(TAG,"Shared message : "+msg);
         if (msg != null) {
             processMessage(msg);
-            if(activeProcess != Constants.ActiveProcess.PASSENGER_HAVE_ACTIVE_RIDE) {
+            //if(activeProcess != Constants.ActiveProcess.PASSENGER_HAVE_ACTIVE_RIDE) {
                 MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).userMessage(null);
-            }
+            //}
         }
 
         String notify =MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).getUserNotification();
 
         if (notify != null) {
             processNotification(notify);
-            MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).userNotification(null);
+            //MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).userNotification(null);
         }
 
         /*String msg = MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).getUserMessage();
@@ -2197,6 +2290,10 @@ public class MapActivity extends BaseMwmFragmentActivity
         }
     }
 
+    /*private void cancelCall() {
+
+    }*/
+
     private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -2227,6 +2324,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                     }
                     mDriverPhone.setVisibility(View.VISIBLE);
                     mDriverPhone.setText("Driver Phone: " + g.getPhone());
+                    mCallingCaptain.setText("Captain Found! On the way");
                     MyNotificationManager.getInstance(MapActivity.this).displayNotification("Driver Found", "Driver Coming to you");
                     //mRequest.setText("Driver Found, Coming to you");
                     phoneNumber = "0" + g.getPhone();
@@ -2256,7 +2354,29 @@ public class MapActivity extends BaseMwmFragmentActivity
                     //mRequest.setText("Sorry! Driver Not Found");
                     //}
                     break;
+                case 5:
+                    cancelRequest();
+                    /* //ringtone.play();
+                    mCustomerInfo.setVisibility(View.VISIBLE);
+                    mSwipeLayout.setVisibility(View.GONE);
+                    mCustomerName.setText(R.string.passenger_cancel);
+                    mCustomerPickup.setText("");
+                    mCustomerDestination.setText("");
+                    //mCustomerPhone.setText("");
+                    mTripDistance.setText("");
+                    mAcceptBusyInfo.setVisibility(View.GONE);
+                    updateResponse(TRIP_CANCELLED);
+                    MyNotificationManager.getInstance(MapActivity.this).displayNotification("Request Cancelled", "Sorry! request cancelled by passenger");
+                    if (ringtone.isPlaying()) {
+                        ringtone.stop();
+                    }
+                    if (mTimerRunning) {
+                        stopTimer();
+                    }
+                    cancelCall();*/
+                    break;
                 case 11:
+                    mCallingCaptain.setText("Captain Reached!");
                     MyNotificationManager.getInstance(MapActivity.this).displayNotification("Driver Reached", "Driver Reached your place");
                     break;
                 case 9:
@@ -2288,6 +2408,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                     break;
                 case 12:
                     mCancelRequest.setVisibility(View.GONE);
+                    mCallingCaptain.setText("Trip Started!");
                     MyNotificationManager.getInstance(MapActivity.this).displayNotification("Trip Started", "Trip Started by driver");
                     startTime = System.currentTimeMillis();
                     timerHandler.postDelayed(timerRunnable, 0);
