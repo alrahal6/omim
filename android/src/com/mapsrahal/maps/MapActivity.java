@@ -28,6 +28,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -49,6 +50,7 @@ import com.github.florent37.singledateandtimepicker.dialog.SingleDateAndTimePick
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
+import com.mapsrahal.maps.activity.SelectorActivity;
 import com.mapsrahal.maps.activity.ui.main.ConfirmedListPagerAdapter;
 import com.mapsrahal.maps.activity.ui.main.MatchingStatePagerAdapter;
 import com.mapsrahal.maps.api.ApiClient;
@@ -65,6 +67,7 @@ import com.mapsrahal.maps.model.FindDriver;
 import com.mapsrahal.maps.model.MatchingItem;
 import com.mapsrahal.maps.model.Post;
 import com.mapsrahal.maps.model.Price;
+import com.mapsrahal.maps.model.StatusUpdate;
 import com.mapsrahal.maps.model.UserMessage;
 import com.mapsrahal.maps.onboarding.OnboardingTip;
 import com.mapsrahal.maps.routing.NavigationController;
@@ -138,8 +141,8 @@ public class MapActivity extends BaseMwmFragmentActivity
     private ImageButton mAddressToggle,mMainMenu;
 
     private ImageView mAddSeat,mRemoveSeat;
-
-    private LinearLayout mNotificationCard,mDriverInfo,mllForm,mMnuForm,mConfirmLayout;
+    private LinearLayout mNotificationCard;
+    private LinearLayout mDriverInfo,mllForm,mMnuForm,mConfirmLayout;
     private LinearLayout mCustomerInfo, mAcceptBusyInfo, mSwipeLayout, mpayAndRating,mPriceLayout;
     private ProgressBar mMyprogress;
 
@@ -647,8 +650,6 @@ public class MapActivity extends BaseMwmFragmentActivity
         setFullscreen(!mIsFullscreen);
     }
 
-
-
     void adjustCompass(int offsetY)
     {
         if (mMapFragment == null || !mMapFragment.isAdded())
@@ -759,7 +760,6 @@ public class MapActivity extends BaseMwmFragmentActivity
                     toLocation.getLon(), myDistance, mSourceAddress, mDestinationAddress,
                     startingTime);
             createPost();
-            listMatch();
         } else {
             Toast.makeText(this,"Please enter valid address",Toast.LENGTH_LONG).show();
         }
@@ -1410,28 +1410,33 @@ public class MapActivity extends BaseMwmFragmentActivity
         //MyBase.getInstance(this).addToRequestQueue(updateIsOnReq);
     }
 
-    private void processNotification(String myNotification) {
-        //java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
-        //HashMap<String, String> usrNotification = gSon.fromJson(myNotification, type);
-        //int mFlag = Integer.parseInt(usrNotification.get("mFlag"));
-        userMessage = gSon.fromJson(myNotification, UserMessage.class);
-        double tripId = userMessage.getTripId();
+    private void processNotification(String myNotification,boolean isFromNotify) {
+        hideFromTo();
+        mSwitch.setVisibility(View.GONE);
         TextView from = findViewById(R.id.n_textView);
-        TextView to = findViewById(R.id.n_textView);
+        TextView to = findViewById(R.id.n_textView2);
+        TextView stTime = findViewById(R.id.n_start_time);
+        TextView urDistance = findViewById(R.id.n_your_distance);
         Button accept = findViewById(R.id.n_accept_request);
-        Button reject = findViewById(R.id.n_deny_request);
-        from.setText(userMessage.getfAddress());
-        to.setText(userMessage.gettAddress());
         TextView mTextView = findViewById(R.id.n_notification_title);
         LinearLayout llButton = findViewById(R.id.ll__button);
-        /*Log.d(TAG,myNotification+"");
-        Log.d(TAG,u +"");
-        Log.d(TAG,"Flag : "+ u.getmFlag());
-        Log.d(TAG,"From : "+ u.getfAddress());
-        Log.d(TAG,"to : "+ u.gettAddress());
-        Log.d(TAG,"tripId : "+ u.getTripId());
-        Log.d(TAG,"distance : "+ u.getDistance());*/
-        int mFlag = userMessage.getmFlag();
+        int mFlag = 999;
+        //if(isFromNotify) {
+            userMessage = gSon.fromJson(myNotification, UserMessage.class);
+            double tripId = userMessage.getTripId();
+            //Button reject = findViewById(R.id.n_deny_request);
+            from.setText(userMessage.getfAddress());
+            to.setText(userMessage.gettAddress());
+            stTime.setText(""+userMessage.getmTripTime());
+            urDistance.setText(""+userMessage.getDistance());
+            mFlag = userMessage.getmFlag();
+        /*} else {
+            from.setText(mSourceAddress);
+            to.setText(mDestinationAddress);
+            stTime.setText(myDistance);
+            urDistance.setText(""+startingTime);
+        }*/
+
         if(mFlag !=0 ) {
             mNotificationCard.setVisibility(View.VISIBLE);
         }
@@ -1442,11 +1447,11 @@ public class MapActivity extends BaseMwmFragmentActivity
                 mTextView.setText(getString(R.string.passenger_ride_request));
                 break;
             case Constants.Notification.PASSENGER_ACCEPTED:
-                llButton.setVisibility(View.GONE);
+                //llButton.setVisibility(View.GONE);
                 mTextView.setText(getString(R.string.passenger_accepted_request));
                 break;
             case Constants.Notification.PASSENGER_CANCELLED:
-                llButton.setVisibility(View.GONE);
+                //llButton.setVisibility(View.GONE);
                 mTextView.setText(getString(R.string.passenger_cancel));
                 //mNotificationCard.setVisibility(View.VISIBLE);
                 break;
@@ -1454,27 +1459,27 @@ public class MapActivity extends BaseMwmFragmentActivity
                 mTextView.setText(getString(R.string.captain_invitation));
                 break;
             case Constants.Notification.DRIVER_ACCEPTED:
-                llButton.setVisibility(View.GONE);
+                //llButton.setVisibility(View.GONE);
                 mTextView.setText(getString(R.string.captain_accepted));
                 //mNotificationCard.setVisibility(View.VISIBLE);
                 break;
             case Constants.Notification.DRIVER_REFUSED:
-                llButton.setVisibility(View.GONE);
+                //llButton.setVisibility(View.GONE);
                 mTextView.setText(getString(R.string.captain_refused));
                 //mNotificationCard.setVisibility(View.VISIBLE);
                 break;
             case Constants.Notification.DRIVER_CANCELLED:
-                llButton.setVisibility(View.GONE);
+                //llButton.setVisibility(View.GONE);
                 mTextView.setText(getString(R.string.captain_cancelled));
                 //mNotificationCard.setVisibility(View.VISIBLE);
                 break;
             case Constants.Notification.DRIVER_REACHED:
-                llButton.setVisibility(View.GONE);
+                //llButton.setVisibility(View.GONE);
                 mTextView.setText(getString(R.string.captain_reached));
                 //mNotificationCard.setVisibility(View.VISIBLE);
                 break;
             case Constants.Notification.TRIP_STARTED:
-                llButton.setVisibility(View.GONE);
+                //llButton.setVisibility(View.GONE);
                 mTextView.setText(getString(R.string.trip_started));
                 //mNotificationCard.setVisibility(View.VISIBLE);
                 break;
@@ -1487,18 +1492,54 @@ public class MapActivity extends BaseMwmFragmentActivity
         }
 
         int finalAcceptButtonFlag = acceptButtonFlag;
+        int finalMFlag = mFlag;
         accept.setOnClickListener(view -> {
-            userMessage.setmFlag(finalAcceptButtonFlag);
+            // todo update in server
+            updateStatus(finalMFlag);
+            //userMessage.setmFlag(finalAcceptButtonFlag);
 
         });
 
-        int finalRejectButtonFlag = rejectButtonFlag;
+        /*int finalRejectButtonFlag = rejectButtonFlag;
         reject.setOnClickListener(view -> {
             userMessage.setmFlag(finalRejectButtonFlag);
-
-        });
+        });*/
         //notification_req_res
     }
+
+    private void updateStatus(int Status) {
+        //PostApi postApi =
+        PostApi postApi = ApiClient.getClient().create(PostApi.class);
+        StatusUpdate statusUpdate = new StatusUpdate(MySharedPreference.getInstance(this).getUserId(),Status);
+
+        Call<StatusUpdate> call = postApi.updateStatus(statusUpdate);
+
+        call.enqueue(new Callback<StatusUpdate>() {
+            @Override
+            public void onResponse(Call<StatusUpdate> call, Response<StatusUpdate> response) {
+                //Log.d(TAG,"Got response inside");
+                if(!response.isSuccessful()) {
+                    return;
+                }
+                //Log.d(TAG,"Got response success");
+                MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).userNotification(null);
+                reloadMe();
+            }
+
+            @Override
+            public void onFailure(Call<StatusUpdate> call, Throwable t) {
+
+            }
+        });
+    }
+
+
+    private void reloadMe() {
+        Intent intent = new Intent(this,SelectorActivity.class);
+        finish();
+        startActivity(intent);
+    }
+
 
     private void processMessage(String myMsg) {
         g = gSon.fromJson(myMsg, UserTripInfo.class);
@@ -1714,7 +1755,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         String notify =MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).getUserNotification();
 
         if (notify != null) {
-            processNotification(notify);
+            processNotification(notify,true);
             //MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).userNotification(null);
         }
 
@@ -2007,8 +2048,6 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     private void setFullscreen(boolean isFullscreen) {
         mIsFullscreen = isFullscreen;
-        //MatchingListFragment fragment = new MatchingListFragment();
-        //fragment.createPost();
         if (isFullscreen) {
             mViewPager.setVisibility(View.VISIBLE);
             mConfirmLayout.setVisibility(View.VISIBLE);
@@ -2109,15 +2148,37 @@ public class MapActivity extends BaseMwmFragmentActivity
                 }
                 showProgress(false);
                 if(mSelector == PASSENGER_SHARE_ONLY) {
-                    Toast.makeText(MapActivity.this,"Sucessfully posted your request",Toast.LENGTH_LONG).show();
+                    Toast.makeText(MapActivity.this,"Successfully sent your request",Toast.LENGTH_LONG).show();
+                    Map<String, String> data = new HashMap<>();
+                    data.put("fUserId",MySharedPreference.getInstance(MapActivity.this).getUserId()+"");
+                    data.put("tUserId","0.0");
+                    data.put("mFlag","1");
+                    data.put("tripId","0.0");
+                    data.put("distance",myDistance);
+                    data.put("price","0.0");
+                    data.put("mTripTime",""+startingTime);
+                    data.put("phone","0.0");
+                    data.put("name","0.0");
+                    data.put("fAddress",mSourceAddress);
+                    data.put("tAddress",mDestinationAddress);
+                    data.put("note","0.0");
+                    data.put("fLat","0.0");
+                    data.put("fLng","0.0");
+                    data.put("tLat","0.0");
+                    data.put("tLng","0.0");
+                    String usrNotification = gSon.toJson(data);
+                    MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).userNotification(usrNotification);
                     MySharedPreference.getInstance(MapActivity.this).addActiveProcess(Constants.ActiveProcess.PASSENGER_HAVE_ACTIVE_RIDE);
+                    processNotification(usrNotification,true);
                 } else {
                     mMatchingList = new ArrayList<>();
                     createMatchList(response.body());
                     //matchingCounter = 0;
                     my();
+                    listMatch();
                 }
             }
+
             @Override
             public void onFailure(Call<List<Post>> call, Throwable t) {
                 Toast.makeText(MapActivity.this,"Some Error occurred! Try Later",Toast.LENGTH_LONG).show();

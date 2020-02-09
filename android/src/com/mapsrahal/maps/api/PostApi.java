@@ -2,6 +2,7 @@ package com.mapsrahal.maps.api;
 
 import com.mapsrahal.maps.model.Post;
 import com.mapsrahal.maps.model.Price;
+import com.mapsrahal.maps.model.StatusUpdate;
 
 import java.util.List;
 
@@ -17,6 +18,8 @@ public interface PostApi {
     @POST("price")
     Call<Price> createPrice(@Body Price price);
 
+    @POST("status")
+    Call<StatusUpdate> updateStatus(@Body StatusUpdate statusUpdate);
     /*
     @GET("posts")
     Call<List<Post>> getPosts(

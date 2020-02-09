@@ -4,26 +4,24 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/notification_req_res"
-    android:layout_gravity="bottom"
-    android:orientation="vertical"
+    android:orientation="horizontal"
+    android:layout_marginTop="90dp"
     android:visibility="gone"
-    android:background="@color/white"
-    android:layout_margin="8dp">
+    android:background="@color/white">
 
     <LinearLayout
         android:id="@+id/accept_reject"
         android:layout_marginTop="@dimen/space20"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="bottom"
         android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_margin="4dp">
 
         <TextView
             android:id="@+id/n_notification_title"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:text="Ride Yet To Start"
+            android:text="Waiting For Captain..."
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
@@ -85,14 +83,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/n_your_distance"
-            android:text="Extra Distance : "
+            android:text=" "
             android:textSize="15sp"/>
         <TextView
             android:id="@+id/n_trip_route_plan"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/n_extra_distance"
-            android:text="Trip Plan "
+            android:text=" "
             android:textSize="15sp"/>
         <LinearLayout
             android:id="@+id/ll__req"
@@ -106,7 +104,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:text="Amount : "
+                android:text=" "
                 android:textSize="15sp"/>
             <TextView
                 android:id="@+id/n_trip_distance"
@@ -114,7 +112,7 @@
                 android:layout_weight="2"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/n_start_time"
-                android:text="Distance : "
+                android:text=" "
                 android:textSize="15sp" />
             <!--<Button
                 android:id="@+id/n_request_match"
@@ -131,18 +129,17 @@
             android:layout_below="@+id/ll__req"
             android:orientation="horizontal"
             android:layout_marginTop="@dimen/space10"
-            android:weightSum="2"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <Button
                 android:id="@+id/n_accept_request"
                 android:layout_weight="1"
                 android:layout_height="32dp"
                 android:layout_width="wrap_content"
-                android:textColor="@color/base_green"
+                android:textColor="@color/base_red"
                 android:background="@layout/rounded_border_edittext"
-                android:text="Accept"/>
-            <Button
+                android:text="Cancel Trip"/>
+            <!--<Button
                 android:id="@+id/n_deny_request"
                 android:layout_weight="1"
                 android:layout_height="32dp"
@@ -150,10 +147,10 @@
                 android:layout_width="wrap_content"
                 android:textColor="@color/base_red"
                 android:background="@layout/rounded_border_edittext"
-                android:text="Reject"/>
+                android:text="Cancel"/>-->
         </LinearLayout>
 
-            <Button
+            <!--<Button
                 android:visibility="gone"
                 android:id="@+id/n_cancel_request"
                 android:layout_height="32dp"
@@ -161,7 +158,7 @@
                 android:layout_width="wrap_content"
                 android:textColor="@color/base_red"
                 android:background="@layout/rounded_border_edittext"
-                android:text="Cancel"/>
+                android:text="Cancel"/>-->
 
     </LinearLayout>
 
