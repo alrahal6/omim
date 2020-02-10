@@ -271,6 +271,12 @@ public class MySharedPreference {
         editor.apply();
     }
 
+    public void clearActiveProcess() {
+        SharedPreferences.Editor editor = getSharedPreference().edit();
+        editor.putInt(KEY_ACTIVE_PROCESS_ID, 0);
+        editor.apply();
+    }
+
     public void addActiveProcess(int activeProcessId) {
         SharedPreferences.Editor editor = getSharedPreference().edit();
         editor.putInt(KEY_ACTIVE_PROCESS_ID, activeProcessId);

@@ -2,7 +2,9 @@ package com.mapsrahal.maps.activity.ui.main;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,10 +72,11 @@ public class ConfirmedListPagerAdapter extends PagerAdapter {
         layoutInflater = LayoutInflater.from(mContext);
         View view = layoutInflater.inflate(R.layout.matching_list_items, container, false);
 
-        TextView mTextView1,mTripRoute, mTextView2,mTripDistance,mTripTime,mAmount,mYourDistance,mExtraDistance;
+        TextView mTextView1,mTripRoute, mTextView2,mTextView3,mTripDistance,mTripTime,mAmount,mYourDistance,mExtraDistance;
         Button mRequestMatch,mRemoveMatch;
         mTextView1 = view.findViewById(R.id.textView);
         mTextView2 = view.findViewById(R.id.textView2);
+        mTextView3 = view.findViewById(R.id.textView3);
         mTripDistance = view.findViewById(R.id.trip_distance);
         mTripTime = view.findViewById(R.id.start_time);
         mAmount = view.findViewById(R.id.trip_amount);
@@ -81,24 +84,29 @@ public class ConfirmedListPagerAdapter extends PagerAdapter {
         mExtraDistance = view.findViewById(R.id.extra_distance);
         mYourDistance = view.findViewById(R.id.your_distance);
         mRequestMatch = view.findViewById(R.id.request_match);
-        //mRemoveMatch = view.findViewById(R.id.remove_match);
+        mRemoveMatch = view.findViewById(R.id.remove_match);
 
-
+        //matchingItems.get(position).getfLat();
         mTextView1.setText(matchingItems.get(position).getfAddress());
-        mTextView2.setText(matchingItems.get(position).gettAddress());
-        mTripDistance.setText("Trip Distance : ");
+        mTextView2.setText(matchingItems.get(position).getfAddress());
+        mTextView3.setText(matchingItems.get(position).gettAddress());
+        mTripDistance.setText(matchingItems.get(position).getDistance() + "KM");
         mTripTime.setText("Time : "+matchingItems.get(position).getmTripTime());
-        mAmount.setText("Amount : "+matchingItems.get(position).getPrice());
+        mAmount.setText(matchingItems.get(position).getPrice()+ "SDG");
         mYourDistance.setText("Your Distance : ");
         mExtraDistance.setText("Extra Distance : "+matchingItems.get(position).getName());
         mTripRoute.setText(""+matchingItems.get(position).getPhone());
-        if(matchingList[position] != 1) {
+        mRequestMatch.setText("View On Map");
+        mRemoveMatch.setText("View On Google Map");
+        //mRequestMatch.setOnClickListener(v -> openInGoogleMap());
+
+        /*if(matchingList[position] != 1) {
             mRequestMatch.setText("Add");
             mRequestMatch.setTextColor(Color.GREEN);
         } else {
             mRequestMatch.setText("Remove");
             mRequestMatch.setTextColor(Color.RED);
-        }
+        }*/
 
         container.addView(view, 0);
         return view;

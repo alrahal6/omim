@@ -44,6 +44,7 @@ public class MatchingStatePagerAdapter extends PagerAdapter {
 
     public interface MatchingSelectionListener {
         void selectMatch(int position,boolean isAdd);
+        void showInMap(double fromLat,double fromLng,double toLat, double toLng);
     }
 
     public MatchingStatePagerAdapter(ArrayList<MatchingItem> matchingItems,Context context, FragmentManager fm) {
@@ -87,7 +88,7 @@ public class MatchingStatePagerAdapter extends PagerAdapter {
         mExtraDistance = view.findViewById(R.id.extra_distance);
         mYourDistance = view.findViewById(R.id.your_distance);
         mRequestMatch = view.findViewById(R.id.request_match);
-        //mRemoveMatch = view.findViewById(R.id.remove_match);
+        mRemoveMatch = view.findViewById(R.id.remove_match);
 
 
         mTextView1.setText(matchingItems.get(position).getmText1());
@@ -121,14 +122,12 @@ public class MatchingStatePagerAdapter extends PagerAdapter {
                             }
                         }
         );
-        /*mRemoveMatch.setOnClickListener(v ->
-                {
-                    if(matchingList[position] == 1 ) {
-                        this.addToMatch(position, false);
-                        matchingList[position] = 2;
-                    }
-                }
-        );*/
+        mRemoveMatch.setOnClickListener(v ->
+                    matchingListener.showInMap(matchingItems.get(position).getfLat(),
+                            matchingItems.get(position).getfLng(),
+                            matchingItems.get(position).gettLat(),
+                            matchingItems.get(position).gettLat())
+        );
         container.addView(view, 0);
         return view;
     }

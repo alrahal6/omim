@@ -59,6 +59,8 @@ import com.mapsrahal.maps.api.ParsedMwmRequest;
 import com.mapsrahal.maps.api.PostApi;
 import com.mapsrahal.maps.api.UserMessageApi;
 import com.mapsrahal.maps.base.BaseMwmFragmentActivity;
+import com.mapsrahal.maps.bookmarks.data.BookmarkManager;
+import com.mapsrahal.maps.bookmarks.data.FeatureId;
 import com.mapsrahal.maps.bookmarks.data.MapObject;
 import com.mapsrahal.maps.intent.MapTask;
 import com.mapsrahal.maps.location.CompassData;
@@ -243,6 +245,29 @@ public class MapActivity extends BaseMwmFragmentActivity
         mConfirmList.setOnClickListener(this);
     }
 
+    private void openInGoogleMap(double fromLat,double fromLng,double toLat, double toLng) {
+        String url = "http://maps.google.com/maps?saddr=" + fromLat + ","
+                + fromLng + "&daddr=" + toLat + "," + toLng + "&mode=driving";
+        Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(url));
+        intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
+        startActivity(intent);
+    }
+
+    private void showMap(double fromLat,double fromLng,double toLat, double toLng) {
+        fromLocation = MapObject.createMapObject(FeatureId.EMPTY, MapObject.API_POINT, "", "",
+                fromLat, fromLng);
+        toLocation = MapObject.createMapObject(FeatureId.EMPTY, MapObject.API_POINT, "", "",
+                toLat, toLng);
+        RoutingController.get().setStartPoint(fromLocation);
+        RoutingController.get().setStartPoint(toLocation);
+    }
+
+    @Override
+    public void showInMap(double fromLat,double fromLng,double toLat, double toLng) {
+        // openInGoogleMap(fromLat,fromLng,toLat,toLng);
+        showMap(fromLat,fromLng,toLat,toLng);
+    }
+
     @Override
     public void selectMatch(int position,boolean isAdd) {
         //MatchingItem matchingItems = mMatchingList.get(position);
@@ -251,6 +276,8 @@ public class MapActivity extends BaseMwmFragmentActivity
         //Log.d(TAG,"List Id "+ mMatchingList.get(position).getId());
         double amount =   Double.parseDouble(mMatchingList.get(position).getmAmount());
         //roundTwoDecimals(amount);
+        // todo fetch seats
+        //int totSeats = mMatchingList.get(position).getSeats();
         if(isAdd) {
             // todo add seats
             totAmount += amount;
@@ -263,7 +290,7 @@ public class MapActivity extends BaseMwmFragmentActivity
             mListCount.setText("Seats : " + selectionList.size());
             mListAmount.setText(totAmount+" SDG");
         } else {
-            // todo add seats
+            // todo remove seats
             totAmount -= amount;
             totAmount = roundTwoDecimals(totAmount);
             selectionList.remove(position);
@@ -331,7 +358,10 @@ public class MapActivity extends BaseMwmFragmentActivity
                     mMatchingList.get(position).getmText1(),
                     mMatchingList.get(position).getmText2(),
                     mMatchingList.get(position).getmPhone(),
-                    0.0d,0.0d,0.0d,0.0d
+                    mMatchingList.get(position).getfLat(),
+                    mMatchingList.get(position).getfLng(),
+                    mMatchingList.get(position).gettLat(),
+                    mMatchingList.get(position).gettLng()
             );
             userMessageList.add(userMessage);
             Log.d(TAG, "Confirmed List Key : " + position);
@@ -346,6 +376,7 @@ public class MapActivity extends BaseMwmFragmentActivity
             @Override
             public void onResponse(Call<UserMessage> call, Response<UserMessage> response) {
                 Toast.makeText(MapActivity.this, "Request Send Successfully ", Toast.LENGTH_LONG).show();
+                displayConfirmedList();
             }
 
             @Override
@@ -585,7 +616,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
 
-        mOpenGMap.setOnClickListener(v -> openInGoogleMap());
+        //mOpenGMap.setOnClickListener(v -> openInGoogleMap());
 
         mSendFeedback.setOnClickListener(view -> {
             mpayAndRating.setVisibility(View.GONE);
@@ -1183,8 +1214,8 @@ public class MapActivity extends BaseMwmFragmentActivity
             myDistance = rinfo.distToTarget;
             String units = rinfo.distToTarget +" "+rinfo.targetUnits;
             tvDistance.setText(units);
+            getPrice(myDistance,mSelector);
         }
-        getPrice(myDistance,mSelector);
         showBtnRequest();
     }
 
@@ -1319,14 +1350,6 @@ public class MapActivity extends BaseMwmFragmentActivity
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         return simpleDateFormat.format(afterAddingMins);
     }*/
-
-    private void openInGoogleMap() {
-        /*String url = "http://maps.google.com/maps?saddr=" + pickupLatLng.latitude + ","
-                + pickupLatLng.longitude + "&daddr=" + destinationLatLng.latitude + "," + destinationLatLng.longitude + "&mode=driving";
-        Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(url));
-        intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
-        startActivity(intent);*/
-    }
 
     private void acceptRequest() {
         try {
@@ -1533,13 +1556,11 @@ public class MapActivity extends BaseMwmFragmentActivity
         });
     }
 
-
     private void reloadMe() {
         Intent intent = new Intent(this,SelectorActivity.class);
         finish();
         startActivity(intent);
     }
-
 
     private void processMessage(String myMsg) {
         g = gSon.fromJson(myMsg, UserTripInfo.class);
@@ -1739,11 +1760,10 @@ public class MapActivity extends BaseMwmFragmentActivity
         int activeProcess = MySharedPreference.getInstance(this).getActiveProcess();
         String msg = MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).getUserMessage();
         if(activeProcess == Constants.ActiveProcess.CAPTAIN_HAVE_CONFIRMED_LIST) {
-            setFullscreen(true);
-            confirmedUserList = new ArrayList<>();
-            confirmedUserList = MySharedPreference.getInstance(this).getListConfirmed(CONFIRMED_LIST_KEY);
+            displayConfirmedList();
         }
-
+        // todo remove later
+        //MySharedPreference.getInstance(this).clearActiveProcess();
         //Log.i(TAG,"Shared message : "+msg);
         if (msg != null) {
             processMessage(msg);
@@ -1782,13 +1802,19 @@ public class MapActivity extends BaseMwmFragmentActivity
             // endTrip();
         }
 
-        int activeProcessid = MySharedPreference.getInstance(this).getActiveProcess();
+        /*int activeProcessid = MySharedPreference.getInstance(this).getActiveProcess();
         if(activeProcessid == Constants.ActiveProcess.CAPTAIN_HAVE_CONFIRMED_LIST) {
-            displayConfirmedList();
-        }
+            //displayConfirmedList();
+        }*/
     }
 
     private void displayConfirmedList() {
+        confirmedUserList = new ArrayList<>();
+        confirmedUserList = MySharedPreference.getInstance(this).getListConfirmed(CONFIRMED_LIST_KEY);
+        setFullscreen(true);
+        hideFromTo();
+        mSwitch.setVisibility(View.GONE);
+        mConfirmLayout.setVisibility(View.GONE);
         mConfirmedAdapter = new ConfirmedListPagerAdapter(confirmedUserList,this,getSupportFragmentManager());
         mViewPager.setAdapter(mConfirmedAdapter);
     }
@@ -2118,8 +2144,12 @@ public class MapActivity extends BaseMwmFragmentActivity
     private UserMessageApi userMessageApi;
 
     private void my() {
+        setFullscreen(true);
+        hideFromTo();
+        mSwitch.setVisibility(View.GONE);
+        mPriceLayout.setVisibility(View.GONE);
+        //mConfirmLayout.setVisibility(View.GONE);
         mAdapter = new MatchingStatePagerAdapter(mMatchingList, this,getSupportFragmentManager());
-        //mViewPager = findViewById(R.id.viewPager);
         mViewPager.setAdapter(mAdapter);
     }
 
@@ -2147,7 +2177,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                     return;
                 }
                 showProgress(false);
-                if(mSelector == PASSENGER_SHARE_ONLY) {
+                if(mSelector == PASSENGER_SHARE_ONLY || mSelector == PASSENGER_ANY) {
                     Toast.makeText(MapActivity.this,"Successfully sent your request",Toast.LENGTH_LONG).show();
                     Map<String, String> data = new HashMap<>();
                     data.put("fUserId",MySharedPreference.getInstance(MapActivity.this).getUserId()+"");
@@ -2175,7 +2205,6 @@ public class MapActivity extends BaseMwmFragmentActivity
                     createMatchList(response.body());
                     //matchingCounter = 0;
                     my();
-                    listMatch();
                 }
             }
 
@@ -2208,7 +2237,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                     insert(new MatchingItem(post.getId(),post.getUserId(),
                             post.getSourceAddress(), post.getDestinationAddress(),
                             Double.toString(post.getTripDistance()), DateUtils.formatDateStr(post.getStartTime()), Double.toString(totDist), totDistTxt,
-                            amount,extraDistance,mMyTripDistance));
+                            amount,extraDistance,mMyTripDistance,post.getSrcLat(),post.getSrcLng(),post.getDestLat(),post.getDestLng()));
                     //insert(mMatchingList);
                 }
             } else {
@@ -2218,7 +2247,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                     insert(new MatchingItem(post.getId(),post.getUserId(),
                             post.getSourceAddress(), post.getDestinationAddress(),
                             Double.toString(post.getTripDistance()), DateUtils.formatDateStr(post.getStartTime()), Double.toString(totDist), totDistTxt,
-                            amount,extraDistance,mMyTripDistance));
+                            amount,extraDistance,mMyTripDistance,post.getSrcLat(),post.getSrcLng(),post.getDestLat(),post.getDestLng()));
                 }
             }
         }

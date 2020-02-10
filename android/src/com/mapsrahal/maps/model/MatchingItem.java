@@ -23,8 +23,15 @@ public class MatchingItem  {
     public String mPhone;
     public String extraDistance;
     public double mMyTripDistance;
+    private double fLat;
+    private double fLng;
+    private double tLat;
+    private double tLng;
 
-    public MatchingItem(int id, int userId, String mText1, String mText2, String mTripTime, String mTotDistTxt, String mAmount, String mExtraDistance, String mPhone, String extraDistance, double mMyTripDistance) {
+    public MatchingItem(int id, int userId, String mText1, String mText2, String mTripTime,
+                        String mTotDistTxt, String mAmount, String mExtraDistance, String mPhone,
+                        String extraDistance, double mMyTripDistance,
+                        double fLat,double fLng,double tLat,double tLng) {
         this.id = id;
         this.userId = userId;
         this.mText1 = mText1;
@@ -36,6 +43,11 @@ public class MatchingItem  {
         this.mPhone = mPhone;
         this.extraDistance = extraDistance;
         this.mMyTripDistance = mMyTripDistance;
+
+        this.fLat = fLat;
+        this.fLng = fLng;
+        this.tLat = tLat;
+        this.tLng = tLng;
     }
 
     public void setId(int id) {
@@ -76,5 +88,21 @@ public class MatchingItem  {
 
     public String getmPhone() {
         return mPhone;
+    }
+
+    public double getfLat() {
+        return fLat;
+    }
+
+    public double getfLng() {
+        return fLng;
+    }
+
+    public double gettLat() {
+        return tLat;
+    }
+
+    public double gettLng() {
+        return tLng;
     }
 }
