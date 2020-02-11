@@ -51,6 +51,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
 import com.mapsrahal.maps.activity.SelectorActivity;
+import com.mapsrahal.maps.activity.ui.main.CargoStatePagerAdapter;
 import com.mapsrahal.maps.activity.ui.main.ConfirmedListPagerAdapter;
 import com.mapsrahal.maps.activity.ui.main.MatchingStatePagerAdapter;
 import com.mapsrahal.maps.api.ApiClient;
@@ -127,7 +128,8 @@ public class MapActivity extends BaseMwmFragmentActivity
                                     AdapterView.OnItemSelectedListener,
                                     ServerConnection.ServerListener,
                                     MatchingStatePagerAdapter.MatchingSelectionListener,
-                                    ConfirmedListPagerAdapter.ConfirmationSelectionListener
+                                    ConfirmedListPagerAdapter.ConfirmationSelectionListener,
+                                    CargoStatePagerAdapter.CargoSelectionListener
 
 {
 
@@ -224,6 +226,7 @@ public class MapActivity extends BaseMwmFragmentActivity
     private final Handler tripRecordHandler = new Handler();
     private UserTripInfo userTripInfo;
     private Switch mSwitch;
+    private CargoStatePagerAdapter mCargoAdapter;
     private MatchingStatePagerAdapter mAdapter;
     private ConfirmedListPagerAdapter mConfirmedAdapter;
     private ServerConnection mService;
@@ -266,6 +269,17 @@ public class MapActivity extends BaseMwmFragmentActivity
                 toLat, toLng);
         RoutingController.get().setStartPoint(fromLocation);
         RoutingController.get().setEndPoint(toLocation);
+    }
+
+    @Override
+    public void callMatch(int position) {
+        phoneNumber = "0" + mMatchingList.get(position).getmPhone();
+        callDriver();
+    }
+
+    @Override
+    public void routeInMap(double fromLat,double fromLng,double toLat, double toLng) {
+        openInGoogleMap(fromLat,fromLng,toLat,toLng);
     }
 
     @Override
@@ -921,6 +935,9 @@ public class MapActivity extends BaseMwmFragmentActivity
                 break;
             case R.id.start_trip:
                 startConfirmedTrip();
+                break;
+            case R.id.driverPhone:
+                callDriver();
                 break;
         }
     }
@@ -2009,7 +2026,6 @@ public class MapActivity extends BaseMwmFragmentActivity
         }
     };
 
-
     private void startTrip() {
         startTime = System.currentTimeMillis();
         timerHandler.postDelayed(timerRunnable, 0);
@@ -2229,6 +2245,16 @@ public class MapActivity extends BaseMwmFragmentActivity
         mViewPager.setAdapter(mAdapter);
     }
 
+    private void cargo() {
+        setFullscreen(true);
+        hideFromTo();
+        mSwitch.setVisibility(View.GONE);
+        mPriceLayout.setVisibility(View.GONE);
+        mConfirmLayout.setVisibility(View.GONE);
+        mCargoAdapter = new CargoStatePagerAdapter(mMatchingList, this,getSupportFragmentManager());
+        mViewPager.setAdapter(mCargoAdapter);
+    }
+
     public void createPost() {
         mMyTripDistance = Double.parseDouble(MySharedPreference.getInstance(this).getTripDistance().trim());
         PostApi postApi = ApiClient.getClient().create(PostApi.class);
@@ -2279,8 +2305,11 @@ public class MapActivity extends BaseMwmFragmentActivity
                 } else {
                     mMatchingList = new ArrayList<>();
                     createMatchList(response.body());
-                    //matchingCounter = 0;
-                    my();
+                    if(mSelector == CAPTAIN_ANY) {
+                        cargo();
+                    } else {
+                        my();
+                    }
                 }
             }
 
