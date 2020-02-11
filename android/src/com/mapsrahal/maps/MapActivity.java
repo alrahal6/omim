@@ -126,7 +126,8 @@ public class MapActivity extends BaseMwmFragmentActivity
                                     NavigationButtonsAnimationController.OnTranslationChangedListener,
                                     AdapterView.OnItemSelectedListener,
                                     ServerConnection.ServerListener,
-                                    MatchingStatePagerAdapter.MatchingSelectionListener
+                                    MatchingStatePagerAdapter.MatchingSelectionListener,
+                                    ConfirmedListPagerAdapter.ConfirmationSelectionListener
 
 {
 
@@ -136,14 +137,14 @@ public class MapActivity extends BaseMwmFragmentActivity
     private TextView mDriverName,mDriverPhone;
     private TextView mListCount, mListAmount,mCallingCaptain,mPriceText;
     private double tripPrice;
-    private Button mCancelRequest;
+    private Button mCancelRequest,mFinishTrip,mStartTrip;
 
     private Button btRequest,mOpenGMap,mConfirmList;
     private SwipeButton mSwipeButton;
     private ImageButton mAddressToggle,mMainMenu;
 
     private ImageView mAddSeat,mRemoveSeat;
-    private LinearLayout mNotificationCard;
+    private LinearLayout mNotificationCard,mStartTripLayout;
     private LinearLayout mDriverInfo,mllForm,mMnuForm,mConfirmLayout;
     private LinearLayout mCustomerInfo, mAcceptBusyInfo, mSwipeLayout, mpayAndRating,mPriceLayout;
     private ProgressBar mMyprogress;
@@ -246,6 +247,10 @@ public class MapActivity extends BaseMwmFragmentActivity
     }
 
     private void openInGoogleMap(double fromLat,double fromLng,double toLat, double toLng) {
+        // todo revert back later
+        /*Location l = LocationHelper.INSTANCE.getSavedLocation();
+        fromLat = l.getLatitude();
+        fromLng = l.getLongitude();*/
         String url = "http://maps.google.com/maps?saddr=" + fromLat + ","
                 + fromLng + "&daddr=" + toLat + "," + toLng + "&mode=driving";
         Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(url));
@@ -253,13 +258,28 @@ public class MapActivity extends BaseMwmFragmentActivity
         startActivity(intent);
     }
 
-    private void showMap(double fromLat,double fromLng,double toLat, double toLng) {
-        fromLocation = MapObject.createMapObject(FeatureId.EMPTY, MapObject.API_POINT, "", "",
-                fromLat, fromLng);
-        toLocation = MapObject.createMapObject(FeatureId.EMPTY, MapObject.API_POINT, "", "",
+    @Override
+    public void goToLocation(double toLat, double toLng) {
+        //double toLat, double toLng
+        fromLocation = LocationHelper.INSTANCE.getMyPosition();
+        toLocation = MapObject.createMapObject(FeatureId.EMPTY, MapObject.POI, "", "",
                 toLat, toLng);
         RoutingController.get().setStartPoint(fromLocation);
-        RoutingController.get().setStartPoint(toLocation);
+        RoutingController.get().setEndPoint(toLocation);
+    }
+
+    @Override
+    public void showInGMap(double fromLat,double fromLng,double toLat, double toLng) {
+        openInGoogleMap(fromLat,fromLng,toLat,toLng);
+    }
+
+    private void showMap(double fromLat,double fromLng,double toLat, double toLng) {
+        fromLocation = MapObject.createMapObject(FeatureId.EMPTY, MapObject.POI, "", "",
+                fromLat, fromLng);
+        toLocation = MapObject.createMapObject(FeatureId.EMPTY, MapObject.POI, "", "",
+                toLat, toLng);
+        RoutingController.get().setStartPoint(fromLocation);
+        RoutingController.get().setEndPoint(toLocation);
     }
 
     @Override
@@ -490,6 +510,13 @@ public class MapActivity extends BaseMwmFragmentActivity
 
         mViewPager = findViewById(R.id.matching_list_vp);
         mConfirmLayout = findViewById(R.id.confirm_layout);
+        mStartTripLayout = findViewById(R.id.start_trip_layout);
+        mStartTripLayout.setVisibility(View.GONE);
+        //start_trip
+        mFinishTrip = findViewById(R.id.finish_trip);
+        mFinishTrip.setOnClickListener(this);
+        mStartTrip = findViewById(R.id.start_trip);
+        mStartTrip.setOnClickListener(this);
         //mViewPager.setAdapter(matchingStateAdapter);
         mViewPager.setVisibility(View.GONE);
         mConfirmLayout.setVisibility(View.GONE);
@@ -889,7 +916,55 @@ public class MapActivity extends BaseMwmFragmentActivity
             case R.id.cancelRequest:
                     cancelDriver();
                 break;
+            case R.id.finish_trip:
+                finishConfirmedTrip();
+                break;
+            case R.id.start_trip:
+                startConfirmedTrip();
+                break;
         }
+    }
+
+    private void finishConfirmedTrip() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setMessage("Do you want to cancel the current Trip?");
+        alertDialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // todo send trip finished message
+                MySharedPreference.getInstance(MapActivity.this).addActiveProcess(0);
+                reloadMe();
+            }
+        });
+        alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
+
+    private void startConfirmedTrip() {
+        //  todo send trip started information to all list
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setMessage("Do you want to start Trip and Inform users?");
+        alertDialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // todo send trip start message to all users
+                //MySharedPreference.getInstance(MapActivity.this).addActiveProcess(0);
+            }
+        });
+        alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 
     private void cancelRequest() {
@@ -1815,6 +1890,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         hideFromTo();
         mSwitch.setVisibility(View.GONE);
         mConfirmLayout.setVisibility(View.GONE);
+        mStartTripLayout.setVisibility(View.VISIBLE);
         mConfirmedAdapter = new ConfirmedListPagerAdapter(confirmedUserList,this,getSupportFragmentManager());
         mViewPager.setAdapter(mConfirmedAdapter);
     }

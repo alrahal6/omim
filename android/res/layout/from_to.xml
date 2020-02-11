@@ -232,14 +232,43 @@
                 android:layout_marginRight="@dimen/space5"
                 android:layout_height="32dp"/>
 
-            <ImageView
+            <!--<ImageView
                 android:id="@+id/closable"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_alignParentEnd="true"
                 android:background="@drawable/ic_arrow_drop_down"
                 android:layout_marginLeft="@dimen/space5"
-                android:padding="2dp" />
+                android:padding="2dp" />-->
+        </LinearLayout>
+        <LinearLayout
+            android:visibility="gone"
+            android:id="@+id/start_trip_layout"
+            android:layout_margin="@dimen/space5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="2"
+            android:orientation="horizontal">
+            <Button
+                android:background="@layout/rounded_border_edittext"
+                android:layout_weight="1"
+                android:text="Start trip"
+                android:textColor="@color/base_green"
+                android:padding="@dimen/space5"
+                android:id="@+id/start_trip"
+                android:layout_width="wrap_content"
+                android:layout_marginRight="@dimen/space5"
+                android:layout_height="32dp"/>
+            <Button
+                android:background="@layout/rounded_border_edittext"
+                android:layout_weight="1"
+                android:text="Cancel Trip"
+                android:textColor="@color/base_red"
+                android:padding="@dimen/space5"
+                android:id="@+id/finish_trip"
+                android:layout_width="wrap_content"
+                android:layout_marginRight="@dimen/space5"
+                android:layout_height="32dp"/>
         </LinearLayout>
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/matching_list_vp"

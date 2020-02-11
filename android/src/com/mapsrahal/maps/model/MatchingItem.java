@@ -23,10 +23,10 @@ public class MatchingItem  {
     public String mPhone;
     public String extraDistance;
     public double mMyTripDistance;
-    private double fLat;
-    private double fLng;
-    private double tLat;
-    private double tLng;
+    public double fLat;
+    public double fLng;
+    public double tLat;
+    public double tLng;
 
     public MatchingItem(int id, int userId, String mText1, String mText2, String mTripTime,
                         String mTotDistTxt, String mAmount, String mExtraDistance, String mPhone,
@@ -43,7 +43,6 @@ public class MatchingItem  {
         this.mPhone = mPhone;
         this.extraDistance = extraDistance;
         this.mMyTripDistance = mMyTripDistance;
-
         this.fLat = fLat;
         this.fLng = fLng;
         this.tLat = tLat;

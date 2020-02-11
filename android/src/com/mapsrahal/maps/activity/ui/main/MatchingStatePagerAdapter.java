@@ -126,7 +126,7 @@ public class MatchingStatePagerAdapter extends PagerAdapter {
                     matchingListener.showInMap(matchingItems.get(position).getfLat(),
                             matchingItems.get(position).getfLng(),
                             matchingItems.get(position).gettLat(),
-                            matchingItems.get(position).gettLat())
+                            matchingItems.get(position).gettLng())
         );
         container.addView(view, 0);
         return view;

@@ -39,12 +39,17 @@ public class ConfirmedListPagerAdapter extends PagerAdapter {
     private LayoutInflater layoutInflater;
     private Context mContext;
     private UserMessage userMessage;
-    //private MatchingSelectionListener matchingListener;
+    private ConfirmationSelectionListener confirmListener;
     private final int[] matchingList = new int[20];
+
+    public interface ConfirmationSelectionListener {
+        void goToLocation(double toLat, double toLng);
+        void showInGMap(double fromLat,double fromLng,double toLat, double toLng);
+    }
 
     public ConfirmedListPagerAdapter(ArrayList<UserMessage> matchingItems, Context context, FragmentManager fm) {
         //super(fm);
-        //matchingListener = (MatchingSelectionListener) context;
+        confirmListener = (ConfirmationSelectionListener) context;
         this.mContext = context;
         this.matchingItems = matchingItems;
     }
@@ -96,10 +101,19 @@ public class ConfirmedListPagerAdapter extends PagerAdapter {
         mYourDistance.setText("Your Distance : ");
         mExtraDistance.setText("Extra Distance : "+matchingItems.get(position).getName());
         mTripRoute.setText(""+matchingItems.get(position).getPhone());
-        mRequestMatch.setText("View On Map");
+        mRequestMatch.setText("Route To");
         mRemoveMatch.setText("View On Google Map");
         //mRequestMatch.setOnClickListener(v -> openInGoogleMap());
-
+        mRequestMatch.setOnClickListener(
+                v ->  confirmListener.goToLocation(matchingItems.get(position).getfLat(),
+                        matchingItems.get(position).getfLng())
+        );
+        mRemoveMatch.setOnClickListener(v ->
+                confirmListener.showInGMap(matchingItems.get(position).getfLat(),
+                        matchingItems.get(position).getfLng(),
+                        matchingItems.get(position).gettLat(),
+                        matchingItems.get(position).gettLng())
+        );
         /*if(matchingList[position] != 1) {
             mRequestMatch.setText("Add");
             mRequestMatch.setTextColor(Color.GREEN);
