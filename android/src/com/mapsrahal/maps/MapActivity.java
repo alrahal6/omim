@@ -140,6 +140,7 @@ public class MapActivity extends BaseMwmFragmentActivity
     private TextView mListCount, mListAmount,mCallingCaptain,mPriceText;
     private double tripPrice;
     private Button mCancelRequest,mFinishTrip,mStartTrip;
+    private int mCancelId;
 
     private Button btRequest,mOpenGMap,mConfirmList;
     private SwipeButton mSwipeButton;
@@ -340,18 +341,42 @@ public class MapActivity extends BaseMwmFragmentActivity
         //mListAmount.setText("Distance : "+matchingCounter);
     }
 
+    private void cancelRequest(int cancelId) {
+        mCancelId = cancelId;
+        alertDialogCancel();
+    }
+
+    private void alertDialogCancel() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this);
+        builder.setMessage("Are you sure? Cancel?").setPositiveButton("Yes", cancelDialogClickListener)
+                .setNegativeButton("No", cancelDialogClickListener).show();
+
+    }
+
+    DialogInterface.OnClickListener cancelDialogClickListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE:
+                    //sendConfirmation();
+                    cancelMe();
+                    break;
+
+                case DialogInterface.BUTTON_NEGATIVE:
+                    Toast.makeText(MapActivity.this, "Request not Send", Toast.LENGTH_LONG).show();
+                    break;
+            }
+        }
+    };
+
+    private void cancelMe() {
+        // todo cancel logic
+
+    }
+
+
     private void sendConfirmList() {
-        // todo send confirm list to all
-        //for (int i = 0; i < matchingCounter;i++) {
-           // Log.d(TAG,"Confirmed List "+selectionList.);
-        //}
         alertDialog();
-        /*for (Map.Entry<Integer, Integer> entry : selectionList.entrySet()) {
-            Integer key = entry.getKey();
-            Integer value = entry.getValue();
-            Log.d(TAG, "Confirmed List Key : " + key);
-            Log.d(TAG, "Confirmed List Value : " + value);
-        }*/
     }
 
     DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
@@ -964,6 +989,7 @@ public class MapActivity extends BaseMwmFragmentActivity
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // todo send trip finished message
+                //cancelRequest()
                 MySharedPreference.getInstance(MapActivity.this).addActiveProcess(0);
                 reloadMe();
             }
@@ -2284,8 +2310,10 @@ public class MapActivity extends BaseMwmFragmentActivity
                 MySharedPreference.getInstance(this).getFrmAddress().trim(),
                 MySharedPreference.getInstance(this).getToAddress().trim(),
                 new Date(MySharedPreference.getInstance(this).getStartTime()),
-                MySharedPreference.getInstance(this).getPhoneNumber());
-        post.setSelectorFlag(mSelector);
+                MySharedPreference.getInstance(this).getPhoneNumber(),seatCount,genderCargoId
+        ,genderCargoTxt,price,mSelector,
+                MySharedPreference.getInstance(MapActivity.this).getUserName());
+        //post.setSelectorFlag(mSelector);
 
         Call<List<Post>> call = postApi.createPost(post);
 

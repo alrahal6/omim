@@ -20,7 +20,15 @@ public class Post {
     private double srcDistDiff;
     private double destDistDiff;
     private String phone;
+
+
+    private int seats;
+    private int dropDownId;
+    private String dropDownVal;
+    private double price;
     private int selectorFlag;
+    private String name;
+
 
     public int getSelectorFlag() {
         return selectorFlag;
@@ -63,7 +71,10 @@ public class Post {
     }
 
     public Post(Integer id,int userId, double srcLat, double srcLng, double destLat, double destLng,
-                double tripDistance, String sourceAddress, String destinationAddress,Date startTime,String phone) {
+                double tripDistance, String sourceAddress, String destinationAddress,Date startTime,
+                String phone,int seats,int dropDownId,String dropDownVal,double price,int selectorFlag,
+                String name) {
+
         this.id = id;
         this.userId = userId;
         this.srcLat = srcLat;
@@ -76,6 +87,12 @@ public class Post {
         this.startTime = startTime;
         //this.endTime = endTime;
         this.phone = phone;
+        this.seats = seats;
+        this.dropDownId = dropDownId;
+        this.dropDownVal = dropDownVal;
+        this.price = price;
+        this.selectorFlag = selectorFlag;
+        this.name = name;
     }
 
     public Integer getId() {
@@ -156,5 +173,45 @@ public class Post {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public int getSeats() {
+        return seats;
+    }
+
+    public void setSeats(int seats) {
+        this.seats = seats;
+    }
+
+    public int getDropDownId() {
+        return dropDownId;
+    }
+
+    public void setDropDownId(int dropDownId) {
+        this.dropDownId = dropDownId;
+    }
+
+    public String getDropDownVal() {
+        return dropDownVal;
+    }
+
+    public void setDropDownVal(String dropDownVal) {
+        this.dropDownVal = dropDownVal;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

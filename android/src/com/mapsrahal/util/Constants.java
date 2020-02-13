@@ -54,6 +54,14 @@ public final class Constants
     private Email() {}
   }
 
+  public static class CancelId {
+    public static final int TAXI_BY_PASSENGER = 1;
+    public static final int CARPOOL_BY_PASSENGER = 2;
+    public static final int CARPOOL_BY_CAPTAIN = 3;
+    public static final int CARGO_BY_PROVIDER = 4;
+    public static final int CARGO_BY_CONSUMER = 5;
+  }
+
   public static class ActiveProcess {
     public static final int NO_PROCESS = 0;
     public static final int CAPTAIN_ONLINE = 1;

@@ -86,7 +86,8 @@ public class PageViewModel extends AndroidViewModel {
                 MySharedPreference.getInstance(context).getFrmAddress().trim(),
                 MySharedPreference.getInstance(context).getToAddress().trim(),
                 new Date(MySharedPreference.getInstance(context).getStartTime()),
-                MySharedPreference.getInstance(context).getPhoneNumber());
+                MySharedPreference.getInstance(context).getPhoneNumber(),0,0,"x",
+                0.0,1,"x");
 
         Call<List<Post>> call = postApi.createPost(post);
 

@@ -86,7 +86,8 @@ public class MatchingListActivity extends AppCompatActivity {
                 MySharedPreference.getInstance(this).getFrmAddress().trim(),
                 MySharedPreference.getInstance(this).getToAddress().trim(),
                 new Date(MySharedPreference.getInstance(this).getStartTime()),
-                MySharedPreference.getInstance(this).getPhoneNumber());
+                MySharedPreference.getInstance(this).getPhoneNumber(),0,0,"x",
+                0.0,1,"x");
 
         Call<List<Post>> call = postApi.createPost(post);
 
