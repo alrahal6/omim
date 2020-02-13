@@ -18,6 +18,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 import com.mapsrahal.maps.MwmApplication;
@@ -341,8 +342,6 @@ public abstract class BaseMwmFragmentActivity extends AppCompatActivity
   public boolean onNavigationItemSelected(@NonNull MenuItem item) {
     Intent intent;
     switch (item.getItemId()) {
-      case R.id.nav_settings:
-        break;
       case R.id.nav_trip_history:
         intent = new Intent(this, MyRidesActivity.class);
         startActivity(intent);
@@ -351,13 +350,12 @@ public abstract class BaseMwmFragmentActivity extends AppCompatActivity
       //intent = new Intent(this, ChatActivity.class);
       //startActivity(intent);
       //break;
+      case R.id.nav_settings:
       case R.id.nav_profile:
-        intent = new Intent(this, ProfileActivity.class);
-        startActivity(intent);
-        break;
       case R.id.nav_vehicle:
         //intent = new Intent(this, ProfileActivity.class);
         //startActivity(intent);
+        Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show();
         break;
       case R.id.nav_contact_us:
         intent = new Intent(this, ContactActivity.class);

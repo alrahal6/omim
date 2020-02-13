@@ -2928,12 +2928,16 @@
     <string name="set_as_pickup">Set As Pickup</string>
     <string name="set_as_drop">Set As Drop</string>
     <string name="expected_price">Expected Price :</string>
+    <string-array name="select_vehicle">
+        <item>Economy</item>
+    </string-array>
     <string-array name="select_gender">
+        <item>Any</item>
         <item>Male</item>
         <item>Female</item>
-        <item>Any</item>
     </string-array>
     <string-array name="select_cargo">
+        <item>Any</item>
         <item>تكتك - Tok Tok</item>
         <item>بوكس - Box</item>
         <item>سحاب - carrier</item>

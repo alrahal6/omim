@@ -247,7 +247,7 @@
             android:layout_margin="@dimen/space5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:weightSum="2"
+            android:weightSum="3"
             android:orientation="horizontal">
             <Button
                 android:background="@layout/rounded_border_edittext"
@@ -256,6 +256,16 @@
                 android:textColor="@color/base_green"
                 android:padding="@dimen/space5"
                 android:id="@+id/start_trip"
+                android:layout_width="wrap_content"
+                android:layout_marginRight="@dimen/space5"
+                android:layout_height="32dp"/>
+            <Button
+                android:background="@layout/rounded_border_edittext"
+                android:layout_weight="1"
+                android:text="Route trip"
+                android:textColor="@color/base_yellow"
+                android:padding="@dimen/space5"
+                android:id="@+id/plan_trip"
                 android:layout_width="wrap_content"
                 android:layout_marginRight="@dimen/space5"
                 android:layout_height="32dp"/>

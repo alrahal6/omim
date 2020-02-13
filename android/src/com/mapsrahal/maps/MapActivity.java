@@ -157,9 +157,12 @@ public class MapActivity extends BaseMwmFragmentActivity
     private boolean isDriverAccepted = false,isDriverBusy = false;
     private boolean isRequestInProgress = false, isStartedCounter = false;
     private Boolean isOnWaytoCustomer = false;
-    private Boolean isOnTrip = false;
+    private Boolean isOnTrip = false,isOnRequestBtn = false;
+
+    private String genderCargoTxt = "";
 
     private int seatCount = 1;
+    private int genderCargoId = 0;
     private static final int REQ_CODE_LOCATION_PERMISSION = 1;
     private int requestingPassenger = 0;
     private int requestResponse = 3;
@@ -624,7 +627,8 @@ public class MapActivity extends BaseMwmFragmentActivity
 
         switch (mSelector) {
             case PASSENGER_TAXI_ONLY:
-                prepareForFrom();
+                prepareForAll();
+                mDateTime.setVisibility(View.GONE);
                 connect();
                 break;
             case PASSENGER_SHARE_ONLY:
@@ -637,17 +641,23 @@ public class MapActivity extends BaseMwmFragmentActivity
         }
 
         ArrayAdapter<CharSequence> adapter;
-
         Spinner spinner = findViewById(R.id.gender_spinner);
+
+        ImageView imageView = findViewById(R.id.remove_seat);
+        TextView textView = findViewById(R.id.required_seats);
+        ImageView imageView1 = findViewById(R.id.add_seat);
         if(mSelector == CAPTAIN_ANY || mSelector == PASSENGER_ANY) {
             adapter = ArrayAdapter.createFromResource(this,
                     R.array.select_cargo, android.R.layout.simple_spinner_item);
             // hide seats
-            ImageView imageView = findViewById(R.id.remove_seat);
             imageView.setVisibility(View.GONE);
-            TextView textView = findViewById(R.id.required_seats);
             textView.setVisibility(View.GONE);
-            ImageView imageView1 = findViewById(R.id.add_seat);
+            imageView1.setVisibility(View.GONE);
+        } else if(mSelector == PASSENGER_TAXI_ONLY) {
+            adapter = ArrayAdapter.createFromResource(this,
+                    R.array.select_vehicle, android.R.layout.simple_spinner_item);
+            imageView.setVisibility(View.GONE);
+            textView.setVisibility(View.GONE);
             imageView1.setVisibility(View.GONE);
         } else {
             adapter = ArrayAdapter.createFromResource(this,
@@ -710,7 +720,11 @@ public class MapActivity extends BaseMwmFragmentActivity
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String text = parent.getItemAtPosition(position).toString();
+        genderCargoTxt = text;
+        genderCargoId = position;
         //Toast.makeText(parent.getContext(), text, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(parent.getContext(), ""+position
+                //, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -880,6 +894,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 //mMainMenu.animate().rotation(mMainMenu.getRotation()+360).start();
                 break;
             case R.id.bt_request:
+                isOnRequestBtn = true;
                 hideBtnRequest();
                 showProgress(true);
                 if (mSelector == PASSENGER_TAXI_ONLY) {
@@ -1085,7 +1100,9 @@ public class MapActivity extends BaseMwmFragmentActivity
     }
 
     private void showMenu() {
-        mMnuForm.setVisibility(View.VISIBLE);
+        if(!isOnRequestBtn) {
+            mMnuForm.setVisibility(View.VISIBLE);
+        }
     }
 
     private void hideMenu() {
@@ -2341,7 +2358,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                     // todo get accurate distance and add
                     insert(new MatchingItem(post.getId(),post.getUserId(),
                             post.getSourceAddress(), post.getDestinationAddress(),
-                            Double.toString(post.getTripDistance()), DateUtils.formatDateStr(post.getStartTime()), Double.toString(totDist), totDistTxt,
+                            Double.toString(post.getTripDistance()), DateUtils.formatDateStr(post.getStartTime()), Double.toString(totDist), post.getPhone(),
                             amount,extraDistance,mMyTripDistance,post.getSrcLat(),post.getSrcLng(),post.getDestLat(),post.getDestLng()));
                     //insert(mMatchingList);
                 }
@@ -2351,7 +2368,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                     // todo get accurate distance and add
                     insert(new MatchingItem(post.getId(),post.getUserId(),
                             post.getSourceAddress(), post.getDestinationAddress(),
-                            Double.toString(post.getTripDistance()), DateUtils.formatDateStr(post.getStartTime()), Double.toString(totDist), totDistTxt,
+                            Double.toString(post.getTripDistance()), DateUtils.formatDateStr(post.getStartTime()), Double.toString(totDist), post.getPhone(),
                             amount,extraDistance,mMyTripDistance,post.getSrcLat(),post.getSrcLng(),post.getDestLat(),post.getDestLng()));
                 }
             }
