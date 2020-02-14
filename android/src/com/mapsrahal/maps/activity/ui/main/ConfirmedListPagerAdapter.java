@@ -92,7 +92,7 @@ public class ConfirmedListPagerAdapter extends PagerAdapter {
         mRemoveMatch = view.findViewById(R.id.remove_match);
 
         //matchingItems.get(position).getfLat();
-        mTextView1.setText(matchingItems.get(position).getfAddress());
+        mTextView1.setText(matchingItems.get(position).getName());
         mTextView2.setText(matchingItems.get(position).getfAddress());
         mTextView3.setText(matchingItems.get(position).gettAddress());
         mTripDistance.setText(matchingItems.get(position).getDistance() + "KM");

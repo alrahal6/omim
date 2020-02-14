@@ -77,10 +77,11 @@ public class MatchingStatePagerAdapter extends PagerAdapter {
         layoutInflater = LayoutInflater.from(mContext);
         View view = layoutInflater.inflate(R.layout.matching_list_items, container, false);
 
-        TextView mTextView1,mTripRoute, mTextView2,mTripDistance,mTripTime,mAmount,mYourDistance,mExtraDistance;
+        TextView mTextView1,mTripRoute, mTextView2,mTextView3,mTripDistance,mTripTime,mAmount,mYourDistance,mExtraDistance;
         Button mRequestMatch,mRemoveMatch;
         mTextView1 = view.findViewById(R.id.textView);
         mTextView2 = view.findViewById(R.id.textView2);
+        mTextView3 = view.findViewById(R.id.textView3);
         mTripDistance = view.findViewById(R.id.trip_distance);
         mTripTime = view.findViewById(R.id.start_time);
         mAmount = view.findViewById(R.id.trip_amount);
@@ -91,11 +92,12 @@ public class MatchingStatePagerAdapter extends PagerAdapter {
         mRemoveMatch = view.findViewById(R.id.remove_match);
 
 
-        mTextView1.setText(matchingItems.get(position).getmText1());
-        mTextView2.setText(matchingItems.get(position).getmText2());
+        mTextView1.setText(matchingItems.get(position).getName());
+        mTextView2.setText(matchingItems.get(position).getmText1());
+        mTextView3.setText(matchingItems.get(position).getmText2());
         mTripDistance.setText("Trip Distance : ");
         mTripTime.setText("Time : "+matchingItems.get(position).getmTripTime());
-        mAmount.setText("Amount : "+matchingItems.get(position).getmAmount());
+        mAmount.setText("Amount : "+matchingItems.get(position).getPrice());
         mYourDistance.setText("Your Distance : ");
         mExtraDistance.setText("Extra Distance : "+matchingItems.get(position).getmExtraDistance());
         mTripRoute.setText(""+matchingItems.get(position).getmTotDistTxt());

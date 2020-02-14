@@ -1576,6 +1576,7 @@ public class MapActivity extends BaseMwmFragmentActivity
     private void processNotification(String myNotification,boolean isFromNotify) {
         hideFromTo();
         mSwitch.setVisibility(View.GONE);
+        mPriceText.setVisibility(View.GONE);
         TextView from = findViewById(R.id.n_textView);
         TextView to = findViewById(R.id.n_textView2);
         TextView stTime = findViewById(R.id.n_start_time);
@@ -2298,24 +2299,28 @@ public class MapActivity extends BaseMwmFragmentActivity
     }
 
     private void cargo() {
-        setFullscreen(true);
-        hideFromTo();
-        mSwitch.setVisibility(View.GONE);
-        mPriceLayout.setVisibility(View.GONE);
-        mConfirmLayout.setVisibility(View.GONE);
-        mCargoAdapter = new CargoStatePagerAdapter(mMatchingList, this,getSupportFragmentManager());
-        mViewPager.setAdapter(mCargoAdapter);
+        if(mMatchingList.size() > 0) {
+            setFullscreen(true);
+            hideFromTo();
+            mSwitch.setVisibility(View.GONE);
+            mPriceLayout.setVisibility(View.GONE);
+            mConfirmLayout.setVisibility(View.GONE);
+            mCargoAdapter = new CargoStatePagerAdapter(mMatchingList, this, getSupportFragmentManager());
+            mViewPager.setAdapter(mCargoAdapter);
+        } else {
+            Toast.makeText(this,"No records found! Please try later",Toast.LENGTH_LONG).show();
+        }
     }
 
     private int getSelector(int selector) {
 
         if(selector == CAPTAIN_SHARE_ONLY) {
             return PASSENGER_SHARE_ONLY;
-        } else if(selector == CAPTAIN_ANY) {
+        } /*else if(selector == CAPTAIN_ANY) {
             return PASSENGER_ANY;
         } else if(selector == PASSENGER_ANY) {
           return CAPTAIN_ANY;
-        }
+        }*/
         return selector;
     }
 
@@ -2346,7 +2351,8 @@ public class MapActivity extends BaseMwmFragmentActivity
                     return;
                 }
                 showProgress(false);
-                if(mSelector == PASSENGER_SHARE_ONLY || mSelector == PASSENGER_ANY) {
+                //|| mSelector == PASSENGER_ANY
+                if(mSelector == PASSENGER_SHARE_ONLY ) {
                     Toast.makeText(MapActivity.this,"Successfully sent your request",Toast.LENGTH_LONG).show();
                     Map<String, String> data = new HashMap<>();
                     data.put("fUserId",MySharedPreference.getInstance(MapActivity.this).getUserId()+"");
@@ -2372,7 +2378,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 } else {
                     mMatchingList = new ArrayList<>();
                     createMatchList(response.body());
-                    if(mSelector == CAPTAIN_ANY) {
+                    if(mSelector == CAPTAIN_ANY || mSelector == PASSENGER_ANY) {
                         cargo();
                     } else {
                         my();
@@ -2408,8 +2414,9 @@ public class MapActivity extends BaseMwmFragmentActivity
                     // todo get accurate distance and add
                     insert(new MatchingItem(post.getId(),post.getUserId(),
                             post.getSourceAddress(), post.getDestinationAddress(),
-                            Double.toString(post.getTripDistance()), DateUtils.formatDateStr(post.getStartTime()), Double.toString(totDist), post.getPhone(),
-                            amount,extraDistance,mMyTripDistance,post.getSrcLat(),post.getSrcLng(),post.getDestLat(),post.getDestLng()));
+                             DateUtils.formatDateStr(post.getStartTime()),Double.toString(post.getTripDistance()), Double.toString(totDist),extraDistance,post.getPhone(),
+                            amount,mMyTripDistance,post.getSrcLat(),post.getSrcLng(),post.getDestLat(),post.getDestLng()
+                    ,post.getSeats(),post.getDropDownVal(),post.getPrice(),post.getName()));
                     //insert(mMatchingList);
                 }
             } else {
@@ -2418,8 +2425,9 @@ public class MapActivity extends BaseMwmFragmentActivity
                     // todo get accurate distance and add
                     insert(new MatchingItem(post.getId(),post.getUserId(),
                             post.getSourceAddress(), post.getDestinationAddress(),
-                            Double.toString(post.getTripDistance()), DateUtils.formatDateStr(post.getStartTime()), Double.toString(totDist), post.getPhone(),
-                            amount,extraDistance,mMyTripDistance,post.getSrcLat(),post.getSrcLng(),post.getDestLat(),post.getDestLng()));
+                             DateUtils.formatDateStr(post.getStartTime()),Double.toString(post.getTripDistance()), Double.toString(totDist),extraDistance, post.getPhone(),
+                            amount,mMyTripDistance,post.getSrcLat(),post.getSrcLng(),post.getDestLat(),post.getDestLng()
+                            ,post.getSeats(),post.getDropDownVal(),post.getPrice(),post.getName()));
                 }
             }
         }

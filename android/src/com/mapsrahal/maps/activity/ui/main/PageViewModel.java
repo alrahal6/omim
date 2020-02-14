@@ -128,7 +128,8 @@ public class PageViewModel extends AndroidViewModel {
                     insert(new MatchingItem(post.getId(),post.getUserId(),
                             post.getSourceAddress(), post.getDestinationAddress(),
                             Double.toString(post.getTripDistance()), DateUtils.formatDateStr(post.getStartTime()), Double.toString(totDist), totDistTxt,
-                            amount,extraDistance,mMyTripDistance,post.getSrcLat(),post.getSrcLng(),post.getDestLat(),post.getDestLng()));
+                            amount,extraDistance,mMyTripDistance,post.getSrcLat(),post.getSrcLng(),post.getDestLat(),post.getDestLng()
+                            ,post.getSeats(),post.getDropDownVal(),post.getPrice(),post.getName()));
                     //insert(mMatchingList);
                 }
             } else {
@@ -138,7 +139,8 @@ public class PageViewModel extends AndroidViewModel {
                     insert(new MatchingItem(post.getId(),post.getUserId(),
                             post.getSourceAddress(), post.getDestinationAddress(),
                             Double.toString(post.getTripDistance()), DateUtils.formatDateStr(post.getStartTime()), Double.toString(totDist), totDistTxt,
-                            amount,extraDistance,mMyTripDistance,post.getSrcLat(),post.getSrcLng(),post.getDestLat(),post.getDestLng()));
+                            amount,extraDistance,mMyTripDistance,post.getSrcLat(),post.getSrcLng(),post.getDestLat(),post.getDestLng()
+                            ,post.getSeats(),post.getDropDownVal(),post.getPrice(),post.getName()));
                 }
             }
         }

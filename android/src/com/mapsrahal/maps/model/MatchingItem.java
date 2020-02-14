@@ -28,10 +28,15 @@ public class MatchingItem  {
     public double tLat;
     public double tLng;
 
+    public int seats;
+    public String dropDownVal;
+    public double price;
+    public String name;
+
     public MatchingItem(int id, int userId, String mText1, String mText2, String mTripTime,
                         String mTotDistTxt, String mAmount, String mExtraDistance, String mPhone,
                         String extraDistance, double mMyTripDistance,
-                        double fLat,double fLng,double tLat,double tLng) {
+                        double fLat,double fLng,double tLat,double tLng,int seats,String dropDownVal,double price,String name) {
         this.id = id;
         this.userId = userId;
         this.mText1 = mText1;
@@ -47,6 +52,11 @@ public class MatchingItem  {
         this.fLng = fLng;
         this.tLat = tLat;
         this.tLng = tLng;
+
+        this.seats = seats;
+        this.dropDownVal = dropDownVal;
+        this.price = price;
+        this.name = name;
     }
 
     public void setId(int id) {
@@ -103,5 +113,37 @@ public class MatchingItem  {
 
     public double gettLng() {
         return tLng;
+    }
+
+    public int getSeats() {
+        return seats;
+    }
+
+    public void setSeats(int seats) {
+        this.seats = seats;
+    }
+
+    public String getDropDownVal() {
+        return dropDownVal;
+    }
+
+    public void setDropDownVal(String dropDownVal) {
+        this.dropDownVal = dropDownVal;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
