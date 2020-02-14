@@ -1,5 +1,6 @@
 package com.mapsrahal.maps.api;
 
+import com.mapsrahal.maps.model.CallLog;
 import com.mapsrahal.maps.model.Post;
 import com.mapsrahal.maps.model.Price;
 import com.mapsrahal.maps.model.StatusUpdate;
@@ -20,6 +21,9 @@ public interface PostApi {
 
     @POST("status")
     Call<StatusUpdate> updateStatus(@Body StatusUpdate statusUpdate);
+
+    @POST("calllog")
+    Call<CallLog> callLog(@Body CallLog callLog);
     /*
     @GET("posts")
     Call<List<Post>> getPosts(

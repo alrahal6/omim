@@ -66,6 +66,7 @@ import com.mapsrahal.maps.bookmarks.data.MapObject;
 import com.mapsrahal.maps.intent.MapTask;
 import com.mapsrahal.maps.location.CompassData;
 import com.mapsrahal.maps.location.LocationHelper;
+import com.mapsrahal.maps.model.CallLog;
 import com.mapsrahal.maps.model.FindDriver;
 import com.mapsrahal.maps.model.MatchingItem;
 import com.mapsrahal.maps.model.Post;
@@ -278,7 +279,27 @@ public class MapActivity extends BaseMwmFragmentActivity
     @Override
     public void callMatch(int position) {
         phoneNumber = "0" + mMatchingList.get(position).getmPhone();
+        calledMatch(phoneNumber,mMatchingList.get(position).getId());
         callDriver();
+    }
+
+    private void calledMatch(String phone,int tripId) {
+        PostApi postApi = ApiClient.getClient().create(PostApi.class);
+        CallLog callLog = new CallLog(
+                MySharedPreference.getInstance(this).getUserId(),phone,tripId
+        );
+        Call<CallLog> call = postApi.callLog(callLog);
+        call.enqueue(new Callback<CallLog>() {
+            @Override
+            public void onResponse(Call<CallLog> call, Response<CallLog> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<CallLog> call, Throwable t) {
+
+            }
+        });
     }
 
     @Override
