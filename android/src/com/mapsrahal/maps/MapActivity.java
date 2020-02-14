@@ -446,6 +446,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 //Toast.makeText(MapActivity.this, "Request Send Failed! ", Toast.LENGTH_LONG).show();
             }
         });
+        reloadMe();
         //mNotificationCard.setVisibility(View.GONE);
     }
 
@@ -908,7 +909,11 @@ public class MapActivity extends BaseMwmFragmentActivity
                 toggleAddress();
                 break;
             case R.id.confirm_list:
-                sendConfirmList();
+                if(selectionList.size() > 0) {
+                    sendConfirmList();
+                } else {
+                    Toast.makeText(this,"Please add seats",Toast.LENGTH_LONG).show();
+                }
                 break;
             case R.id.mainMenu:
                 if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -2279,13 +2284,17 @@ public class MapActivity extends BaseMwmFragmentActivity
     private UserMessageApi userMessageApi;
 
     private void my() {
-        setFullscreen(true);
-        hideFromTo();
-        mSwitch.setVisibility(View.GONE);
-        mPriceLayout.setVisibility(View.GONE);
-        //mConfirmLayout.setVisibility(View.GONE);
-        mAdapter = new MatchingStatePagerAdapter(mMatchingList, this,getSupportFragmentManager());
-        mViewPager.setAdapter(mAdapter);
+        if(mMatchingList.size() > 0) {
+            setFullscreen(true);
+            hideFromTo();
+            mSwitch.setVisibility(View.GONE);
+            mPriceLayout.setVisibility(View.GONE);
+            //mConfirmLayout.setVisibility(View.GONE);
+            mAdapter = new MatchingStatePagerAdapter(mMatchingList, this, getSupportFragmentManager());
+            mViewPager.setAdapter(mAdapter);
+        } else {
+            Toast.makeText(this,"Sorry! No Match Found, Try Later",Toast.LENGTH_LONG).show();
+        }
     }
 
     private void cargo() {
@@ -2298,9 +2307,22 @@ public class MapActivity extends BaseMwmFragmentActivity
         mViewPager.setAdapter(mCargoAdapter);
     }
 
+    private int getSelector(int selector) {
+
+        if(selector == CAPTAIN_SHARE_ONLY) {
+            return PASSENGER_SHARE_ONLY;
+        } else if(selector == CAPTAIN_ANY) {
+            return PASSENGER_ANY;
+        } else if(selector == PASSENGER_ANY) {
+          return CAPTAIN_ANY;
+        }
+        return selector;
+    }
+
     public void createPost() {
         mMyTripDistance = Double.parseDouble(MySharedPreference.getInstance(this).getTripDistance().trim());
         PostApi postApi = ApiClient.getClient().create(PostApi.class);
+        int sel = getSelector(mSelector);
         Post post = new Post(null, MySharedPreference.getInstance(this).getUserId(),
                 MySharedPreference.getInstance(this).getFrmLat(),
                 MySharedPreference.getInstance(this).getFrmLng(),
@@ -2311,7 +2333,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 MySharedPreference.getInstance(this).getToAddress().trim(),
                 new Date(MySharedPreference.getInstance(this).getStartTime()),
                 MySharedPreference.getInstance(this).getPhoneNumber(),seatCount,genderCargoId
-        ,genderCargoTxt,price,mSelector,
+        ,genderCargoTxt,tripPrice,sel,
                 MySharedPreference.getInstance(MapActivity.this).getUserName());
         //post.setSelectorFlag(mSelector);
 
