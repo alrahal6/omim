@@ -526,7 +526,11 @@ public class MapActivity extends BaseMwmFragmentActivity
     }
 
     private void showBtnRequest() {
-        btRequest.setVisibility(View.VISIBLE);
+        if(!isOnRequestBtn) {
+            btRequest.setVisibility(View.VISIBLE);
+        } else {
+            mPriceLayout.setVisibility(View.GONE);
+        }
         showProgress(false);
     }
 
@@ -893,6 +897,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                     toLocation.getLon(), myDistance, mSourceAddress, mDestinationAddress,
                     startingTime);
             createPost();
+            isOnRequestBtn = true;
         } else {
             Toast.makeText(this,"Please enter valid address",Toast.LENGTH_LONG).show();
         }
@@ -945,7 +950,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 //mMainMenu.animate().rotation(mMainMenu.getRotation()+360).start();
                 break;
             case R.id.bt_request:
-                isOnRequestBtn = true;
+
                 hideBtnRequest();
                 showProgress(true);
                 if (mSelector == PASSENGER_TAXI_ONLY) {
@@ -1392,7 +1397,9 @@ public class MapActivity extends BaseMwmFragmentActivity
                     return;
                 }
                 tripPrice = roundTwoDecimals(response.body().getPrice());
+
                 mPriceLayout.setVisibility(View.VISIBLE);
+
                 mPriceText.setText(""+tripPrice+" SDG");
             }
 
@@ -1595,6 +1602,7 @@ public class MapActivity extends BaseMwmFragmentActivity
     }
 
     private void processNotification(String myNotification,boolean isFromNotify) {
+        isOnRequestBtn = true;
         hideFromTo();
         mSwitch.setVisibility(View.GONE);
         mPriceText.setVisibility(View.GONE);
@@ -1602,8 +1610,10 @@ public class MapActivity extends BaseMwmFragmentActivity
         TextView to = findViewById(R.id.n_textView2);
         TextView stTime = findViewById(R.id.n_start_time);
         TextView urDistance = findViewById(R.id.n_your_distance);
+        TextView urPrice = findViewById(R.id.n_trip_amount);
         Button accept = findViewById(R.id.n_accept_request);
         TextView mTextView = findViewById(R.id.n_notification_title);
+        TextView stPhone = findViewById(R.id.n_user_phone);
         LinearLayout llButton = findViewById(R.id.ll__button);
         int mFlag = 999;
         //if(isFromNotify) {
@@ -1613,7 +1623,8 @@ public class MapActivity extends BaseMwmFragmentActivity
             from.setText(userMessage.getfAddress());
             to.setText(userMessage.gettAddress());
             stTime.setText(""+userMessage.getmTripTime());
-            urDistance.setText(""+userMessage.getDistance());
+            urDistance.setText("Distance : "+userMessage.getDistance()+" KM");
+            urPrice.setText("Amount "+userMessage.getPrice()+ " SDG");
             mFlag = userMessage.getmFlag();
         /*} else {
             from.setText(mSourceAddress);
@@ -1645,7 +1656,14 @@ public class MapActivity extends BaseMwmFragmentActivity
                 break;
             case Constants.Notification.DRIVER_ACCEPTED:
                 //llButton.setVisibility(View.GONE);
+                // todo show captain name and phone
+                TextView stName = findViewById(R.id.n_user_name);
+                phoneNumber = "0"+userMessage.getPhone();
+                stName.setText("Captain : "+userMessage.getName());
+                stPhone.setText("Phone : "+phoneNumber);
                 mTextView.setText(getString(R.string.captain_accepted));
+                stName.setVisibility(View.VISIBLE);
+                stPhone.setVisibility(View.VISIBLE);
                 //mNotificationCard.setVisibility(View.VISIBLE);
                 break;
             case Constants.Notification.DRIVER_REFUSED:
@@ -1684,7 +1702,7 @@ public class MapActivity extends BaseMwmFragmentActivity
             //userMessage.setmFlag(finalAcceptButtonFlag);
 
         });
-
+        stPhone.setOnClickListener(view -> callDriver());
         /*int finalRejectButtonFlag = rejectButtonFlag;
         reject.setOnClickListener(view -> {
             userMessage.setmFlag(finalRejectButtonFlag);
@@ -1922,12 +1940,14 @@ public class MapActivity extends BaseMwmFragmentActivity
         int activeProcess = MySharedPreference.getInstance(this).getActiveProcess();
         String msg = MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).getUserMessage();
         if(activeProcess == Constants.ActiveProcess.CAPTAIN_HAVE_CONFIRMED_LIST) {
+            isOnRequestBtn = true;
             displayConfirmedList();
         }
         // todo remove later
         //MySharedPreference.getInstance(this).clearActiveProcess();
         //Log.i(TAG,"Shared message : "+msg);
         if (msg != null) {
+            isOnRequestBtn = true;
             processMessage(msg);
             //if(activeProcess != Constants.ActiveProcess.PASSENGER_HAVE_ACTIVE_RIDE) {
                 MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).userMessage(null);
@@ -2381,7 +2401,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                     data.put("mFlag","1");
                     data.put("tripId","0.0");
                     data.put("distance",myDistance);
-                    data.put("price","0.0");
+                    data.put("price",""+tripPrice);
                     data.put("mTripTime",""+startingTime);
                     data.put("phone","0.0");
                     data.put("name","0.0");
@@ -2555,6 +2575,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 @Override
                 public void onResponse(Call<List<FindDriver>> call, Response<List<FindDriver>> response) {
                     if (response.isSuccessful()) {
+                        isOnRequestBtn = true;
                         showProgress(false);
                         removeRequest();
                         mNearestDriver = new ArrayList<>();

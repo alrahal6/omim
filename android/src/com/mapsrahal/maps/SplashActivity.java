@@ -54,7 +54,7 @@ public class SplashActivity extends AppCompatActivity
   private static final long DELAY = 100;
 
   private View mIvLogo;
-  private View mAppName;
+  private View mAppName,mAppSlogan;
 
   private boolean mPermissionsGranted;
   private boolean mNeedStoragePermission;
@@ -394,7 +394,7 @@ public class SplashActivity extends AppCompatActivity
     {
       if (ViralFragment.shouldDisplay())
       {
-        UiUtils.hide(mIvLogo, mAppName);
+        UiUtils.hide(mIvLogo, mAppName,mAppSlogan);
         ViralFragment dialog = new ViralFragment();
         dialog.onDismissListener(new Runnable()
         {
@@ -413,7 +413,7 @@ public class SplashActivity extends AppCompatActivity
     }
     else
     {
-      UiUtils.hide(mIvLogo, mAppName);
+      UiUtils.hide(mIvLogo, mAppName,mAppSlogan);
     }
   }
 
@@ -479,6 +479,7 @@ public class SplashActivity extends AppCompatActivity
     setContentView(R.layout.activity_splash);
     mIvLogo = findViewById(R.id.iv__logo);
     mAppName = findViewById(R.id.tv__app_name);
+    mAppSlogan = findViewById(R.id.tv__app_slogan);
   }
 
   private void init()

@@ -79,22 +79,25 @@
             android:text="Your Distance : "
             android:textSize="15sp" />
         <TextView
-            android:id="@+id/n_extra_distance"
+            android:visibility="gone"
+            android:id="@+id/n_user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/n_your_distance"
-            android:text=" "
+            android:text="Captain Name : "
             android:textSize="15sp"/>
         <TextView
-            android:id="@+id/n_trip_route_plan"
+            android:visibility="gone"
+            android:id="@+id/n_user_phone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/n_extra_distance"
-            android:text=" "
+            android:layout_below="@+id/n_user_name"
+            android:drawableEnd="@drawable/ic_call_green_24dp"
+            android:text="Captain Phone : "
             android:textSize="15sp"/>
         <LinearLayout
             android:id="@+id/ll__req"
-            android:layout_below="@+id/n_trip_route_plan"
+            android:layout_below="@+id/n_user_phone"
             android:orientation="horizontal"
             android:weightSum="5"
             android:layout_width="match_parent"

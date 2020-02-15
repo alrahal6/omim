@@ -95,9 +95,9 @@ public class MatchingStatePagerAdapter extends PagerAdapter {
         mTextView1.setText(matchingItems.get(position).getName());
         mTextView2.setText(matchingItems.get(position).getmText1());
         mTextView3.setText(matchingItems.get(position).getmText2());
-        mTripDistance.setText("Trip Distance : ");
+        mTripDistance.setText(matchingItems.get(position).getmTotDistTxt()+" KM");
         mTripTime.setText("Time : "+matchingItems.get(position).getmTripTime());
-        mAmount.setText("Amount : "+matchingItems.get(position).getPrice());
+        mAmount.setText(matchingItems.get(position).getPrice()+" SDG");
         mYourDistance.setText("Your Distance : ");
         mExtraDistance.setText("Extra Distance : "+matchingItems.get(position).getmExtraDistance());
         mTripRoute.setText(""+matchingItems.get(position).getmTotDistTxt());
