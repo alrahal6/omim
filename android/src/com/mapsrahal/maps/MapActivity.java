@@ -334,7 +334,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         //matchingList[matchingCounter] = position;
         //Log.d(TAG,"List Id "+ mMatchingList.get(position).getmText1());
         //Log.d(TAG,"List Id "+ mMatchingList.get(position).getId());
-        double amount =   Double.parseDouble(mMatchingList.get(position).getmAmount());
+        double amount = mMatchingList.get(position).getPrice();
         //roundTwoDecimals(amount);
         // todo fetch seats
         //int totSeats = mMatchingList.get(position).getSeats();
@@ -342,7 +342,7 @@ public class MapActivity extends BaseMwmFragmentActivity
             // todo add seats
             totAmount += amount;
             addedSeats += mMatchingList.get(position).getSeats();
-            //Log.d(TAG,"Id : "+ mMatchingList.get(position).getId());
+            Log.d(TAG,"Seats : "+ mMatchingList.get(position).getSeats());
             totAmount = roundTwoDecimals(totAmount);
             selectionList.put(position,mMatchingList.get(position).getId());
             //double distance = mMatchingList.get(position).mMyTripDistance;
@@ -1402,7 +1402,9 @@ public class MapActivity extends BaseMwmFragmentActivity
                     return;
                 }
                 tripPrice = roundTwoDecimals(response.body().getPrice());
-                getCalculatedPrice();
+                if(!isOnRequestBtn) {
+                    getCalculatedPrice();
+                }
             }
 
             @Override
@@ -2388,7 +2390,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 MySharedPreference.getInstance(this).getToAddress().trim(),
                 new Date(MySharedPreference.getInstance(this).getStartTime()),
                 MySharedPreference.getInstance(this).getPhoneNumber(),seatCount,genderCargoId
-        ,genderCargoTxt,tripPrice,sel,
+               ,genderCargoTxt,tripPrice,sel,
                 MySharedPreference.getInstance(MapActivity.this).getUserName());
         //post.setSelectorFlag(mSelector);
 
@@ -2454,9 +2456,9 @@ public class MapActivity extends BaseMwmFragmentActivity
                 extra = totDist - mMyTripDistance;
             }
 
-            String amount = "" + post.getTripDistance() * 2;
-            String extraDistance = "" + Utils.roundTwoDecimals(extra);
-            //Log.d(TAG,"Post Id : " +post.getId());
+            String amount = "";//"" + post.getTripDistance() * 2;
+            String extraDistance = "";// + Utils.roundTwoDecimals(extra);
+            Log.d(TAG,"Fetching Seats : " +post.getSeats());
             //mMatchMaker.getMatchingList();
             if(MySharedPreference.getInstance(this).isCaptain()) {
                 if (isCaptainEligible(mMyTripDistance, totDist, post.getSrcDistDiff(), post.getDestDistDiff(), post.getTripDistance())) {

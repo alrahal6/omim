@@ -106,14 +106,6 @@
                     android:layout_below="@+id/start_time"
                     android:text="Distance : "
                     android:textSize="15sp" />
-                <TextView
-                    android:visibility="gone"
-                    android:id="@+id/your_distance"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/start_time"
-                    android:text="Your Distance : "
-                    android:textSize="15sp" />
 
                 <TextView
                     android:id="@+id/trip_amount"
@@ -122,6 +114,14 @@
                     android:layout_weight="1"
                     android:text="Amount : "
                     android:textSize="15sp"/>
+                <!--<TextView
+                    android:visibility="gone"
+                    android:id="@+id/your_distance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/start_time"
+                    android:text="Your Distance : "
+                    android:textSize="15sp" />
                 <TextView
                     android:visibility="gone"
                     android:id="@+id/extra_distance"
@@ -129,6 +129,36 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/your_distance"
                     android:text="Distance : "
+                    android:textSize="15sp"/>
+                <TextView
+                    android:visibility="gone"
+                    android:id="@+id/trip_route_plan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/extra_distance"
+                    android:text="Trip Plan "
+                    android:textSize="15sp"/>-->
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:weightSum="2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/your_distance"
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/start_time"
+                    android:text=""
+                    android:textSize="15sp" />
+                <TextView
+                    android:id="@+id/extra_distance"
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/your_distance"
+                    android:text=""
                     android:textSize="15sp"/>
                 <TextView
                     android:visibility="gone"

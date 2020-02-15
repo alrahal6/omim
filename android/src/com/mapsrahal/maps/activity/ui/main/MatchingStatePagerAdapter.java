@@ -98,8 +98,8 @@ public class MatchingStatePagerAdapter extends PagerAdapter {
         mTripDistance.setText(matchingItems.get(position).getmTotDistTxt()+" KM");
         mTripTime.setText("Time : "+matchingItems.get(position).getmTripTime());
         mAmount.setText(matchingItems.get(position).getPrice()+" SDG");
-        mYourDistance.setText("Your Distance : ");
-        mExtraDistance.setText("Extra Distance : "+matchingItems.get(position).getmExtraDistance());
+        mYourDistance.setText("Seats : "+matchingItems.get(position).getSeats());
+        mExtraDistance.setText("Gender : "+matchingItems.get(position).getDropDownVal());
         mTripRoute.setText(""+matchingItems.get(position).getmTotDistTxt());
         if(matchingList[position] != 1) {
             mRequestMatch.setText("Add");
