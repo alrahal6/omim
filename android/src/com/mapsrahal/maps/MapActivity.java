@@ -139,7 +139,7 @@ public class MapActivity extends BaseMwmFragmentActivity
     private TextView mCustomerDestination,mTripDistance;
     private TextView mDriverName,mDriverPhone;
     private TextView mListCount, mListAmount,mCallingCaptain,mPriceText;
-    private double tripPrice;
+    private double tripPrice = 0.0d;
     private Button mCancelRequest,mFinishTrip,mStartTrip;
     private int mCancelId;
 
@@ -327,6 +327,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         showMap(fromLat,fromLng,toLat,toLng);
     }
 
+    private int addedSeats = 0;
     @Override
     public void selectMatch(int position,boolean isAdd) {
         //MatchingItem matchingItems = mMatchingList.get(position);
@@ -340,21 +341,23 @@ public class MapActivity extends BaseMwmFragmentActivity
         if(isAdd) {
             // todo add seats
             totAmount += amount;
-            Log.d(TAG,"Id : "+ mMatchingList.get(position).getId());
+            addedSeats += mMatchingList.get(position).getSeats();
+            //Log.d(TAG,"Id : "+ mMatchingList.get(position).getId());
             totAmount = roundTwoDecimals(totAmount);
             selectionList.put(position,mMatchingList.get(position).getId());
             //double distance = mMatchingList.get(position).mMyTripDistance;
             //matchingList[matchingCounter] = mMatchingList.get(position).getId();
             //matchingCounter++;
-            mListCount.setText("Seats : " + selectionList.size());
+            mListCount.setText("Seats : " + addedSeats);
             mListAmount.setText(totAmount+" SDG");
         } else {
             // todo remove seats
             totAmount -= amount;
+            addedSeats -= mMatchingList.get(position).getSeats();
             totAmount = roundTwoDecimals(totAmount);
             selectionList.remove(position);
             //matchingCounter--;
-            mListCount.setText("Seats : " + selectionList.size());
+            mListCount.setText("Seats : " + addedSeats);
             mListAmount.setText(totAmount+" SDG");
             //if(matchingList[mMatchingList.get(position).getId()] != 0) {
             //}
@@ -970,6 +973,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 if(seatCount < 4) {
                     seatCount++;
                     setSeat();
+                    getCalculatedPrice();
                 } else {
                     Toast.makeText(this, "Now we allow only 4 seats", Toast.LENGTH_LONG).show();
                 }
@@ -978,6 +982,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 if(seatCount > 1) {
                     seatCount--;
                     setSeat();
+                    getCalculatedPrice();
                 }
                 break;
             case R.id.tv_pickup:
@@ -1397,10 +1402,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                     return;
                 }
                 tripPrice = roundTwoDecimals(response.body().getPrice());
-
-                mPriceLayout.setVisibility(View.VISIBLE);
-
-                mPriceText.setText(""+tripPrice+" SDG");
+                getCalculatedPrice();
             }
 
             @Override
@@ -1408,6 +1410,13 @@ public class MapActivity extends BaseMwmFragmentActivity
                 Toast.makeText(MapActivity.this,"Sorry! Error in calculating Price",Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    private void getCalculatedPrice() {
+        if(tripPrice < 0.0d) {
+            mPriceLayout.setVisibility(View.VISIBLE);
+            mPriceText.setText("" + roundTwoDecimals(tripPrice * seatCount) + " SDG");
+        }
     }
 
     /*@Override
