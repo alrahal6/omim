@@ -1413,7 +1413,7 @@ public class MapActivity extends BaseMwmFragmentActivity
     }
 
     private void getCalculatedPrice() {
-        if(tripPrice < 0.0d) {
+        if(tripPrice > 0.0d) {
             mPriceLayout.setVisibility(View.VISIBLE);
             mPriceText.setText("" + roundTwoDecimals(tripPrice * seatCount) + " SDG");
         }
