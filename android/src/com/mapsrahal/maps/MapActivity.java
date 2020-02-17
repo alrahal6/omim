@@ -721,7 +721,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
 
-        //mOpenGMap.setOnClickListener(v -> openInGoogleMap());
+        mOpenGMap.setOnClickListener(this);
 
         mSendFeedback.setOnClickListener(view -> {
             mpayAndRating.setVisibility(View.GONE);
@@ -1014,6 +1014,16 @@ public class MapActivity extends BaseMwmFragmentActivity
                 break;
             case R.id.driverPhone:
                 callDriver();
+                break;
+            case R.id.openGMap:
+                if(g.getLat() > 0) {
+                    try {
+                        MapObject m = LocationHelper.INSTANCE.getMyPosition();
+                        openInGoogleMap(m.getLat(), m.getLon(), g.getLat(), g.getLng());
+                    } catch (Exception e) {
+                        Toast.makeText(this,e.getMessage(),Toast.LENGTH_LONG).show();
+                    }
+                }
                 break;
         }
     }
@@ -2133,8 +2143,8 @@ public class MapActivity extends BaseMwmFragmentActivity
         tripStartTime = startTime / 1000;
         isOnTrip = true;
         //mMap.clear();
-        //pickupLatLng = new LatLng(g.getLat(), g.getLng());
-        //destinationLatLng = new LatLng(g.getDestLat(), g.getDestLng());
+        //LatLng pickupLatLng = new LatLng(g.getLat(), g.getLng());
+        //LatLng destinationLatLng = new LatLng(g.getDestLat(), g.getDestLng());
         swipeButtonSettings.setActionConfirmText(getString(R.string.end_trip));
         mSwipeButton.setSwipeButtonCustomItems(swipeButtonSettings);
         //mSwipeButton.setText(R.string.end_trip);
@@ -2389,8 +2399,8 @@ public class MapActivity extends BaseMwmFragmentActivity
                 MySharedPreference.getInstance(this).getFrmAddress().trim(),
                 MySharedPreference.getInstance(this).getToAddress().trim(),
                 new Date(MySharedPreference.getInstance(this).getStartTime()),
-                MySharedPreference.getInstance(this).getPhoneNumber(),seatCount,genderCargoId
-               ,genderCargoTxt,tripPrice,sel,
+                MySharedPreference.getInstance(this).getPhoneNumber(),seatCount,genderCargoId,
+                genderCargoTxt,tripPrice,sel,
                 MySharedPreference.getInstance(MapActivity.this).getUserName());
         //post.setSelectorFlag(mSelector);
 
@@ -2404,7 +2414,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 }
                 showProgress(false);
                 //|| mSelector == PASSENGER_ANY
-                if(mSelector == PASSENGER_SHARE_ONLY ) {
+                if(mSelector == PASSENGER_SHARE_ONLY || mSelector == PASSENGER_ANY) {
                     Toast.makeText(MapActivity.this,"Successfully sent your request",Toast.LENGTH_LONG).show();
                     Map<String, String> data = new HashMap<>();
                     data.put("fUserId",MySharedPreference.getInstance(MapActivity.this).getUserId()+"");
@@ -2415,7 +2425,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                     data.put("price",""+tripPrice);
                     data.put("mTripTime",""+startingTime);
                     data.put("phone","0.0");
-                    data.put("name","0.0");
+                    data.put("name",post.getName());
                     data.put("fAddress",mSourceAddress);
                     data.put("tAddress",mDestinationAddress);
                     data.put("note","0.0");
@@ -2668,56 +2678,15 @@ public class MapActivity extends BaseMwmFragmentActivity
                     } else {
                         requestHandler.postDelayed(requestRunnable, 0);
                     }
-                    //removeRequest();
-                    //requestHandler.removeCallbacks(requestRunnable);
-                    //requestHandler.postDelayed(requestRunnable, 0);
-                    //if (requestCounter < 9) {
-                    //getClosestDriver();
-                    //} else {
-                    //mRequest.setText("Sorry! Driver Not Found");
-                    //}
                     break;
                 case 5:
                     cancelRequest();
-                    /* //ringtone.play();
-                    mCustomerInfo.setVisibility(View.VISIBLE);
-                    mSwipeLayout.setVisibility(View.GONE);
-                    mCustomerName.setText(R.string.passenger_cancel);
-                    mCustomerPickup.setText("");
-                    mCustomerDestination.setText("");
-                    //mCustomerPhone.setText("");
-                    mTripDistance.setText("");
-                    mAcceptBusyInfo.setVisibility(View.GONE);
-                    updateResponse(TRIP_CANCELLED);
-                    MyNotificationManager.getInstance(MapActivity.this).displayNotification("Request Cancelled", "Sorry! request cancelled by passenger");
-                    if (ringtone.isPlaying()) {
-                        ringtone.stop();
-                    }
-                    if (mTimerRunning) {
-                        stopTimer();
-                    }
-                    cancelCall();*/
                     break;
                 case 11:
                     mCallingCaptain.setText("Captain Reached!");
                     MyNotificationManager.getInstance(MapActivity.this).displayNotification("Driver Reached", "Driver Reached your place");
                     break;
                 case 9:
-                    //Log.i(TAG," receiving driver current location"+ g);
-                    //LatLng newLocation;
-                    //double oldLat = oldLocation.latitude;
-                    //double oldLng = oldLocation.longitude;
-                    //double newLat = g.getLat();
-                    //double newLng = g.getLng();
-                    //LatLng newLocation = new LatLng(g.getLat(), g.getLng());
-                    //if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                    //float rotation = (float) SphericalUtil.computeHeading(oldLocation, newLocation);
-                    //rotateMarker(mDriverMarker, newLocation, rotation);
-                    //oldLocation = newLocation;
-                    //} else {
-                    //updateDriverLocMarker(newLocation);
-                    //}
-                    // break;
                     break;
                 case 6:
                     MyNotificationManager.getInstance(MapActivity.this).displayNotification("Trip Canceled", "Trip Cancelled by driver");
@@ -2788,12 +2757,6 @@ public class MapActivity extends BaseMwmFragmentActivity
                         sendMe();
                         isDriverBusy = false;
                     }
-                    //requestHandler.postDelayed(requestRunnable, 25000);
-                    /*try {
-                        Thread.sleep(25000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }*/
                 } else {
                     isRequestInProgress = false;
                     requestCounter = 9;
@@ -2807,98 +2770,5 @@ public class MapActivity extends BaseMwmFragmentActivity
     private void removeRequest() {
         requestHandler.removeCallbacks(requestRunnable);
     }
-    /*
-    private final Runnable requestRunnable = new Runnable() {
-        @Override
-        public void run() {
-            final String pLat = Double.toString(userTripInfo.getLat());
-            final String pLng = Double.toString(userTripInfo.getLng());
-            //Log.i(TAG,"lat "+ pLat);
-            final String notIn = getNotIn();
-
-            Map<String, String> params = new HashMap();
-            params.put("passengerId", Integer.toString(userTripInfo.getUserId()));
-            params.put("tripId", Double.toString(userTripInfo.getTripId()));
-            params.put("lat", pLat);
-            params.put("car", userTripInfo.getCar());
-            params.put("lng", pLng);
-            params.put("notIn", notIn);
-
-            JSONObject parameters = new JSONObject(params);
-            bringBackDriver();
-            //Log.i(TAG,"json "+ parameters);
-            //Toast.makeText(getApplicationContext(),"param : "+parameters, Toast.LENGTH_LONG).show();
-            JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST,
-                    MyUrl.URL_GET_NEAR_DRIVER, parameters, new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    try {
-                        jsonArray = response.getJSONArray("nearDrivers");
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject driverList;
-                            driverList = jsonArray.getJSONObject(i);
-                            int dId = Integer.parseInt(driverList.getString("driverId"));
-                            if (dId > 0) {
-                                erasePolylines();
-                                double dLat = Double.parseDouble(driverList.getString("dLat"));
-                                double dLng = Double.parseDouble(driverList.getString("dLng"));
-                                //String destDistance = String.format("%.2f",distanceToDestination());
-                                //getRouteToMarker(dLat,dLng);
-                                //oldLocation = new LatLng(dLat, dLng);
-                                mDriverMarker = mMap.addMarker(new MarkerOptions()
-                                        .position(new LatLng(dLat, dLng)).title("your driver").flat(true)
-                                        .icon(BitmapDescriptorFactory.fromResource(R.mipmap.car_top)));
-                                drawPolylines(dLat, dLng);
-                                driverId = Integer.parseInt(driverList.getString("driverId"));
-                                userTripInfo.setDriverId(driverId);
-                                //addMarker(new LatLng(dLat, dLng));
-                                mCancelRequest.setVisibility(View.VISIBLE);
-                                requestedDrivers[++requestCounter] = driverId;
-                                isRequestInProgress = true;
-                                if(!isDriverAccepted) {
-                                    userTripInfo.setMyFlag(NEW_REQUEST);
-                                    sendMe();
-                                    isDriverBusy = false;
-                                }
-                                //Log.i(TAG,"request thread id : " +Thread.currentThread().getId());
-                                //Thread.sleep(25000);
-                                //if(isDriverAccepted) {
-                                //isDriverBusy = false;
-                                //getClosestDriver();
-                                //} //else {
-                                //removeRequest();
-                                //}
-                                requestHandler.postDelayed(requestRunnable, 25000);
-                            } else {
-                                isRequestInProgress = false;
-                                if (mDriverMarker != null) {
-                                    mDriverMarker.remove();
-                                }
-                                erasePolylines();
-                                requestCounter = 9;
-                                //mRequest.setText("Sorry! Driver Not Found");
-                                removeRequest();
-                                //removeRequest();
-                                Toast.makeText(mContext, "Sorry! No drivers found", Toast.LENGTH_LONG).show();
-                            }
-
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    } //catch (InterruptedException e) {
-                    //e.printStackTrace();
-                    //}
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    //error.printStackTrace();
-                    Toast.makeText(mContext, error.getMessage(), Toast.LENGTH_LONG).show();
-                    //TODO: handle failure
-                }
-            });
-            MyBase.getInstance(mContext).addToRequestQueue(jsonRequest);
-        }
-    };*/
 
 }

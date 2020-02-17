@@ -97,7 +97,7 @@ public class CargoStatePagerAdapter extends PagerAdapter {
         mTripTime.setText("Time : "+matchingItems.get(position).getmTripTime());
         mAmount.setText(matchingItems.get(position).getDropDownVal());
         //mAmount.setVisibility(View.GONE);
-        mYourDistance.setText("Your Distance : ");
+        mYourDistance.setText("Vehicle : "+ matchingItems.get(position).getDropDownVal());
         //mExtraDistance.setText("Extra Distance : "+matchingItems.get(position).getmExtraDistance());
         //mTripRoute.setText(""+matchingItems.get(position).getmTotDistTxt());
         mRequestMatch.setText("Call");
