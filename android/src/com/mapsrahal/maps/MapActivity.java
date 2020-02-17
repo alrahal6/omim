@@ -378,8 +378,8 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     private void alertDialogCancel() {
         AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this);
-        builder.setMessage("Are you sure? Cancel?").setPositiveButton("Yes", cancelDialogClickListener)
-                .setNegativeButton("No", cancelDialogClickListener).show();
+        builder.setMessage(getString(R.string.sure_cancel)).setPositiveButton(getString(R.string.yes), cancelDialogClickListener)
+                .setNegativeButton(getString(R.string.no), cancelDialogClickListener).show();
 
     }
 
@@ -393,7 +393,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                     break;
 
                 case DialogInterface.BUTTON_NEGATIVE:
-                    Toast.makeText(MapActivity.this, "Request not Send", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MapActivity.this, getString(R.string.req_not_send), Toast.LENGTH_LONG).show();
                     break;
             }
         }
@@ -504,8 +504,8 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     private void alertDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this);
-        builder.setMessage("Are you sure? Send Confirmation!").setPositiveButton("Yes", dialogClickListener)
-                .setNegativeButton("No", dialogClickListener).show();
+        builder.setMessage(getString(R.string.sure_send_conf)).setPositiveButton(getString(R.string.yes), dialogClickListener)
+                .setNegativeButton(getString(R.string.no), dialogClickListener).show();
 
     }
 
@@ -1100,8 +1100,8 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     private void cancelDriver() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setMessage("Do you want to cancel the current Trip?");
-        alertDialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        alertDialogBuilder.setMessage(getString(R.string.sure_cancel_current));
+        alertDialogBuilder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 userTripInfo.setMyFlag(CANCEL_DRIVER);
@@ -1122,7 +1122,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 //iPassengerMapsActivity.setRating(userTripInfo.getTripId(), 1.2f);
             }
         });
-        alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+        alertDialogBuilder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
@@ -2174,7 +2174,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         Intent intent = new Intent(Intent.ACTION_CALL);
         intent.setData(Uri.parse("tel:" + phoneNumber));
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(this, "Permission denied to make call", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.denied_make_call), Toast.LENGTH_LONG).show();
             return;
         }
         this.startActivity(intent);

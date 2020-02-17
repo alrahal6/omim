@@ -11,12 +11,12 @@
     <Button
         android:id="@+id/choose_file"
         android:layout_width="wrap_content"
-        android:text="Choose File"
+        android:text="@string/choose_file"
         android:layout_height="wrap_content"/>
 
     <Button
         android:id="@+id/take_image"
-        android:text="Take Photo"
+        android:text="@string/take_photo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         />
@@ -28,7 +28,7 @@
 
     <Button
         android:id="@+id/vehicle_info"
-        android:text="New Vehicle"
+        android:text="@string/new_vehicle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         />

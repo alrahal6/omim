@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        android:text="Send Request"/>
+        android:text="@string/send_request"/>
     <Switch
         android:id="@+id/switch2"
         android:gravity="center_horizontal"
@@ -33,7 +33,7 @@
         android:layout_marginLeft="60dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Is Online" />
+        android:text="@string/is_online" />
 
     <include layout="@layout/from_to"/>
     <include layout="@layout/captain_content" />

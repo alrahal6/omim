@@ -10,12 +10,7 @@ import androidx.annotation.Nullable;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
-public class BottomSheetMoreSettings extends BottomSheetDialogFragment {
+public class BottomSheetMoreSettings  {
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.more_settings_bottom_sheet,container,false);
-        return v;
-    }
+
 }

@@ -19,7 +19,7 @@
             android:padding="5dp"
             android:layout_marginEnd="30dp"
             android:drawableEnd="@drawable/ic_call_green_24dp"
-            android:text="Driver Phone : "
+            android:text="@string/captain_phone"
             android:textStyle="bold" />
     </LinearLayout>
     <LinearLayout
@@ -37,7 +37,7 @@
             android:layout_width="wrap_content"
             android:textColor="@color/base_red"
             android:background="@layout/rounded_border_edittext"
-            android:text="Cancel"/>
+            android:text="@string/cancel"/>
         <TextView
             android:visibility="gone"
             android:layout_gravity="center_horizontal"
@@ -46,7 +46,7 @@
             android:layout_height="wrap_content"
             android:textSize="15dp"
             android:padding="10dp"
-            android:text="Calling Captain..."
+            android:text="@string/calling_captain"
             android:textColor="@color/base_green" />
         <TextView
             android:visibility="gone"
@@ -56,7 +56,7 @@
             android:layout_height="wrap_content"
             android:drawableStart="@drawable/ic_done_green_24dp"
             android:padding="5dp"
-            android:text="END TRIP"
+            android:text="@string/end_trip"
             android:textSize="16sp"
             android:textColor="#96e688" />
     </LinearLayout>

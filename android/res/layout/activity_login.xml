@@ -31,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
-            android:text="Enter User Info  "
+            android:text="@string/enter_user_info"
             android:textAlignment="center"
             android:textSize="20dp" />
 
@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:background="@drawable/round_corner"
-            android:hint="Name"
+            android:hint="@string/name"
             android:padding="10dp" />
 
         <!--<EditText
@@ -66,7 +66,7 @@
                     android:id="@+id/etExt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="+249"
+                    android:text="@string/_249"
                     android:layout_marginTop="20dp"
                     android:drawableStart="@drawable/ic_call_black_24dp"
                     android:drawableLeft="@drawable/ic_call_black_24dp" />
@@ -76,7 +76,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
                         android:background="@drawable/round_corner"
-                        android:hint="Mobile Number"
+                        android:hint="@string/mobile_number"
                         android:inputType="number"
                         android:maxLength="9"
                         android:padding="10dp" />
@@ -101,7 +101,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="15dp"
             android:background="@drawable/round_corner_button"
-            android:text="User Login" />
+            android:text="@string/user_login" />
         <ProgressBar
             android:id="@+id/loginProgressOtp"
             style="?android:attr/progressBarStyle"
@@ -131,7 +131,7 @@
         android:layout_marginTop="20dp"
         android:background="@drawable/round_corner"
         android:layout_below="@+id/anchor_center"
-        android:hint="Please enter OTP"
+        android:hint="@string/please_enter_otp"
         android:inputType="number"
         android:maxLength="6"
         android:padding="10dp" />
@@ -142,7 +142,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="15dp"
             android:background="@drawable/round_corner_button"
-            android:text="Submit OTP" />
+            android:text="@string/submit_otp" />
     </LinearLayout>
 
 </RelativeLayout>

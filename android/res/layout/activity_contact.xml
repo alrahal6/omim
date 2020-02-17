@@ -45,7 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginTop="270dp"
-        android:text="Al azby pharmacy al nakeel street extension Khartoum Sudan"
+        android:text="@string/al_address"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

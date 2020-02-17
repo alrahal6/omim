@@ -22,7 +22,7 @@
                 android:id="@+id/openGMap"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="open_google_map"
+                android:text="@string/open_google_map"
                 android:textColor="@android:color/holo_green_dark"
                 android:visibility="gone" />
             <TextView
@@ -49,7 +49,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
                 android:padding="5dp"
-                android:text="pay"
+                android:text="@string/pay"
                 android:textColor="#7b0505" />
 
             <TextView
@@ -76,7 +76,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="rate_ride"
+                android:text="@string/rate_ride"
                 />
 
         </LinearLayout>
@@ -106,7 +106,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:color/holo_green_dark"
-                    android:text="reached_customer"
+                    android:text="@string/reached_customer"
                     android:textColor="@android:color/black" />
             </LinearLayout>
 
@@ -134,7 +134,7 @@
                         android:drawableEnd="@drawable/ic_call_green_24dp"
                         android:paddingBottom="10dp"
                         android:paddingTop="5dp"
-                        android:text="customer_phone"
+                        android:text="@string/customer_phone"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -184,7 +184,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@android:color/holo_green_dark"
-                    android:text="accept_request"
+                    android:text="@string/accept_request"
                     android:textColor="@android:color/black" />
 
                 <Button
@@ -194,7 +194,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@android:color/holo_red_light"
-                    android:text="busy"
+                    android:text="@string/busy"
                     android:textColor="@android:color/black" />
             </LinearLayout>
         </LinearLayout>

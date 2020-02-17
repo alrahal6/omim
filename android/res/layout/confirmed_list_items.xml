@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_toEndOf="@+id/imageView"
-            android:text="Name : "
+            android:text="@string/name"
             android:textColor="@android:color/black"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -36,7 +36,7 @@
             android:layout_below="@+id/textView"
             android:layout_marginStart="8dp"
             android:layout_toEndOf="@+id/imageView"
-            android:text="Address : "
+            android:text="@string/al_address"
             android:textSize="15sp"
             android:layout_marginLeft="8dp"
             android:layout_toRightOf="@+id/imageView" />
@@ -48,7 +48,7 @@
             android:layout_width="wrap_content"
             android:textColor="@color/base_green"
             android:background="@layout/rounded_border_edittext"
-            android:text="Add"/>
+            android:text="@string/add"/>
 
         <LinearLayout
             android:layout_below="@+id/request_match"
@@ -60,7 +60,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            android:text="Start Time : "
+            android:text="@string/start_time"
             android:textSize="15sp" />
 
             <TextView
@@ -68,14 +68,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/start_time"
-                android:text="Your Distance : "
+                android:text="@string/your_distance"
                 android:textSize="15sp" />
             <TextView
                 android:id="@+id/extra_distance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/your_distance"
-                android:text="Extra Distance : "
+                android:text="@string/extra_distance"
                 android:textSize="15sp"/>
             <TextView
                 android:visibility="gone"
@@ -83,7 +83,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/extra_distance"
-                android:text="Trip Plan "
+                android:text="@string/trip_plan"
                 android:textSize="15sp"/>
 
         <LinearLayout
@@ -99,7 +99,7 @@
                 android:layout_weight="2"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/start_time"
-                android:text="Distance : "
+                android:text="@string/distance"
                 android:textSize="15sp" />
             <!--<Button
                 android:id="@+id/remove_match"
@@ -116,7 +116,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:text="Amount : "
+                android:text="@string/amount"
                 android:textSize="15sp"/>
         </LinearLayout>
         </LinearLayout>

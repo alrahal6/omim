@@ -20,7 +20,7 @@
             android:drawableStart="@drawable/ic_search_brown_24dp"
             android:layout_marginLeft="@dimen/m_left_right"
             android:layout_marginRight="@dimen/m_left_right"
-            android:text="Pickup Adrress"
+            android:text="@string/pickup_adrress"
             style="@style/TextView14spGrayPad"/>
         <View
             android:id="@+id/separator"
@@ -40,7 +40,7 @@
             android:layout_below="@id/separator"
             android:layout_marginLeft="@dimen/m_left_right"
             android:layout_marginRight="@dimen/m_left_right"
-            android:text="Dropoff Address"
+            android:text="@string/dropoff_address"
             style="@style/TextView14spGrayPad"/>
         <LinearLayout
             android:layout_width="@dimen/m_left_right"
@@ -120,7 +120,7 @@
             android:layout_width="0dp"
             android:layout_weight="3"
             android:layout_height="wrap_content"
-            android:text="0 km"
+            android:text="@string/_0_km"
             style="@style/TextView14spGrayPad"
             android:gravity="center" />
 
@@ -139,7 +139,7 @@
             android:layout_width="0dp"
             android:layout_weight="3"
             android:layout_height="wrap_content"
-            android:text="0 SDG"
+            android:text="@string/_0_sdg"
             style="@style/TextView14spGrayPad"
             android:gravity="center" />
     </LinearLayout>
@@ -157,7 +157,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="Set as Pickup"
+            android:text="@string/set_as_pickup"
             style="@style/TextView14spBg"
             android:background="@color/base_green"
             android:gravity="center"/>
@@ -167,7 +167,7 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:paddingRight="5dp"
-            android:text="Set as Dropoff"
+            android:text="@string/set_as_dropoff"
             style="@style/TextView14spBg"
             android:gravity="center" />
     </LinearLayout>
@@ -188,7 +188,7 @@
             android:layout_height="wrap_content"
             android:paddingRight="@dimen/space5"
             android:paddingLeft="@dimen/space5"
-            android:text="0 SDG"
+            android:text="@string/_0_sdg"
             style="@style/TextView14spGrayPad"
             android:gravity="center"
             android:background="@drawable/bg_white_left_border"/>
@@ -209,7 +209,7 @@
         <TextView
             style="@style/TextView14spGrayPad"
             android:id="@+id/list_count"
-            android:text="Seats : "
+            android:text="@string/seats"
             android:padding="@dimen/space5"
             android:layout_marginRight="@dimen/space20"
             android:layout_width="wrap_content"
@@ -219,12 +219,12 @@
             android:padding="@dimen/space5"
             android:id="@+id/list_amount"
             android:layout_marginRight="@dimen/space20"
-            android:text="Amount : "
+            android:text="@string/amount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
             <Button
                 android:background="@layout/rounded_border_edittext"
-                android:text="Confirm List"
+                android:text="@string/confirm_list"
                 android:textColor="@color/base_green"
                 android:padding="@dimen/space5"
                 android:id="@+id/confirm_list"
@@ -252,7 +252,7 @@
             <Button
                 android:background="@layout/rounded_border_edittext"
                 android:layout_weight="1"
-                android:text="Start trip"
+                android:text="@string/start_trip"
                 android:textColor="@color/base_green"
                 android:padding="@dimen/space5"
                 android:id="@+id/start_trip"
@@ -262,7 +262,7 @@
             <Button
                 android:background="@layout/rounded_border_edittext"
                 android:layout_weight="1"
-                android:text="Route trip"
+                android:text="@string/route_trip"
                 android:textColor="@color/base_yellow"
                 android:padding="@dimen/space5"
                 android:id="@+id/plan_trip"
@@ -272,7 +272,7 @@
             <Button
                 android:background="@layout/rounded_border_edittext"
                 android:layout_weight="1"
-                android:text="Cancel Trip"
+                android:text="@string/cancel_trip"
                 android:textColor="@color/base_red"
                 android:padding="@dimen/space5"
                 android:id="@+id/finish_trip"
@@ -341,7 +341,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="2"
                 android:layout_height="36dp"
-                android:hint="Date Time"
+                android:hint="@string/date_time"
                 style="@style/TextView14spGrayPad"
                 android:background="@drawable/bg_white_right_border"
                 android:gravity="center_horizontal"/>
@@ -352,7 +352,7 @@
                 android:layout_weight="2"
                 android:layout_height="36dp"
                 android:layout_margin="@dimen/space5"
-                android:text="Submit"
+                android:text="@string/submit"
                 style="@style/ButtonOrange"/>
         </LinearLayout>
     </LinearLayout>
