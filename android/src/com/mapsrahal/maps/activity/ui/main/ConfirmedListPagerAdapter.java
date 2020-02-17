@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,6 +46,7 @@ public class ConfirmedListPagerAdapter extends PagerAdapter {
     public interface ConfirmationSelectionListener {
         void goToLocation(double toLat, double toLng);
         void showInGMap(double fromLat,double fromLng,double toLat, double toLng);
+        void callConfirmed(String phone);
     }
 
     public ConfirmedListPagerAdapter(ArrayList<UserMessage> matchingItems, Context context, FragmentManager fm) {
@@ -98,9 +100,9 @@ public class ConfirmedListPagerAdapter extends PagerAdapter {
         mTripDistance.setText(matchingItems.get(position).getDistance() + "KM");
         mTripTime.setText("Time : "+matchingItems.get(position).getmTripTime());
         mAmount.setText(matchingItems.get(position).getPrice()+ "SDG");
-        mYourDistance.setText("Your Distance : ");
-        mExtraDistance.setText("Extra Distance : "+matchingItems.get(position).getName());
-        mTripRoute.setText(""+matchingItems.get(position).getPhone());
+        mYourDistance.setText("0"+matchingItems.get(position).getPhone());
+        mExtraDistance.setText("Gender : "+matchingItems.get(position).getNote());
+        mTripRoute.setText("0"+matchingItems.get(position).getPhone());
         mRequestMatch.setText("Route To");
         mRemoveMatch.setText("View On Google Map");
         //mRequestMatch.setOnClickListener(v -> openInGoogleMap());
@@ -114,6 +116,10 @@ public class ConfirmedListPagerAdapter extends PagerAdapter {
                         matchingItems.get(position).gettLat(),
                         matchingItems.get(position).gettLng())
         );
+        String phoneNumber = "0" + matchingItems.get(position).getPhone();
+        mYourDistance.setOnClickListener(v-> confirmListener.callConfirmed(phoneNumber));
+        mYourDistance.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_call_green_24dp, 0, 0, 0);
+        //mYourDistance.setDr(R.drawable.ic_call_green_24dp);
         /*if(matchingList[position] != 1) {
             mRequestMatch.setText("Add");
             mRequestMatch.setTextColor(Color.GREEN);

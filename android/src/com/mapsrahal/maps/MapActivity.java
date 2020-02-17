@@ -283,6 +283,12 @@ public class MapActivity extends BaseMwmFragmentActivity
         callDriver();
     }
 
+    @Override
+    public void callConfirmed(String phone) {
+        phoneNumber = phone;
+        callDriver();
+    }
+
     private void calledMatch(String phone,int tripId) {
         PostApi postApi = ApiClient.getClient().create(PostApi.class);
         CallLog callLog = new CallLog(
@@ -436,14 +442,14 @@ public class MapActivity extends BaseMwmFragmentActivity
                     MySharedPreference.getInstance(this).getUserId(),
                     mMatchingList.get(position).getUserId(),
                     getFlag(),mMatchingList.get(position).getId(),
-                    0.0d,
+                    Double.valueOf(mMatchingList.get(position).getmTotDistTxt()),
+                    String.valueOf(mMatchingList.get(position).getPrice()),
                     mMatchingList.get(position).getmTripTime(),
-                    mMatchingList.get(position).getmAmount(),
                     mMatchingList.get(position).getmPhone(),
-                    mMatchingList.get(position).getmPhone(),
+                    mMatchingList.get(position).getName(),
                     mMatchingList.get(position).getmText1(),
                     mMatchingList.get(position).getmText2(),
-                    mMatchingList.get(position).getmPhone(),
+                    mMatchingList.get(position).getDropDownVal(),
                     mMatchingList.get(position).getfLat(),
                     mMatchingList.get(position).getfLng(),
                     mMatchingList.get(position).gettLat(),
@@ -2424,7 +2430,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                     data.put("distance",myDistance);
                     data.put("price",""+tripPrice);
                     data.put("mTripTime",""+startingTime);
-                    data.put("phone","0.0");
+                    data.put("phone",post.getPhone());
                     data.put("name",post.getName());
                     data.put("fAddress",mSourceAddress);
                     data.put("tAddress",mDestinationAddress);
@@ -2476,7 +2482,8 @@ public class MapActivity extends BaseMwmFragmentActivity
                     // todo get accurate distance and add
                     insert(new MatchingItem(post.getId(),post.getUserId(),
                             post.getSourceAddress(), post.getDestinationAddress(),
-                             DateUtils.formatDateStr(post.getStartTime()),Double.toString(post.getTripDistance()), Double.toString(totDist),extraDistance,post.getPhone(),
+                             DateUtils.formatDateStr(post.getStartTime()),Double.toString(post.getTripDistance()),
+                            Double.toString(totDist),extraDistance,post.getPhone(),
                             amount,mMyTripDistance,post.getSrcLat(),post.getSrcLng(),post.getDestLat(),post.getDestLng()
                     ,post.getSeats(),post.getDropDownVal(),post.getPrice(),post.getName()));
                     //insert(mMatchingList);
@@ -2487,7 +2494,8 @@ public class MapActivity extends BaseMwmFragmentActivity
                     // todo get accurate distance and add
                     insert(new MatchingItem(post.getId(),post.getUserId(),
                             post.getSourceAddress(), post.getDestinationAddress(),
-                             DateUtils.formatDateStr(post.getStartTime()),Double.toString(post.getTripDistance()), Double.toString(totDist),extraDistance, post.getPhone(),
+                             DateUtils.formatDateStr(post.getStartTime()),Double.toString(post.getTripDistance()),
+                            Double.toString(totDist),extraDistance, post.getPhone(),
                             amount,mMyTripDistance,post.getSrcLat(),post.getSrcLng(),post.getDestLat(),post.getDestLng()
                             ,post.getSeats(),post.getDropDownVal(),post.getPrice(),post.getName()));
                 }
