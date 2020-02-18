@@ -3034,4 +3034,26 @@
     <string name="denied_make_call">Permission denied to make call</string>
     <string name="req_not_send">Request not Send</string>
     <string name="sure_cancel_current">Do you want to cancel the current Trip?</string>
+    <string name="req_cancelled">Request Cancelled</string>
+    <string name="req_cancel_by_pas">Sorry! request cancelled by passenger</string>
+    <string name="no_record_found">No records found! Please try later</string>
+    <string name="error_occured">Some Error occurred! Try Later</string>
+    <string name="success_sent_req">Successfully sent your request</string>
+    <string name="sel_date_time">Select Date and Time</string>
+    <string name="req_not_send">Request not Send</string>
+    <string name="inform_start_trip">Do you want to start Trip and Inform users?</string>
+    <string name="enter_valid_address">Please enter valid address</string>
+    <string name="sdg">SDG</string>
+    <string name="no_driver_found">Sorry! No Captain found! Try Later</string>
+    <string name="error_calc_price">Sorry! Error in calculating Price</string>
+    <string name="captain_on_way">Captain Found! On the way</string>
+    <string name="captain_found">Captain Found</string>
+    <string name="trip_cancelled">Trip Canceled</string>
+    <string name="captain_cancel_trip">Trip Cancelled by Captain</string>
+    <string name="pay_driver">Pay Driver :</string>
+    <string name="trip_completed">Trip Completed</string>
+    <string name="no_match_found">Sorry! No Match Found, Try Later</string>
+    <string name="add_seats">Please add seats</string>
+    <string name="max_4_seats">Now we allow only 4 seats</string>
+    <string name="seats">Seats :</string>
 </resources>
