@@ -2952,11 +2952,9 @@
     <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
     <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
     <string name="you_are_online" translatable="false">ONLINE</string>
-    <string name="open_google_map" translatable="false">Open Google Map</string>
     <string name="rate_ride" translatable="false">Rate Your Ride!</string>
     <string name="reached_customer" translatable="false"> >> Reached Customer >></string>
     <string name="customer_phone" translatable="false">Customer Phone:</string>
-    <string name="accept_request" translatable="false">Accept Request</string>
     <string name="busy" translatable="false">Busy</string>
     <string name="change_password" translatable="false">Change Password</string>
     <string name="getting_location" translatable="false">Getting Location…</string>
@@ -2968,7 +2966,6 @@
     <string name="passenger_request" translatable="false">Passenger Request</string>
     <string name="end_trip" translatable="false">End Trip</string>
     <string name="collect_payment" translatable="false">Collect Payment :</string>
-    <string name="sdg" translatable="false">SDG</string>
     <string name="start_trip" translatable="false">Start Trip</string>
     <string name="please_connect_internet" translatable="false">Please connect to internet and try again</string>
     <string name="enable_location_permission" translatable="false">Please enable location permission to access</string>
@@ -2984,7 +2981,6 @@
     <string name="your_message">your message</string>
     <string name="send">Send</string>
     <string name="enter_user_info">Enter User Info</string>
-    <string name="name">Name</string>
     <string name="_249">+249</string>
     <string name="mobile_number">Mobile Number</string>
     <string name="user_login">User Login</string>
@@ -2997,7 +2993,6 @@
     <string name="new_vehicle">New Vehicle</string>
     <string name="al_address">Al azby pharmacy al nakeel street extension Khartoum Sudan</string>
     <string name="passenger_looking">Passenger Looking For</string>
-    <string name="taxi">Taxi</string>
     <string name="car_pool_share">Car Pool / Share</string>
     <string name="captain_offering">Captain Offering</string>
     <string name="cargo_logistics">Cargo / Logistics</string>
@@ -3013,7 +3008,6 @@
     <string name="trip_plan">Trip Plan</string>
     <string name="amount">Amount :</string>
     <string name="captain_phone">Captain Phone :</string>
-    <string name="cancel">Cancel</string>
     <string name="calling_captain">Calling Captain...</string>
     <string name="test">test</string>
     <string name="pickup_adrress">Pickup Adrress</string>
@@ -3032,7 +3026,6 @@
     <string name="no">No</string>
     <string name="sure_cancel">Are you sure? Cancel?</string>
     <string name="denied_make_call">Permission denied to make call</string>
-    <string name="req_not_send">Request not Send</string>
     <string name="sure_cancel_current">Do you want to cancel the current Trip?</string>
     <string name="req_cancelled">Request Cancelled</string>
     <string name="req_cancel_by_pas">Sorry! request cancelled by passenger</string>
@@ -3055,5 +3048,4 @@
     <string name="no_match_found">Sorry! No Match Found, Try Later</string>
     <string name="add_seats">Please add seats</string>
     <string name="max_4_seats">Now we allow only 4 seats</string>
-    <string name="seats">Seats :</string>
 </resources>

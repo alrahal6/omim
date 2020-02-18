@@ -241,6 +241,7 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     Map<Integer,Integer> selectionList = new HashMap<>();
     private double totAmount = 0d;
+    private Button mPlanTrip;
 
     private void prepareForAll() {
         // show hide for all
@@ -389,7 +390,10 @@ public class MapActivity extends BaseMwmFragmentActivity
             switch (which) {
                 case DialogInterface.BUTTON_POSITIVE:
                     //sendConfirmation();
-                    cancelMe();
+                    if(confirmedUserList.size() > 0) {
+                        sendUserMessage(confirmedUserList,Constants.Notification.DRIVER_CANCELLED);
+                    }
+                    // cancelMe();
                     break;
 
                 case DialogInterface.BUTTON_NEGATIVE:
@@ -401,9 +405,7 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     private void cancelMe() {
         // todo cancel logic
-
     }
-
 
     private void sendConfirmList() {
         alertDialog();
@@ -428,13 +430,9 @@ public class MapActivity extends BaseMwmFragmentActivity
         return Constants.Notification.DRIVER_ACCEPTED;
     }
 
-    private void sendConfirmation() {
 
-        // selectionList
+    private void sendConfirmation() {
         List<UserMessage> userMessageList = new ArrayList<>();
-        //Gson gson = new Gson();
-        //String jsonString = gson.toJson(selectionList);
-        //Log.d(TAG,"Json "+ jsonString);
         for (Map.Entry<Integer, Integer> entry : selectionList.entrySet()) {
             Integer position = entry.getKey();
             Integer value = entry.getValue();
@@ -456,14 +454,34 @@ public class MapActivity extends BaseMwmFragmentActivity
                     mMatchingList.get(position).gettLng()
             );
             userMessageList.add(userMessage);
-            Log.d(TAG, "Confirmed List Key : " + position);
-            Log.d(TAG, "Confirmed List Value : " + value);
+            //Log.d(TAG, "Confirmed List Key : " + position);
+            //Log.d(TAG, "Confirmed List Value : " + value);
         }
         MySharedPreference.getInstance(this).addActiveProcess(Constants.ActiveProcess.CAPTAIN_HAVE_CONFIRMED_LIST);
         MySharedPreference.getInstance(this).putListConfirmed(CONFIRMED_LIST_KEY,userMessageList);
-        UserMessageApi userMessageApi = ApiClient.getClient().create(UserMessageApi.class);
-        Call<UserMessage> call = userMessageApi.sendConfirmation(userMessageList);
+        sendUserMessage(userMessageList,Constants.Notification.DRIVER_ACCEPTED);
+        //mNotificationCard.setVisibility(View.GONE);
+    }
 
+    private void sendUserMessage(List<UserMessage> userMessageList,int flag) {
+        Call<UserMessage> call;
+        UserMessageApi userMessageApi = ApiClient.getClient().create(UserMessageApi.class);
+        switch (flag) {
+            case Constants.Notification.DRIVER_ACCEPTED:
+                call = userMessageApi.sendConfirmation(userMessageList);
+                break;
+            case Constants.Notification.TRIP_STARTED:
+                call = userMessageApi.sendTripStarted(userMessageList);
+                break;
+            case Constants.Notification.TRIP_COMPLETED:
+                call = userMessageApi.sendTripCompleted(userMessageList);
+                break;
+            case Constants.Notification.DRIVER_CANCELLED:
+                call = userMessageApi.sendTripCancelled(userMessageList);
+                break;
+            default:
+                return;
+        }
         call.enqueue(new Callback<UserMessage>() {
             @Override
             public void onResponse(Call<UserMessage> call, Response<UserMessage> response) {
@@ -477,7 +495,6 @@ public class MapActivity extends BaseMwmFragmentActivity
             }
         });
         reloadMe();
-        //mNotificationCard.setVisibility(View.GONE);
     }
 
     /*private void sendMessage() {
@@ -594,6 +611,8 @@ public class MapActivity extends BaseMwmFragmentActivity
         mFinishTrip.setOnClickListener(this);
         mStartTrip = findViewById(R.id.start_trip);
         mStartTrip.setOnClickListener(this);
+        mPlanTrip = findViewById(R.id.plan_trip);
+        mPlanTrip.setOnClickListener(this);
         //mViewPager.setAdapter(matchingStateAdapter);
         mViewPager.setVisibility(View.GONE);
         mConfirmLayout.setVisibility(View.GONE);
@@ -770,7 +789,7 @@ public class MapActivity extends BaseMwmFragmentActivity
             if (myBinder == null) {
                 //Log.d(TAG, "onChanged: unbound from service");
             } else {
-                Log.d(TAG, "onChanged: bound to service.");
+                //Log.d(TAG, "onChanged: bound to service.");
                 mService = myBinder.getService();
                 mService.registerListener(this);
             }
@@ -1018,6 +1037,9 @@ public class MapActivity extends BaseMwmFragmentActivity
             case R.id.start_trip:
                 startConfirmedTrip();
                 break;
+            case R.id.plan_trip:
+                planConfirmedTrip();
+                break;
             case R.id.driverPhone:
                 callDriver();
                 break;
@@ -1042,6 +1064,9 @@ public class MapActivity extends BaseMwmFragmentActivity
             public void onClick(DialogInterface dialog, int which) {
                 // todo send trip finished message
                 //cancelRequest()
+                if(confirmedUserList.size() > 0) {
+                    sendUserMessage(confirmedUserList,Constants.Notification.TRIP_COMPLETED);
+                }
                 MySharedPreference.getInstance(MapActivity.this).addActiveProcess(0);
                 reloadMe();
             }
@@ -1056,6 +1081,53 @@ public class MapActivity extends BaseMwmFragmentActivity
         alertDialog.show();
     }
 
+    private void planConfirmedTrip() {
+        showProgress(true);
+        int size = confirmedUserList.size();
+        fromLocation = LocationHelper.INSTANCE.getMyPosition();
+        RoutingController.get().setStartPoint(fromLocation);
+        MapObject m = getMapObj(confirmedUserList.get(0).getfLat(),confirmedUserList.get(0).getfLng());
+        MapObject m1 = getMapObj(confirmedUserList.get(0).gettLat(),confirmedUserList.get(0).gettLng());
+        switch (size) {
+            case 2:
+                MapObject m2 = getMapObj(confirmedUserList.get(1).getfLat(),confirmedUserList.get(1).getfLng());
+                MapObject m3 = getMapObj(confirmedUserList.get(1).gettLat(),confirmedUserList.get(1).gettLng());
+                RoutingController.get().setEndPoint(m3);
+                RoutingController.get().addStop(m);
+                RoutingController.get().addStop(m2);
+                break;
+            case 3:
+                MapObject mx = getMapObj(confirmedUserList.get(1).getfLat(),confirmedUserList.get(1).getfLng());
+                MapObject m4 = getMapObj(confirmedUserList.get(2).getfLat(),confirmedUserList.get(2).getfLng());
+                MapObject m5 = getMapObj(confirmedUserList.get(2).gettLat(),confirmedUserList.get(2).gettLng());
+                RoutingController.get().setEndPoint(m5);
+                RoutingController.get().addStop(m);
+                RoutingController.get().addStop(mx);
+                RoutingController.get().addStop(m4);
+                break;
+            case 4:
+                MapObject m1x = getMapObj(confirmedUserList.get(1).getfLat(),confirmedUserList.get(1).getfLng());
+                MapObject m2x = getMapObj(confirmedUserList.get(2).getfLat(),confirmedUserList.get(2).getfLng());
+                MapObject m7 = getMapObj(confirmedUserList.get(3).gettLat(),confirmedUserList.get(3).gettLng());
+                RoutingController.get().setEndPoint(m7);
+                RoutingController.get().addStop(m);
+                RoutingController.get().addStop(m1x);
+                RoutingController.get().addStop(m2x);
+                break;
+            case 1:
+            default:
+                    RoutingController.get().setEndPoint(m1);
+                    RoutingController.get().addStop(m);
+                    break;
+        }
+        showProgress(false);
+    }
+
+    private MapObject getMapObj(double lat,double lng) {
+        return MapObject.createMapObject(FeatureId.EMPTY, MapObject.POI, "", "",
+                lat, lng);
+    }
+
     private void startConfirmedTrip() {
         //  todo send trip started information to all list
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
@@ -1064,6 +1136,9 @@ public class MapActivity extends BaseMwmFragmentActivity
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // todo send trip start message to all users
+                if(confirmedUserList.size() > 0) {
+                    sendUserMessage(confirmedUserList,Constants.Notification.TRIP_STARTED);
+                }
                 //MySharedPreference.getInstance(MapActivity.this).addActiveProcess(0);
             }
         });
@@ -2474,7 +2549,7 @@ public class MapActivity extends BaseMwmFragmentActivity
 
             String amount = "";//"" + post.getTripDistance() * 2;
             String extraDistance = "";// + Utils.roundTwoDecimals(extra);
-            Log.d(TAG,"Fetching Seats : " +post.getSeats());
+            //Log.d(TAG,"Fetching Seats : " +post.getSeats());
             //mMatchMaker.getMatchingList();
             if(MySharedPreference.getInstance(this).isCaptain()) {
                 if (isCaptainEligible(mMyTripDistance, totDist, post.getSrcDistDiff(), post.getDestDistDiff(), post.getTripDistance())) {
@@ -2589,7 +2664,7 @@ public class MapActivity extends BaseMwmFragmentActivity
     private void getNearestDriver() {
         showProgress(true);
         //String notIn = getNotIn();
-        Log.d(TAG,"User Id"+ MySharedPreference.getInstance(this).getUserId());
+        //Log.d(TAG,"User Id"+ MySharedPreference.getInstance(this).getUserId());
         if(isValidateFrom()) {
             double lat = fromLocation.getLat();
             double lng = fromLocation.getLon();
@@ -2611,7 +2686,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                         mNearestDriver = response.body();
                         listCurrent = 0;
                         listSize = mNearestDriver.size();
-                        Log.d(TAG, "Sizze " + mNearestDriver.size());
+                        //Log.d(TAG, "Sizze " + mNearestDriver.size());
                         if(listSize > 0) {
                             requestHandler.postDelayed(requestRunnable, 0);
                         } else {
@@ -2749,7 +2824,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                     double dLat = driverList.getLat();
                     double dLng = driverList.getLng();
                     driverId = dId;
-                    Log.d(TAG,"driver id "+ driverId);
+                    //Log.d(TAG,"driver id "+ driverId);
                     userTripInfo.setDriverId(driverId);
                     //addMarker(new LatLng(dLat, dLng));
                     btRequest.setVisibility(View.GONE);
@@ -2759,7 +2834,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                     isRequestInProgress = true;
                     if (!isDriverAccepted) {
                         //mNearestDriver.remove(driverList);
-                        Log.d(TAG,"sending request");
+                        //Log.d(TAG,"sending request");
                         //i.remove();
                         userTripInfo.setMyFlag(NEW_REQUEST);
                         sendMe();

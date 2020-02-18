@@ -20,6 +20,14 @@ public interface UserMessageApi {
     @POST("confirmlist")
     Call<UserMessage> sendConfirmation(@Body List<UserMessage> userMessage);
 
+    @POST("startedlist")
+    Call<UserMessage> sendTripStarted(@Body List<UserMessage> userMessage);
+
+    @POST("completedlist")
+    Call<UserMessage> sendTripCompleted(@Body List<UserMessage> userMessage);
+
+    @POST("cancelledlist")
+    Call<UserMessage> sendTripCancelled(@Body List<UserMessage> userMessage);
     /*@FormUrlEncoded
     @POST("confirmlist")
     Call<UserMessage> sendConfirmation(@FieldMap Map<String, String> data);*/
