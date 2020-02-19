@@ -2421,4 +2421,5 @@
 	<string name="no_match_found">Sorry! No Match Found, Try Later</string>
 	<string name="add_seats">Please add seats</string>
 	<string name="max_4_seats">Now we allow only 4 seats</string>
+	<string name="finish_trip">Finish Trip</string>
 </resources>

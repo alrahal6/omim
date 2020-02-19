@@ -272,7 +272,7 @@
             <Button
                 android:background="@layout/rounded_border_edittext"
                 android:layout_weight="1"
-                android:text="@string/cancel_trip"
+                android:text="@string/finish_trip"
                 android:textColor="@color/base_red"
                 android:padding="@dimen/space5"
                 android:id="@+id/finish_trip"

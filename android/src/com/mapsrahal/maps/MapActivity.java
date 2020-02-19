@@ -140,6 +140,7 @@ public class MapActivity extends BaseMwmFragmentActivity
     private TextView mDriverName,mDriverPhone;
     private TextView mListCount, mListAmount,mCallingCaptain,mPriceText;
     private double tripPrice = 0.0d;
+    private double tripSeatPrice = 0.0d;
     private Button mCancelRequest,mFinishTrip,mStartTrip;
     private int mCancelId;
 
@@ -392,6 +393,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                     //sendConfirmation();
                     if(confirmedUserList.size() > 0) {
                         sendUserMessage(confirmedUserList,Constants.Notification.DRIVER_CANCELLED);
+                        reloadMe();
                     }
                     // cancelMe();
                     break;
@@ -460,6 +462,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         MySharedPreference.getInstance(this).addActiveProcess(Constants.ActiveProcess.CAPTAIN_HAVE_CONFIRMED_LIST);
         MySharedPreference.getInstance(this).putListConfirmed(CONFIRMED_LIST_KEY,userMessageList);
         sendUserMessage(userMessageList,Constants.Notification.DRIVER_ACCEPTED);
+        reloadMe();
         //mNotificationCard.setVisibility(View.GONE);
     }
 
@@ -494,7 +497,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 //Toast.makeText(MapActivity.this, "Request Send Failed! ", Toast.LENGTH_LONG).show();
             }
         });
-        reloadMe();
+
     }
 
     /*private void sendMessage() {
@@ -1508,7 +1511,8 @@ public class MapActivity extends BaseMwmFragmentActivity
     private void getCalculatedPrice() {
         if(tripPrice > 0.0d) {
             mPriceLayout.setVisibility(View.VISIBLE);
-            mPriceText.setText("" + roundTwoDecimals(tripPrice * seatCount) + getString(R.string.sdg));
+            tripSeatPrice = tripPrice * seatCount;
+            mPriceText.setText("" + roundTwoDecimals(tripSeatPrice) + getString(R.string.sdg));
         }
     }
 
@@ -1717,6 +1721,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         TextView mTextView = findViewById(R.id.n_notification_title);
         TextView stPhone = findViewById(R.id.n_user_phone);
         LinearLayout llButton = findViewById(R.id.ll__button);
+        TextView stName = findViewById(R.id.n_user_name);
         int mFlag = 999;
         //if(isFromNotify) {
             userMessage = gSon.fromJson(myNotification, UserMessage.class);
@@ -1759,13 +1764,13 @@ public class MapActivity extends BaseMwmFragmentActivity
             case Constants.Notification.DRIVER_ACCEPTED:
                 //llButton.setVisibility(View.GONE);
                 // todo show captain name and phone
-                TextView stName = findViewById(R.id.n_user_name);
                 phoneNumber = "0"+userMessage.getPhone();
                 stName.setText("Captain : "+userMessage.getName());
                 stPhone.setText("Phone : "+phoneNumber);
                 mTextView.setText(getString(R.string.captain_accepted));
                 stName.setVisibility(View.VISIBLE);
                 stPhone.setVisibility(View.VISIBLE);
+                accept.setVisibility(View.GONE);
                 //mNotificationCard.setVisibility(View.VISIBLE);
                 break;
             case Constants.Notification.DRIVER_REFUSED:
@@ -1774,8 +1779,15 @@ public class MapActivity extends BaseMwmFragmentActivity
                 //mNotificationCard.setVisibility(View.VISIBLE);
                 break;
             case Constants.Notification.DRIVER_CANCELLED:
+            case Constants.Notification.TRIP_COMPLETED:
                 //llButton.setVisibility(View.GONE);
+                //TextView stName = findViewById(R.id.n_user_name);
+                phoneNumber = "0"+userMessage.getPhone();
+                stName.setText("Captain : "+userMessage.getName());
+                stPhone.setText("Phone : "+phoneNumber);
                 mTextView.setText(getString(R.string.captain_cancelled));
+                stName.setVisibility(View.VISIBLE);
+                stPhone.setVisibility(View.VISIBLE);
                 //mNotificationCard.setVisibility(View.VISIBLE);
                 break;
             case Constants.Notification.DRIVER_REACHED:
@@ -1788,6 +1800,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 mTextView.setText(getString(R.string.trip_started));
                 //mNotificationCard.setVisibility(View.VISIBLE);
                 break;
+            //mNotificationCard.setVisibility(View.VISIBLE);
         }
         int acceptButtonFlag = Constants.Notification.DRIVER_ACCEPTED;
         int rejectButtonFlag = Constants.Notification.DRIVER_REFUSED;
@@ -2481,7 +2494,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 MySharedPreference.getInstance(this).getToAddress().trim(),
                 new Date(MySharedPreference.getInstance(this).getStartTime()),
                 MySharedPreference.getInstance(this).getPhoneNumber(),seatCount,genderCargoId,
-                genderCargoTxt,tripPrice,sel,
+                genderCargoTxt,tripSeatPrice,sel,
                 MySharedPreference.getInstance(MapActivity.this).getUserName());
         //post.setSelectorFlag(mSelector);
 
@@ -2503,7 +2516,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                     data.put("mFlag","1");
                     data.put("tripId","0.0");
                     data.put("distance",myDistance);
-                    data.put("price",""+tripPrice);
+                    data.put("price",""+tripSeatPrice);
                     data.put("mTripTime",""+startingTime);
                     data.put("phone",post.getPhone());
                     data.put("name",post.getName());
