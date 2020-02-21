@@ -70,7 +70,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mProgressBar = findViewById(R.id.loginProgressOtp);
         mProgressBar.setVisibility(View.GONE);
         btnSubmit.setOnClickListener(this);
-
     }
 
     private void sendTokenToServer() {

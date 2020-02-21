@@ -10,7 +10,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.mapsrahal.maps.MapActivity;
 import com.mapsrahal.maps.MySharedPreference;
 import com.mapsrahal.maps.R;
+import com.mapsrahal.maps.activity.ui.BlockActivity;
+import com.mapsrahal.maps.api.ApiClient;
+import com.mapsrahal.maps.api.ApiInterface;
+import com.mapsrahal.maps.auth.IsBlocked;
 import com.mapsrahal.util.UiUtils;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SelectorActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -23,13 +31,14 @@ public class SelectorActivity extends AppCompatActivity implements View.OnClickL
     public static final int CAPTAIN_TAXI_ONLY = 4;
     public static final int CAPTAIN_SHARE_ONLY = 5;
     public static final int CAPTAIN_ANY = 6;
-
+    private ApiInterface apiService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_selector);
         UiUtils.setupColorStatusBar(this, R.color.bg_statusbar);
+        apiService = ApiClient.getClient().create(ApiInterface.class);
         /*
          todo check is have
           1. confirmed list
@@ -76,10 +85,45 @@ public class SelectorActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void startActivity(int v) {
+
+        // todo check is allowed to use this feature
+        int id = MySharedPreference.getInstance(getApplicationContext()).getUserId();
+        String phone = MySharedPreference.getInstance(getApplicationContext()).getPhoneNumber();
+        IsBlocked isBlocked = new IsBlocked(phone,id,false);
+        Call<IsBlocked> call = apiService.verifyUser(isBlocked);
+        call.enqueue(new Callback<IsBlocked>() {
+            @Override
+            public void onResponse(Call<IsBlocked> call, Response<IsBlocked> response) {
+                if(!response.isSuccessful()) {
+                    doNotAllow();
+                    return;
+                }
+                if(response.body().isAllowed()) {
+                    allowIn(v);
+                } else {
+                    doNotAllow();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<IsBlocked> call, Throwable t) {
+                doNotAllow();
+                return;
+            }
+        });
+
+        //finish();
+    }
+
+    private void allowIn(int v) {
         MySharedPreference.getInstance(getApplicationContext()).setSelectorId(v);
         Intent intent = new Intent(this, MapActivity.class);
         intent.putExtra(PASSENGER_CAPTAIN_SELECTOR,v);
         startActivity(intent);
-        //finish();
+    }
+
+    private void doNotAllow() {
+        Intent intent = new Intent(this, BlockActivity.class);
+        startActivity(intent);
     }
 }

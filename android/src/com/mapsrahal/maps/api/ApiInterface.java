@@ -1,5 +1,6 @@
 package com.mapsrahal.maps.api;
 
+import com.mapsrahal.maps.auth.IsBlocked;
 import com.mapsrahal.maps.auth.MessageResponse;
 import com.mapsrahal.maps.model.User;
 import retrofit2.Call;
@@ -13,4 +14,7 @@ public interface ApiInterface {
 
     @GET("verify")
     Call<MessageResponse> verifyOTP(@Body String otp_entered_by_user);
+
+    @POST("verifyuser")
+    Call<IsBlocked> verifyUser(@Body IsBlocked isBlocked);
 }
