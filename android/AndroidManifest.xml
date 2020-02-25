@@ -31,6 +31,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
@@ -57,6 +58,7 @@
         android:supportsRtl="false"
         android:theme="@style/MwmTheme"
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute"
+        android:usesCleartextTraffic="true"
         tools:replace="android:supportsRtl">
         <activity android:name=".activity.ui.BlockActivity"></activity>
         <activity android:name=".activity.ContactActivity" />

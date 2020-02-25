@@ -187,7 +187,7 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     private static final String PASSENGER_CAPTAIN_SELECTOR = "passenger_captain_selector";
     private String receivedMessage,usrId;
-    private String myDistance,mSourceAddress,mDestinationAddress,mAddressToggleStr;
+    private String myDistance = "0",mSourceAddress,mDestinationAddress,mAddressToggleStr;
 
     private Date startingTime;
     private MapObject tempLocation,fromLocation,toLocation;
@@ -1024,7 +1024,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 showSearch();
                 break;
             case R.id.set_pickup:
-                showProgress(true);
+                //showProgress(true);
                 setPickup();
                 break;
             case R.id.set_drop:
@@ -1481,7 +1481,7 @@ public class MapActivity extends BaseMwmFragmentActivity
             tvDistance.setText(units);
             getPrice(myDistance,mSelector);
         }
-        showBtnRequest();
+
     }
 
     private void getPrice(String myDistance,int mSelector) {
@@ -1514,6 +1514,7 @@ public class MapActivity extends BaseMwmFragmentActivity
             tripSeatPrice = tripPrice * seatCount;
             mPriceText.setText("" + roundTwoDecimals(tripSeatPrice) + getString(R.string.sdg));
         }
+        showBtnRequest();
     }
 
     /*@Override

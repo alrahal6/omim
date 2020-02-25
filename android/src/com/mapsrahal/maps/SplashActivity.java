@@ -503,7 +503,7 @@ public class SplashActivity extends AppCompatActivity
     //Intent result = new Intent(this, MwmActivity.class);
     //Intent result = new Intent(this, LoginActivity.class);
     Intent result = new Intent(this, LoginActivity.class);
-    if (input != null)
+    /*if (input != null)
     {
       if (input.hasExtra(EXTRA_ACTIVITY_TO_START))
       {
@@ -515,7 +515,7 @@ public class SplashActivity extends AppCompatActivity
                            input.getParcelableExtra(EXTRA_INITIAL_INTENT) :
                            input;
       result.putExtra(EXTRA_INITIAL_INTENT, initialIntent);
-    }
+    }*/
     startActivity(result);
     finish();
   }
