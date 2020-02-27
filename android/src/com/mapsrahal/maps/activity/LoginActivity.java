@@ -3,6 +3,7 @@ package com.mapsrahal.maps.activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -25,9 +27,12 @@ import com.mapsrahal.maps.R;
 import com.mapsrahal.maps.api.ApiClient;
 import com.mapsrahal.maps.api.ApiInterface;
 import com.mapsrahal.maps.api.TokenApi;
+import com.mapsrahal.maps.auth.MessageResponse;
 import com.mapsrahal.maps.model.NewToken;
 import com.mapsrahal.maps.model.User;
 import com.mapsrahal.util.UiUtils;
+
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -38,18 +43,26 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private static final String TAG = LoginActivity.class.getSimpleName();
     private Button btnSubmit,mOtpSubmit;
     private EditText name, mobileNumber, etOTP;
-    private LinearLayout mOtpTab;
+    private LinearLayout mOtpTab,mNamePhone;
     private ProgressBar mProgressBar;
     private ApiInterface apiService;
     private TokenApi tokenApi;
     private String mUserName,mMobile,mPassword,otpAuto;
     public static final String OTP_REGEX = "[0-9]{1,6}";
+    private static final long START_TIME_IN_MILLIS = 60000;
+    private TextView mTextViewCountDown;
+    private CountDownTimer mCountDownTimer;
+
+    private boolean mTimerRunning;
+
+    private long mTimeLeftInMillis = START_TIME_IN_MILLIS;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         UiUtils.setupColorStatusBar(this, R.color.bg_statusbar);
         setContentView(R.layout.activity_login);
+        mTextViewCountDown = findViewById(R.id.text_view_countdown);
         //Log.i("id token", "here");
         apiService = ApiClient.getClient().create(ApiInterface.class);
         tokenApi = ApiClient.getClient().create(TokenApi.class);
@@ -59,6 +72,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             finish();
             return;
         }
+        mNamePhone = findViewById(R.id.name_phone);
         btnSubmit = findViewById(R.id.btnSubmit);
         name = findViewById(R.id.name);
         //email = findViewById(R.id.email);
@@ -70,6 +84,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mProgressBar = findViewById(R.id.loginProgressOtp);
         mProgressBar.setVisibility(View.GONE);
         btnSubmit.setOnClickListener(this);
+
     }
 
     private void sendTokenToServer() {
@@ -99,32 +114,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                             }
                         });
-                        // Log and toast
-                        //String msg = getString(R.string.msg_token_fmt, token);
-                        //Log.d(TAG, msg);
-                        //Toast.makeText(org.alohalytics.demoapp.MainActivity.this, msg, Toast.LENGTH_SHORT).show();
                     }
                 });
-        /*if(MySharedPreference.getInstance(getApplicationContext()).isHaveNewToken()) {
-        //Log.i("id token", "yesssssss");
-            int id = MySharedPreference.getInstance(getApplicationContext()).getUserId();
-            String token = FirebaseInstanceId.getInstance().getToken();
-            NewToken newToken = new NewToken(id, token);
-            Log.i("id token",newToken+"");
-            Call<NewToken> call = tokenApi.sendToken(newToken);
-            call.enqueue(new Callback<NewToken>() {
-                @Override
-                public void onResponse(Call<NewToken> call, Response<NewToken> response) {
-                    MySharedPreference.getInstance(getApplicationContext()).clearNewToken();
-                }
-
-                @Override
-                public void onFailure(Call<NewToken> call, Throwable t) {
-
-                }
-            });
-        //Log.i("id token", ""+id +" "+ token);
-        }*/
     }
     
     @Override
@@ -150,7 +141,22 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 break;
 
             case R.id.btnOtp:
-                checkOtp();
+                if ((mobileNumber.getText().length() < 9) ||
+                        TextUtils.isEmpty(name.getText().toString()) || etOTP.getText().length() < 6) {
+
+                    DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
+                        switch (which) {
+                            case DialogInterface.BUTTON_POSITIVE:
+                                dialog.dismiss();
+                                break;
+                        }
+                    };
+                    AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+                    builder.setMessage("Enter valid otp").setPositiveButton("Dismiss", dialogClickListener)
+                            .show();
+                } else {
+                    checkOtp();
+                }
                 break;
         }
 
@@ -159,6 +165,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void userLogin() {
         // todo check OTP from server
         //phone = etPhone.getText().toString().trim();
+
         mMobile = mobileNumber.getText().toString().trim();
         mUserName = name.getText().toString().trim();
         //password = etOTPs.getText().toString().trim();
@@ -166,79 +173,135 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         // Check if no view has focus:
         mProgressBar.setVisibility(View.VISIBLE);
         btnSubmit.setVisibility(View.GONE);
-        User user = new User(mUserName,mMobile,1);
+        User user = new User(mUserName,mMobile,1,"");
         // todo
-        //mOtpTab.setVisibility(View.VISIBLE);
         Call<User> call = apiService.sentOTP(user);
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
-                int id = response.body().getId();
+                /*int id = response.body().getId();
                 MySharedPreference.getInstance(getApplicationContext())
                         .userLogin(id, mMobile, mUserName,1);
                 sendTokenToServer();
                 startActivity(new Intent(getApplicationContext(), SelectorActivity.class));
                 finish();
-                return;
+                return;*/
+                mOtpTab.setVisibility(View.VISIBLE);
+                mProgressBar.setVisibility(View.GONE);
+                mNamePhone.setVisibility(View.GONE);
+                startTimer();
             }
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
-                Log.d("Details User", ""+t.getMessage());
+                Log.d("Login Error!", ""+t.getMessage());
             }
         });
-        /*call.enqueue(new Callback<MessageResponse>() {
-            @Override
-            public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
-                String err = response.body().getStatus();
-                String dtls = response.body().getDetails();
-                Log.d("Details User", err);
-                Log.d("Details User", dtls);
-                //getOTP();
-                mOtpTab.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onFailure(Call<MessageResponse> call, Throwable t) {
-                mOtpTab.setVisibility(View.GONE);
-                btnSubmit.setVisibility(View.VISIBLE);
-                mProgressBar.setVisibility(View.GONE);
-                Log.e("ERROR", t.toString());
-            }
-
-        });*/
     }
 
     private void checkOtp() {
-        /*ApiInterface apiService =
-                ApiClient.getClient().create(ApiInterface.class);
+        //Log.d(TAG, "Check otp");
+        //ApiInterface apiService =
+                //ApiClient.getClient().create(ApiInterface.class);
+        mMobile = mobileNumber.getText().toString().trim();
+        mUserName = name.getText().toString().trim();
         otpAuto = etOTP.getText().toString().trim();
-        Call<MessageResponse> call = apiService.verifyOTP(otpAuto);
-        call.enqueue(new Callback<MessageResponse>() {
+        mProgressBar.setVisibility(View.VISIBLE);
+        //Log.d(TAG, "Mobile : "+mMobile);
+        //Log.d(TAG, "Name : "+mUserName);
+        //Log.d(TAG, "otp : "+ otpAuto);
+        User user = new User(mUserName,mMobile,1,otpAuto);
+        Call<User> call = apiService.verifyOTP(user);
+        //Log.d(TAG, "Check otp inside");
+        call.enqueue(new Callback<User>() {
             @Override
-            public void onResponse(Call<MessageResponse> call, Response<MessageResponse> response) {
-                try {
-                    if (response.body().getStatus().equals("Success")) {
-                        MySharedPreference.getInstance(getApplicationContext())
+            public void onResponse(Call<User> call, Response<User> response) {
+                //Log.d(TAG, "Check otp response");
+                if (response.isSuccessful()) {
+                    int id = response.body().getId();
+                    MySharedPreference.getInstance(getApplicationContext())
+                            .userLogin(id, mMobile, mUserName,1);
+                    sendTokenToServer();
+                    startActivity(new Intent(getApplicationContext(), SelectorActivity.class));
+                    finish();
+                    return;
+                        /*MySharedPreference.getInstance(getApplicationContext())
                                 .userLogin(1, mMobile, mUserName,1);
                         startActivity(new Intent(getApplicationContext(), SelectorActivity.class));
                         finish();
-                        return;
+                        return;*/
                     } else {
-                        Log.d("Failure", response.body().getDetails() + "|||" + response.body().getStatus());
+                        Log.d(TAG, "Error in Login");
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
             }
 
             @Override
-            public void onFailure(Call<MessageResponse> call, Throwable t) {
-                Log.e("ERROR", t.toString());
+            public void onFailure(Call<User> call, Throwable t) {
+                Log.e(TAG, t.toString());
+                mProgressBar.setVisibility(View.GONE);
+            }
+        });
+        /*call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                Log.d(TAG, "Check otp response");
+                    if (response.isSuccessful()) {
+                        int id = response.body().getId();
+                        MySharedPreference.getInstance(getApplicationContext())
+                                .userLogin(id, mMobile, mUserName,1);
+                        sendTokenToServer();
+                        startActivity(new Intent(getApplicationContext(), SelectorActivity.class));
+                        finish();
+                        return;
+                        /*MySharedPreference.getInstance(getApplicationContext())
+                                .userLogin(1, mMobile, mUserName,1);
+                        startActivity(new Intent(getApplicationContext(), SelectorActivity.class));
+                        finish();
+                        return;*/ /*
+                    } else {
+                        Log.d(TAG, "Error in Login");
+                    }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Log.e(TAG, t.toString());
             }
 
         });*/
     }
 
+    private void startTimer() {
+        mCountDownTimer = new CountDownTimer(mTimeLeftInMillis, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                mTimeLeftInMillis = millisUntilFinished;
+                updateCountDownText();
+            }
+
+            @Override
+            public void onFinish() {
+                mTimerRunning = false;
+                hideOtp();
+                etOTP.setText("");
+                mTimeLeftInMillis = START_TIME_IN_MILLIS;
+                mNamePhone.setVisibility(View.VISIBLE);
+            }
+        }.start();
+
+        mTimerRunning = true;
+    }
+
+    private void hideOtp() {
+        mOtpTab.setVisibility(View.GONE);
+        btnSubmit.setVisibility(View.VISIBLE);
+    }
+
+    private void updateCountDownText() {
+        int minutes = (int) (mTimeLeftInMillis / 1000) / 60;
+        int seconds = (int) (mTimeLeftInMillis / 1000) % 60;
+        String timeLeftFormatted = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
+        mTextViewCountDown.setText(timeLeftFormatted);
+    }
 
 }

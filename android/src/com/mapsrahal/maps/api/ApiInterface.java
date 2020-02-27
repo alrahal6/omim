@@ -12,8 +12,8 @@ public interface ApiInterface {
     @POST("requests")
     Call<User> sentOTP(@Body User user);
 
-    @GET("verify")
-    Call<MessageResponse> verifyOTP(@Body String otp_entered_by_user);
+    @POST("validuser")
+    Call<User> verifyOTP(@Body User user);
 
     @POST("verifyuser")
     Call<IsBlocked> verifyUser(@Body IsBlocked isBlocked);

@@ -3010,11 +3010,11 @@
     <string name="captain_phone">Captain Phone :</string>
     <string name="calling_captain">Calling Captain...</string>
     <string name="test">test</string>
-    <string name="pickup_adrress">Pickup Adrress</string>
-    <string name="dropoff_address">Dropoff Address</string>
+    <string name="pickup_adrress">Pickup Address</string>
+    <string name="dropoff_address">Drop-off Address</string>
     <string name="_0_km">0 km</string>
     <string name="_0_sdg">0 SDG</string>
-    <string name="set_as_dropoff">Set as Dropoff</string>
+    <string name="set_as_dropoff">Set as Drop-off</string>
     <string name="seats">Seats :</string>
     <string name="confirm_list">Confirm List</string>
     <string name="route_trip">Route trip</string>

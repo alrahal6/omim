@@ -2,13 +2,14 @@ package com.mapsrahal.maps.model;
 
 public class User {
 
-    private String userName,phone;
+    private String userName,phone,password;
     private int id, vehicleType;
 
-    public User(String userName, String phone, int vehicleType) {
+    public User(String userName, String phone, int vehicleType,String password) {
         this.userName = userName;
         this.phone = phone;
         this.vehicleType = vehicleType;
+        this.password = password;
     }
 
     public String getUserName() {
@@ -41,5 +42,13 @@ public class User {
 
     public void setVehicleType(int vehicleType) {
         this.vehicleType = vehicleType;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

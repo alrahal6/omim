@@ -1,9 +1,12 @@
 package com.mapsrahal.maps.activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,7 +17,10 @@ import com.mapsrahal.maps.activity.ui.BlockActivity;
 import com.mapsrahal.maps.api.ApiClient;
 import com.mapsrahal.maps.api.ApiInterface;
 import com.mapsrahal.maps.auth.IsBlocked;
+import com.mapsrahal.maps.background.ConnectivityChangedReceiver;
 import com.mapsrahal.util.UiUtils;
+
+import java.net.InetAddress;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -57,6 +63,22 @@ public class SelectorActivity extends AppCompatActivity implements View.OnClickL
         mCaptainPool.setOnClickListener(this);
         mCaptainAny = findViewById(R.id.captain_any);
         mCaptainAny.setOnClickListener(this);
+
+    }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
+    }
+
+    public boolean isInternetAvailable() {
+        try {
+            InetAddress ipAddr = InetAddress.getByName("google.com");
+            //You can replace it with your name
+            return !ipAddr.equals("");
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override
@@ -85,7 +107,10 @@ public class SelectorActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void startActivity(int v) {
-
+        if(!isNetworkConnected()) {
+            Toast.makeText(this,"Please check connection!",Toast.LENGTH_LONG).show();
+            return;
+        }
         // todo check is allowed to use this feature
         int id = MySharedPreference.getInstance(getApplicationContext()).getUserId();
         String phone = MySharedPreference.getInstance(getApplicationContext()).getPhoneNumber();

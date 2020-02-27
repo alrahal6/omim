@@ -183,7 +183,7 @@ public class SplashActivity extends AppCompatActivity
     super.onCreate(savedInstanceState);
     mBaseDelegate.onCreate();
     handleOnboardingStep(savedInstanceState);
-    handleUpdateMapsFragmentCorrectly(savedInstanceState);
+    //handleUpdateMapsFragmentCorrectly(savedInstanceState);
     UiThread.cancelDelayedTasks(mUserAgreementDelayedTask);
     UiThread.cancelDelayedTasks(mOnboardingStepsTask);
     UiThread.cancelDelayedTasks(mPermissionsDelayedTask);
