@@ -1814,7 +1814,9 @@ public class MapActivity extends BaseMwmFragmentActivity
         int finalMFlag = mFlag;
         accept.setOnClickListener(view -> {
             // todo update in server
-            updateStatus(finalMFlag);
+            cancelFlag = finalMFlag;
+            alertDialogCancelPassenger();
+            //updateStatus(finalMFlag);
             //userMessage.setmFlag(finalAcceptButtonFlag);
 
         });
@@ -1825,6 +1827,30 @@ public class MapActivity extends BaseMwmFragmentActivity
         });*/
         //notification_req_res
     }
+
+    private int cancelFlag = 0;
+
+    private void alertDialogCancelPassenger() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this);
+        builder.setMessage(getString(R.string.sure_cancel)).setPositiveButton(getString(R.string.yes), cancelPassengerDialogClickListener)
+                .setNegativeButton(getString(R.string.no), cancelPassengerDialogClickListener).show();
+
+    }
+
+    DialogInterface.OnClickListener cancelPassengerDialogClickListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE:
+                    updateStatus(cancelFlag);
+                    break;
+
+                case DialogInterface.BUTTON_NEGATIVE:
+                    Toast.makeText(MapActivity.this, getString(R.string.req_not_send), Toast.LENGTH_LONG).show();
+                    break;
+            }
+        }
+    };
 
     private void updateStatus(int Status) {
         //PostApi postApi =

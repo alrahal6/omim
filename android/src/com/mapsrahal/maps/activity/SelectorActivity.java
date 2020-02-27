@@ -71,7 +71,7 @@ public class SelectorActivity extends AppCompatActivity implements View.OnClickL
         return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
     }
 
-    public boolean isInternetAvailable() {
+    /*public boolean isInternetAvailable() {
         try {
             InetAddress ipAddr = InetAddress.getByName("google.com");
             //You can replace it with your name
@@ -79,7 +79,7 @@ public class SelectorActivity extends AppCompatActivity implements View.OnClickL
         } catch (Exception e) {
             return false;
         }
-    }
+    }*/
 
     @Override
     public void onClick(View v) {

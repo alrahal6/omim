@@ -44,7 +44,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private Button btnSubmit,mOtpSubmit;
     private EditText name, mobileNumber, etOTP;
     private LinearLayout mOtpTab,mNamePhone;
-    private ProgressBar mProgressBar;
+    private ProgressBar mProgressBar,mOtpProgress;
     private ApiInterface apiService;
     private TokenApi tokenApi;
     private String mUserName,mMobile,mPassword,otpAuto;
@@ -82,6 +82,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mOtpSubmit = findViewById(R.id.btnOtp);
         mOtpSubmit.setOnClickListener(this);
         mProgressBar = findViewById(R.id.loginProgressOtp);
+        mOtpProgress = findViewById(R.id.otpVerifyProgress);
         mProgressBar.setVisibility(View.GONE);
         btnSubmit.setOnClickListener(this);
 
@@ -155,6 +156,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     builder.setMessage("Enter valid otp").setPositiveButton("Dismiss", dialogClickListener)
                             .show();
                 } else {
+                    mOtpSubmit.setVisibility(View.GONE);
+                    mOtpProgress.setVisibility(View.VISIBLE);
                     checkOtp();
                 }
                 break;
@@ -231,14 +234,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         finish();
                         return;*/
                     } else {
-                        Log.d(TAG, "Error in Login");
+                        Toast.makeText(LoginActivity.this,"Please check your OTP",Toast.LENGTH_LONG).show();
+                        revertBack();
+                        //Log.d(TAG, "Error in Login");
                     }
             }
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
-                Log.e(TAG, t.toString());
+                //Log.e(TAG, t.toString());
                 mProgressBar.setVisibility(View.GONE);
+                revertBack();
+                Toast.makeText(LoginActivity.this,"Please check your OTP",Toast.LENGTH_LONG).show();
             }
         });
         /*call.enqueue(new Callback<User>() {
@@ -271,6 +278,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         });*/
     }
 
+    private void revertBack() {
+        etOTP.setText("");
+        mOtpProgress.setVisibility(View.GONE);
+        mOtpSubmit.setVisibility(View.VISIBLE);
+    }
+
     private void startTimer() {
         mCountDownTimer = new CountDownTimer(mTimeLeftInMillis, 1000) {
             @Override
@@ -286,6 +299,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 etOTP.setText("");
                 mTimeLeftInMillis = START_TIME_IN_MILLIS;
                 mNamePhone.setVisibility(View.VISIBLE);
+                mOtpProgress.setVisibility(View.GONE);
+                mOtpSubmit.setVisibility(View.VISIBLE);
             }
         }.start();
 

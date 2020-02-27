@@ -31,7 +31,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
+            android:layout_margin="@dimen/space10"
             android:text="@string/enter_user_info"
             android:textAlignment="center"
             android:textSize="20dp" />
@@ -41,7 +41,7 @@
             android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_margin="5dp"
             android:background="@drawable/round_corner"
             android:hint="@string/name"
             android:padding="10dp" />
@@ -78,6 +78,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+                    android:layout_marginRight="@dimen/space5"
                     android:background="@drawable/round_corner"
                     android:hint="@string/mobile_number"
                     android:inputType="number"
@@ -101,7 +102,7 @@
             android:id="@+id/btnSubmit"
             android:layout_width="wrap_content"
             android:layout_gravity="center"
-            android:layout_margin="15dp"
+            android:layout_margin="20dp"
             android:layout_height="32dp"
             android:textColor="@color/base_green"
             android:background="@layout/rounded_border_edittext"
@@ -158,6 +159,14 @@
             android:textColor="@color/base_green"
             android:background="@layout/rounded_border_edittext"
             android:text="@string/submit_otp" />
+
+        <ProgressBar
+            android:id="@+id/otpVerifyProgress"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
     </LinearLayout>
 
 </RelativeLayout>
