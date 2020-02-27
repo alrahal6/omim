@@ -1719,6 +1719,10 @@ public class MapActivity extends BaseMwmFragmentActivity
         TextView urDistance = findViewById(R.id.n_your_distance);
         TextView urPrice = findViewById(R.id.n_trip_amount);
         Button accept = findViewById(R.id.n_accept_request);
+
+        ProgressBar pb = findViewById(R.id.waiting_progress);
+        TextView wtv = findViewById(R.id.waiting_for_c);
+
         TextView mTextView = findViewById(R.id.n_notification_title);
         TextView stPhone = findViewById(R.id.n_user_phone);
         LinearLayout llButton = findViewById(R.id.ll__button);
@@ -1765,6 +1769,8 @@ public class MapActivity extends BaseMwmFragmentActivity
             case Constants.Notification.DRIVER_ACCEPTED:
                 //llButton.setVisibility(View.GONE);
                 // todo show captain name and phone
+                pb.setVisibility(View.GONE);
+                wtv.setVisibility(View.GONE);
                 phoneNumber = "0"+userMessage.getPhone();
                 stName.setText("Captain : "+userMessage.getName());
                 stPhone.setText("Phone : "+phoneNumber);
@@ -1783,6 +1789,8 @@ public class MapActivity extends BaseMwmFragmentActivity
             case Constants.Notification.TRIP_COMPLETED:
                 //llButton.setVisibility(View.GONE);
                 //TextView stName = findViewById(R.id.n_user_name);
+                pb.setVisibility(View.GONE);
+                wtv.setVisibility(View.GONE);
                 phoneNumber = "0"+userMessage.getPhone();
                 stName.setText("Captain : "+userMessage.getName());
                 stPhone.setText("Phone : "+phoneNumber);

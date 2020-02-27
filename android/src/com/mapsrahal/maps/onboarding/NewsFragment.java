@@ -89,6 +89,7 @@ public class NewsFragment extends BaseNewsFragment
   public static boolean showOn(@NonNull FragmentActivity activity,
                                final @Nullable NewsDialogListener listener)
   {
+    return false; /*
     if (Counters.getFirstInstallVersion() >= BuildConfig.VERSION_CODE)
       return false;
 
@@ -111,7 +112,7 @@ public class NewsFragment extends BaseNewsFragment
     SharedPropertiesUtils.setWhatsNewTitleConcatenation(currentTitle);
     Counters.setShowReviewForOldUser(true);
 
-    return true;
+    return true;*/
   }
 
   @NonNull

@@ -48,7 +48,7 @@ public class PageViewModel extends AndroidViewModel {
         @Override
         public String apply(Integer input) {
             //return mMatchingList.get(input).getmText1();
-            return "Viewing Page " + input;
+            return "Available Soon!";
         }
     });
 

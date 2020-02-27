@@ -389,10 +389,11 @@ public class SplashActivity extends AppCompatActivity
       return;
     }
 
-    boolean showNews = NewsFragment.showOn(this, this);
+    boolean showNews = false;//NewsFragment.showOn(this, this);
     if (!showNews)
     {
-      if (ViralFragment.shouldDisplay())
+      processNavigation();
+      /*if (ViralFragment.shouldDisplay())
       {
         UiUtils.hide(mIvLogo, mAppName,mAppSlogan);
         ViralFragment dialog = new ViralFragment();
@@ -409,7 +410,7 @@ public class SplashActivity extends AppCompatActivity
       else
       {
         processNavigation();
-      }
+      }*/
     }
     else
     {
