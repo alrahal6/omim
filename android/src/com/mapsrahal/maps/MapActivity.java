@@ -2541,6 +2541,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 if (!response.isSuccessful()) {
                     return;
                 }
+                //Log.d(TAG,response.body().size()+"Size response");
                 showProgress(false);
                 //|| mSelector == PASSENGER_ANY
                 if(mSelector == PASSENGER_SHARE_ONLY || mSelector == PASSENGER_ANY) {
@@ -2579,12 +2580,14 @@ public class MapActivity extends BaseMwmFragmentActivity
 
             @Override
             public void onFailure(Call<List<Post>> call, Throwable t) {
-                Toast.makeText(MapActivity.this,getString(R.string.error_occured),Toast.LENGTH_LONG).show();
+                Toast.makeText(MapActivity.this,"failure : "+t.getMessage(),Toast.LENGTH_LONG).show();
+                //Toast.makeText(MapActivity.this,getString(R.string.error_occured),Toast.LENGTH_LONG).show();
             }
         });
     }
 
     public void createMatchList(List<Post> body) {
+
         for (Post post : body) {
             String totDistTxt = "";
             /*String totDistTxt = prepareRouteDistance(Utils.roundTwoDecimals(post.getSrcDistDiff()),

@@ -13,7 +13,7 @@ import retrofit2.http.POST;
 
 public interface PostApi {
 
-    @POST("posts")
+    /*@POST("posts")
     Call<List<Post>> createPost(@Body Post post);
 
     @POST("price")
@@ -23,6 +23,18 @@ public interface PostApi {
     Call<StatusUpdate> updateStatus(@Body StatusUpdate statusUpdate);
 
     @POST("calllog")
+    Call<CallLog> callLog(@Body CallLog callLog);*/
+
+    @POST("posts.php")
+    Call<List<Post>> createPost(@Body Post post);
+
+    @POST("price.php")
+    Call<Price> createPrice(@Body Price price);
+
+    @POST("status.php")
+    Call<StatusUpdate> updateStatus(@Body StatusUpdate statusUpdate);
+
+    @POST("callLog.php")
     Call<CallLog> callLog(@Body CallLog callLog);
     /*
     @GET("posts")

@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/space5"
         android:textColor="@color/black"
+        android:drawableStart="@drawable/ic_person_black_24dp"
         android:text="@string/passenger_looking"/>
 
     <Button
@@ -37,6 +38,7 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/space5"
         android:textColor="@color/black"
+        android:drawableStart="@drawable/ic_drive_black_24dp"
         android:text="@string/captain_offering"/>
 
     <Button
@@ -62,6 +64,7 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/space5"
         android:textColor="@color/black"
+        android:drawableStart="@drawable/shipping"
         android:text="@string/cargo_logistics"/>
 
     <Button

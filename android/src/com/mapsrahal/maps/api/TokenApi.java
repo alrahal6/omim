@@ -7,7 +7,10 @@ import retrofit2.http.POST;
 
 
 public interface TokenApi {
-    @POST("fcm")
+    /*@POST("fcm")
+    Call<NewToken> sendToken(@Body NewToken newToken);*/
+
+    @POST("fcm.php")
     Call<NewToken> sendToken(@Body NewToken newToken);
 
 }

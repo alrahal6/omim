@@ -73,9 +73,9 @@ public class MwmApplication extends Application implements AppBackgroundTracker.
   private SubwayManager mSubwayManager;
   public static final String CHANNEL_ID = "my_rahal_01";
   public static final String CHANNEL_ID_CALL_CAPTAIN = "call_captatin" ;
-  public static final String CHANNEL_NAME = "Rahal App";
+  public static final String CHANNEL_NAME = "Carpoolee";
   public static final String CHANNEL_NAME_CAPTAIN = "Captain Request";
-  private static final String CHANNEL_DESCRIPTION = "Rahal CarPool App";
+  private static final String CHANNEL_DESCRIPTION = "Taxi CarPool App";
   private boolean mFrameworkInitialized;
   private boolean mPlatformInitialized;
 
