@@ -214,8 +214,10 @@ public class MapActivity extends BaseMwmFragmentActivity
     private ProgressBar mProgressbar;
     private Ringtone ringtone;
     //MediaPlayer mediaPlayer;
-    private CountDownTimer mCountDownTimer;
+    private boolean isConfirmationTimerOn = false;
+    private CountDownTimer mCountDownTimer,mTimeOutTimer;
     private static final long START_TIME_IN_MILLIS = 20000;
+    private static final long START_TIME_OUT_IN_MILLIS = 300000;
     private Long tripStartTime;
     private String phoneNumber;
     private NetworkStateReceiver receiver;
@@ -432,9 +434,10 @@ public class MapActivity extends BaseMwmFragmentActivity
         return Constants.Notification.DRIVER_ACCEPTED;
     }
 
-
     private void sendConfirmation() {
         List<UserMessage> userMessageList = new ArrayList<>();
+        List<UserMessage> userMessageListM = new ArrayList<>();
+        UserMessage userMessage1;
         for (Map.Entry<Integer, Integer> entry : selectionList.entrySet()) {
             Integer position = entry.getKey();
             Integer value = entry.getValue();
@@ -455,14 +458,34 @@ public class MapActivity extends BaseMwmFragmentActivity
                     mMatchingList.get(position).gettLat(),
                     mMatchingList.get(position).gettLng()
             );
+            userMessage1 = new UserMessage(
+                    MySharedPreference.getInstance(this).getUserId(),
+                    mMatchingList.get(position).getUserId(),
+                    getFlag(),mMatchingList.get(position).getId(),
+                    Double.valueOf(mMatchingList.get(position).getmTotDistTxt()),
+                    String.valueOf(mMatchingList.get(position).getPrice()),
+                    mMatchingList.get(position).getmTripTime(),
+                    MySharedPreference.getInstance(this).getPhoneNumber(),
+                    MySharedPreference.getInstance(this).getUserName(),
+                    mMatchingList.get(position).getmText1(),
+                    mMatchingList.get(position).getmText2(),
+                    mMatchingList.get(position).getDropDownVal(),
+                    mMatchingList.get(position).getfLat(),
+                    mMatchingList.get(position).getfLng(),
+                    mMatchingList.get(position).gettLat(),
+                    mMatchingList.get(position).gettLng()
+            );
             userMessageList.add(userMessage);
+            userMessageListM.add(userMessage1);
             //Log.d(TAG, "Confirmed List Key : " + position);
             //Log.d(TAG, "Confirmed List Value : " + value);
         }
         MySharedPreference.getInstance(this).addActiveProcess(Constants.ActiveProcess.CAPTAIN_HAVE_CONFIRMED_LIST);
         MySharedPreference.getInstance(this).putListConfirmed(CONFIRMED_LIST_KEY,userMessageList);
-        sendUserMessage(userMessageList,Constants.Notification.DRIVER_ACCEPTED);
-        reloadMe();
+        sendUserMessage(userMessageListM,Constants.Notification.DRIVER_ACCEPTED);
+        timeOutClose();
+        displayConf();
+        //reloadMe();
         //mNotificationCard.setVisibility(View.GONE);
     }
 
@@ -535,6 +558,7 @@ public class MapActivity extends BaseMwmFragmentActivity
     }
 
     private void prepareForNone() {
+        isOnRequestBtn = true;
         hideFromTo();
         onlineAsCaptain();
         initRingTone();
@@ -1655,6 +1679,39 @@ public class MapActivity extends BaseMwmFragmentActivity
         }
     }
 
+    private void timeOutClose() {
+        // todo close
+        setFullscreen(false);
+        mMatchingList = new ArrayList<>();
+        if (isConfirmationTimerOn) {
+            stopTimeOutTimer();
+        }
+    }
+
+    private void startTimeOutTimer() {
+        mTimeOutTimer = new CountDownTimer(START_TIME_OUT_IN_MILLIS, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                //Log.i(TAG,"Timer Started...");
+            }
+
+            @Override
+            public void onFinish() {
+                isConfirmationTimerOn = false;
+                //mService.stopRingTone();
+                timeOutClose();
+                //Log.i(TAG,"Finished timer");
+            }
+        }.start();
+        isConfirmationTimerOn = true;
+    }
+
+    private void stopTimeOutTimer() {
+        mTimeOutTimer.cancel();
+        isConfirmationTimerOn = false;
+        //Log.i(TAG,"Timer Stopped");
+    }
+
     private void startTimer() {
         mCountDownTimer = new CountDownTimer(START_TIME_IN_MILLIS, 1000) {
             @Override
@@ -2070,6 +2127,14 @@ public class MapActivity extends BaseMwmFragmentActivity
         }
     }
 
+    private void displayConf() {
+        int activeProcess = MySharedPreference.getInstance(this).getActiveProcess();
+        if(activeProcess == Constants.ActiveProcess.CAPTAIN_HAVE_CONFIRMED_LIST) {
+            isOnRequestBtn = true;
+            displayConfirmedList();
+        }
+    }
+
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -2087,12 +2152,14 @@ public class MapActivity extends BaseMwmFragmentActivity
         if(MySharedPreference.getInstance(this).isCaptainOnline()) {
             connect();
         }
-        int activeProcess = MySharedPreference.getInstance(this).getActiveProcess();
+        displayConf();
+        /*int activeProcess = MySharedPreference.getInstance(this).getActiveProcess();
         String msg = MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).getUserMessage();
         if(activeProcess == Constants.ActiveProcess.CAPTAIN_HAVE_CONFIRMED_LIST) {
             isOnRequestBtn = true;
             displayConfirmedList();
-        }
+        }*/
+        String msg = MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).getUserMessage();
         // todo remove later
         //MySharedPreference.getInstance(this).clearActiveProcess();
         //Log.i(TAG,"Shared message : "+msg);
@@ -2484,6 +2551,7 @@ public class MapActivity extends BaseMwmFragmentActivity
             //mConfirmLayout.setVisibility(View.GONE);
             mAdapter = new MatchingStatePagerAdapter(mMatchingList, this, getSupportFragmentManager());
             mViewPager.setAdapter(mAdapter);
+            startTimeOutTimer();
         } else {
             Toast.makeText(this,getString(R.string.no_match_found),Toast.LENGTH_LONG).show();
         }
@@ -2589,20 +2657,26 @@ public class MapActivity extends BaseMwmFragmentActivity
     public void createMatchList(List<Post> body) {
 
         for (Post post : body) {
-            String totDistTxt = "";
+            //String totDistTxt = "";
             /*String totDistTxt = prepareRouteDistance(Utils.roundTwoDecimals(post.getSrcDistDiff()),
                     Utils.roundTwoDecimals(post.getTripDistance()),Utils.roundTwoDecimals(post.getDestDistDiff()));*/
             double totDist = Utils.roundTwoDecimals(post.getSrcDistDiff()+post.getTripDistance()+post.getDestDistDiff());
-            double extra = 0;
+            /*double extra = 0;
             if(mMyTripDistance < totDist) {
                 extra = totDist - mMyTripDistance;
-            }
+            }*/
 
             String amount = "";//"" + post.getTripDistance() * 2;
             String extraDistance = "";// + Utils.roundTwoDecimals(extra);
             //Log.d(TAG,"Fetching Seats : " +post.getSeats());
             //mMatchMaker.getMatchingList();
-            if(MySharedPreference.getInstance(this).isCaptain()) {
+            insert(new MatchingItem(post.getId(),post.getUserId(),
+                    post.getSourceAddress(), post.getDestinationAddress(),
+                    DateUtils.formatDateStr(post.getStartTime()),Double.toString(post.getTripDistance()),
+                    Double.toString(totDist),extraDistance,post.getPhone(),
+                    amount,mMyTripDistance,post.getSrcLat(),post.getSrcLng(),post.getDestLat(),post.getDestLng()
+                    ,post.getSeats(),post.getDropDownVal(),post.getPrice(),post.getName()));
+            /*if(MySharedPreference.getInstance(this).isCaptain()) {
                 if (isCaptainEligible(mMyTripDistance, totDist, post.getSrcDistDiff(), post.getDestDistDiff(), post.getTripDistance())) {
                     // insert post
                     // todo get accurate distance and add
@@ -2625,11 +2699,11 @@ public class MapActivity extends BaseMwmFragmentActivity
                             amount,mMyTripDistance,post.getSrcLat(),post.getSrcLng(),post.getDestLat(),post.getDestLng()
                             ,post.getSeats(),post.getDropDownVal(),post.getPrice(),post.getName()));
                 }
-            }
+            }*/
         }
     }
 
-    private boolean isCaptainEligible(double mMyTripDistance, double totDist, double srcDistDiff,
+    /*private boolean isCaptainEligible(double mMyTripDistance, double totDist, double srcDistDiff,
                                       double destDistDiff, double tripDistance) {
         // my trip distance is greater than my distance
         if (mMyTripDistance >= totDist) {
@@ -2657,7 +2731,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 return false;
             return true;
         }
-    }
+    }*/
 
     private double getPercentage(double a,double b) {
         return ((b * 100d) / a)/100d;
