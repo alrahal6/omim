@@ -1777,7 +1777,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 mTextView.setText(getString(R.string.captain_accepted));
                 stName.setVisibility(View.VISIBLE);
                 stPhone.setVisibility(View.VISIBLE);
-                accept.setVisibility(View.GONE);
+                //accept.setVisibility(View.GONE);
                 //mNotificationCard.setVisibility(View.VISIBLE);
                 break;
             case Constants.Notification.DRIVER_REFUSED:

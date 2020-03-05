@@ -1,7 +1,9 @@
 package com.mapsrahal.maps.activity;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
@@ -24,9 +26,11 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.mapsrahal.maps.MySharedPreference;
 import com.mapsrahal.maps.R;
+import com.mapsrahal.maps.activity.ui.BlockActivity;
 import com.mapsrahal.maps.api.ApiClient;
 import com.mapsrahal.maps.api.ApiInterface;
 import com.mapsrahal.maps.api.TokenApi;
+import com.mapsrahal.maps.auth.IsBlocked;
 import com.mapsrahal.maps.auth.MessageResponse;
 import com.mapsrahal.maps.model.NewToken;
 import com.mapsrahal.maps.model.User;
@@ -67,6 +71,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         apiService = ApiClient.getClient().create(ApiInterface.class);
         tokenApi = ApiClient.getClient().create(TokenApi.class);
         if(MySharedPreference.getInstance(getApplicationContext()).isLoggedIn()) {
+            //startActivity();
             sendTokenToServer();
             startActivity(new Intent(this, SelectorActivity.class));
             finish();
@@ -317,6 +322,45 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         int seconds = (int) (mTimeLeftInMillis / 1000) % 60;
         String timeLeftFormatted = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
         mTextViewCountDown.setText(timeLeftFormatted);
+    }
+
+    private void startActivity() {
+        int id = MySharedPreference.getInstance(getApplicationContext()).getUserId();
+        String phone = MySharedPreference.getInstance(getApplicationContext()).getPhoneNumber();
+        IsBlocked isBlocked = new IsBlocked(phone,id,false);
+        Call<IsBlocked> call = apiService.verifyUser(isBlocked);
+        call.enqueue(new Callback<IsBlocked>() {
+            @Override
+            public void onResponse(Call<IsBlocked> call, Response<IsBlocked> response) {
+                if(!response.isSuccessful()) {
+                    //doNotAllow();
+                    //return;
+                }
+                if(response.body().isAllowed()) {
+                    allowIn();
+                } else {
+                    doNotAllow();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<IsBlocked> call, Throwable t) {
+                //doNotAllow();
+                //return;
+            }
+        });
+    }
+
+    private void allowIn() {
+        sendTokenToServer();
+        startActivity(new Intent(this, SelectorActivity.class));
+        finish();
+        return;
+    }
+
+    private void doNotAllow() {
+        Intent intent = new Intent(this, BlockActivity.class);
+        startActivity(intent);
     }
 
 }

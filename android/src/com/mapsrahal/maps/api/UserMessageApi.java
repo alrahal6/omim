@@ -7,7 +7,7 @@ import retrofit2.http.Body;
 import retrofit2.http.POST;
 
 public interface UserMessageApi {
-    @POST("fcmmsg")
+    /*@POST("fcmmsg")
     Call<UserMessage> sentMessage(@Body UserMessage userMessage);
 
     @POST("confirmlist")
@@ -20,9 +20,24 @@ public interface UserMessageApi {
     Call<UserMessage> sendTripCompleted(@Body List<UserMessage> userMessage);
 
     @POST("cancelledlist")
-    Call<UserMessage> sendTripCancelled(@Body List<UserMessage> userMessage);
+    Call<UserMessage> sendTripCancelled(@Body List<UserMessage> userMessage);*/
     /*@FormUrlEncoded
     @POST("confirmlist")
     Call<UserMessage> sendConfirmation(@FieldMap Map<String, String> data);*/
+
+    @POST("sendMessage.php")
+    Call<UserMessage> sentMessage(@Body UserMessage userMessage);
+
+    @POST("sendConfirmation.php")
+    Call<UserMessage> sendConfirmation(@Body List<UserMessage> userMessage);
+
+    @POST("sendStarted.php")
+    Call<UserMessage> sendTripStarted(@Body List<UserMessage> userMessage);
+
+    @POST("sendCompleted.php")
+    Call<UserMessage> sendTripCompleted(@Body List<UserMessage> userMessage);
+
+    @POST("sendCancelled.php")
+    Call<UserMessage> sendTripCancelled(@Body List<UserMessage> userMessage);
 
 }

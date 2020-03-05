@@ -66,24 +66,8 @@ public class SelectorActivity extends AppCompatActivity implements View.OnClickL
 
     }
 
-    private boolean isNetworkConnected() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
-    }
-
-    /*public boolean isInternetAvailable() {
-        try {
-            InetAddress ipAddr = InetAddress.getByName("google.com");
-            //You can replace it with your name
-            return !ipAddr.equals("");
-        } catch (Exception e) {
-            return false;
-        }
-    }*/
-
     @Override
     public void onClick(View v) {
-
         switch (v.getId()) {
             case R.id.passenger_cab_only:
                 startActivity(PASSENGER_TAXI_ONLY);
@@ -107,48 +91,9 @@ public class SelectorActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void startActivity(int v) {
-        if(!isNetworkConnected()) {
-            Toast.makeText(this,"Please check connection!",Toast.LENGTH_LONG).show();
-            return;
-        }
-        // todo check is allowed to use this feature
-        int id = MySharedPreference.getInstance(getApplicationContext()).getUserId();
-        String phone = MySharedPreference.getInstance(getApplicationContext()).getPhoneNumber();
-        IsBlocked isBlocked = new IsBlocked(phone,id,false);
-        Call<IsBlocked> call = apiService.verifyUser(isBlocked);
-        call.enqueue(new Callback<IsBlocked>() {
-            @Override
-            public void onResponse(Call<IsBlocked> call, Response<IsBlocked> response) {
-                if(!response.isSuccessful()) {
-                    doNotAllow();
-                    return;
-                }
-                if(response.body().isAllowed()) {
-                    allowIn(v);
-                } else {
-                    doNotAllow();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<IsBlocked> call, Throwable t) {
-                doNotAllow();
-                return;
-            }
-        });
-
-        //finish();
-    }
-
-    private void allowIn(int v) {
         MySharedPreference.getInstance(getApplicationContext()).setSelectorId(v);
         Intent intent = new Intent(this, MapActivity.class);
         intent.putExtra(PASSENGER_CAPTAIN_SELECTOR,v);
-        startActivity(intent);
-    }
-
-    private void doNotAllow() {
-        Intent intent = new Intent(this, BlockActivity.class);
         startActivity(intent);
     }
 }

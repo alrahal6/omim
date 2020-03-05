@@ -150,7 +150,6 @@
         android:maxLength="6"
         android:padding="5dp" />
 
-
         <Button
             android:id="@+id/btnOtp"
             android:layout_width="wrap_content"

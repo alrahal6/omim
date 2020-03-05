@@ -12,5 +12,14 @@ public class BlockActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_block);
+        /*if(isHaveInternet()) {
+            setContentView(R.layout.activity_no_internet);
+        } else {
+            setContentView(R.layout.activity_block);
+        }*/
     }
+
+    /*private boolean isHaveInternet() {
+        return true;
+    }*/
 }
