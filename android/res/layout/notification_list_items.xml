@@ -6,7 +6,7 @@
     android:id="@+id/notification_req_res"
     android:orientation="horizontal"
     android:layout_marginTop="90dp"
-    android:visibility="gone"
+
     android:background="@color/white">
 
     <LinearLayout
@@ -17,13 +17,29 @@
         android:layout_height="wrap_content"
         android:layout_margin="4dp">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="4"
+            android:orientation="horizontal">
         <TextView
             android:id="@+id/n_notification_title"
             android:textSize="20sp"
             android:textStyle="bold"
+            android:layout_weight="3"
             android:text="Waiting For Captain..."
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
+
+            <ImageView
+                android:id="@+id/closable_n"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentEnd="true"
+                android:background="@drawable/ic_close"
+                android:layout_marginLeft="@dimen/space20"
+                android:padding="2dp" />
+        </LinearLayout>
 
         <ImageView
             android:layout_below="@+id/n_notification_title"

@@ -201,6 +201,7 @@
         android:orientation="vertical"
         android:layout_alignParentBottom="true">
         <LinearLayout
+            android:visibility="gone"
             android:id="@+id/confirm_layout"
             android:layout_margin="@dimen/space5"
             android:layout_width="match_parent"
@@ -242,7 +243,7 @@
                 android:padding="2dp" />-->
         </LinearLayout>
         <LinearLayout
-            android:visibility="gone"
+
             android:id="@+id/start_trip_layout"
             android:layout_margin="@dimen/space5"
             android:layout_width="match_parent"
@@ -279,6 +280,14 @@
                 android:layout_width="wrap_content"
                 android:layout_marginRight="@dimen/space5"
                 android:layout_height="32dp"/>
+            <ImageView
+                android:id="@+id/closable_l"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentEnd="true"
+                android:background="@drawable/ic_close"
+                android:layout_marginLeft="@dimen/space20"
+                android:padding="2dp" />
         </LinearLayout>
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/matching_list_vp"

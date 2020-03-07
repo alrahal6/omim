@@ -53,7 +53,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private TokenApi tokenApi;
     private String mUserName,mMobile,mPassword,otpAuto;
     public static final String OTP_REGEX = "[0-9]{1,6}";
-    private static final long START_TIME_IN_MILLIS = 60000;
+    private static final long START_TIME_IN_MILLIS = 100000;
     private TextView mTextViewCountDown;
     private CountDownTimer mCountDownTimer;
 

@@ -148,7 +148,7 @@ public class MapActivity extends BaseMwmFragmentActivity
     private SwipeButton mSwipeButton;
     private ImageButton mAddressToggle,mMainMenu;
 
-    private ImageView mAddSeat,mRemoveSeat;
+    private ImageView mAddSeat,mRemoveSeat,mCloseList,mCloseNotification;
     private LinearLayout mNotificationCard,mStartTripLayout;
     private LinearLayout mDriverInfo,mllForm,mMnuForm,mConfirmLayout;
     private LinearLayout mCustomerInfo, mAcceptBusyInfo, mSwipeLayout, mpayAndRating,mPriceLayout;
@@ -160,7 +160,7 @@ public class MapActivity extends BaseMwmFragmentActivity
     private boolean isDriverAccepted = false,isDriverBusy = false;
     private boolean isRequestInProgress = false, isStartedCounter = false;
     private Boolean isOnWaytoCustomer = false;
-    private Boolean isOnTrip = false,isOnRequestBtn = false;
+    private Boolean isOnTrip = false,isOnRequestBtn = false,isCaptainInitialised = false;
 
     private String genderCargoTxt = "";
 
@@ -644,6 +644,10 @@ public class MapActivity extends BaseMwmFragmentActivity
         mViewPager.setVisibility(View.GONE);
         mConfirmLayout.setVisibility(View.GONE);
         userMessageApi = ApiClient.getClient().create(UserMessageApi.class);
+        mCloseList = findViewById(R.id.closable_l);
+        mCloseList.setOnClickListener(this);
+        mCloseNotification = findViewById(R.id.closable_n);
+        mCloseNotification.setOnClickListener(this);
         //matchingStateAdapter.createPost();
         //mSwitch.setOnT
         tvPickup.setOnClickListener(this);
@@ -743,6 +747,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 break;
             case CAPTAIN_TAXI_ONLY:
                 prepareForNone();
+                isCaptainInitialised = true;
                 break;
         }
 
@@ -976,6 +981,16 @@ public class MapActivity extends BaseMwmFragmentActivity
         }
     }
 
+    private void closeList() {
+        // todo check condition
+        MySharedPreference.getInstance(MapActivity.this).addActiveProcess(0);
+    }
+
+    private void closeNotification() {
+        // todo check condition
+        MySharedPreference.getInstance(MapActivity.this).addActiveProcess(0);
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId())
@@ -985,6 +1000,12 @@ public class MapActivity extends BaseMwmFragmentActivity
                 break;
             case R.id.nav_zoom_out:
                 MapFragment.nativeScaleMinus();
+                break;
+            case R.id.closable_l:
+                closeList();
+                break;
+            case R.id.closable_n:
+                closeNotification();
                 break;
             case R.id.addressToggle:
                 toggleAddress();
@@ -1652,7 +1673,9 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     private void acceptRequest() {
         try {
-            ringtone.stop();
+            if (ringtone.isPlaying()) {
+                ringtone.stop();
+            }
             //mService.stopRingTone();
             send(ACCEPT_REQUEST, 0, 0, 0);
             mAcceptBusyInfo.setVisibility(View.GONE);
@@ -1957,7 +1980,9 @@ public class MapActivity extends BaseMwmFragmentActivity
         //Log.i(TAG,"request received");
         switch (flag) {
             case 4:
-                ringtone.play();
+                if (ringtone != null) {
+                    ringtone.play();
+                }
                 //mediaPlayer.start();
                 mCustomerInfo.setVisibility(View.VISIBLE);
                 mAcceptBusyInfo.setVisibility(View.VISIBLE);
@@ -2113,7 +2138,8 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     private void respondBusy() {
         try {
-            ringtone.stop();
+            if(ringtone.isPlaying())
+                ringtone.stop();
             //mService.stopRingTone();
             send(SEND_BUSY, 0, 0, 0);
             mCustomerInfo.setVisibility(View.GONE);
@@ -2150,6 +2176,10 @@ public class MapActivity extends BaseMwmFragmentActivity
             mMapFragment.getView().setBackgroundColor(Color.WHITE);
         }
         if(MySharedPreference.getInstance(this).isCaptainOnline()) {
+            if(!isCaptainInitialised) {
+                prepareForNone();
+                isCaptainInitialised = true;
+            }
             connect();
         }
         displayConf();
