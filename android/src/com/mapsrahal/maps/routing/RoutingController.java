@@ -419,9 +419,9 @@ public class RoutingController implements TaxiManager.TaxiListener
 
   public void rebuildLastRoute()
   {
-    setState(State.NONE);
-    setBuildState(BuildState.NONE);
-    prepare(getStartPoint(), getEndPoint(), false);
+    //setState(State.NONE);
+    //setBuildState(BuildState.NONE);
+    //prepare(getStartPoint(), getEndPoint(), false);
   }
 
   public void prepare(boolean canUseMyPositionAsStart, @Nullable MapObject endPoint)
@@ -539,7 +539,7 @@ public class RoutingController implements TaxiManager.TaxiListener
 
     // This saving is needed just for situation when the user starts navigation
     // and then app crashes. So, the previous route will be restored on the next app launch.
-    saveRoute();
+    //saveRoute();
 
     MapObject my = LocationHelper.INSTANCE.getMyPosition();
 

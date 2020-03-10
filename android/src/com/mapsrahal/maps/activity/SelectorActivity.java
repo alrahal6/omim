@@ -68,6 +68,10 @@ public class SelectorActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onClick(View v) {
+        if(MySharedPreference.getInstance(this).isCaptainOnline()) {
+            startActivity(CAPTAIN_TAXI_ONLY);
+            return;
+        }
         switch (v.getId()) {
             case R.id.passenger_cab_only:
                 startActivity(PASSENGER_TAXI_ONLY);

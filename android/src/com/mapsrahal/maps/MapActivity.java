@@ -984,11 +984,13 @@ public class MapActivity extends BaseMwmFragmentActivity
     private void closeList() {
         // todo check condition
         MySharedPreference.getInstance(MapActivity.this).addActiveProcess(0);
+        reloadMe();
     }
 
     private void closeNotification() {
         // todo check condition
         MySharedPreference.getInstance(MapActivity.this).addActiveProcess(0);
+        reloadMe();
     }
 
     @Override
@@ -1131,6 +1133,7 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     private void planConfirmedTrip() {
         showProgress(true);
+        removePointsAndRoute();
         int size = confirmedUserList.size();
         fromLocation = LocationHelper.INSTANCE.getMyPosition();
         RoutingController.get().setStartPoint(fromLocation);
@@ -1271,6 +1274,7 @@ public class MapActivity extends BaseMwmFragmentActivity
             String text2 = tvDropOff.getText().toString();
             tvPickup.setText(text2);
             tvDropOff.setText(text1);
+            //RoutingController.get().swapPoints();
             mAddressToggle.animate().rotation(mAddressToggle.getRotation() + 360).start();
         }
     }
@@ -1634,11 +1638,20 @@ public class MapActivity extends BaseMwmFragmentActivity
         super.onStop();
         //disconnect();
         //SearchEngine.INSTANCE.removeListener(this);
-        Framework.nativeRemoveMapObjectListener();
         //BookmarkManager.INSTANCE.removeLoadingListener(this);
         //BookmarkManager.INSTANCE.removeCatalogListener(this);
+        removePointsAndRoute();
+        Framework.nativeRemoveMapObjectListener();
         LocationHelper.INSTANCE.detach(!isFinishing());
         RoutingController.get().detach();
+    }
+
+    private void removePointsAndRoute() {
+        //RoutingController.get().setStartPoint(null);
+        //RoutingController.get().setEndPoint(null);
+        Framework.nativeDeleteSavedRoutePoints();
+        Framework.nativeRemoveRoute();
+        //RoutingController.get().deleteSavedRoute();
     }
 
     private void dateTime() {
