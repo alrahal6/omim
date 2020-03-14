@@ -1692,8 +1692,10 @@ public class MapActivity extends BaseMwmFragmentActivity
     private void getCalculatedPrice() {
         if(tripPrice > 0.0d) {
             mPriceLayout.setVisibility(View.VISIBLE);
-            tripSeatPrice = tripPrice * seatCount;
-            mPriceText.setText("" + roundTwoDecimals(tripSeatPrice) + getString(R.string.sdg));
+            tripSeatPrice = roundTwoDecimals(tripPrice * seatCount);
+            //final double twoDec = roundTwoDecimals(tripSeatPrice);
+            final String s = "" + tripSeatPrice + getString(R.string.sdg);
+            mPriceText.setText(s);
         }
         showBtnRequest();
     }
@@ -1779,21 +1781,13 @@ public class MapActivity extends BaseMwmFragmentActivity
     }
 
     private void removePointsAndRoute() {
-        //RoutingController.get().setStartPoint(null);
-        //RoutingController.get().setEndPoint(null);
-        //Framework.nativeDeleteSavedRoutePoints();
         if(fromLocation != null) {
-            //fromLocation.getRoutePointInfo();
-            //RoutePointInfo info = fromLocation.getRoutePointInfo();
             Framework.nativeRemoveRoutePoint(ROUTE_MARK_START, 0);
         }
         if(toLocation != null) {
-            //fromLocation.getRoutePointInfo();
-            //RoutePointInfo info1 = toLocation.getRoutePointInfo();
             Framework.nativeRemoveRoutePoint(RoutePointInfo.ROUTE_MARK_FINISH, 0);
         }
         Framework.nativeRemoveRoute();
-        //RoutingController.get().deleteSavedRoute();
     }
 
     private void dateTime() {
@@ -2975,11 +2969,6 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     private void sendMe() {
         try {
-            /*UserTripInfo userTripInfo = new UserTripInfo(
-                    27,
-                    "912391525",
-                    "dhayal");
-            userTripInfo.setDriverId(25);*/
             mService.sendReq(userTripInfo);
         } catch (Exception e) {
             e.printStackTrace();
@@ -3144,10 +3133,12 @@ public class MapActivity extends BaseMwmFragmentActivity
                 if (dId > 0) {
                     userTripInfo = new UserTripInfo(MySharedPreference.getInstance(MapActivity.this).getUserId(),
                             MySharedPreference.getInstance(getApplicationContext()).getPhoneNumber(),
-                            MySharedPreference.getInstance(getApplicationContext()).getUserName()
+                            MySharedPreference.getInstance(getApplicationContext()).getUserName(),
+                            mSourceAddress,mDestinationAddress,fromLocation.getLat(),fromLocation.getLon(),
+                            tripSeatPrice,Double.parseDouble(myDistance)
                             );
-                    double dLat = driverList.getLat();
-                    double dLng = driverList.getLng();
+                    //double dLat = driverList.getLat();
+                    //double dLng = driverList.getLng();
                     driverId = dId;
                     //Log.d(TAG,"driver id "+ driverId);
                     userTripInfo.setDriverId(driverId);
@@ -3169,7 +3160,8 @@ public class MapActivity extends BaseMwmFragmentActivity
                     isRequestInProgress = false;
                     requestCounter = 9;
                     removeRequest();
-                    Toast.makeText(MapActivity.this, "Sorry! No drivers found", Toast.LENGTH_LONG).show();
+                    mCallingCaptain.setText("Sorry! No Captain found, please try later");
+                    Toast.makeText(MapActivity.this, "Sorry! No Captain found", Toast.LENGTH_LONG).show();
                 }
             //}
         }

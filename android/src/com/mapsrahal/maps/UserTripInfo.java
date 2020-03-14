@@ -23,15 +23,18 @@ public class UserTripInfo {
     private float mins;
     private int minDis;
 
-    public UserTripInfo(int userId, String phone, String customerName) {
+    public UserTripInfo(int userId, String phone, String customerName,String pickupAddress,String destAddress,
+                        double lat,double lng,double price,double distance) {
         this.userId = userId;
         this.customerName = customerName;
-        this.lat = 0;
-        this.lng = 0;
-        this.pickupAddress = "";
+        this.lat = lat;
+        this.lng = lng;
+        this.pickupAddress = pickupAddress;
+        this.price = price;
+        this.distance = distance;
         this.destLat = 0;
         this.destLng = 0;
-        this.destAddress = "";
+        this.destAddress = destAddress;
         this.myFlag = 4;
         this.driverId = driverId;
         this.phone = phone;
