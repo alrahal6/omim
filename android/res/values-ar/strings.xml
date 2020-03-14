@@ -2396,6 +2396,7 @@
 	<string name = "yes"> نعم </string>
 	<string name = "no"> لا </string>
 	<string name = "sure_cancel"> تأكيد الإلغاء </string>
+	<string name="sure_close">Are you sure? Close?</string>
 	<string name = "denied_make_call"> تأكد من منح صلاحيه الإتصال </string>
 	<string name = "req_not_send"> لم يتم إرسال الطلب </string>
 	<string name = "sure_cancel_current"> هل تريد إلغاء الرحلة ؟ </string>

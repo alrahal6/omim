@@ -358,6 +358,20 @@ public class ServerConnection extends Service {
         if(flag == 4) {
             MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).userMessage(myMsg);
             startActivity(intent);
+            /*boolean isForeground = MwmApplication.backgroundTracker(MwmApplication.get().getApplicationContext()).isForeground();
+            if(!isForeground) {
+                startActivity(intent);
+                //return;
+            } else {
+                final Intent notificationIntent = new Intent(this, MapActivity.class);
+                notificationIntent.setAction(Intent.ACTION_MAIN);
+                notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+                notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                //Intent intent1 = new Intent(this, MapActivity.class);
+                //intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(notificationIntent);
+                //sendMessageReceivedBroadcast(myMsg);
+            }*/
         } else {
             sendMessageReceivedBroadcast(myMsg);
         }

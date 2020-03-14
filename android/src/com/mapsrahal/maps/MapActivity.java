@@ -18,11 +18,13 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -75,6 +77,7 @@ import com.mapsrahal.maps.model.StatusUpdate;
 import com.mapsrahal.maps.model.UserMessage;
 import com.mapsrahal.maps.onboarding.OnboardingTip;
 import com.mapsrahal.maps.routing.NavigationController;
+import com.mapsrahal.maps.routing.RoutePointInfo;
 import com.mapsrahal.maps.routing.RoutingController;
 import com.mapsrahal.maps.routing.RoutingInfo;
 import com.mapsrahal.maps.routing.RoutingPlanInplaceController;
@@ -117,6 +120,7 @@ import static com.mapsrahal.maps.activity.SelectorActivity.CAPTAIN_TAXI_ONLY;
 import static com.mapsrahal.maps.activity.SelectorActivity.PASSENGER_ANY;
 import static com.mapsrahal.maps.activity.SelectorActivity.PASSENGER_SHARE_ONLY;
 import static com.mapsrahal.maps.activity.SelectorActivity.PASSENGER_TAXI_ONLY;
+import static com.mapsrahal.maps.routing.RoutePointInfo.ROUTE_MARK_START;
 
 public class MapActivity extends BaseMwmFragmentActivity
                          implements View.OnTouchListener,
@@ -956,6 +960,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                     toLocation.getLat(),
                     toLocation.getLon(), myDistance, mSourceAddress, mDestinationAddress,
                     startingTime);
+            clearForNewTrip();
             createPost();
             isOnRequestBtn = true;
         } else {
@@ -981,16 +986,63 @@ public class MapActivity extends BaseMwmFragmentActivity
         }
     }
 
+    private void alertDialogCloseMe() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this);
+        builder.setMessage(getString(R.string.sure_close)).setPositiveButton(getString(R.string.yes),
+                closeMeDialogClickListener)
+                .setNegativeButton(getString(R.string.no), closeMeDialogClickListener).show();
+
+    }
+
+    DialogInterface.OnClickListener closeMeDialogClickListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE:
+                    MySharedPreference.getInstance(MapActivity.this).addActiveProcess(0);
+                    MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).userNotification(null);
+                    reloadMe();
+                    break;
+
+                case DialogInterface.BUTTON_NEGATIVE:
+                    //Toast.makeText(MapActivity.this, getString(R.string.error_occured), Toast.LENGTH_LONG).show();
+                    break;
+            }
+        }
+    };
+
+    // save trip time
+
+    private boolean isTripTimeLesser() {
+        long tripTime = MySharedPreference.getInstance(this).getStartTime();
+        Date dt = DateUtils.timeMinusFifteen(new Date());
+        //Date dt = new Date();
+        if(tripTime <= dt.getTime()) {
+            return true;
+        }
+        return false;
+    }
+
     private void closeList() {
         // todo check condition
-        MySharedPreference.getInstance(MapActivity.this).addActiveProcess(0);
-        reloadMe();
+        if(isTripTimeLesser()) {
+            alertDialogCloseMe();
+        } else {
+            Toast.makeText(MapActivity.this, "Still trip is valid", Toast.LENGTH_LONG).show();
+        }
+        //MySharedPreference.getInstance(MapActivity.this).addActiveProcess(0);
+        //reloadMe();
     }
 
     private void closeNotification() {
         // todo check condition
-        MySharedPreference.getInstance(MapActivity.this).addActiveProcess(0);
-        reloadMe();
+        if(isTripTimeLesser()) {
+            alertDialogCloseMe();
+        } else {
+            Toast.makeText(MapActivity.this, "Still trip is valid", Toast.LENGTH_LONG).show();
+        }
+        //MySharedPreference.getInstance(MapActivity.this).addActiveProcess(0);
+        //reloadMe();
     }
 
     @Override
@@ -1028,13 +1080,20 @@ public class MapActivity extends BaseMwmFragmentActivity
                 //mMainMenu.animate().rotation(mMainMenu.getRotation()+360).start();
                 break;
             case R.id.bt_request:
-
                 hideBtnRequest();
                 showProgress(true);
                 if (mSelector == PASSENGER_TAXI_ONLY) {
-                    getNearestDriver();
+                    if(isValidateFrom()) {
+                        showConfirmDialog();
+                    } else {
+                        Toast.makeText(this,getString(R.string.enter_valid_address),Toast.LENGTH_LONG).show();
+                    }
                 } else {
-                    saveAndSearchPost();
+                    if(isValidateFromAndTo()) {
+                        showConfirmDialog();
+                    } else {
+                        Toast.makeText(this,getString(R.string.enter_valid_address),Toast.LENGTH_LONG).show();
+                    }
                 }
                 break;
             case R.id.date_time:
@@ -1082,7 +1141,11 @@ public class MapActivity extends BaseMwmFragmentActivity
                     cancelDriver();
                 break;
             case R.id.finish_trip:
-                finishConfirmedTrip();
+                if(MySharedPreference.getInstance(this).getStartStatus()) {
+                    finishConfirmedTrip();
+                } else {
+
+                }
                 break;
             case R.id.start_trip:
                 startConfirmedTrip();
@@ -1105,6 +1168,62 @@ public class MapActivity extends BaseMwmFragmentActivity
                 break;
         }
     }
+
+    /*
+    if (mSelector == PASSENGER_TAXI_ONLY) {
+                    getNearestDriver();
+                } else {
+                    saveAndSearchPost();
+                }
+     */
+    private EditText mEtComments;
+
+    private void showConfirmDialog() {
+        LayoutInflater layoutInflater = LayoutInflater.from(this);
+        final View view = layoutInflater.inflate(R.layout.confirm_layout, null);
+        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setTitle("Are You Sure? Confirm?");
+        //alertDialog.setIcon("Icon id here");
+        alertDialog.setCancelable(false);
+        final TextView cFrom = view.findViewById(R.id.c_from);
+        cFrom.setText(mSourceAddress);
+        final TextView cTo = view.findViewById(R.id.c_to);
+        cTo.setText(mDestinationAddress);
+        final TextView cDist = view.findViewById(R.id.c_distance);
+        cDist.setText(myDistance + " KM");
+        final TextView cAmount = view.findViewById(R.id.c_amount);
+        cAmount.setText(tripSeatPrice + " SDG");
+        mEtComments = view.findViewById(R.id.c_note);
+
+        final TextView cTime = view.findViewById(R.id.c_time);
+        cTime.setText(startingTime+"");
+        final TextView cSeats = view.findViewById(R.id.c_seats);
+        cSeats.setText(seatCount+"");
+        final TextView cGender = view.findViewById(R.id.c_gender);
+        cGender.setText(genderCargoTxt);
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Confirm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (mSelector == PASSENGER_TAXI_ONLY) {
+                    getNearestDriver();
+                } else {
+                    saveAndSearchPost();
+                }
+            }
+        });
+
+
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                alertDialog.dismiss();
+            }
+        });
+        alertDialog.setView(view);
+        alertDialog.show();
+    }
+
+
 
     private void finishConfirmedTrip() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
@@ -1179,6 +1298,14 @@ public class MapActivity extends BaseMwmFragmentActivity
                 lat, lng);
     }
 
+    private void clearForNewTrip() {
+        MySharedPreference.getInstance(this).clearStartStatus();
+    }
+
+    private void turnStartToFinish() {
+        MySharedPreference.getInstance(this).addStartStatus();
+    }
+
     private void startConfirmedTrip() {
         //  todo send trip started information to all list
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
@@ -1188,6 +1315,7 @@ public class MapActivity extends BaseMwmFragmentActivity
             public void onClick(DialogInterface dialog, int which) {
                 // todo send trip start message to all users
                 if(confirmedUserList.size() > 0) {
+                    turnStartToFinish();
                     sendUserMessage(confirmedUserList,Constants.Notification.TRIP_STARTED);
                 }
                 //MySharedPreference.getInstance(MapActivity.this).addActiveProcess(0);
@@ -1290,6 +1418,10 @@ public class MapActivity extends BaseMwmFragmentActivity
             request.setPointData(object.getLat(), object.getLon(), object.getTitle(), object.getApiId());
             object.setSubtitle(request.getCallerName(MwmApplication.get()).toString());
         }
+        //RoutePointInfo in = object.getRoutePointInfo();
+        //Log.d(TAG,"Mark Type : "+in.describeContents());
+        //Log.d(TAG,"Mark Type : "+in);
+        //Log.d(TAG,"Intermediate : "+in);
         tempLocation = object;
         if(!isResultBySearch) {
             showMenu();
@@ -1320,8 +1452,8 @@ public class MapActivity extends BaseMwmFragmentActivity
         mSourceAddress = fromLocation.getTitle();
         tvPickup.setText(mSourceAddress);
         hideMenu();
-        RoutingController.get().setStartPoint(fromLocation);
         hideBtnRequest();
+        RoutingController.get().setStartPoint(fromLocation);
     }
 
     private void setDropoff() {
@@ -1330,8 +1462,8 @@ public class MapActivity extends BaseMwmFragmentActivity
         mDestinationAddress = toLocation.getTitle();
         tvDropOff.setText(mDestinationAddress);
         hideMenu();
-        RoutingController.get().setEndPoint(toLocation);
         hideBtnRequest();
+        RoutingController.get().setEndPoint(toLocation);
     }
 
     /*private void addTestBookMark() {
@@ -1631,6 +1763,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         if(mSelector == PASSENGER_TAXI_ONLY) {
             disconnect();
         }
+        removePointsAndRoute();
     }
 
     @Override
@@ -1640,7 +1773,6 @@ public class MapActivity extends BaseMwmFragmentActivity
         //SearchEngine.INSTANCE.removeListener(this);
         //BookmarkManager.INSTANCE.removeLoadingListener(this);
         //BookmarkManager.INSTANCE.removeCatalogListener(this);
-        removePointsAndRoute();
         Framework.nativeRemoveMapObjectListener();
         LocationHelper.INSTANCE.detach(!isFinishing());
         RoutingController.get().detach();
@@ -1649,7 +1781,17 @@ public class MapActivity extends BaseMwmFragmentActivity
     private void removePointsAndRoute() {
         //RoutingController.get().setStartPoint(null);
         //RoutingController.get().setEndPoint(null);
-        Framework.nativeDeleteSavedRoutePoints();
+        //Framework.nativeDeleteSavedRoutePoints();
+        if(fromLocation != null) {
+            //fromLocation.getRoutePointInfo();
+            //RoutePointInfo info = fromLocation.getRoutePointInfo();
+            Framework.nativeRemoveRoutePoint(ROUTE_MARK_START, 0);
+        }
+        if(toLocation != null) {
+            //fromLocation.getRoutePointInfo();
+            //RoutePointInfo info1 = toLocation.getRoutePointInfo();
+            Framework.nativeRemoveRoutePoint(RoutePointInfo.ROUTE_MARK_FINISH, 0);
+        }
         Framework.nativeRemoveRoute();
         //RoutingController.get().deleteSavedRoute();
     }
@@ -1879,6 +2021,12 @@ public class MapActivity extends BaseMwmFragmentActivity
                 //mNotificationCard.setVisibility(View.VISIBLE);
                 break;
             case Constants.Notification.DRIVER_CANCELLED:
+                pb.setVisibility(View.GONE);
+                wtv.setVisibility(View.GONE);
+                mTextView.setText(getString(R.string.captain_cancelled));
+                accept.setVisibility(View.GONE);
+                //mNotificationCard.setVisibility(View.VISIBLE);
+                break;
             case Constants.Notification.TRIP_COMPLETED:
                 //llButton.setVisibility(View.GONE);
                 //TextView stName = findViewById(R.id.n_user_name);
@@ -1887,9 +2035,10 @@ public class MapActivity extends BaseMwmFragmentActivity
                 phoneNumber = "0"+userMessage.getPhone();
                 stName.setText("Captain : "+userMessage.getName());
                 stPhone.setText("Phone : "+phoneNumber);
-                mTextView.setText(getString(R.string.captain_cancelled));
+                mTextView.setText(getString(R.string.trip_completed));
                 stName.setVisibility(View.VISIBLE);
                 stPhone.setVisibility(View.VISIBLE);
+                accept.setVisibility(View.GONE);
                 //mNotificationCard.setVisibility(View.VISIBLE);
                 break;
             case Constants.Notification.DRIVER_REACHED:
@@ -1899,7 +2048,12 @@ public class MapActivity extends BaseMwmFragmentActivity
                 break;
             case Constants.Notification.TRIP_STARTED:
                 //llButton.setVisibility(View.GONE);
+                phoneNumber = "0"+userMessage.getPhone();
+                stName.setText("Captain : "+userMessage.getName());
+                stPhone.setText("Phone : "+phoneNumber);
                 mTextView.setText(getString(R.string.trip_started));
+                stName.setVisibility(View.VISIBLE);
+                stPhone.setVisibility(View.VISIBLE);
                 //mNotificationCard.setVisibility(View.VISIBLE);
                 break;
             //mNotificationCard.setVisibility(View.VISIBLE);
@@ -2121,7 +2275,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 timerHandler.removeCallbacks(timerRunnable);
                 mDriverInfo.setVisibility(View.GONE);
                 mpayAndRating.setVisibility(View.VISIBLE);
-                mAmount.setText("Pay Driver : " + g.getPhone() + " SDG");
+                mAmount.setText("Pay Captain : " + g.getPrice() + " SDG");
                 MyNotificationManager.getInstance(MapActivity.this).displayNotification("Trip Completed", "Trip Completed");
                 // mCustomerInfo.setVisibility(View.GONE);
                 // todo display payment details
@@ -2258,6 +2412,9 @@ public class MapActivity extends BaseMwmFragmentActivity
         mSwitch.setVisibility(View.GONE);
         mConfirmLayout.setVisibility(View.GONE);
         mStartTripLayout.setVisibility(View.VISIBLE);
+        if(MySharedPreference.getInstance(this).getStartStatus()) {
+            mStartTrip.setText("Finish Trip");
+        }
         mConfirmedAdapter = new ConfirmedListPagerAdapter(confirmedUserList,this,getSupportFragmentManager());
         mViewPager.setAdapter(mConfirmedAdapter);
     }

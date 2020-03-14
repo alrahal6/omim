@@ -37,6 +37,7 @@ public class MySharedPreference {
     private static final String KEY_TO_ADDRESS = "toAddress";
 
     private static final String KEY_ACTIVE_PROCESS_ID = "activeprocessid";
+    private static final String KEY_START_STATUS_ID = "startstatusid";
     private static final String CAPTAIN_TICKET_DTLS = "captainticketdtls";
 
     private static MySharedPreference mInstance;
@@ -269,6 +270,23 @@ public class MySharedPreference {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(KEY_HAVE_TOKEN,false);
         editor.apply();
+    }
+
+    public void clearStartStatus() {
+        SharedPreferences.Editor editor = getSharedPreference().edit();
+        editor.putBoolean(KEY_START_STATUS_ID, false);
+        editor.apply();
+    }
+
+    public void addStartStatus() {
+        SharedPreferences.Editor editor = getSharedPreference().edit();
+        editor.putBoolean(KEY_START_STATUS_ID, true);
+        editor.apply();
+    }
+
+    public boolean getStartStatus() {
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean(KEY_START_STATUS_ID, false);
     }
 
     public void clearActiveProcess() {

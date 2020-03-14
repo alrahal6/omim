@@ -35,6 +35,15 @@ public class DateUtils
     //return simpleDateFormat.format(afterAddingMins);
   }
 
+  public static Date timeMinusFifteen(Date date) {
+    final long FIFTEEN_MINUTE_IN_MILLIS = 60000 * -15;
+    long curTimeInMs = date.getTime();
+    return new Date(curTimeInMs + FIFTEEN_MINUTE_IN_MILLIS);
+    //String pattern = "d MMM-HH:mm";
+    //SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+    //return simpleDateFormat.format(afterAddingMins);
+  }
+
   public static String formatDate(Date date) {
     //final long FIFTEEN_MINUTE_IN_MILLIS = 60000 * 15;//millisecs
     long curTimeInMs = date.getTime();

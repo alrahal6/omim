@@ -3025,6 +3025,7 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="sure_cancel">Are you sure? Cancel?</string>
+    <string name="sure_close">Are you sure? Close?</string>
     <string name="denied_make_call">Permission denied to make call</string>
     <string name="sure_cancel_current">Do you want to cancel the current Trip?</string>
     <string name="req_cancelled">Request Cancelled</string>
