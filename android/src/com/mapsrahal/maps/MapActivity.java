@@ -1018,7 +1018,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         if(isTripTimeLesser()) {
             alertDialogCloseMe();
         } else {
-            Toast.makeText(MapActivity.this, "Still trip is valid", Toast.LENGTH_LONG).show();
+            Toast.makeText(MapActivity.this, this.getString(R.string.still_trip_valid), Toast.LENGTH_LONG).show();
         }
         //MySharedPreference.getInstance(MapActivity.this).addActiveProcess(0);
         //reloadMe();
@@ -1029,7 +1029,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         if(isTripTimeLesser()) {
             alertDialogCloseMe();
         } else {
-            Toast.makeText(MapActivity.this, "Still trip is valid", Toast.LENGTH_LONG).show();
+            Toast.makeText(MapActivity.this, this.getString(R.string.still_trip_valid), Toast.LENGTH_LONG).show();
         }
         //MySharedPreference.getInstance(MapActivity.this).addActiveProcess(0);
         //reloadMe();
@@ -1652,7 +1652,6 @@ public class MapActivity extends BaseMwmFragmentActivity
             tvDistance.setText(units);
             getPrice(myDistance,mSelector);
         }
-
     }
 
     private void getPrice(String myDistance,int mSelector) {
@@ -2782,7 +2781,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 new Date(MySharedPreference.getInstance(this).getStartTime()),
                 MySharedPreference.getInstance(this).getPhoneNumber(),seatCount,genderCargoId,
                 genderCargoTxt,tripSeatPrice,sel,
-                MySharedPreference.getInstance(MapActivity.this).getUserName());
+                MySharedPreference.getInstance(MapActivity.this).getUserName(),mEtComments.getText().toString());
         //post.setSelectorFlag(mSelector);
 
         Call<List<Post>> call = postApi.createPost(post);

@@ -3050,4 +3050,5 @@
     <string name="add_seats">Please add seats</string>
     <string name="max_4_seats">Now we allow only 4 seats</string>
     <string name="finish_trip">Finish Trip</string>
+    <string name="still_trip_valid">Still trip is valid</string>
 </resources>
