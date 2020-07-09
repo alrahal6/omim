@@ -938,18 +938,12 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     private boolean isValidateFrom() {
         showProgress(false);
-        if(fromLocation != null) {
-            return true;
-        }
-        return false;
+        return fromLocation != null;
     }
 
     private boolean isValidateFromAndTo() {
         showProgress(false);
-        if(fromLocation != null && toLocation != null && tvDistance != null) {
-            return true;
-        }
-        return false;
+        return fromLocation != null && toLocation != null && tvDistance != null;
     }
 
     private void saveAndSearchPost() {
@@ -1012,15 +1006,11 @@ public class MapActivity extends BaseMwmFragmentActivity
     };
 
     // save trip time
-
     private boolean isTripTimeLesser() {
         long tripTime = MySharedPreference.getInstance(this).getStartTime();
         Date dt = DateUtils.timeMinusFifteen(new Date());
         //Date dt = new Date();
-        if(tripTime <= dt.getTime()) {
-            return true;
-        }
-        return false;
+        return tripTime <= dt.getTime();
     }
 
     private void closeList() {
