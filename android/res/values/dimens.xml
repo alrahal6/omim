@@ -315,4 +315,7 @@
     <dimen name="divider">1dip</dimen>
     <dimen name="appbar_padding">10dp</dimen>
     <dimen name="appbar_padding_top">8dp</dimen>
+
+    <dimen name="settings_width">672dp</dimen>
+    <dimen name="compass_navigation_landscape_offset">-72dp</dimen>
 </resources>
