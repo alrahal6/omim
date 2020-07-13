@@ -36,8 +36,8 @@
         android:text="@string/is_online" />
 
     <include layout="@layout/from_to"/>
-    <include layout="@layout/captain_content" />
-    <include layout="@layout/fragment_driver_request" />
+    <!--<include layout="@layout/captain_content" />
+    <include layout="@layout/fragment_driver_request" />-->
     <include layout="@layout/notification_list_items" />
 
     <include
@@ -53,6 +53,13 @@
     <include layout="@layout/layout_nav_search"
         android:visibility="gone"
         tools:visibility="invisible"/>
+    <Button
+        android:id="@+id/openGMap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/open_google_map"
+        android:textColor="@android:color/holo_green_dark"
+        android:visibility="gone" />
     <ProgressBar
         android:visibility="gone"
         android:id="@+id/myProgress"

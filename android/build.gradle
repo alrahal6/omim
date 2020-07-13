@@ -126,6 +126,7 @@ project.ext.appId = 'com.mapsrahal.maps'
 
 crashlytics {
     enableNdk true
+    androidNdkLibsOut "./build/intermediates/stripped_native_libs"
 }
 
 configurations.all {

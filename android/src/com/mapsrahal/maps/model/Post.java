@@ -28,6 +28,7 @@ public class Post {
     private double price;
     private int selectorFlag;
     private String name;
+    private String notes;
 
 
     public int getSelectorFlag() {
@@ -73,7 +74,7 @@ public class Post {
     public Post(Integer id,int userId, double srcLat, double srcLng, double destLat, double destLng,
                 double tripDistance, String sourceAddress, String destinationAddress,Date startTime,
                 String phone,int seats,int dropDownId,String dropDownVal,double price,int selectorFlag,
-                String name) {
+                String name,String notes) {
 
         this.id = id;
         this.userId = userId;
@@ -93,6 +94,7 @@ public class Post {
         this.price = price;
         this.selectorFlag = selectorFlag;
         this.name = name;
+        this.notes = notes;
     }
 
     public Integer getId() {
@@ -213,5 +215,13 @@ public class Post {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 }

@@ -2396,6 +2396,7 @@
 	<string name = "yes"> نعم </string>
 	<string name = "no"> لا </string>
 	<string name = "sure_cancel"> تأكيد الإلغاء </string>
+	<string name="sure_close">Are you sure? Close?</string>
 	<string name = "denied_make_call"> تأكد من منح صلاحيه الإتصال </string>
 	<string name = "req_not_send"> لم يتم إرسال الطلب </string>
 	<string name = "sure_cancel_current"> هل تريد إلغاء الرحلة ؟ </string>
@@ -2425,7 +2426,8 @@
 	<string name="trip_history">رحلاتي</string>
 	<string name="my_profile">الملف الشخصي</string>
 	<string name="vehicle">مركبة</string>
-	<string-array name="select_vehicle">
+    <string name="still_trip_valid">Still trip is valid</string>
+    <string-array name="select_vehicle">
 		<item>اقتصاد</item>
 	</string-array>
 	<string-array name="select_gender">

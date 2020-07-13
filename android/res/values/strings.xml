@@ -153,7 +153,7 @@
     <!-- Default bookmarks set name -->
     <string name="core_my_places">My Places</string>
     <!-- Add bookmark dialog - bookmark name -->
-    <string name="name">Name</string>
+    <string name="name">Name : </string>
     <!-- Editor title above street and house number -->
     <string name="address">Address</string>
     <!-- Place Page - Remove Pin button -->
@@ -3025,6 +3025,7 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="sure_cancel">Are you sure? Cancel?</string>
+    <string name="sure_close">Are you sure? Close?</string>
     <string name="denied_make_call">Permission denied to make call</string>
     <string name="sure_cancel_current">Do you want to cancel the current Trip?</string>
     <string name="req_cancelled">Request Cancelled</string>
@@ -3049,4 +3050,5 @@
     <string name="add_seats">Please add seats</string>
     <string name="max_4_seats">Now we allow only 4 seats</string>
     <string name="finish_trip">Finish Trip</string>
+    <string name="still_trip_valid">Still trip is valid</string>
 </resources>

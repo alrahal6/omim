@@ -73,18 +73,19 @@ public class SelectorActivity extends AppCompatActivity implements View.OnClickL
             return;
         }
         switch (v.getId()) {
-            case R.id.passenger_cab_only:
+            /*case R.id.passenger_cab_only:
                 startActivity(PASSENGER_TAXI_ONLY);
                 break;
+            case R.id.captain_cab_only:
+                startActivity(CAPTAIN_TAXI_ONLY);
+                break;*/
             case R.id.passenger_pool_only:
                 startActivity(PASSENGER_SHARE_ONLY);
                 break;
             case R.id.passenger_any:
                 startActivity(PASSENGER_ANY);
                 break;
-            case R.id.captain_cab_only:
-                startActivity(CAPTAIN_TAXI_ONLY);
-                break;
+
             case R.id.captain_pool_only:
                 startActivity(CAPTAIN_SHARE_ONLY);
                 break;
