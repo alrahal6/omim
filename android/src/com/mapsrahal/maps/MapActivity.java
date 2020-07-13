@@ -1012,7 +1012,6 @@ public class MapActivity extends BaseMwmFragmentActivity
     };
 
     // save trip time
-
     private boolean isTripTimeLesser() {
         long tripTime = MySharedPreference.getInstance(this).getStartTime();
         Date dt = DateUtils.timeMinusFifteen(new Date());
