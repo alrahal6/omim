@@ -16,7 +16,6 @@
         android:text="@string/passenger_looking"/>
 
     <Button
-        android:visibility="gone"
         android:id="@+id/passenger_cab_only"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -43,7 +42,6 @@
         android:text="@string/captain_offering"/>
 
     <Button
-        android:visibility="gone"
         android:id="@+id/captain_cab_only"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
