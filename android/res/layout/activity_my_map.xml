@@ -36,8 +36,8 @@
         android:text="@string/is_online" />
 
     <include layout="@layout/from_to"/>
-    <!--<include layout="@layout/captain_content" />
-    <include layout="@layout/fragment_driver_request" />-->
+    <include layout="@layout/captain_content" />
+    <include layout="@layout/fragment_driver_request" />
     <include layout="@layout/notification_list_items" />
 
     <include
