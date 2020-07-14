@@ -44,8 +44,8 @@ public class MySharedPreference {
     private static Context mCtx;
 
     private MySharedPreference(Context context) {
-        mCtx = context;
-        //mCtx = MwmApplication.get().getApplicationContext();
+        //mCtx = context.getApplicationContext();
+        mCtx = MwmApplication.get().getApplicationContext();
     }
 
     public static synchronized MySharedPreference getInstance(Context context) {
