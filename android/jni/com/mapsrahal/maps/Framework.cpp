@@ -1098,7 +1098,7 @@ JNIEXPORT jstring JNICALL
 Java_com_mapsrahal_maps_Framework_nativeGetBaseUrl(JNIEnv * env, jclass)
 {
     //return jni::ToJavaString(env, "http://alrahal.info:3003/amgad/module/");
-  return jni::ToJavaString(env, "http://192.168.43.214:3002/amgad/module/");
+  return jni::ToJavaString(env, "http://192.168.43.214:8080/amgad/module/");
   //return jni::ToJavaString(env, "http://192.168.43.214:3002/");
   //return jni::ToJavaString(env, "http://3.18.30.74:3003/");
   //return jni::ToJavaString(env, "http://alrahal.info:3003/");
