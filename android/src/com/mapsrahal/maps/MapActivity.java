@@ -1692,7 +1692,7 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     private void getCalculatedPrice() {
         if(tripPrice > 0.0d) {
-            mPriceLayout.setVisibility(View.VISIBLE);
+            //mPriceLayout.setVisibility(View.VISIBLE);
             tripSeatPrice = roundTwoDecimals(tripPrice * seatCount);
             //final double twoDec = roundTwoDecimals(tripSeatPrice);
             final String s = "" + tripSeatPrice + getString(R.string.sdg);
@@ -2756,7 +2756,7 @@ public class MapActivity extends BaseMwmFragmentActivity
             setFullscreen(true);
             hideFromTo();
             mSwitch.setVisibility(View.GONE);
-            mPriceLayout.setVisibility(View.GONE);
+            //mPriceLayout.setVisibility(View.GONE);
             //mConfirmLayout.setVisibility(View.GONE);
             mAdapter = new MatchingStatePagerAdapter(mMatchingList, this, getSupportFragmentManager());
             mViewPager.setAdapter(mAdapter);
@@ -2771,7 +2771,7 @@ public class MapActivity extends BaseMwmFragmentActivity
             setFullscreen(true);
             hideFromTo();
             mSwitch.setVisibility(View.GONE);
-            mPriceLayout.setVisibility(View.GONE);
+            //mPriceLayout.setVisibility(View.GONE);
             mConfirmLayout.setVisibility(View.GONE);
             mCargoAdapter = new CargoStatePagerAdapter(mMatchingList, this, getSupportFragmentManager());
             mViewPager.setAdapter(mCargoAdapter);
