@@ -96,7 +96,7 @@ public class SelectorActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void startActivity(int v) {
-        MySharedPreference.getInstance(getApplicationContext()).setSelectorId(v);
+        MySharedPreference.getInstance(this).setSelectorId(v);
         Intent intent = new Intent(this, MapActivity.class);
         intent.putExtra(PASSENGER_CAPTAIN_SELECTOR,v);
         startActivity(intent);

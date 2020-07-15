@@ -356,7 +356,7 @@ public class ServerConnection extends Service {
         int flag = g.getMyFlag();
         //mBinder.pingBinder()
         if(flag == 4) {
-            MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).userMessage(myMsg);
+            MySharedPreference.getInstance(this).userMessage(myMsg);
             startActivity(intent);
             /*boolean isForeground = MwmApplication.backgroundTracker(MwmApplication.get().getApplicationContext()).isForeground();
             if(!isForeground) {

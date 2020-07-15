@@ -75,4 +75,10 @@ public class DateUtils
     }
     return simpleDateFormat.format(date);
   }
+
+  public static String formatDateCustom(Date date) {
+    //long curTimeInMs = date.getTime();
+    DateFormat dateFormat = new SimpleDateFormat("hh.mm aa");
+    return dateFormat.format(date);
+  }
 }

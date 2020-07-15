@@ -102,6 +102,10 @@ import com.mapsrahal.util.statistics.Statistics;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -583,10 +587,20 @@ public class MapActivity extends BaseMwmFragmentActivity
     }
 
     private void showBtnRequest() {
-        if(!isOnRequestBtn) {
+        showHideRequest(!isOnRequestBtn);
+        /*if(!isOnRequestBtn) {
             btRequest.setVisibility(View.VISIBLE);
         } else {
             mPriceLayout.setVisibility(View.GONE);
+        }
+        showProgress(false);*/
+    }
+
+    private void showHideRequest(boolean showHide) {
+        if(showHide) {
+            btRequest.setVisibility(View.VISIBLE);
+        } else {
+            btRequest.setVisibility(View.GONE);
         }
         showProgress(false);
     }
@@ -681,7 +695,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         navigationView.setNavigationItemSelectedListener(this);
         View headerView = navigationView.getHeaderView(0);
         mpPhone = headerView.findViewById(R.id.pPhone);
-        mpPhone.setText(MySharedPreference.getInstance(getApplicationContext()).getPhoneNumber());
+        mpPhone.setText(MySharedPreference.getInstance(this).getPhoneNumber());
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mMainMenu = findViewById(R.id.mainMenu);
         mMainMenu.setOnClickListener(this);
@@ -734,7 +748,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         //checkLocationPermission();
         //Intent intent = getIntent();
         //mSelector = intent.getIntExtra(PASSENGER_CAPTAIN_SELECTOR,1);
-        mSelector = MySharedPreference.getInstance(getApplicationContext()).getSelectorId();
+        mSelector = MySharedPreference.getInstance(this).getSelectorId();
         if(mSelector == CAPTAIN_SHARE_ONLY || mSelector == CAPTAIN_ANY) {
             prepareList();
         }
@@ -994,7 +1008,7 @@ public class MapActivity extends BaseMwmFragmentActivity
             switch (which) {
                 case DialogInterface.BUTTON_POSITIVE:
                     MySharedPreference.getInstance(MapActivity.this).addActiveProcess(0);
-                    MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).userNotification(null);
+                    MySharedPreference.getInstance(MapActivity.this).userNotification(null);
                     reloadMe();
                     break;
 
@@ -1070,21 +1084,10 @@ public class MapActivity extends BaseMwmFragmentActivity
                 //mMainMenu.animate().rotation(mMainMenu.getRotation()+360).start();
                 break;
             case R.id.bt_request:
-                hideBtnRequest();
                 showProgress(true);
-                if (mSelector == PASSENGER_TAXI_ONLY) {
-                    if(isValidateFrom()) {
-                        showConfirmDialog();
-                    } else {
-                        Toast.makeText(this,getString(R.string.enter_valid_address),Toast.LENGTH_LONG).show();
-                    }
-                } else {
-                    if(isValidateFromAndTo()) {
-                        showConfirmDialog();
-                    } else {
-                        Toast.makeText(this,getString(R.string.enter_valid_address),Toast.LENGTH_LONG).show();
-                    }
-                }
+                hideBtnRequest();
+                getPrice(myDistance,mSelector);
+
                 break;
             case R.id.date_time:
                 dateTime();
@@ -1121,10 +1124,19 @@ public class MapActivity extends BaseMwmFragmentActivity
                 break;
             case R.id.set_pickup:
                 //showProgress(true);
+                showProgress(true);
+                //showBtnRequest();
+                //if()
+                //if(toLocation != null) {
+                    showHideRequest(true);
+                //}
                 setPickup();
                 break;
             case R.id.set_drop:
                 showProgress(true);
+                //if(fromLocation != null) {
+                    showHideRequest(true);
+                //}
                 setDropoff();
                 break;
             case R.id.cancelRequest:
@@ -1186,7 +1198,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         mEtComments = view.findViewById(R.id.c_note);
 
         final TextView cTime = view.findViewById(R.id.c_time);
-        cTime.setText(startingTime+"");
+        cTime.setText(DateUtils.formatDateCustom(startingTime));
         final TextView cSeats = view.findViewById(R.id.c_seats);
         cSeats.setText(seatCount+"");
         final TextView cGender = view.findViewById(R.id.c_gender);
@@ -1650,7 +1662,7 @@ public class MapActivity extends BaseMwmFragmentActivity
             myDistance = rinfo.distToTarget;
             String units = rinfo.distToTarget +" "+rinfo.targetUnits;
             tvDistance.setText(units);
-            getPrice(myDistance,mSelector);
+            showBtnRequest();
         }
     }
 
@@ -1686,7 +1698,21 @@ public class MapActivity extends BaseMwmFragmentActivity
             final String s = "" + tripSeatPrice + getString(R.string.sdg);
             mPriceText.setText(s);
         }
-        showBtnRequest();
+        //showBtnRequest();
+        if (mSelector == PASSENGER_TAXI_ONLY) {
+            if(isValidateFrom()) {
+                showConfirmDialog();
+            } else {
+                Toast.makeText(MapActivity.this,getString(R.string.enter_valid_address),Toast.LENGTH_LONG).show();
+            }
+        } else {
+            if(isValidateFromAndTo()) {
+                showConfirmDialog();
+            } else {
+                Toast.makeText(MapActivity.this,getString(R.string.enter_valid_address),Toast.LENGTH_LONG).show();
+            }
+        }
+        showProgress(false);
     }
 
     /*@Override
@@ -2105,7 +2131,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                     return;
                 }
                 //Log.d(TAG,"Got response success");
-                MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).userNotification(null);
+                MySharedPreference.getInstance(MapActivity.this).userNotification(null);
                 reloadMe();
             }
 
@@ -2339,7 +2365,7 @@ public class MapActivity extends BaseMwmFragmentActivity
             isOnRequestBtn = true;
             displayConfirmedList();
         }*/
-        String msg = MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).getUserMessage();
+        String msg = MySharedPreference.getInstance(this).getUserMessage();
         // todo remove later
         //MySharedPreference.getInstance(this).clearActiveProcess();
         //Log.i(TAG,"Shared message : "+msg);
@@ -2347,11 +2373,11 @@ public class MapActivity extends BaseMwmFragmentActivity
             isOnRequestBtn = true;
             processMessage(msg);
             //if(activeProcess != Constants.ActiveProcess.PASSENGER_HAVE_ACTIVE_RIDE) {
-                MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).userMessage(null);
+                MySharedPreference.getInstance(this).userMessage(null);
             //}
         }
 
-        String notify =MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).getUserNotification();
+        String notify =MySharedPreference.getInstance(this).getUserNotification();
 
         if (notify != null) {
             processNotification(notify,true);
@@ -2365,7 +2391,7 @@ public class MapActivity extends BaseMwmFragmentActivity
             MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).userMessage(null);
         }*/
 
-        String tripId = MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).getTripId();
+        String tripId = MySharedPreference.getInstance(this).getTripId();
         if(tripId != null) {
             this.tripId = tripId;
             // todo handle unclosed trip
@@ -2815,7 +2841,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                     data.put("tLat","0.0");
                     data.put("tLng","0.0");
                     String usrNotification = gSon.toJson(data);
-                    MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).userNotification(usrNotification);
+                    MySharedPreference.getInstance(MapActivity.this).userNotification(usrNotification);
                     MySharedPreference.getInstance(MapActivity.this).addActiveProcess(Constants.ActiveProcess.PASSENGER_HAVE_ACTIVE_RIDE);
                     processNotification(usrNotification,true);
                 } else {
@@ -3121,8 +3147,8 @@ public class MapActivity extends BaseMwmFragmentActivity
                 int dId = driverList.getUserId();
                 if (dId > 0) {
                     userTripInfo = new UserTripInfo(MySharedPreference.getInstance(MapActivity.this).getUserId(),
-                            MySharedPreference.getInstance(getApplicationContext()).getPhoneNumber(),
-                            MySharedPreference.getInstance(getApplicationContext()).getUserName(),
+                            MySharedPreference.getInstance(MapActivity.this).getPhoneNumber(),
+                            MySharedPreference.getInstance(MapActivity.this).getUserName(),
                             mSourceAddress,mDestinationAddress,fromLocation.getLat(),fromLocation.getLon(),
                             tripSeatPrice,Double.parseDouble(myDistance)
                             );
