@@ -791,7 +791,7 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     private void closeNotification() {
         // todo check condition
-        if(isTripTimeLesser()) {
+        if(isTripTimeLesser() && !MySharedPreference.getInstance(this).getStartStatus()) {
             alertDialogCloseMe();
         } else {
             Toast.makeText(MapActivity.this, this.getString(R.string.still_trip_valid), Toast.LENGTH_LONG).show();
@@ -896,8 +896,6 @@ public class MapActivity extends BaseMwmFragmentActivity
             case R.id.finish_trip:
                 if(MySharedPreference.getInstance(this).getStartStatus()) {
                     finishConfirmedTrip();
-                } else {
-
                 }
                 break;
             case R.id.start_trip:
@@ -942,6 +940,9 @@ public class MapActivity extends BaseMwmFragmentActivity
     }
 
     private void turnStartToFinish() {
+        // todo
+        mStartTrip.setText("Finish Trip");
+        mFinishTrip.setVisibility(View.GONE);
         MySharedPreference.getInstance(this).addStartStatus();
     }
 
@@ -1399,6 +1400,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         mStartTripLayout.setVisibility(View.VISIBLE);
         if(MySharedPreference.getInstance(this).getStartStatus()) {
             mStartTrip.setText("Finish Trip");
+            mFinishTrip.setVisibility(View.GONE);
         }
         mConfirmedAdapter = new ConfirmedListPagerAdapter(confirmedUserList,this,getSupportFragmentManager());
         mViewPager.setAdapter(mConfirmedAdapter);
@@ -1901,6 +1903,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 wtv.setVisibility(View.GONE);
                 mTextView.setText(getString(R.string.captain_cancelled));
                 accept.setVisibility(View.GONE);
+
                 //mNotificationCard.setVisibility(View.VISIBLE);
                 break;
             case Constants.Notification.TRIP_COMPLETED:
