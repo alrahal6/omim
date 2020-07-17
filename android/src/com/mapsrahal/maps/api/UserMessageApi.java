@@ -1,5 +1,6 @@
 package com.mapsrahal.maps.api;
 
+import com.mapsrahal.maps.model.IsValid;
 import com.mapsrahal.maps.model.UserMessage;
 import java.util.List;
 import retrofit2.Call;
@@ -7,6 +8,7 @@ import retrofit2.http.Body;
 import retrofit2.http.POST;
 
 public interface UserMessageApi {
+
     /*@POST("fcmmsg")
     Call<UserMessage> sentMessage(@Body UserMessage userMessage);
 
@@ -39,5 +41,8 @@ public interface UserMessageApi {
 
     @POST("sendCancelled.php")
     Call<UserMessage> sendTripCancelled(@Body List<UserMessage> userMessage);
+
+    @POST("checkBeforeConfirm.php")
+    Call<IsValid> checkBeforeConfirm(@Body List<UserMessage> userMessage);
 
 }

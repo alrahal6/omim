@@ -156,6 +156,7 @@
                 android:layout_height="32dp"
                 android:layout_width="wrap_content"
                 android:textColor="@color/base_red"
+                android:visibility="invisible"
                 android:background="@layout/rounded_border_edittext"
                 android:text="Cancel Trip"/>
             <ProgressBar

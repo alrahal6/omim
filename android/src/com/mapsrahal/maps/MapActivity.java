@@ -52,6 +52,7 @@ import com.github.florent37.singledateandtimepicker.dialog.SingleDateAndTimePick
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
+import com.mapsrahal.maps.activity.LoginActivity;
 import com.mapsrahal.maps.activity.SelectorActivity;
 import com.mapsrahal.maps.activity.ui.main.CargoStatePagerAdapter;
 import com.mapsrahal.maps.activity.ui.main.ConfirmedListPagerAdapter;
@@ -70,6 +71,7 @@ import com.mapsrahal.maps.location.CompassData;
 import com.mapsrahal.maps.location.LocationHelper;
 import com.mapsrahal.maps.model.CallLog;
 import com.mapsrahal.maps.model.FindDriver;
+import com.mapsrahal.maps.model.IsValid;
 import com.mapsrahal.maps.model.MatchingItem;
 import com.mapsrahal.maps.model.Post;
 import com.mapsrahal.maps.model.Price;
@@ -347,7 +349,7 @@ public class MapActivity extends BaseMwmFragmentActivity
 
 
 
-    private void cancelRequest(int cancelId) {
+    private void cancelConfirmedRequest(int cancelId) {
         mCancelId = cancelId;
         alertDialogCancel();
     }
@@ -894,12 +896,17 @@ public class MapActivity extends BaseMwmFragmentActivity
                     cancelDriver();
                 break;
             case R.id.finish_trip:
-                if(MySharedPreference.getInstance(this).getStartStatus()) {
+                cancelConfirmedRequest(1);
+                /*if(MySharedPreference.getInstance(this).getStartStatus()) {
                     finishConfirmedTrip();
-                }
+                }*/
                 break;
             case R.id.start_trip:
-                startConfirmedTrip();
+                if(MySharedPreference.getInstance(this).getStartStatus()) {
+                    finishConfirmedTrip();
+                } else {
+                    startConfirmedTrip();
+                }
                 break;
             case R.id.plan_trip:
                 planConfirmedTrip();
@@ -1528,6 +1535,16 @@ public class MapActivity extends BaseMwmFragmentActivity
         //mListAmount.setText("Distance : "+matchingCounter);
     }
 
+    private List<UserMessage> listWithMyPhone(List<UserMessage> userMessageList) {
+        List<UserMessage> userMessageAll = new ArrayList<>();
+        for (UserMessage userMessage : userMessageList) {
+            userMessage.setPhone(MySharedPreference.getInstance(this).getPhoneNumber());
+            userMessage.setName(MySharedPreference.getInstance(this).getUserName());
+            userMessageAll.add(userMessage);
+        }
+        return userMessageList;
+    }
+
     private void sendConfirmList() {
         alertDialog();
     }
@@ -1537,6 +1554,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         public void onClick(DialogInterface dialog, int which) {
             switch (which) {
                 case DialogInterface.BUTTON_POSITIVE:
+                    //checkBeforeConfirm();
                     sendConfirmation();
                     break;
 
@@ -1547,15 +1565,58 @@ public class MapActivity extends BaseMwmFragmentActivity
         }
     };
 
-    private List<UserMessage> listWithMyPhone(List<UserMessage> userMessageList) {
-        List<UserMessage> userMessageAll = new ArrayList<>();
-        //UserMessage userMessage1;
-        for (UserMessage userMessage : userMessageList) {
-            //userMessage1 = userMessage;
-            userMessage.setPhone(MySharedPreference.getInstance(this).getPhoneNumber());
-            userMessageAll.add(userMessage);
-        }
-        return userMessageList;
+    private void showUserAlreadyConfirmed() {
+        DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE:
+                    dialog.dismiss();
+                    break;
+            }
+        };
+        AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this);
+        builder.setMessage("Sorry! The User you have chosen confirmed by other Captain!").setPositiveButton("Dismiss", dialogClickListener)
+                .show();
+    }
+
+    private void checkBeforeConfirm(List<UserMessage> userMessageList,List<UserMessage> userMessageListSave) {
+        // todo api
+        Call<IsValid> call;
+        call = userMessageApi.checkBeforeConfirm(userMessageList);
+        UserMessageApi userMessageApi = ApiClient.getClient().create(UserMessageApi.class);
+        call.enqueue(new Callback<IsValid>() {
+            @Override
+            public void onResponse(Call<IsValid> call, Response<IsValid> response) {
+                if(response.body().getFlag() == 1) {
+                    sendUserMessage(userMessageList, Constants.Notification.DRIVER_ACCEPTED);
+                    MySharedPreference.getInstance(MapActivity.this).addActiveProcess(Constants.ActiveProcess.CAPTAIN_HAVE_CONFIRMED_LIST);
+                    MySharedPreference.getInstance(MapActivity.this).putListConfirmed(CONFIRMED_LIST_KEY,userMessageListSave);
+                    timeOutClose();
+                    displayConf();
+                    Toast.makeText(MapActivity.this, getString(R.string.success_sent_req), Toast.LENGTH_LONG).show();
+                } else {
+                    showUserAlreadyConfirmed();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<IsValid> call, Throwable t) {
+                showUserAlreadyConfirmed();
+            }
+        });
+        /*call.enqueue(new Callback<UserMessage>() {
+            @Override
+            public void onResponse(Call<UserMessage> call, Response<IsValid> response) {
+                sendConfirmation();
+                Toast.makeText(MapActivity.this, getString(R.string.success_sent_req), Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onFailure(Call<UserMessage> call, Throwable t) {
+                //Toast.makeText(MapActivity.this, "Request Send Failed! ", Toast.LENGTH_LONG).show();
+            }
+        });*/
+
+
     }
 
     private void sendConfirmation() {
@@ -1604,11 +1665,10 @@ public class MapActivity extends BaseMwmFragmentActivity
             //Log.d(TAG, "Confirmed List Key : " + position);
             //Log.d(TAG, "Confirmed List Value : " + value);
         }
-        MySharedPreference.getInstance(this).addActiveProcess(Constants.ActiveProcess.CAPTAIN_HAVE_CONFIRMED_LIST);
-        MySharedPreference.getInstance(this).putListConfirmed(CONFIRMED_LIST_KEY,userMessageList);
-        sendUserMessage(userMessageListM,Constants.Notification.DRIVER_ACCEPTED);
-        timeOutClose();
-        displayConf();
+
+        //sendUserMessage(userMessageListM,Constants.Notification.DRIVER_ACCEPTED);
+        checkBeforeConfirm(userMessageListM,userMessageList);
+
         //reloadMe();
         //mNotificationCard.setVisibility(View.GONE);
     }
@@ -1946,14 +2006,14 @@ public class MapActivity extends BaseMwmFragmentActivity
 
         int finalAcceptButtonFlag = acceptButtonFlag;
         int finalMFlag = mFlag;
-        accept.setOnClickListener(view -> {
+        /* accept.setOnClickListener(view -> {
             // todo update in server
-            cancelFlag = finalMFlag;
-            alertDialogCancelPassenger();
+            // cancelFlag = finalMFlag;
+            //alertDialogCancelPassenger();
             //updateStatus(finalMFlag);
             //userMessage.setmFlag(finalAcceptButtonFlag);
 
-        });
+        });*/
         stPhone.setOnClickListener(view -> callDriver());
         /*int finalRejectButtonFlag = rejectButtonFlag;
         reject.setOnClickListener(view -> {
