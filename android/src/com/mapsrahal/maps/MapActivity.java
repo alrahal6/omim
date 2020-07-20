@@ -1730,7 +1730,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         cSeats.setText(seatCount+"");
         final TextView cGender = view.findViewById(R.id.c_gender);
         cGender.setText(genderCargoTxt);
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Confirm", new DialogInterface.OnClickListener() {
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.confirm), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (mSelector == PASSENGER_TAXI_ONLY) {
@@ -1741,7 +1741,7 @@ public class MapActivity extends BaseMwmFragmentActivity
             }
         });
 
-        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 alertDialog.dismiss();
@@ -2078,7 +2078,7 @@ public class MapActivity extends BaseMwmFragmentActivity
     public void createPost() {
         mMyTripDistance = Double.parseDouble(MySharedPreference.getInstance(this).getTripDistance().trim());
         PostApi postApi = ApiClient.getClient().create(PostApi.class);
-        int sel = getSelector(mSelector);
+        //int sel = getSelector(mSelector);
         Post post = new Post(null, MySharedPreference.getInstance(this).getUserId(),
                 MySharedPreference.getInstance(this).getFrmLat(),
                 MySharedPreference.getInstance(this).getFrmLng(),
@@ -2089,7 +2089,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 MySharedPreference.getInstance(this).getToAddress().trim(),
                 new Date(MySharedPreference.getInstance(this).getStartTime()),
                 MySharedPreference.getInstance(this).getPhoneNumber(),seatCount,genderCargoId,
-                genderCargoTxt,tripSeatPrice,sel,
+                genderCargoTxt,tripSeatPrice,mSelector,
                 MySharedPreference.getInstance(MapActivity.this).getUserName(),mEtComments.getText().toString());
         //post.setSelectorFlag(mSelector);
 

@@ -1432,6 +1432,7 @@
     <string name="subscriptions_title">Subscriptions</string>
     <string name="manage_subscription">Manage subscription</string>
     <string name="taxi">Taxi</string>
+    <string name="taxi_soon">Coming Soon</string>
     <string name="sharing_options">Sharing options</string>
     <string name="export_file">Export file</string>
     <string name="list_settings">List Settings</string>
@@ -3028,6 +3029,7 @@
     <string name="sure_close">Are you sure? Close?</string>
     <string name="denied_make_call">Permission denied to make call</string>
     <string name="sure_cancel_current">Do you want to cancel the current Trip?</string>
+    <string name="sure_finish_current">Do you want to finish the current Trip?</string>
     <string name="req_cancelled">Request Cancelled</string>
     <string name="req_cancel_by_pas">Sorry! request cancelled by passenger</string>
     <string name="no_record_found">No records found! Please try later</string>
@@ -3051,4 +3053,5 @@
     <string name="max_4_seats">Now we allow only 4 seats</string>
     <string name="finish_trip">Finish Trip</string>
     <string name="still_trip_valid">Still trip is valid</string>
+    <string name="confirm">Confirm</string>
 </resources>

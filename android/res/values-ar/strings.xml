@@ -2396,7 +2396,6 @@
 	<string name = "yes"> نعم </string>
 	<string name = "no"> لا </string>
 	<string name = "sure_cancel"> تأكيد الإلغاء </string>
-	<string name="sure_close">Are you sure? Close?</string>
 	<string name = "denied_make_call"> تأكد من منح صلاحيه الإتصال </string>
 	<string name = "req_not_send"> لم يتم إرسال الطلب </string>
 	<string name = "sure_cancel_current"> هل تريد إلغاء الرحلة ؟ </string>
@@ -2408,7 +2407,6 @@
 	<string name = "sel_date_time"> حدد التاريخ والوقت </string>
 	<string name = "inform_start_trip"> هل تريد إبلاغ الرفقاء ببدايه الرحله ؟ </string>
 	<string name = "enter_valid_address"> يرجى إدخال عنوان صالح </string>
-	<string name = "sdg"> SDG </string>
 	<string name = "no_driver_found"> نأسف ! لا يوجد كاربولر متاح  </string>
 	<string name = "error_calc_price"> نأسف ! خطأ في حساب السعر </string>
 	<string name = "captain_on_way">  تهانينا, الكاربولر في الطريق </string>
@@ -2426,7 +2424,11 @@
 	<string name="trip_history">رحلاتي</string>
 	<string name="my_profile">الملف الشخصي</string>
 	<string name="vehicle">مركبة</string>
+	<string name = "sdg"> SDG </string>
+	<string name="sure_close">Are you sure? Close?</string>
     <string name="still_trip_valid">Still trip is valid</string>
+	<string name = "sure_finish_current">Do you want to finish the current Trip?</string>
+	<string name="confirm">Confirm</string>
     <string-array name="select_vehicle">
 		<item>اقتصاد</item>
 	</string-array>

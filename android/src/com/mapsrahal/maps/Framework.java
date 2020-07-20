@@ -244,6 +244,10 @@ public class Framework
 
   public static native String nativeGetWsUrl();
 
+  public static native String nativeGetBaseUrlLocal();
+
+  public static native String nativeGetWsUrlLocal();
+
   public static native void nativeShowTrackRect(long track);
 
   public static native int nativeGetDrawScale();
