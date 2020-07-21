@@ -1754,7 +1754,7 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     private void finishConfirmedTrip() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setMessage(getString(R.string.sure_cancel_current));
+        alertDialogBuilder.setMessage(getString(R.string.sure_finish_current));
         alertDialogBuilder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

@@ -12,7 +12,7 @@ public class ApiClient {
     private static Retrofit retrofit = null;
     //private static OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
     // .client(okHttpClient)
-    /*public static Retrofit getClient() {
+    public static Retrofit getClient() {
         if (retrofit==null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl(Framework.nativeGetBaseUrl())
@@ -20,9 +20,9 @@ public class ApiClient {
                     .build();
         }
         return retrofit;
-    }*/
+    }
 
-    public static Retrofit getClient() {
+    /*public static Retrofit getClient() {
         if (retrofit==null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl(Framework.nativeGetBaseUrlLocal())
@@ -30,5 +30,5 @@ public class ApiClient {
                     .build();
         }
         return retrofit;
-    }
+    }*/
 }

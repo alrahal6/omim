@@ -354,10 +354,21 @@ public class ServerConnection extends Service {
     }
 
     //@SuppressLint("HandlerLeak")
-    private void connect() {
+    /*private void connect() {
         if (!isHaveMessage) {
             Request request = new Request.Builder()
                     .url(Framework.nativeGetWsUrlLocal() + "?token=" + userId +"&is="+MySharedPreference.getInstance(this).isCaptainOnline())
+                    .build();
+            mWebSocket = mClient.newWebSocket(request, new SocketListener());
+            isHaveMessage = true;
+        }
+        start();
+    }*/
+
+    private void connect() {
+        if (!isHaveMessage) {
+            Request request = new Request.Builder()
+                    .url(Framework.nativeGetWsUrl() + "?token=" + userId +"&is="+MySharedPreference.getInstance(this).isCaptainOnline())
                     .build();
             mWebSocket = mClient.newWebSocket(request, new SocketListener());
             isHaveMessage = true;
