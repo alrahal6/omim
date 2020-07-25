@@ -680,14 +680,14 @@ std::string User::GetPhoneAuthUrl(std::string const & redirectUri)
 // static
 std::string User::GetPrivacyPolicyLink()
 {
-  return "http://carpoolee.info/privacy/";
+  return "http://alrahal.info/privacy/";
   //return "https://legal.my.com/us/maps/privacy/";
 }
 
 // static
 std::string User::GetTermsOfUseLink()
 {
-  return "http://carpoolee.info/tou/";
+  return "http://alrahal.info/tou/";
   //return "https://legal.my.com/us/maps/privacy/";
 }
 

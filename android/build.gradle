@@ -192,7 +192,7 @@ android {
         targetSdkVersion propTargetSdkVersion.toInteger()
         applicationId project.ext.appId
         buildConfigField 'String', 'SUPPORT_MAIL', '"android@maps.me"'
-        buildConfigField 'String', 'REVIEW_URL', '"market://details?id=com.mapsrahal.maps.pro"'
+        buildConfigField 'String', 'REVIEW_URL', '"market://details?id=com.mapsrahal.maps"'
         buildConfigField 'int', 'RATING_THRESHOLD', '5'
 
         // Crashlytics API key
