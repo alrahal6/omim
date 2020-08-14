@@ -1097,8 +1097,8 @@ Java_com_mapsrahal_maps_Framework_nativeFormatLatLonToArr(JNIEnv * env, jclass, 
 JNIEXPORT jstring JNICALL
 Java_com_mapsrahal_maps_Framework_nativeGetBaseUrl(JNIEnv * env, jclass)
 {
-    return jni::ToJavaString(env, "http://alrahal.info/amgad/module/");
-  //return jni::ToJavaString(env, "http://192.168.43.214:8080/amgad/module/");
+    //return jni::ToJavaString(env, "http://alrahal.info/amgad/module/");
+  return jni::ToJavaString(env, "http://207.180.241.110/amgad/module/");
   //return jni::ToJavaString(env, "http://192.168.43.214:3002/");
   //return jni::ToJavaString(env, "http://3.18.30.74:3003/");
   //return jni::ToJavaString(env, "http://alrahal.info:3003/");
@@ -1107,8 +1107,8 @@ Java_com_mapsrahal_maps_Framework_nativeGetBaseUrl(JNIEnv * env, jclass)
 JNIEXPORT jstring JNICALL
 Java_com_mapsrahal_maps_Framework_nativeGetWsUrl(JNIEnv * env, jclass)
 {
-    return jni::ToJavaString(env, "ws://alrahal.info:9005/");
-    //return jni::ToJavaString(env, "ws://192.168.43.214:9005/");
+    //return jni::ToJavaString(env, "ws://alrahal.info:9005/");
+    return jni::ToJavaString(env, "ws://207.180.241.110:9005/");
   //return jni::ToJavaString(env, "ws://192.168.43.214:3002/x");
   //return jni::ToJavaString(env, "ws://3.18.30.74:3003/x");
   //return jni::ToJavaString(env, "ws://alrahal.info:3003/x");

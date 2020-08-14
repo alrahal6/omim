@@ -231,7 +231,7 @@ public class ServerConnection extends Service {
         start();
         //setAlarm();
         //Log.i(TAG,"Service thread Id "+ Thread.currentThread().getId());
-        return START_REDELIVER_INTENT;
+        return START_STICKY;
     }
 
     @SuppressLint("MissingPermission")
