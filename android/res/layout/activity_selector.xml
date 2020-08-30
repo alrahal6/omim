@@ -22,7 +22,7 @@
         android:layout_marginTop="10dp"
         android:textColor="@color/white_primary"
         android:background="@drawable/button_corner"
-        android:text="@string/taxi" />
+        android:text="@string/taxi_soon" />
     <Button
         android:id="@+id/passenger_pool_only"
         android:layout_width="match_parent"
@@ -48,7 +48,7 @@
         android:layout_marginTop="10dp"
         android:textColor="@color/white_primary"
         android:background="@drawable/button_corner"
-        android:text="@string/taxi" />
+        android:text="@string/taxi_soon" />
     <Button
         android:id="@+id/captain_pool_only"
         android:layout_width="match_parent"

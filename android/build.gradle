@@ -191,7 +191,7 @@ android {
         minSdkVersion propMinSdkVersion.toInteger()
         targetSdkVersion propTargetSdkVersion.toInteger()
         applicationId project.ext.appId
-        buildConfigField 'String', 'SUPPORT_MAIL', '"android@maps.me"'
+        buildConfigField 'String', 'SUPPORT_MAIL', '"support@carpoolee.info"'
         buildConfigField 'String', 'REVIEW_URL', '"market://details?id=com.mapsrahal.maps"'
         buildConfigField 'int', 'RATING_THRESHOLD', '5'
 

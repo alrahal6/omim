@@ -1186,7 +1186,7 @@
 	<string name="whats_new_ugc_title_updated_v840">التقييمات والمراجعات</string>
 	<string name="whats_new_ugc_message">يمكنك الآن ترك تقييمات ومراجعات حتى عندما تكون بدون اتصال! لا تنس تحديث خرائطك لكي تتمكن من رؤية التغييرات.</string>
 	<string name="dialog_error_storage_title">مشكلة الوصول للتخزين</string>
-	<string name="dialog_error_storage_message">التخزين الخارجي غير متوفر، ربما تمت إزالة بطاقة SD، أو أنها تالفة أو ملف النظام للقراءة فقط. افحصه واتصل بنا على support\@maps.me</string>
+	<string name="dialog_error_storage_message">التخزين الخارجي غير متوفر، ربما تمت إزالة بطاقة SD، أو أنها تالفة أو ملف النظام للقراءة فقط. افحصه واتصل بنا على 0912356729</string>
 	<string name="setting_emulate_bad_storage">محاكاة التخزين السيء</string>
 	<string name="discovery_button_title">اكتشاف الجوار</string>
 	<string name="discovery_button_subtitle_things_to_do">أشياء يمكن القيام بها</string>
@@ -2355,6 +2355,7 @@
 	<string name = "al_address"> جوار صيدلية العزبي امتداد شارع النخيل الخرطوم السودان </string>
 	<string name = "passenger_looking"> أطلب </string>
 	<string name = "taxi"> تاكسي </string>
+	<string name="taxi_soon">عذرا ..ستعمل قريبا</string>
 	<string name = "car_pool_share"> كار بول / شير</string>
 	<string name = "captain_offering"> كاربولر  </string>
 	<string name = "cargo_logistics"> شحن البضائع </string>

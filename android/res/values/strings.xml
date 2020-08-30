@@ -1222,7 +1222,7 @@
     <string name="whats_new_ugc_title_updated_v840">Ratings and reviews</string>
     <string name="whats_new_ugc_message">You can now leave ratings and reviews even offline! Don\'t forget to update your maps so you can see the changes.</string>
     <string name="dialog_error_storage_title">Storage access problem</string>
-    <string name="dialog_error_storage_message">External storage is not accessible. The SD Card may have been removed, damaged, or the file system is read-only. Please, check your SD Card or contact us at support\@maps.me</string>
+    <string name="dialog_error_storage_message">External storage is not accessible. The SD Card may have been removed, damaged, or the file system is read-only. Please, check your SD Card or contact us at 0912356729</string>
     <string name="setting_emulate_bad_storage">Emulate bad storage</string>
     <string name="discovery_button_title">Discover nearby</string>
     <string name="discovery_button_subtitle_things_to_do">Things to do</string>
@@ -1432,7 +1432,7 @@
     <string name="subscriptions_title">Subscriptions</string>
     <string name="manage_subscription">Manage subscription</string>
     <string name="taxi">Taxi</string>
-    <string name="taxi_soon">Coming Soon</string>
+    <string name="taxi_soon">Taxi Available Soon</string>
     <string name="sharing_options">Sharing options</string>
     <string name="export_file">Export file</string>
     <string name="list_settings">List Settings</string>
@@ -2926,8 +2926,8 @@
     <string name="trip_history">My Trips</string>
     <string name="my_profile">Profile</string>
     <string name="vehicle">Vehicle</string>
-    <string name="set_as_pickup">Set As Pickup</string>
-    <string name="set_as_drop">Set As Drop</string>
+    <string name="set_as_pickup">Set Pickup</string>
+    <string name="set_as_drop">Set Drop</string>
     <string name="expected_price">Expected Price :</string>
     <string-array name="select_vehicle">
         <item>Economy</item>
