@@ -2421,15 +2421,17 @@
 	<string name = "no_match_found"> نأسف , لا يوجد كاربولر في مسارك</string>
 	<string name = "add_seats"> يرجى إضافة مقاعد </string>
 	<string name = "max_4_seats"> عذرا , الان نسمح ب 4 مقاعد فقط  </string>
-	<string name="finish_trip">إنهاء الرحلة</string>
-	<string name="trip_history">رحلاتي</string>
-	<string name="my_profile">الملف الشخصي</string>
-	<string name="vehicle">مركبة</string>
+	<string name = "finish_trip">إنهاء الرحلة</string>
+	<string name = "trip_history">رحلاتي</string>
+	<string name = "my_profile">الملف الشخصي</string>
+	<string name = "vehicle">مركبة</string>
 	<string name = "sdg"> SDG </string>
 	<string name="sure_close">Are you sure? Close?</string>
     <string name="still_trip_valid">Still trip is valid</string>
 	<string name = "sure_finish_current">Do you want to finish the current Trip?</string>
 	<string name="confirm">Confirm</string>
+    <string name="passengers_nearby">Find Passengers Nearby</string>
+    <string name="google_map">Google Map</string>
     <string-array name="select_vehicle">
 		<item>اقتصاد</item>
 	</string-array>

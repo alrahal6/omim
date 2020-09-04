@@ -28,7 +28,8 @@ import retrofit2.Response;
 
 public class SelectorActivity extends AppCompatActivity implements View.OnClickListener {
 
-    Button mPassengerCab,mPassengerPool,mPassengerAny,mCaptainCab,mCaptainPool,mCaptainAny;
+    Button mPassengerCab,mPassengerPool,mPassengerAny,mCaptainCab,mCaptainPool,
+            mCaptainAny,mNearByPassenger;
     public static final String PASSENGER_CAPTAIN_SELECTOR = "passenger_captain_selector";
 
     public static final int PASSENGER_TAXI_ONLY = 1;
@@ -63,7 +64,8 @@ public class SelectorActivity extends AppCompatActivity implements View.OnClickL
         mCaptainPool.setOnClickListener(this);
         mCaptainAny = findViewById(R.id.captain_any);
         mCaptainAny.setOnClickListener(this);
-
+        mNearByPassenger = findViewById(R.id.passengers_nearby);
+        mNearByPassenger.setOnClickListener(this);
     }
 
     @Override
@@ -92,6 +94,9 @@ public class SelectorActivity extends AppCompatActivity implements View.OnClickL
             case R.id.captain_any:
                 startActivity(CAPTAIN_ANY);
                 break;
+            case R.id.passengers_nearby:
+                startMatchActivity();
+                break;
         }
     }
 
@@ -99,6 +104,13 @@ public class SelectorActivity extends AppCompatActivity implements View.OnClickL
         MySharedPreference.getInstance(this).setSelectorId(v);
         Intent intent = new Intent(this, MapActivity.class);
         intent.putExtra(PASSENGER_CAPTAIN_SELECTOR,v);
+        startActivity(intent);
+    }
+
+    private void startMatchActivity() {
+        //MySharedPreference.getInstance(this).setSelectorId(v);
+        Intent intent = new Intent(this, MatchingListActivity.class);
+        //intent.putExtra(PASSENGER_CAPTAIN_SELECTOR,v);
         startActivity(intent);
     }
 }

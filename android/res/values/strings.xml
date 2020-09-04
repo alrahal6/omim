@@ -3054,4 +3054,6 @@
     <string name="finish_trip">Finish Trip</string>
     <string name="still_trip_valid">Still trip is valid</string>
     <string name="confirm">Confirm</string>
+    <string name="passengers_nearby">Passengers Nearby</string>
+    <string name="google_map">Google Map</string>
 </resources>

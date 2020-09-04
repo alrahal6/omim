@@ -65,19 +65,28 @@ public class MatchingListActivity extends AppCompatActivity {
         UiUtils.setupColorStatusBar(this, R.color.bg_statusbar);
         setContentView(R.layout.activity_matching_list);
         Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.passengers_nearby);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        mMyTripDistance = Double.parseDouble(MySharedPreference.getInstance(this).getTripDistance().trim());
+        mMyTripDistance = 1.1;//Double.parseDouble(MySharedPreference.getInstance(this).getTripDistance().trim());
         postApi = ApiClient.getClient().create(PostApi.class);
         userMessageApi = ApiClient.getClient().create(UserMessageApi.class);
         mMatchMaker = new MatchMaker();
-        createPost();
+        //createPost();
+        mMatchingList = new ArrayList<>();
+
+        mMatchingList.add(new MatchingItem(1, 1,"Kafouri","Arkaweet","07:00 AM",
+                "mTotDistTxt","100 SDG","3 KM", "mPhone",
+                "extraDistance", 1.1,
+                1.1,1.1,1.1,1.2,1,"male",1.1,"Dhayalan"));
+
+        buildRecyclerView();
     }
 
     // todo add more criteria
     private void createPost() {
-        Post post = new Post(null,MySharedPreference.getInstance(this).getUserId(),
+        /*Post post = new Post(null,MySharedPreference.getInstance(this).getUserId(),
                 MySharedPreference.getInstance(this).getFrmLat(),
                 MySharedPreference.getInstance(this).getFrmLng(),
                 MySharedPreference.getInstance(this).getToLat(),
@@ -97,17 +106,17 @@ public class MatchingListActivity extends AppCompatActivity {
                 if (!response.isSuccessful()) {
                     return;
                 }
-                createMatchList(response.body());
+                //createMatchList(response.body());
             }
             @Override
             public void onFailure(Call<List<Post>> call, Throwable t) {
 
             }
-        });
+        });*/
     }
 
     public void createMatchList(List<Post> body) {
-        mMatchingList = new ArrayList<>();
+        /*mMatchingList = new ArrayList<>();
         for (Post post : body) {
             String totDistTxt = prepareRouteDistance(Utils.roundTwoDecimals(post.getSrcDistDiff()),
                     Utils.roundTwoDecimals(post.getTripDistance()),Utils.roundTwoDecimals(post.getDestDistDiff()));
@@ -123,24 +132,24 @@ public class MatchingListActivity extends AppCompatActivity {
             if(MySharedPreference.getInstance(this).isCaptain()) {
                 if (isCaptainEligible(mMyTripDistance, totDist, post.getSrcDistDiff(), post.getDestDistDiff(), post.getTripDistance())) {
                     // todo get accurate distance and add
-                    /*mMatchingList.add(new MatchingItem(post.getId(),post.getUserId(),
+                    mMatchingList.add(new MatchingItem(post.getId(),post.getUserId(),
                             post.getSourceAddress(), post.getDestinationAddress(),
                             post.getTripDistance(), DateUtils.formatDateStr(post.getStartTime()), totDist, totDistTxt,
-                            amount,extraDistance,mMyTripDistance,post.getEndTime()));*/
+                            amount,extraDistance,mMyTripDistance,post.getEndTime()));
                 }
             } else {
                 if (isPassengerEligible(mMyTripDistance, totDist, post.getSrcDistDiff(), post.getDestDistDiff(), post.getTripDistance())) {
                     // todo get accurate distance and add
-                    /*mMatchingList.add(new MatchingItem(post.getId(),post.getUserId(),
+                    mMatchingList.add(new MatchingItem(post.getId(),post.getUserId(),
                             post.getSourceAddress(), post.getDestinationAddress(),
                             post.getTripDistance(),  DateUtils.formatDateStr(post.getStartTime()), totDist, totDistTxt,
-                            amount,extraDistance,mMyTripDistance,post.getEndTime()));*/
+                            amount,extraDistance,mMyTripDistance,post.getEndTime()));
                 }
             }
         }
         //Collections.sort(mMatchingList);
         //Collections.reverse(mMatchingList);
-        //buildRecyclerView();
+        buildRecyclerView();*/
     }
 
     private double getPercentage(double a,double b) {
@@ -205,7 +214,7 @@ public class MatchingListActivity extends AppCompatActivity {
     public void sendRequest(int position) {
         //mMatchingList.get(position).changeText1(text);
         //mMatchingList.get(position).
-        userMessage = new UserMessage(
+        /*userMessage = new UserMessage(
         MySharedPreference.getInstance(this).getUserId(),
                 mMatchingList.get(position).getUserId(),
                 getFlag(),mMatchingList.get(position).getId(),
@@ -223,7 +232,7 @@ public class MatchingListActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Are you sure? Send Request!").setPositiveButton("Yes", dialogClickListener)
                 .setNegativeButton("No", dialogClickListener).show();
-        //mAdapter.notifyItemChanged(position);
+        //mAdapter.notifyItemChanged(position);*/
     }
 
     DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {

@@ -68,7 +68,7 @@ public class MatchingAdapter extends RecyclerView.Adapter<MatchingAdapter.Matchi
 
     @Override
     public MatchingViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.matching_list_items, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.nearby_list_items, parent, false);
         MatchingViewHolder evh = new MatchingViewHolder(v, mListener);
         return evh;
     }

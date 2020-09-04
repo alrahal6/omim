@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:padding="@dimen/space5"
     tools:context=".activity.SelectorActivity">
 
     <TextView
@@ -22,6 +23,7 @@
         android:layout_marginTop="10dp"
         android:textColor="@color/white_primary"
         android:background="@drawable/button_corner"
+        android:visibility="gone"
         android:text="@string/taxi_soon" />
     <Button
         android:id="@+id/passenger_pool_only"
@@ -48,6 +50,7 @@
         android:layout_marginTop="10dp"
         android:textColor="@color/white_primary"
         android:background="@drawable/button_corner"
+        android:visibility="gone"
         android:text="@string/taxi_soon" />
     <Button
         android:id="@+id/captain_pool_only"
@@ -84,4 +87,31 @@
         android:textColor="@color/white_primary"
         android:background="@drawable/button_corner"
         android:text="@string/consumer" />
+
+    <TextView
+        android:textSize="19sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/space5"
+        android:textColor="@color/black"
+        android:drawableStart="@drawable/ic_search_brown_24dp"
+        android:text="Find"/>
+
+    <Button
+        android:id="@+id/passengers_nearby"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/white_primary"
+        android:background="@drawable/button_corner"
+        android:text="@string/passengers_nearby" />
+
+    <TextView
+        android:textSize="19sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/space5"
+        android:textColor="@color/base_green"
+        android:layout_marginTop="@dimen/space15"
+        android:text="Taxi Services will be available soon..."/>
 </LinearLayout>
