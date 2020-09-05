@@ -1,23 +1,38 @@
 package com.mapsrahal.maps.activity;
 
+import android.Manifest;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.mapsrahal.maps.MySharedPreference;
 import com.mapsrahal.maps.R;
 import com.mapsrahal.maps.adapter.MatchingAdapter;
 import com.mapsrahal.maps.api.ApiClient;
 import com.mapsrahal.maps.api.PostApi;
 import com.mapsrahal.maps.api.UserMessageApi;
+import com.mapsrahal.maps.bookmarks.data.MapObject;
+import com.mapsrahal.maps.location.LocationHelper;
 import com.mapsrahal.maps.model.MatchMaker;
 import com.mapsrahal.maps.model.MatchingItem;
 import com.mapsrahal.maps.model.NearbySearch;
@@ -58,6 +73,10 @@ public class MatchingListActivity extends AppCompatActivity {
     private String mMatchingPercentage;
     private UserMessage userMessage;
     private MatchMaker mMatchMaker;
+    private FusedLocationProviderClient fusedLocationClient;
+    //private double fromLat = 15.5007, fromLng = 32.5599;
+    //private double fromLat = 15.695882, fromLng = 32.491116;
+    private double fromLat = 15.534632, fromLng = 32.553520;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,84 +90,113 @@ public class MatchingListActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         mMyTripDistance = 1.1;//Double.parseDouble(MySharedPreference.getInstance(this).getTripDistance().trim());
         postApi = ApiClient.getClient().create(PostApi.class);
-        userMessageApi = ApiClient.getClient().create(UserMessageApi.class);
-        mMatchMaker = new MatchMaker();
-        //createPost();
-        mMatchingList = new ArrayList<>();
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        fusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+            @Override
+            public void onComplete(@NonNull Task<Location> task) {
+                Location location = task.getResult();
+                if (location != null) {
+                    // Logic to handle location object
+                    fromLat = location.getLatitude();
+                    fromLng = location.getLongitude();
+                    //Log.d("LatitudeM : ",""+location.getLatitude());
+                    //Log.d("LongitudeM : ",""+location.getLongitude());
+                    mMatchMaker = new MatchMaker();
+                    nearbyPost();
+                }
+            }
+        });
+        fusedLocationClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                fromLat = location.getLatitude();
+                fromLng = location.getLongitude();
+                mMatchMaker = new MatchMaker();
+                nearbyPost();
+            }
+        });
 
-        mMatchingList.add(new NearbySearch(1,"Khartoum","Bahari","7",
-        "2","6 Aug 2020 13:00","Male","100",1.1,
-                1.1,1.1,1.1));
+        /*fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        // Got last known location. In some rare situations this can be null.
+                        if (location != null) {
+                            // Logic to handle location object
+                            fromLat = location.getLatitude();
+                            fromLng = location.getLongitude();
+                            Log.d("LatitudeM : ",""+location.getLatitude());
+                            Log.d("LongitudeM : ",""+location.getLongitude());
+                            mMatchMaker = new MatchMaker();
+                            nearbyPost();
+                        }
+                    }
 
-        buildRecyclerView();
+
+                });*/
+
+        /*mMatchingList = new ArrayList<>();
+        for(int i = 0;i<20;i++) {
+            mMatchingList.add(new NearbySearch(1, "Khartoum", "Bahari", "7",
+                    "2", "6 Aug 2020 13:00", "Male", "100", 1.1,
+                    1.1, 1.1, 1.1));
+        }
+        buildRecyclerView();*/
     }
 
     // todo add more criteria
-    private void createPost() {
-        /*Post post = new Post(null,MySharedPreference.getInstance(this).getUserId(),
-                MySharedPreference.getInstance(this).getFrmLat(),
-                MySharedPreference.getInstance(this).getFrmLng(),
-                MySharedPreference.getInstance(this).getToLat(),
-                MySharedPreference.getInstance(this).getToLng(),
-                mMyTripDistance,
-                MySharedPreference.getInstance(this).getFrmAddress().trim(),
-                MySharedPreference.getInstance(this).getToAddress().trim(),
-                new Date(MySharedPreference.getInstance(this).getStartTime()),
-                MySharedPreference.getInstance(this).getPhoneNumber(),0,0,"x",
-                0.0,1,"x","");
+    private void nearbyPost() {
+        //MapObject m = LocationHelper.INSTANCE.getMyPosition();
+        //Log.d("MY Message"," Working1");
+        NearbySearch nSearch = new NearbySearch(
+                1, "", "", "",
+                "", "", "", "",
+                 fromLat, fromLng,
+                1.1, 1.1
+        );
 
-        Call<List<Post>> call = postApi.createPost(post);
+        Call<List<NearbySearch>> call = postApi.nearbySearch(nSearch);
 
-        call.enqueue(new Callback<List<Post>>() {
+        call.enqueue(new Callback<List<NearbySearch>>() {
             @Override
-            public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
+            public void onResponse(Call<List<NearbySearch>> call, Response<List<NearbySearch>> response) {
                 if (!response.isSuccessful()) {
                     return;
                 }
-                //createMatchList(response.body());
+                //Log.d("MY Message"," Working2");
+                createNearByList(response.body());
             }
+
             @Override
-            public void onFailure(Call<List<Post>> call, Throwable t) {
-
+            public void onFailure(Call<List<NearbySearch>> call, Throwable t) {
+                //Log.d("MY Message"," Failure"+ t.getMessage());
             }
-        });*/
+        });
     }
+    
+    public void createNearByList(List<NearbySearch> body) {
+        mMatchingList = new ArrayList<>();
+        //Log.d("MY Message"," List");
+        for (NearbySearch res : body) {
+            //Log.d("MY Message"," Inside");
+            mMatchingList.add(new NearbySearch(res.getNearImage(),
+                    res.getNearFrom(),res.getNearTo(),res.getNearDistance(),
+                    res.getNearSeats(),res.getNearTime(),res.getNearGender(),
+                    res.getNearAmount(),res.getFromLat(),res.getFromLng(),
+                    res.getToLat(),res.getToLng()));
 
-    public void createMatchList(List<Post> body) {
-        /*mMatchingList = new ArrayList<>();
-        for (Post post : body) {
-            String totDistTxt = prepareRouteDistance(Utils.roundTwoDecimals(post.getSrcDistDiff()),
-                    Utils.roundTwoDecimals(post.getTripDistance()),Utils.roundTwoDecimals(post.getDestDistDiff()));
-            double totDist = Utils.roundTwoDecimals(post.getSrcDistDiff()+post.getTripDistance()+post.getDestDistDiff());
-            double extra = 0;
-            if(mMyTripDistance < totDist) {
-                extra = totDist - mMyTripDistance;
-            }
-
-            String amount = "" + post.getTripDistance() * 2;
-            String extraDistance = "" + Utils.roundTwoDecimals(extra);
-            //mMatchMaker.getMatchingList();
-            if(MySharedPreference.getInstance(this).isCaptain()) {
-                if (isCaptainEligible(mMyTripDistance, totDist, post.getSrcDistDiff(), post.getDestDistDiff(), post.getTripDistance())) {
-                    // todo get accurate distance and add
-                    mMatchingList.add(new MatchingItem(post.getId(),post.getUserId(),
-                            post.getSourceAddress(), post.getDestinationAddress(),
-                            post.getTripDistance(), DateUtils.formatDateStr(post.getStartTime()), totDist, totDistTxt,
-                            amount,extraDistance,mMyTripDistance,post.getEndTime()));
-                }
-            } else {
-                if (isPassengerEligible(mMyTripDistance, totDist, post.getSrcDistDiff(), post.getDestDistDiff(), post.getTripDistance())) {
-                    // todo get accurate distance and add
-                    mMatchingList.add(new MatchingItem(post.getId(),post.getUserId(),
-                            post.getSourceAddress(), post.getDestinationAddress(),
-                            post.getTripDistance(),  DateUtils.formatDateStr(post.getStartTime()), totDist, totDistTxt,
-                            amount,extraDistance,mMyTripDistance,post.getEndTime()));
-                }
-            }
         }
-        //Collections.sort(mMatchingList);
-        //Collections.reverse(mMatchingList);
-        buildRecyclerView();*/
+        buildRecyclerView();
     }
 
     private double getPercentage(double a,double b) {
@@ -169,8 +217,18 @@ public class MatchingListActivity extends AppCompatActivity {
         return Constants.Notification.PASSENGER_REQUEST;
     }
 
-    public void openGoogleMap(int position) {
-        //mMatchingList.get(position).getmAmount();
+    private void openGoogleMap(int position) {
+        //private void openInGoogleMap(double fromLat, double fromLng, double toLat, double toLng) {
+        double fromLat = mMatchingList.get(position).getFromLat();
+        double toLat = mMatchingList.get(position).getToLat();
+        double fromLng = mMatchingList.get(position).getFromLng();
+        double toLng = mMatchingList.get(position).getToLng();
+            String url = "http://maps.google.com/maps?saddr=" + fromLat + ","
+                    + fromLng + "&daddr=" + toLat + "," + toLng + "&mode=driving";
+            Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(url));
+            intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
+            startActivity(intent);
+       // }
     }
 
     @Override

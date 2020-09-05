@@ -1,6 +1,7 @@
 package com.mapsrahal.maps.api;
 
 import com.mapsrahal.maps.model.CallLog;
+import com.mapsrahal.maps.model.NearbySearch;
 import com.mapsrahal.maps.model.Post;
 import com.mapsrahal.maps.model.Price;
 import com.mapsrahal.maps.model.StatusUpdate;
@@ -36,6 +37,9 @@ public interface PostApi {
 
     @POST("callLog.php")
     Call<CallLog> callLog(@Body CallLog callLog);
+
+    @POST("getNearByPassLst.php")
+    Call<List<NearbySearch>> nearbySearch(@Body NearbySearch nearbySearch);
     /*
     @GET("posts")
     Call<List<Post>> getPosts(
