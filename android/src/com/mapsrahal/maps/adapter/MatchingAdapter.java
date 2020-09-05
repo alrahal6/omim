@@ -14,11 +14,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.mapsrahal.maps.MwmApplication;
 import com.mapsrahal.maps.R;
 import com.mapsrahal.maps.model.MatchingItem;
+import com.mapsrahal.maps.model.NearbySearch;
 
 import java.util.ArrayList;
 
 public class MatchingAdapter extends RecyclerView.Adapter<MatchingAdapter.MatchingViewHolder> {
-    private ArrayList<MatchingItem> mMatchingList;
+    private ArrayList<NearbySearch> mMatchingList;
     private OnItemClickListener mListener;
     private SparseBooleanArray itemStateArray= new SparseBooleanArray();
 
@@ -32,24 +33,24 @@ public class MatchingAdapter extends RecyclerView.Adapter<MatchingAdapter.Matchi
 
     public class MatchingViewHolder extends RecyclerView.ViewHolder {
         public ImageView mImageView;
-        public Button mRequestMatch;
-        public TextView mTextView1;
-        public TextView mTextView2,mTripDistance,mTripTime,mYourDistance,mTripRoute,mAmount,mExtraDistance;
+        public Button mGoogleMap;
+        public TextView mFrom,mTo;
+        public TextView mDistance,mSeats,mTime,
+                mGender,mAmount;
 
         public MatchingViewHolder(View itemView, final OnItemClickListener listener) {
             super(itemView);
             //mImageView = itemView.findViewById(R.id.imageView);
-            mTextView1 = itemView.findViewById(R.id.textView);
-            mTextView2 = itemView.findViewById(R.id.textView2);
-            mTripDistance = itemView.findViewById(R.id.trip_distance);
-            mTripTime = itemView.findViewById(R.id.start_time);
-            mAmount = itemView.findViewById(R.id.trip_amount);
-            mTripRoute = itemView.findViewById((R.id.trip_route_plan));
-            mExtraDistance = itemView.findViewById(R.id.extra_distance);
-            mYourDistance = itemView.findViewById(R.id.your_distance);
-            mRequestMatch = itemView.findViewById(R.id.request_match);
+            mFrom = itemView.findViewById(R.id.near_from);
+            mTo = itemView.findViewById(R.id.near_to);
+            mDistance = itemView.findViewById(R.id.near_distance);
+            mSeats = itemView.findViewById(R.id.near_seats);
+            mTime = itemView.findViewById(R.id.near_time);
+            mGender = itemView.findViewById((R.id.near_gender));
+            mAmount = itemView.findViewById(R.id.near_amount);
+            mGoogleMap = itemView.findViewById(R.id.near_google_map);
 
-            mRequestMatch.setOnClickListener(v -> {
+            mGoogleMap.setOnClickListener(v -> {
                 if (listener != null) {
                     int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
@@ -59,10 +60,9 @@ public class MatchingAdapter extends RecyclerView.Adapter<MatchingAdapter.Matchi
                 }
             });
         }
-
     }
 
-    public MatchingAdapter(ArrayList<MatchingItem> exampleList) {
+    public MatchingAdapter(ArrayList<NearbySearch> exampleList) {
         mMatchingList = exampleList;
     }
 
@@ -75,16 +75,16 @@ public class MatchingAdapter extends RecyclerView.Adapter<MatchingAdapter.Matchi
 
     @Override
     public void onBindViewHolder(MatchingViewHolder holder, int position) {
-        MatchingItem currentItem = mMatchingList.get(position);
+        NearbySearch currentItem = mMatchingList.get(position);
         //holder.mImageView.setImageResource(currentItem.getId());
-        holder.mTextView1.setText(currentItem.getmText1());
-        holder.mTextView2.setText(currentItem.getmText2());
-        holder.mTripDistance.setText("Trip Distance : ");
-        holder.mTripTime.setText("Time : "+currentItem.getmTripTime());
-        holder.mAmount.setText("Amount : "+currentItem.getmAmount());
-        holder.mYourDistance.setText("Your Distance : ");
-        holder.mExtraDistance.setText("Extra Distance : "+currentItem.getmExtraDistance());
-        holder.mTripRoute.setText(""+currentItem.getmTotDistTxt());
+        holder.mFrom.setText(currentItem.getNearFrom());
+        holder.mTo.setText(currentItem.getNearTo());
+        holder.mDistance.setText(currentItem.getNearDistance()+" KM");
+        holder.mSeats.setText(currentItem.getNearSeats());
+        holder.mTime.setText(currentItem.getNearTime());
+        holder.mGender.setText(currentItem.getNearGender());
+        holder.mAmount.setText(currentItem.getNearAmount()+" SDG");
+
         //itemStateArray.put(position,false);
         /*if (!itemStateArray.get(position, false)) {
             itemStateArray.put(position, true);

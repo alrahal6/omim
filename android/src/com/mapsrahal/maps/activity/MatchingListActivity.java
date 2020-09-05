@@ -1,6 +1,5 @@
 package com.mapsrahal.maps.activity;
 
-
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.widget.Button;
@@ -21,6 +20,7 @@ import com.mapsrahal.maps.api.PostApi;
 import com.mapsrahal.maps.api.UserMessageApi;
 import com.mapsrahal.maps.model.MatchMaker;
 import com.mapsrahal.maps.model.MatchingItem;
+import com.mapsrahal.maps.model.NearbySearch;
 import com.mapsrahal.maps.model.Post;
 import com.mapsrahal.maps.model.UserMessage;
 import com.mapsrahal.util.Constants;
@@ -39,7 +39,7 @@ import retrofit2.Response;
 
 public class MatchingListActivity extends AppCompatActivity {
 
-    private ArrayList<MatchingItem> mMatchingList;
+    private ArrayList<NearbySearch> mMatchingList;
     //private int requestToId;
 
     private RecyclerView mRecyclerView;
@@ -76,10 +76,9 @@ public class MatchingListActivity extends AppCompatActivity {
         //createPost();
         mMatchingList = new ArrayList<>();
 
-        mMatchingList.add(new MatchingItem(1, 1,"Kafouri","Arkaweet","07:00 AM",
-                "mTotDistTxt","100 SDG","3 KM", "mPhone",
-                "extraDistance", 1.1,
-                1.1,1.1,1.1,1.2,1,"male",1.1,"Dhayalan"));
+        mMatchingList.add(new NearbySearch(1,"Khartoum","Bahari","7",
+        "2","6 Aug 2020 13:00","Male","100",1.1,
+                1.1,1.1,1.1));
 
         buildRecyclerView();
     }
@@ -156,47 +155,6 @@ public class MatchingListActivity extends AppCompatActivity {
         return ((b * 100d) / a)/100d;
     }
 
-    //  todo check later
-    private boolean isCaptainEligible(double mMyTripDistance, double totDist, double srcDistDiff,
-                               double destDistDiff, double tripDistance) {
-        // my trip distance is greater than my distance
-        if (mMyTripDistance >= totDist) {
-            return true;
-        } else {
-            // my trip distance is less than my distance
-            // so i have to travel more as a captain
-            double percentage = getPercentage(mMyTripDistance,totDist);
-            if(percentage > ELEGIBLE_LIMIT)
-                return false;
-            return true;
-        }
-    }
-
-    // todo check later
-    private boolean isPassengerEligible(double mMyTripDistance, double totDist, double srcDistDiff,
-                                        double destDistDiff, double tripDistance) {
-        // my trip distance is greater than my distance
-        if (mMyTripDistance <= totDist) {
-            return true;
-            // totDist
-        } else {
-            double percentage = getPercentage(totDist,mMyTripDistance);
-            if(percentage > ELEGIBLE_LIMIT)
-                return false;
-            return true;
-        }
-    }
-
-    private String prepareRouteDistance(double ab,double bc, double cd) {
-        //Spannable wordtoSpan = new SpannableString("");
-        //wordtoSpan.setSpan(new ForegroundColorSpan(Color.BLUE), 15, 30, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        String a = "A- ";
-        String b = " ->B- ";
-        String c = " ->C-> ";
-        String d = " ->D";
-        return a+ab+b+bc+c+cd+d;
-    }
-
     public void buildRecyclerView() {
         mRecyclerView = findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);
@@ -204,92 +162,16 @@ public class MatchingListActivity extends AppCompatActivity {
         mAdapter = new MatchingAdapter(mMatchingList);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
-        mAdapter.setOnItemClickListener(position -> sendRequest(position));
+        mAdapter.setOnItemClickListener(position -> openGoogleMap(position));
     }
 
     private int getFlag() {
         return Constants.Notification.PASSENGER_REQUEST;
     }
 
-    public void sendRequest(int position) {
-        //mMatchingList.get(position).changeText1(text);
-        //mMatchingList.get(position).
-        /*userMessage = new UserMessage(
-        MySharedPreference.getInstance(this).getUserId(),
-                mMatchingList.get(position).getUserId(),
-                getFlag(),mMatchingList.get(position).getId(),
-                0.0d,
-                mMatchingList.get(position).getmTripTime(),
-                mMatchingList.get(position).getmAmount(),
-                mMatchingList.get(position).getmPhone(),
-                mMatchingList.get(position).getmPhone(),
-                mMatchingList.get(position).getmText1(),
-                mMatchingList.get(position).getmText2(),
-                mMatchingList.get(position).getmPhone(),
-                0.0d,0.0d,0.0d,0.0d
-        );
-        //requestToId = mMatchingList.get(position).getUserId();
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Are you sure? Send Request!").setPositiveButton("Yes", dialogClickListener)
-                .setNegativeButton("No", dialogClickListener).show();
-        //mAdapter.notifyItemChanged(position);*/
+    public void openGoogleMap(int position) {
+        //mMatchingList.get(position).getmAmount();
     }
-
-    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-            switch (which){
-                case DialogInterface.BUTTON_POSITIVE:
-                    sendMessage();
-                    break;
-
-                case DialogInterface.BUTTON_NEGATIVE:
-                    Toast.makeText(MatchingListActivity.this, "Request not Send", Toast.LENGTH_LONG).show();
-                    break;
-            }
-        }
-    };
-
-    private void sendMessage() {
-        Call<UserMessage> call = userMessageApi.sentMessage(userMessage);
-
-        call.enqueue(new Callback<UserMessage>() {
-            @Override
-            public void onResponse(Call<UserMessage> call, Response<UserMessage> response) {
-                Toast.makeText(MatchingListActivity.this, "Request Send Successfully ", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onFailure(Call<UserMessage> call, Throwable t) {
-                Toast.makeText(MatchingListActivity.this, "Request Send Failed! ", Toast.LENGTH_LONG).show();
-
-            }
-        });
-    }
-
-      /*AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Confirm");
-        builder.setMessage("Are you sure?");
-        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                // Do nothing but close the dialog
-                dialog.dismiss();
-            }
-        });
-
-        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                // Do nothing
-                dialog.dismiss();
-            }
-        });
-
-        AlertDialog alert = builder.create();
-        alert.show();
-        */
 
     @Override
     public boolean onSupportNavigateUp() {
