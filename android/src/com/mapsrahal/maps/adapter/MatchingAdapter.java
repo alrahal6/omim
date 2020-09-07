@@ -1,6 +1,5 @@
 package com.mapsrahal.maps.adapter;
 
-
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,14 +7,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.mapsrahal.maps.MwmApplication;
 import com.mapsrahal.maps.R;
 import com.mapsrahal.maps.model.MatchingItem;
 import com.mapsrahal.maps.model.NearbySearch;
-
 import java.util.ArrayList;
 
 public class MatchingAdapter extends RecyclerView.Adapter<MatchingAdapter.MatchingViewHolder> {
@@ -84,7 +80,6 @@ public class MatchingAdapter extends RecyclerView.Adapter<MatchingAdapter.Matchi
         holder.mTime.setText(currentItem.getNearTime());
         holder.mGender.setText(currentItem.getNearGender());
         holder.mAmount.setText(currentItem.getNearAmount()+" SDG");
-
         //itemStateArray.put(position,false);
         /*if (!itemStateArray.get(position, false)) {
             itemStateArray.put(position, true);

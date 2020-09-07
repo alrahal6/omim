@@ -613,9 +613,12 @@ public class MapActivity extends BaseMwmFragmentActivity
         public void onClick(DialogInterface dialog, int which) {
             switch (which) {
                 case DialogInterface.BUTTON_POSITIVE:
-                    MySharedPreference.getInstance(MapActivity.this).addActiveProcess(0);
-                    MySharedPreference.getInstance(MapActivity.this).userNotification(null);
+
+
+                    closeMyNotification(true);
                     reloadMe();
+
+
                     break;
 
                 case DialogInterface.BUTTON_NEGATIVE:
@@ -624,6 +627,14 @@ public class MapActivity extends BaseMwmFragmentActivity
             }
         }
     };
+
+    private void closeMyNotification(boolean isClose) {
+        if(isClose) {
+            mCloseNotification.setVisibility(View.GONE);
+            MySharedPreference.getInstance(MapActivity.this).addActiveProcess(0);
+            MySharedPreference.getInstance(MapActivity.this).userNotification(null);
+        }
+    }
 
     // save trip time
     private boolean isTripTimeLesser() {
@@ -1301,6 +1312,7 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     private void sendUserMessage(List<UserMessage> userMessageList, int flag) {
         Call<UserMessage> call;
+        boolean isCloseNotify = false;
         UserMessageApi userMessageApi = ApiClient.getClient().create(UserMessageApi.class);
         switch (flag) {
             case Constants.Notification.DRIVER_ACCEPTED:
@@ -1311,18 +1323,24 @@ public class MapActivity extends BaseMwmFragmentActivity
                 break;
             case Constants.Notification.TRIP_COMPLETED:
                 call = userMessageApi.sendTripCompleted(listWithMyPhone(userMessageList));
+                isCloseNotify = true;
                 break;
             case Constants.Notification.DRIVER_CANCELLED:
                 call = userMessageApi.sendTripCancelled(listWithMyPhone(userMessageList));
+                isCloseNotify = true;
                 break;
             default:
                 return;
         }
+        boolean finalIsCloseNotify = isCloseNotify;
         call.enqueue(new Callback<UserMessage>() {
             @Override
             public void onResponse(Call<UserMessage> call, Response<UserMessage> response) {
                 Toast.makeText(MapActivity.this, getString(R.string.success_sent_req), Toast.LENGTH_LONG).show();
                 displayConfirmedList();
+                if(finalIsCloseNotify) {
+                    closeMyNotification(true);
+                }
             }
 
             @Override
@@ -1389,8 +1407,8 @@ public class MapActivity extends BaseMwmFragmentActivity
                 if (confirmedUserList.size() > 0) {
                     sendUserMessage(confirmedUserList, Constants.Notification.TRIP_COMPLETED);
                 }
-                MySharedPreference.getInstance(MapActivity.this).addActiveProcess(0);
-                reloadMe();
+                //MySharedPreference.getInstance(MapActivity.this).addActiveProcess(0);
+                //reloadMe();
             }
         });
         alertDialogBuilder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
@@ -1507,6 +1525,7 @@ public class MapActivity extends BaseMwmFragmentActivity
     }
 
     private void processNotification(String myNotification, boolean isFromNotify) {
+        boolean isCloseNotify = false;
         isOnRequestBtn = true;
         hideFromTo();
         mSwitch.setVisibility(View.GONE);
@@ -1548,6 +1567,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 mTextView.setText(getString(R.string.passenger_accepted_request));
                 break;
             case Constants.Notification.PASSENGER_CANCELLED:
+                isCloseNotify = true;
                 mTextView.setText(getString(R.string.passenger_cancel));
                 break;
             case Constants.Notification.DRIVER_INVITE:
@@ -1565,15 +1585,18 @@ public class MapActivity extends BaseMwmFragmentActivity
                 stPhone.setVisibility(View.VISIBLE);
                 break;
             case Constants.Notification.DRIVER_REFUSED:
+                isCloseNotify = true;
                 mTextView.setText(getString(R.string.captain_refused));
                 break;
             case Constants.Notification.DRIVER_CANCELLED:
+                isCloseNotify = true;
                 pb.setVisibility(View.GONE);
                 wtv.setVisibility(View.GONE);
                 mTextView.setText(getString(R.string.captain_cancelled));
                 accept.setVisibility(View.GONE);
                 break;
             case Constants.Notification.TRIP_COMPLETED:
+                isCloseNotify = true;
                 pb.setVisibility(View.GONE);
                 wtv.setVisibility(View.GONE);
                 phoneNumber = "0" + userMessage.getPhone();
@@ -1614,6 +1637,8 @@ public class MapActivity extends BaseMwmFragmentActivity
 
         });*/
         stPhone.setOnClickListener(view -> callDriver());
+
+        closeMyNotification(isCloseNotify);
         /*int finalRejectButtonFlag = rejectButtonFlag;
         reject.setOnClickListener(view -> {
             userMessage.setmFlag(finalRejectButtonFlag);
