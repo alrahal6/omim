@@ -6,6 +6,9 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -13,7 +16,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -35,9 +40,14 @@ public class MatchingListActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private MatchingAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+    private TextView mNearbyStatus;
     private PostApi postApi;
+    private LocationRequest locationRequest;
+    private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 15000;
+    private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = 15000;
+    private boolean isHaveLocation = false;
     private FusedLocationProviderClient fusedLocationClient;
-    private double fromLat = 15.5007, fromLng = 32.5599;
+    private double fromLat = 1.1, fromLng = 1.1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +55,7 @@ public class MatchingListActivity extends AppCompatActivity {
         UiUtils.setupColorStatusBar(this, R.color.bg_statusbar);
         setContentView(R.layout.activity_matching_list);
         Toolbar toolbar = findViewById(R.id.toolbar);
+        mNearbyStatus = findViewById(R.id.nearby_status);
         toolbar.setTitle(R.string.passengers_nearby);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -54,25 +65,37 @@ public class MatchingListActivity extends AppCompatActivity {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
+        locationRequest = LocationRequest.create();
+        locationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
+        locationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
+        builder.addLocationRequest(locationRequest);
+        LocationSettingsRequest locationSettingsRequest = builder.build();
         fusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
             @Override
             public void onComplete(@NonNull Task<Location> task) {
                 Location location = task.getResult();
                 if (location != null) {
+                    isHaveLocation = true;
                     fromLat = location.getLatitude();
                     fromLng = location.getLongitude();
                     nearbyPost();
                 }
             }
         });
-        fusedLocationClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
+        if(!isHaveLocation) {
+            mNearbyStatus.setVisibility(View.VISIBLE);
+        }
+        /*fusedLocationClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
                 fromLat = location.getLatitude();
                 fromLng = location.getLongitude();
                 nearbyPost();
             }
-        });
+        });*/
     }
 
     // todo add more criteria
@@ -92,12 +115,19 @@ public class MatchingListActivity extends AppCompatActivity {
                 if (!response.isSuccessful()) {
                     return;
                 }
+                mNearbyStatus.setVisibility(View.GONE);
+                if(response.body().size() < 1) {
+                    mNearbyStatus.setVisibility(View.VISIBLE);
+                    mNearbyStatus.setText("No Passengers found! please try later");
+                }
                 createNearByList(response.body());
             }
 
             @Override
             public void onFailure(Call<List<NearbySearch>> call, Throwable t) {
                 //Log.d("MY Message"," Failure"+ t.getMessage());
+                mNearbyStatus.setVisibility(View.VISIBLE);
+                mNearbyStatus.setText("No Passengers found! please try later");
             }
         });
     }

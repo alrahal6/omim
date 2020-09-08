@@ -602,7 +602,7 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     private void alertDialogCloseMe() {
         AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this);
-        builder.setMessage(getString(R.string.sure_close)).setPositiveButton(getString(R.string.yes),
+        builder.setMessage(getString(R.string.sure_cancel)).setPositiveButton(getString(R.string.yes),
                 closeMeDialogClickListener)
                 .setNegativeButton(getString(R.string.no), closeMeDialogClickListener).show();
 
@@ -613,20 +613,23 @@ public class MapActivity extends BaseMwmFragmentActivity
         public void onClick(DialogInterface dialog, int which) {
             switch (which) {
                 case DialogInterface.BUTTON_POSITIVE:
-
-
-                    closeMyNotification(true);
-                    reloadMe();
-
-
+                    cancelTrip();
                     break;
-
                 case DialogInterface.BUTTON_NEGATIVE:
                     //Toast.makeText(MapActivity.this, getString(R.string.error_occured), Toast.LENGTH_LONG).show();
                     break;
             }
         }
     };
+
+    private void cancelTrip() {
+        //todo write close logic
+
+
+
+        closeMyNotification(true);
+        reloadMe();
+    }
 
     private void closeMyNotification(boolean isClose) {
         if(isClose) {
@@ -644,24 +647,29 @@ public class MapActivity extends BaseMwmFragmentActivity
         return tripTime <= dt.getTime();
     }
 
+    private int cancelFlag = Constants.Notification.PASSENGER_CANCELLED;
     private void closeList() {
         // todo check condition
-        if (isTripTimeLesser()) {
+        cancelFlag = Constants.Notification.DRIVER_CANCELLED;
+        alertDialogCloseMe();
+        /*if (isTripTimeLesser()) {
             alertDialogCloseMe();
         } else {
             Toast.makeText(MapActivity.this, this.getString(R.string.still_trip_valid), Toast.LENGTH_LONG).show();
-        }
+        }*/
         //MySharedPreference.getInstance(MapActivity.this).addActiveProcess(0);
         //reloadMe();
     }
 
     private void closeNotification() {
         // todo check condition
-        if (isTripTimeLesser() && !MySharedPreference.getInstance(this).getStartStatus()) {
+        cancelFlag = Constants.Notification.PASSENGER_CANCELLED;
+        alertDialogCloseMe();
+        /*if (isTripTimeLesser() && !MySharedPreference.getInstance(this).getStartStatus()) {
             alertDialogCloseMe();
         } else {
             Toast.makeText(MapActivity.this, this.getString(R.string.still_trip_valid), Toast.LENGTH_LONG).show();
-        }
+        }*/
         //MySharedPreference.getInstance(MapActivity.this).addActiveProcess(0);
         //reloadMe();
     }
@@ -814,7 +822,7 @@ public class MapActivity extends BaseMwmFragmentActivity
             public void onClick(DialogInterface dialog, int which) {
                 // todo send trip start message to all users
                 if (confirmedUserList.size() > 0) {
-                    turnStartToFinish();
+
                     sendUserMessage(confirmedUserList, Constants.Notification.TRIP_STARTED);
                 }
                 //MySharedPreference.getInstance(MapActivity.this).addActiveProcess(0);
@@ -1025,7 +1033,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         requestResponse = responseId;
     }
 
-    private int cancelFlag = 0;
+    //private int cancelFlag = 0;
 
     private void alertDialogCancelPassenger() {
         AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this);
@@ -1313,9 +1321,11 @@ public class MapActivity extends BaseMwmFragmentActivity
     private void sendUserMessage(List<UserMessage> userMessageList, int flag) {
         Call<UserMessage> call;
         boolean isCloseNotify = false;
+        boolean isConfirmed = false;
         UserMessageApi userMessageApi = ApiClient.getClient().create(UserMessageApi.class);
         switch (flag) {
             case Constants.Notification.DRIVER_ACCEPTED:
+                isConfirmed = true;
                 call = userMessageApi.sendConfirmation(userMessageList);
                 break;
             case Constants.Notification.TRIP_STARTED:
@@ -1326,6 +1336,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 isCloseNotify = true;
                 break;
             case Constants.Notification.DRIVER_CANCELLED:
+            case Constants.Notification.PASSENGER_CANCELLED:
                 call = userMessageApi.sendTripCancelled(listWithMyPhone(userMessageList));
                 isCloseNotify = true;
                 break;
@@ -1333,6 +1344,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 return;
         }
         boolean finalIsCloseNotify = isCloseNotify;
+        boolean finalIsConfirmed = isConfirmed;
         call.enqueue(new Callback<UserMessage>() {
             @Override
             public void onResponse(Call<UserMessage> call, Response<UserMessage> response) {
@@ -1341,6 +1353,10 @@ public class MapActivity extends BaseMwmFragmentActivity
                 if(finalIsCloseNotify) {
                     closeMyNotification(true);
                 }
+
+                if(finalIsConfirmed) {
+                    turnStartToFinish();
+                }
             }
 
             @Override
@@ -1348,7 +1364,6 @@ public class MapActivity extends BaseMwmFragmentActivity
                 //Toast.makeText(MapActivity.this, "Request Send Failed! ", Toast.LENGTH_LONG).show();
             }
         });
-
     }
 
     private void showConfirmDialog() {
