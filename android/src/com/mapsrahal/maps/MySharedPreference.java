@@ -35,6 +35,7 @@ public class MySharedPreference {
     private static final String KEY_TRIP_DISTANCE = "tripDistance";
     private static final String KEY_FROM_ADDRESS = "frmAddress";
     private static final String KEY_TO_ADDRESS = "toAddress";
+    private static final String KEY_SEARCHED_TIME = "searchedTime";
 
     private static final String KEY_ACTIVE_PROCESS_ID = "activeprocessid";
     private static final String KEY_START_STATUS_ID = "startstatusid";
@@ -305,6 +306,18 @@ public class MySharedPreference {
     public int getActiveProcess() {
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         return sharedPreferences.getInt(KEY_ACTIVE_PROCESS_ID, 0);
+    }
+
+    public void addToSearched(long searchedTime) {
+        SharedPreferences.Editor editor = getSharedPreference().edit();
+        //editor.putInt(KEY_ACTIVE_PROCESS_ID, activeProcessId);
+        editor.putLong(KEY_SEARCHED_TIME, searchedTime);
+        editor.apply();
+    }
+
+    public long getIsSearched() {
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getLong(KEY_SEARCHED_TIME, 0);
     }
 
     public void putListConfirmed(String key, List<UserMessage> objArray){

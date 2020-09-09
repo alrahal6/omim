@@ -22,14 +22,19 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.mapsrahal.maps.MySharedPreference;
 import com.mapsrahal.maps.R;
 import com.mapsrahal.maps.adapter.MatchingAdapter;
 import com.mapsrahal.maps.api.ApiClient;
 import com.mapsrahal.maps.api.PostApi;
 import com.mapsrahal.maps.model.NearbySearch;
 import com.mapsrahal.util.UiUtils;
+
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -88,14 +93,6 @@ public class MatchingListActivity extends AppCompatActivity {
         if(!isHaveLocation) {
             mNearbyStatus.setVisibility(View.VISIBLE);
         }
-        /*fusedLocationClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                fromLat = location.getLatitude();
-                fromLng = location.getLongitude();
-                nearbyPost();
-            }
-        });*/
     }
 
     // todo add more criteria
@@ -108,7 +105,7 @@ public class MatchingListActivity extends AppCompatActivity {
         );
 
         Call<List<NearbySearch>> call = postApi.nearbySearch(nSearch);
-
+        MySharedPreference.getInstance(this).addToSearched(System.currentTimeMillis());
         call.enqueue(new Callback<List<NearbySearch>>() {
             @Override
             public void onResponse(Call<List<NearbySearch>> call, Response<List<NearbySearch>> response) {

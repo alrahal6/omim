@@ -21,6 +21,7 @@ import com.mapsrahal.maps.background.ConnectivityChangedReceiver;
 import com.mapsrahal.util.UiUtils;
 
 import java.net.InetAddress;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -109,8 +110,24 @@ public class SelectorActivity extends AppCompatActivity implements View.OnClickL
 
     private void startMatchActivity() {
         //MySharedPreference.getInstance(this).setSelectorId(v);
-        Intent intent = new Intent(this, MatchingListActivity.class);
-        //intent.putExtra(PASSENGER_CAPTAIN_SELECTOR,v);
-        startActivity(intent);
+        if(isAllowedNow()) {
+            Intent intent = new Intent(this, MatchingListActivity.class);
+            //intent.putExtra(PASSENGER_CAPTAIN_SELECTOR,v);
+            startActivity(intent);
+        } else {
+            Toast.makeText(this,"Please try after sometime!",Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private boolean isAllowedNow() {
+        long searchedTime = MySharedPreference.getInstance(this).getIsSearched();
+        long newTime = System.currentTimeMillis();
+        long millis = TimeUnit.MINUTES.toMillis(10);
+        long addedTime = newTime - searchedTime;
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(addedTime);
+        if(minutes >= 10) {
+            return true;
+        }
+        return false;
     }
 }
