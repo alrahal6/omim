@@ -122,6 +122,7 @@ public class MatchingListActivity extends AppCompatActivity {
                 if(response.body().size() < 1) {
                     mNearbyStatus.setVisibility(View.VISIBLE);
                     mNearbyStatus.setText("No Passengers found! please try later");
+                    return;
                 }
                 createNearByList(response.body());
             }
@@ -136,7 +137,6 @@ public class MatchingListActivity extends AppCompatActivity {
     }
     
     public void createNearByList(List<NearbySearch> body) {
-        MySharedPreference.getInstance(this).addToSearched(System.currentTimeMillis());
         mMatchingList = new ArrayList<>();
         for (NearbySearch res : body) {
             mMatchingList.add(new NearbySearch(res.getNearImage(),
@@ -150,6 +150,7 @@ public class MatchingListActivity extends AppCompatActivity {
     }
 
     public void buildRecyclerView() {
+        MySharedPreference.getInstance(this).addToSearched(System.currentTimeMillis());
         mRecyclerView = findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);

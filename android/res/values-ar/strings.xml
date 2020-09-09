@@ -2434,6 +2434,7 @@
     <string name="google_map">Google Map</string>
     <string name="my_account">My Account</string>
     <string name="account_bal">Account Balance</string>
+    <string name="unable_fetch_location">Sorry! Unable to fetch Location</string>
     <string-array name="select_vehicle">
 		<item>اقتصاد</item>
 	</string-array>
