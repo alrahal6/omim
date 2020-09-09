@@ -26,6 +26,7 @@ import com.mapsrahal.maps.MySharedPreference;
 import com.mapsrahal.maps.R;
 import com.mapsrahal.maps.SplashActivity;
 import com.mapsrahal.maps.activity.ContactActivity;
+import com.mapsrahal.maps.activity.MyAccountActivity;
 import com.mapsrahal.maps.activity.MyRidesActivity;
 import com.mapsrahal.maps.activity.ProfileActivity;
 import com.mapsrahal.util.Config;
@@ -352,10 +353,12 @@ public abstract class BaseMwmFragmentActivity extends AppCompatActivity
       //break;
       case R.id.nav_settings:
       case R.id.nav_profile:
-      case R.id.nav_vehicle:
-        //intent = new Intent(this, ProfileActivity.class);
-        //startActivity(intent);
         Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show();
+        break;
+      case R.id.nav_account:
+        intent = new Intent(this, MyAccountActivity.class);
+        startActivity(intent);
+        //Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show();
         break;
       case R.id.nav_contact_us:
         intent = new Intent(this, ContactActivity.class);

@@ -1,11 +1,13 @@
 package com.mapsrahal.maps.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Looper;
 import android.view.View;
 import android.widget.TextView;
 
@@ -16,7 +18,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -28,6 +32,7 @@ import com.mapsrahal.maps.adapter.MatchingAdapter;
 import com.mapsrahal.maps.api.ApiClient;
 import com.mapsrahal.maps.api.PostApi;
 import com.mapsrahal.maps.model.NearbySearch;
+import com.mapsrahal.maps.websocket.UserLocation;
 import com.mapsrahal.util.UiUtils;
 
 import java.time.ZonedDateTime;
@@ -78,6 +83,7 @@ public class MatchingListActivity extends AppCompatActivity {
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
         builder.addLocationRequest(locationRequest);
         LocationSettingsRequest locationSettingsRequest = builder.build();
+        getLocationUpdates();
         fusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
             @Override
             public void onComplete(@NonNull Task<Location> task) {
@@ -90,6 +96,7 @@ public class MatchingListActivity extends AppCompatActivity {
                 }
             }
         });
+
         if(!isHaveLocation) {
             mNearbyStatus.setVisibility(View.VISIBLE);
         }
@@ -105,7 +112,6 @@ public class MatchingListActivity extends AppCompatActivity {
         );
 
         Call<List<NearbySearch>> call = postApi.nearbySearch(nSearch);
-        MySharedPreference.getInstance(this).addToSearched(System.currentTimeMillis());
         call.enqueue(new Callback<List<NearbySearch>>() {
             @Override
             public void onResponse(Call<List<NearbySearch>> call, Response<List<NearbySearch>> response) {
@@ -130,6 +136,7 @@ public class MatchingListActivity extends AppCompatActivity {
     }
     
     public void createNearByList(List<NearbySearch> body) {
+        MySharedPreference.getInstance(this).addToSearched(System.currentTimeMillis());
         mMatchingList = new ArrayList<>();
         for (NearbySearch res : body) {
             mMatchingList.add(new NearbySearch(res.getNearImage(),
@@ -168,5 +175,31 @@ public class MatchingListActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
+    }
+
+    @SuppressLint("MissingPermission")
+    private void getLocationUpdates() {
+        fusedLocationClient.requestLocationUpdates(locationRequest,mLocationCallback, Looper.myLooper());
+    }
+
+    private final LocationCallback mLocationCallback = new LocationCallback() {
+        @Override
+        public void onLocationResult(LocationResult locationResult) {
+            super.onLocationResult(locationResult);
+            if (locationResult == null) {
+                return;
+            }
+            for(Location location : locationResult.getLocations()) {
+
+            }
+        }
+    };
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (fusedLocationClient != null) {
+            fusedLocationClient.removeLocationUpdates(mLocationCallback);
+        }
     }
 }

@@ -2432,6 +2432,8 @@
 	<string name="confirm">Confirm</string>
     <string name="passengers_nearby">Find Passengers Nearby</string>
     <string name="google_map">Google Map</string>
+    <string name="my_account">My Account</string>
+    <string name="account_bal">Account Balance</string>
     <string-array name="select_vehicle">
 		<item>اقتصاد</item>
 	</string-array>

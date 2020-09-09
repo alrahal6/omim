@@ -3056,4 +3056,6 @@
     <string name="confirm">Confirm</string>
     <string name="passengers_nearby">Passengers Nearby</string>
     <string name="google_map">Google Map</string>
+    <string name="my_account">My Account</string>
+    <string name="account_bal">Account Balance</string>
 </resources>

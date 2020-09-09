@@ -14,8 +14,8 @@
             android:id="@+id/nav_profile"
             android:title="@string/my_profile" />
         <item
-            android:id="@+id/nav_vehicle"
-            android:title="@string/vehicle" />
+            android:id="@+id/nav_account"
+            android:title="@string/my_account" />
         <!--<item
             android:id="@+id/nav_chat"
             android:title="Chat" />-->
