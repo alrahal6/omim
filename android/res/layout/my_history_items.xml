@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:layout_margin="4dp">
         <!--<ImageView
-            android:id="@+id/my_image"
+            android:id="@+id/hist_image"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@drawable/ic_person_black_24dp"
@@ -19,7 +19,7 @@
             android:padding="2dp" />-->
 
         <TextView
-            android:id="@+id/my_from"
+            android:id="@+id/hist_from"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -28,23 +28,23 @@
             android:textSize="20sp"
             android:textStyle="bold" />
         <TextView
-            android:id="@+id/my_to"
+            android:id="@+id/hist_to"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/my_from"
+            android:layout_below="@+id/hist_from"
             android:text="To : "
             android:textColor="@android:color/black"
             android:textSize="20sp"
             android:textStyle="bold" />
 
         <LinearLayout
-            android:layout_below="@+id/my_to"
+            android:layout_below="@+id/hist_to"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <LinearLayout
-                android:layout_below="@+id/my_to"
+                android:layout_below="@+id/hist_to"
                 android:orientation="horizontal"
                 android:padding="@dimen/space5"
                 android:weightSum="3"
@@ -52,20 +52,20 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/my_distance"
+                    android:id="@+id/hist_distance"
                     android:layout_width="wrap_content"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:text="10 KM "
                     android:textSize="15sp" />
                 <TextView
-                    android:id="@+id/my_seats"
+                    android:id="@+id/hist_seats"
                     android:layout_width="wrap_content"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:drawableStart="@drawable/ic_seat"
                     android:textSize="15sp" />
-
+                
             </LinearLayout>
             <LinearLayout
                 android:orientation="horizontal"
@@ -75,21 +75,21 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/my_time"
+                    android:id="@+id/hist_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
                     android:text="time : "
                     android:textSize="15sp" />
                 <TextView
-                    android:id="@+id/my_gender"
+                    android:id="@+id/hist_gender"
                     android:layout_width="wrap_content"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:text="Gender  "
                     android:textSize="15sp" />
                 <TextView
-                    android:id="@+id/my_amount"
+                    android:id="@+id/hist_amount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

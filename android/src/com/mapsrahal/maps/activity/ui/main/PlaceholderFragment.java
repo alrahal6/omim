@@ -5,18 +5,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
+
+import com.mapsrahal.maps.MySharedPreference;
 import com.mapsrahal.maps.R;
+import com.mapsrahal.maps.api.ApiClient;
+import com.mapsrahal.maps.api.PostApi;
+import com.mapsrahal.maps.model.GetMyHistory;
+import com.mapsrahal.maps.model.MyTripHistory;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class PlaceholderFragment extends Fragment {
 
+    private PostApi postApi;
     private static final String ARG_SECTION_NUMBER = "section_number";
-
-    private PageViewModel pageViewModel;
+    private TextView mFrom,mTo,mDistance,mSeats,mTime,mGender,mAmount;
 
     public static PlaceholderFragment newInstance(int index) {
         PlaceholderFragment fragment = new PlaceholderFragment();
@@ -29,12 +38,7 @@ public class PlaceholderFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        /*pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
-        int index = 1;
-        if (getArguments() != null) {
-            index = getArguments().getInt(ARG_SECTION_NUMBER);
-        }
-        pageViewModel.setIndex(index);*/
+        postApi = ApiClient.getClient().create(PostApi.class);
     }
 
     @Override
@@ -42,16 +46,44 @@ public class PlaceholderFragment extends Fragment {
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_my_rides, container, false);
-        final TextView textView = root.findViewById(R.id.near_from);
-        textView.setText("Current Trip");
-        /*pageViewModel.getText().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });*/
+        mFrom = root.findViewById(R.id.my_from);
+        mTo = root.findViewById(R.id.my_to);
+        mDistance = root.findViewById(R.id.my_distance);
+        mSeats = root.findViewById(R.id.my_seats);
+        mTime = root.findViewById(R.id.my_time);
+        mGender = root.findViewById((R.id.my_gender));
+        mAmount = root.findViewById(R.id.my_amount);
+        getCurrent();
         return root;
     }
 
+    private void getCurrent() {
+        GetMyHistory getMyHistory = new GetMyHistory(
+                MySharedPreference.getInstance(getActivity()).getUserId(),
+                MySharedPreference.getInstance(getActivity()).getPhoneNumber()
+        );
 
+        Call<MyTripHistory> call = postApi.myCurrent(getMyHistory);
+        call.enqueue(new Callback<MyTripHistory>() {
+            @Override
+            public void onResponse(Call<MyTripHistory> call, Response<MyTripHistory> response) {
+                if (!response.isSuccessful()) {
+                    return;
+                }
+                MyTripHistory res = response.body();
+                mFrom.setText(res.getfAddress());
+                mTo.setText(res.gettAddress());
+                mDistance.setText(""+res.getDistance());
+                mSeats.setText(res.getPhone());
+                mTime.setText(res.getmTripTime());
+                mGender.setText(res.getNote());
+                mAmount.setText(res.getPrice());
+            }
+
+            @Override
+            public void onFailure(Call<MyTripHistory> call, Throwable t) {
+
+            }
+        });
+    }
 }
