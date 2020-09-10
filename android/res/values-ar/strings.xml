@@ -2425,16 +2425,16 @@
 	<string name = "trip_history">رحلاتي</string>
 	<string name = "my_profile">الملف الشخصي</string>
 	<string name = "vehicle">مركبة</string>
-	<string name = "sdg"> SDG </string>
-	<string name="sure_close">Are you sure? Close?</string>
-    <string name="still_trip_valid">Still trip is valid</string>
-	<string name = "sure_finish_current">Do you want to finish the current Trip?</string>
-	<string name="confirm">Confirm</string>
-    <string name="passengers_nearby">Find Passengers Nearby</string>
-    <string name="google_map">Google Map</string>
-    <string name="my_account">My Account</string>
-    <string name="account_bal">Account Balance</string>
-    <string name="unable_fetch_location">Sorry! Unable to fetch Location</string>
+	<string name = "sdg"> جنيه </string>
+	<string name="sure_close">هل أنت متأكد ? اغلاق?</string>
+    <string name="still_trip_valid">ماتزال الرحله صالحه</string>
+	<string name = "sure_finish_current">هل تريد انهاء الرحله الحالية ?</string>
+	<string name="confirm">تأكيد</string>
+	<string name="passengers_nearby">ابحث عن ركاب بالقرب منك</string>
+	<string name="google_map">خريطة قوقل </string>
+    <string name="my_account">حسابي</string>
+    <string name="account_bal">الرصيد </string>
+	<string name="unable_fetch_location">  عذرا !   غير قادرعلي قراءة مواقع الركاب  </string>
     <string-array name="select_vehicle">
 		<item>اقتصاد</item>
 	</string-array>

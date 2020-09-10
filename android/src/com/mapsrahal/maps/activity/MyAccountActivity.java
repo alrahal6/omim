@@ -24,7 +24,11 @@ public class MyAccountActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         mMyBalance = findViewById(R.id.my_balance);
-        mMyBalance.setText("Available Balance : 100SDG");
+        getMyBalance();
+    }
+
+    private void getMyBalance() {
+        mMyBalance.setText("Available Balance : 100 SDG");
     }
 
     @Override
