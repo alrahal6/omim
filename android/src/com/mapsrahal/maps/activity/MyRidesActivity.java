@@ -32,6 +32,8 @@ public class MyRidesActivity extends BaseMwmFragmentActivity {
         super.onSafeCreate(savedInstanceState);
         setContentView(R.layout.activity_my_rides);
         displayToolbarAsActionBar();
+        //getToolbar().setTitle("My Trips");
+        getSupportActionBar().setTitle("My Trips");
         //Toolbar toolbar = findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

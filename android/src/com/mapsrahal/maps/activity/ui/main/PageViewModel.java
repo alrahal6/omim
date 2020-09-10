@@ -2,14 +2,12 @@ package com.mapsrahal.maps.activity.ui.main;
 
 import android.app.Application;
 import android.content.Context;
-
 import androidx.annotation.NonNull;
 import androidx.arch.core.util.Function;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
-
 import com.mapsrahal.maps.MwmApplication;
 import com.mapsrahal.maps.MySharedPreference;
 import com.mapsrahal.maps.api.ApiClient;
@@ -20,11 +18,9 @@ import com.mapsrahal.maps.model.dao.MatchDao;
 import com.mapsrahal.maps.model.db.MatchDatabase;
 import com.mapsrahal.util.DateUtils;
 import com.mapsrahal.util.Utils;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
