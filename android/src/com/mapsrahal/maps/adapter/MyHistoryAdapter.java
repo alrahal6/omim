@@ -65,7 +65,7 @@ public class MyHistoryAdapter extends RecyclerView.Adapter<MyHistoryAdapter.Matc
         holder.mDistance.setText(currentItem.getDistance()+" KM");
         holder.mSeats.setText(currentItem.getNote());
         holder.mTime.setText(currentItem.getmTripTime());
-        holder.mGender.setText(currentItem.getName());
+        holder.mGender.setText("");
         holder.mAmount.setText(currentItem.getPrice()+" SDG");
     }
 

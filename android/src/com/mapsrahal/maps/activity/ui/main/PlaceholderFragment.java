@@ -73,11 +73,11 @@ public class PlaceholderFragment extends Fragment {
                 MyTripHistory res = response.body();
                 mFrom.setText(res.getfAddress());
                 mTo.setText(res.gettAddress());
-                mDistance.setText(""+res.getDistance());
+                mDistance.setText(""+res.getDistance()+" KM");
                 mSeats.setText(res.getNote());
                 mTime.setText(res.getmTripTime());
-                mGender.setText(res.getNote());
-                mAmount.setText(res.getPrice());
+                mGender.setText("");
+                mAmount.setText(res.getPrice()+" SDG");
             }
 
             @Override
