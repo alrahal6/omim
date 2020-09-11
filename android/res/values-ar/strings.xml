@@ -2435,6 +2435,7 @@
     <string name="my_account">حسابي</string>
     <string name="account_bal">الرصيد </string>
 	<string name="unable_fetch_location">  عذرا !   غير قادرعلي قراءة مواقع الركاب  </string>
+    <string name="notification">Notification</string>
     <string-array name="select_vehicle">
 		<item>اقتصاد</item>
 	</string-array>

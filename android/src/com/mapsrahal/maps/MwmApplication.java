@@ -72,9 +72,11 @@ public class MwmApplication extends Application implements AppBackgroundTracker.
   @NonNull
   private SubwayManager mSubwayManager;
   public static final String CHANNEL_ID = "my_rahal_01";
+  public static final String CHANNEL_ID_NOTIFY = "carpoolee_notification";
   public static final String CHANNEL_ID_CALL_CAPTAIN = "call_captatin" ;
   public static final String CHANNEL_NAME = "Carpoolee";
   public static final String CHANNEL_NAME_CAPTAIN = "Captain Request";
+  public static final String CHANNEL_NAME_USER = "User Message";
   private static final String CHANNEL_DESCRIPTION = "Taxi CarPool App";
   private boolean mFrameworkInitialized;
   private boolean mPlatformInitialized;
@@ -223,6 +225,15 @@ public class MwmApplication extends Application implements AppBackgroundTracker.
 
       NotificationManager mNotificationManager1 = getSystemService(NotificationManager.class);
       NotificationChannel mChannel1 = new NotificationChannel(CHANNEL_ID_CALL_CAPTAIN, CHANNEL_NAME_CAPTAIN, NotificationManager.IMPORTANCE_HIGH);
+      mChannel1.setDescription(CHANNEL_DESCRIPTION);
+      mChannel1.enableLights(true);
+      mChannel1.setLightColor(Color.GREEN);
+      mChannel1.enableVibration(true);
+      mChannel1.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+      mNotificationManager1.createNotificationChannel(mChannel);
+
+      NotificationManager mNotificationManager2 = getSystemService(NotificationManager.class);
+      NotificationChannel mChannel2 = new NotificationChannel(CHANNEL_ID_NOTIFY, CHANNEL_NAME_USER, NotificationManager.IMPORTANCE_HIGH);
       mChannel1.setDescription(CHANNEL_DESCRIPTION);
       mChannel1.enableLights(true);
       mChannel1.setLightColor(Color.GREEN);

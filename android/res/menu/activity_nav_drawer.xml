@@ -12,7 +12,7 @@
             android:title="@string/trip_history" />
         <item
             android:id="@+id/nav_profile"
-            android:title="@string/my_profile" />
+            android:title="@string/notification" />
         <item
             android:id="@+id/nav_account"
             android:title="@string/my_account" />

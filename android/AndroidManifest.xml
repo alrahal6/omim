@@ -61,7 +61,11 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute"
         tools:replace="android:supportsRtl">
-        <activity android:name=".activity.MyAccountActivity"></activity>
+        <activity android:name=".activity.ResultActivity"
+            android:launchMode="singleTask"
+            android:taskAffinity=""
+            android:excludeFromRecents="true"></activity>
+        <activity android:name=".activity.MyAccountActivity" />
         <activity android:name=".activity.ui.BlockActivity" />
         <activity android:name=".activity.ContactActivity" />
         <activity
@@ -263,7 +267,7 @@ meta-data
         <activity-alias
             android:name=".DownloadResourcesActivity"
             android:label="@string/app_name"
-            android:targetActivity=".SplashActivity"></activity-alias>
+            android:targetActivity=".SplashActivity" />
 
         <activity
             android:name=".DownloadResourcesLegacyActivity"

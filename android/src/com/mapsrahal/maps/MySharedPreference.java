@@ -37,6 +37,10 @@ public class MySharedPreference {
     private static final String KEY_TO_ADDRESS = "toAddress";
     private static final String KEY_SEARCHED_TIME = "searchedTime";
 
+    private static final String KEY_NOTIFY = "isNotify";
+    private static final String KEY_NOTIFY_TITLE = "notifyTitle";
+    private static final String KEY_NOTIFY_BODY = "notifyBody";
+
     private static final String KEY_ACTIVE_PROCESS_ID = "activeprocessid";
     private static final String KEY_START_STATUS_ID = "startstatusid";
     private static final String CAPTAIN_TICKET_DTLS = "captainticketdtls";
@@ -318,6 +322,36 @@ public class MySharedPreference {
     public long getIsSearched() {
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         return sharedPreferences.getLong(KEY_SEARCHED_TIME, 0);
+    }
+
+    public void putNotification(String title,String body) {
+        SharedPreferences.Editor editor = getSharedPreference().edit();
+        //editor.putInt(KEY_ACTIVE_PROCESS_ID, activeProcessId);
+        editor.putString(KEY_NOTIFY_TITLE, title);
+        editor.putString(KEY_NOTIFY_BODY, body);
+        editor.apply();
+    }
+
+    public String getTitle() {
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getString(KEY_NOTIFY_TITLE, "");
+    }
+
+    public String getBody() {
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getString(KEY_NOTIFY_BODY, "");
+    }
+
+    public void addToNotify(boolean isNotify) {
+        SharedPreferences.Editor editor = getSharedPreference().edit();
+        //editor.putInt(KEY_ACTIVE_PROCESS_ID, activeProcessId);
+        editor.putBoolean(KEY_NOTIFY, isNotify);
+        editor.apply();
+    }
+
+    public boolean getIsNotified() {
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean(KEY_NOTIFY, false);
     }
 
     public void putListConfirmed(String key, List<UserMessage> objArray){

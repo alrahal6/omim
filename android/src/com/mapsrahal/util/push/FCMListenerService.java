@@ -18,11 +18,13 @@ import com.mapsrahal.maps.MwmApplication;
 import com.mapsrahal.maps.MySharedPreference;
 import com.mapsrahal.maps.R;
 import com.mapsrahal.maps.SplashActivity;
+import com.mapsrahal.maps.activity.ResultActivity;
 import com.mapsrahal.util.Constants;
 
 import java.util.Map;
 
 import static com.mapsrahal.maps.MwmApplication.CHANNEL_ID;
+import static com.mapsrahal.maps.MwmApplication.CHANNEL_ID_NOTIFY;
 
 public class FCMListenerService extends FirebaseMessagingService {
     private static final String TAG = FCMListenerService.class.getSimpleName();
@@ -42,8 +44,44 @@ public class FCMListenerService extends FirebaseMessagingService {
             sendNotification(null, remoteMessage.getData());
         }
         if (remoteMessage.getNotification() != null) {
-            sendNotification(remoteMessage.getNotification(), null);
+            sendJustNotify(remoteMessage.getNotification());
+            //sendNotification(remoteMessage.getNotification(), null);
         }
+    }
+
+    private void sendJustNotify(RemoteMessage.Notification notification) {
+        //String title;
+        //String body;
+        String flag;
+        String title = notification.getTitle();
+        String body  = notification.getBody();
+        MySharedPreference.getInstance(this).addToNotify(true);
+        MySharedPreference.getInstance(this).putNotification(title,body);
+        Intent notifyIntent = new Intent(this, ResultActivity.class);
+        // Set the Activity to start in a new, empty task
+        notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        //notifyIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        //notifyIntent.putExtra("title", title);
+        //notifyIntent.putExtra("message", body);
+        // Create the PendingIntent
+        PendingIntent notifyPendingIntent = PendingIntent.getActivity(
+                this, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT
+        );
+
+        NotificationCompat.Builder notificationBuilder =
+                new NotificationCompat.Builder(this,CHANNEL_ID_NOTIFY)
+                        .setSmallIcon(R.drawable.about_logo)
+                        .setContentTitle(title)
+                        .setContentText(body)
+                        .setAutoCancel(true)
+                        .setContentIntent(notifyPendingIntent);
+
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        notificationManager.notify(0, notificationBuilder.build());
+        startActivity(notifyIntent);
+        //SplashActivity.start(this,ResultActivity.class,notifyIntent);
     }
 
     private void sendNotification(RemoteMessage.Notification notification,

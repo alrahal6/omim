@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 import com.mapsrahal.maps.activity.LoginActivity;
+import com.mapsrahal.maps.activity.ResultActivity;
 import com.mapsrahal.maps.ads.Banner;
 import com.mapsrahal.maps.analytics.AdvertisingObserver;
 import com.mapsrahal.maps.analytics.ExternalLibrariesMediator;
@@ -503,6 +504,15 @@ public class SplashActivity extends AppCompatActivity
     //Intent result = new Intent(this, DownloadResourcesLegacyActivity.class);
     //Intent result = new Intent(this, MwmActivity.class);
     //Intent result = new Intent(this, LoginActivity.class);
+    if(MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).getIsNotified()) {
+      MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).addToNotify(false);
+      Intent notifyIntent = new Intent(this, ResultActivity.class);
+      //notifyIntent.putExtra("title", getIntent().getStringExtra("title"));
+      //notifyIntent.putExtra("message", getIntent().getStringExtra("message"));
+      startActivity(notifyIntent);
+      finish();
+      return;
+    }
     Intent result = new Intent(this, LoginActivity.class);
     /*if (input != null)
     {

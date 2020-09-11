@@ -3059,4 +3059,5 @@
     <string name="my_account">My Account</string>
     <string name="account_bal">Account Balance</string>
     <string name="unable_fetch_location">Sorry! Unable to fetch Location</string>
+    <string name="notification">Notification</string>
 </resources>
