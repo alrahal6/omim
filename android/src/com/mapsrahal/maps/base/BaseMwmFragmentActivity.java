@@ -353,11 +353,8 @@ public abstract class BaseMwmFragmentActivity extends AppCompatActivity
       //startActivity(intent);
       //break;
       case R.id.nav_settings:
-        Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show();
-        break;
       case R.id.nav_profile:
-        intent = new Intent(this, ResultActivity.class);
-        startActivity(intent);
+        Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show();
         break;
       case R.id.nav_account:
         intent = new Intent(this, MyAccountActivity.class);

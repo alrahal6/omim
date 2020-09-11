@@ -329,7 +329,8 @@ public class MySharedPreference {
         //editor.putInt(KEY_ACTIVE_PROCESS_ID, activeProcessId);
         editor.putString(KEY_NOTIFY_TITLE, title);
         editor.putString(KEY_NOTIFY_BODY, body);
-        editor.apply();
+        //editor.apply();
+        editor.commit();
     }
 
     public String getTitle() {

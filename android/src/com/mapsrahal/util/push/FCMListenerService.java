@@ -80,7 +80,12 @@ public class FCMListenerService extends FirebaseMessagingService {
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         notificationManager.notify(0, notificationBuilder.build());
-        startActivity(notifyIntent);
+
+        boolean isForeground = MwmApplication.backgroundTracker(MwmApplication.get().getApplicationContext()).isForeground();
+        if(isForeground) {
+            startActivity(notifyIntent);
+            //return;
+        }
         //SplashActivity.start(this,ResultActivity.class,notifyIntent);
     }
 

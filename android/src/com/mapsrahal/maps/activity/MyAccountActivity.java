@@ -56,7 +56,7 @@ public class MyAccountActivity extends AppCompatActivity {
                     return;
                 }
                 MyAccount m = response.body();
-                mMyBalance.setText("Available Balance : " + m.getAmount() + " SDG");
+                mMyBalance.setText("Captain Balance : " + m.getAmount() + " SDG");
             }
 
             @Override
