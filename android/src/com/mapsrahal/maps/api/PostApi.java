@@ -2,6 +2,7 @@ package com.mapsrahal.maps.api;
 
 import com.mapsrahal.maps.model.CallLog;
 import com.mapsrahal.maps.model.GetMyHistory;
+import com.mapsrahal.maps.model.MyAccount;
 import com.mapsrahal.maps.model.MyTripHistory;
 import com.mapsrahal.maps.model.NearbySearch;
 import com.mapsrahal.maps.model.Post;
@@ -29,9 +30,12 @@ public interface PostApi {
     @POST("getNearByPassLst.php")
     Call<List<NearbySearch>> nearbySearch(@Body NearbySearch nearbySearch);
 
-    @POST("getNearByPassLst.php")
+    @POST("getMyHistory.php")
     Call<List<MyTripHistory>> myHistory(@Body GetMyHistory getMyHistory);
 
-    @POST("getNearByPassLst.php")
+    @POST("getMyCurrent.php")
     Call<MyTripHistory> myCurrent(@Body GetMyHistory getMyHistory);
+
+    @POST("getMyAccount.php")
+    Call<MyAccount> myAccount(@Body GetMyHistory getMyHistory);
 }
