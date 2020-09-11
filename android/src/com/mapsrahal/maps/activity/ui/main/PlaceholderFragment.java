@@ -74,7 +74,7 @@ public class PlaceholderFragment extends Fragment {
                 mFrom.setText(res.getfAddress());
                 mTo.setText(res.gettAddress());
                 mDistance.setText(""+res.getDistance());
-                mSeats.setText(res.getPhone());
+                mSeats.setText(res.getNote());
                 mTime.setText(res.getmTripTime());
                 mGender.setText(res.getNote());
                 mAmount.setText(res.getPrice());

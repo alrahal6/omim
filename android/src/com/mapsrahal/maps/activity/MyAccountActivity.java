@@ -42,7 +42,6 @@ public class MyAccountActivity extends AppCompatActivity {
         getMyBalance();
     }
 
-    private String amount = "0";
     private void getMyBalance() {
         GetMyHistory getMyHistory = new GetMyHistory(
                 MySharedPreference.getInstance(this).getUserId(),

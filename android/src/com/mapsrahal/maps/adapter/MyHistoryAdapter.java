@@ -39,7 +39,7 @@ public class MyHistoryAdapter extends RecyclerView.Adapter<MyHistoryAdapter.Matc
             mFrom = itemView.findViewById(R.id.hist_from);
             mTo = itemView.findViewById(R.id.hist_to);
             mDistance = itemView.findViewById(R.id.hist_distance);
-            mSeats = itemView.findViewById(R.id.hist_seats);
+            mSeats = itemView.findViewById(R.id.hist_status);
             mTime = itemView.findViewById(R.id.hist_time);
             mGender = itemView.findViewById((R.id.hist_gender));
             mAmount = itemView.findViewById(R.id.hist_amount);
@@ -63,9 +63,9 @@ public class MyHistoryAdapter extends RecyclerView.Adapter<MyHistoryAdapter.Matc
         holder.mFrom.setText(currentItem.getfAddress());
         holder.mTo.setText(currentItem.gettAddress());
         holder.mDistance.setText(currentItem.getDistance()+" KM");
-        holder.mSeats.setText(currentItem.getName());
-        holder.mTime.setText(currentItem.getNote());
-        holder.mGender.setText(currentItem.getPhone());
+        holder.mSeats.setText(currentItem.getNote());
+        holder.mTime.setText(currentItem.getmTripTime());
+        holder.mGender.setText(currentItem.getName());
         holder.mAmount.setText(currentItem.getPrice()+" SDG");
     }
 
