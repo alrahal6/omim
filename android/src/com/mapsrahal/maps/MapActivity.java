@@ -634,8 +634,10 @@ public class MapActivity extends BaseMwmFragmentActivity
     private void closeMyNotification(boolean isClose) {
         if(isClose) {
             mCloseNotification.setVisibility(View.GONE);
+            mCloseList.setVisibility(View.GONE);
             MySharedPreference.getInstance(MapActivity.this).addActiveProcess(0);
             MySharedPreference.getInstance(MapActivity.this).userNotification(null);
+            reloadMe();
         }
     }
 
@@ -809,6 +811,7 @@ public class MapActivity extends BaseMwmFragmentActivity
     private void turnStartToFinish() {
         // todo
         mStartTrip.setText("Finish Trip");
+        mCloseList.setVisibility(View.GONE);
         mFinishTrip.setVisibility(View.GONE);
         MySharedPreference.getInstance(this).addStartStatus();
     }
@@ -1325,10 +1328,10 @@ public class MapActivity extends BaseMwmFragmentActivity
         UserMessageApi userMessageApi = ApiClient.getClient().create(UserMessageApi.class);
         switch (flag) {
             case Constants.Notification.DRIVER_ACCEPTED:
-                isConfirmed = true;
                 call = userMessageApi.sendConfirmation(userMessageList);
                 break;
             case Constants.Notification.TRIP_STARTED:
+                isConfirmed = true;
                 call = userMessageApi.sendTripStarted(listWithMyPhone(userMessageList));
                 break;
             case Constants.Notification.TRIP_COMPLETED:
