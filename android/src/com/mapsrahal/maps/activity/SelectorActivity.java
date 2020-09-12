@@ -1,26 +1,26 @@
 package com.mapsrahal.maps.activity;
 
-import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.mapsrahal.maps.MapActivity;
 import com.mapsrahal.maps.MySharedPreference;
 import com.mapsrahal.maps.R;
-import com.mapsrahal.maps.activity.ui.BlockActivity;
 import com.mapsrahal.maps.api.ApiClient;
 import com.mapsrahal.maps.api.ApiInterface;
 import com.mapsrahal.maps.auth.IsBlocked;
-import com.mapsrahal.maps.background.ConnectivityChangedReceiver;
+import com.mapsrahal.maps.model.AmIBlocked;
+import com.mapsrahal.maps.model.GetMyHistory;
 import com.mapsrahal.util.UiUtils;
 
-import java.net.InetAddress;
 import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
@@ -39,6 +39,7 @@ public class SelectorActivity extends AppCompatActivity implements View.OnClickL
     public static final int CAPTAIN_TAXI_ONLY = 4;
     public static final int CAPTAIN_SHARE_ONLY = 5;
     public static final int CAPTAIN_ANY = 6;
+    private ProgressBar mProgressbar;
     private ApiInterface apiService;
 
     @Override
@@ -53,6 +54,7 @@ public class SelectorActivity extends AppCompatActivity implements View.OnClickL
           2. confirmed trip
           3. isCaptain online
          */
+        mProgressbar = findViewById(R.id.select_progress);
         mPassengerCab = findViewById(R.id.passenger_cab_only);
         //mPassengerCab.setOnClickListener(this);
         mPassengerPool = findViewById(R.id.passenger_pool_only);
@@ -71,10 +73,7 @@ public class SelectorActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onClick(View v) {
-        if(MySharedPreference.getInstance(this).isCaptainOnline()) {
-            startActivity(CAPTAIN_TAXI_ONLY);
-            return;
-        }
+
         switch (v.getId()) {
             /*case R.id.passenger_cab_only:
                 startActivity(PASSENGER_TAXI_ONLY);
@@ -102,10 +101,35 @@ public class SelectorActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void startActivity(int v) {
-        MySharedPreference.getInstance(this).setSelectorId(v);
-        Intent intent = new Intent(this, MapActivity.class);
-        intent.putExtra(PASSENGER_CAPTAIN_SELECTOR,v);
-        startActivity(intent);
+        //isBlocked(v);
+        mProgressbar.setVisibility(View.VISIBLE);
+        AmIBlocked amIBlocked = new AmIBlocked(
+                MySharedPreference.getInstance(this).getUserId(),
+                MySharedPreference.getInstance(this).getPhoneNumber(),
+                v
+        );
+
+        Call<IsBlocked> call = apiService.verifyUser(amIBlocked);
+        call.enqueue(new Callback<IsBlocked>() {
+            @Override
+            public void onResponse(Call<IsBlocked> call, Response<IsBlocked> response) {
+                IsBlocked m = response.body();
+                if (m.isAllowed()) {
+                    mProgressbar.setVisibility(View.GONE);
+                    MySharedPreference.getInstance(SelectorActivity.this).setSelectorId(v);
+                    Intent intent = new Intent(SelectorActivity.this, MapActivity.class);
+                    intent.putExtra(PASSENGER_CAPTAIN_SELECTOR,v);
+                    startActivity(intent);
+                } else {
+                    showUserAlreadyConfirmed(m.getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<IsBlocked> call, Throwable t) {
+                showUserAlreadyConfirmed("Failed to connect,please check your internet");
+            }
+        });
     }
 
     private void startMatchActivity() {
@@ -129,5 +153,19 @@ public class SelectorActivity extends AppCompatActivity implements View.OnClickL
             return true;
         }
         return false;
+    }
+
+    private void showUserAlreadyConfirmed(String msg) {
+        mProgressbar.setVisibility(View.GONE);
+        DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE:
+                    dialog.dismiss();
+                    break;
+            }
+        };
+        AlertDialog.Builder builder = new AlertDialog.Builder(SelectorActivity.this);
+        builder.setMessage("Alert! " +msg).setPositiveButton("Dismiss", dialogClickListener)
+                .show();
     }
 }

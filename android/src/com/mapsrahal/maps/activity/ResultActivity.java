@@ -29,6 +29,7 @@ public class ResultActivity extends AppCompatActivity {
         tt.setText(title);
         TextView textView = findViewById(R.id.notification_body);
         textView.setText(message);
+        MySharedPreference.getInstance(this).putNotification("","");
     }
 
     @Override

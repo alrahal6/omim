@@ -2,6 +2,8 @@ package com.mapsrahal.maps.api;
 
 import com.mapsrahal.maps.auth.IsBlocked;
 import com.mapsrahal.maps.auth.MessageResponse;
+import com.mapsrahal.maps.model.AmIBlocked;
+import com.mapsrahal.maps.model.GetMyHistory;
 import com.mapsrahal.maps.model.User;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -25,5 +27,5 @@ public interface ApiInterface {
     Call<User> verifyOTP(@Body User user);
 
     @POST("verifyUser.php")
-    Call<IsBlocked> verifyUser(@Body IsBlocked isBlocked);
+    Call<IsBlocked> verifyUser(@Body AmIBlocked amIBlocked);
 }

@@ -114,4 +114,13 @@
         android:textColor="@color/base_green"
         android:layout_marginTop="@dimen/space15"
         android:text="Taxi Services will be available soon..."/>
+
+    <ProgressBar
+        android:visibility="gone"
+        android:id="@+id/select_progress"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
 </LinearLayout>

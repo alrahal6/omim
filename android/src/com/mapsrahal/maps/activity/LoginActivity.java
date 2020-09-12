@@ -325,7 +325,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mTextViewCountDown.setText(timeLeftFormatted);
     }
 
-    private void startActivity() {
+    /*private void startActivity() {
         int id = MySharedPreference.getInstance(getApplicationContext()).getUserId();
         String phone = MySharedPreference.getInstance(getApplicationContext()).getPhoneNumber();
         IsBlocked isBlocked = new IsBlocked(phone,id,false);
@@ -338,9 +338,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     //return;
                 }
                 if(response.body().isAllowed()) {
-                    allowIn();
+                    //allowIn();
                 } else {
-                    doNotAllow();
+                    //doNotAllow();
                 }
             }
 
@@ -362,6 +362,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void doNotAllow() {
         Intent intent = new Intent(this, BlockActivity.class);
         startActivity(intent);
-    }
+    }*/
 
 }
