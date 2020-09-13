@@ -644,7 +644,7 @@ public class MapActivity extends BaseMwmFragmentActivity
 
             @Override
             public void onFailure(Call<IsValid> call, Throwable t) {
-                Toast.makeText(MapActivity.this,"Sorry! Unable to cancel now",Toast.LENGTH_LONG).show();
+                Toast.makeText(MapActivity.this,"Sorry! Unable to connect",Toast.LENGTH_LONG).show();
             }
         });
         //reloadMe();
