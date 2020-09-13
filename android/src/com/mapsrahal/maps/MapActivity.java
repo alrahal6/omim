@@ -624,11 +624,25 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     private void cancelTrip() {
         //todo write close logic
+        String notify = MySharedPreference.getInstance(this).getUserNotification();
+        userMessage = gSon.fromJson(notify, UserMessage.class);
+        Call<IsValid> call = userMessageApi.sendPassengerCancelled(userMessage);
+        call.enqueue(new Callback<IsValid>() {
+            @Override
+            public void onResponse(Call<IsValid> call, Response<IsValid> response) {
+                if(response.body().getFlag() == 1) {
+                    closeMyNotification(true);
+                } else {
+                    Toast.makeText(MapActivity.this,"Sorry!,Unable to cancel now",Toast.LENGTH_LONG).show();
+                }
+            }
 
-
-
-        closeMyNotification(true);
-        reloadMe();
+            @Override
+            public void onFailure(Call<IsValid> call, Throwable t) {
+                Toast.makeText(MapActivity.this,"Sorry! Unable to cancel now",Toast.LENGTH_LONG).show();
+            }
+        });
+        //reloadMe();
     }
 
     private void closeMyNotification(boolean isClose) {
@@ -1339,10 +1353,12 @@ public class MapActivity extends BaseMwmFragmentActivity
                 isCloseNotify = true;
                 break;
             case Constants.Notification.DRIVER_CANCELLED:
-            case Constants.Notification.PASSENGER_CANCELLED:
                 call = userMessageApi.sendTripCancelled(listWithMyPhone(userMessageList));
                 isCloseNotify = true;
-                break;
+            /*case Constants.Notification.PASSENGER_CANCELLED:
+                call = userMessageApi.sendPassengerCancelled(listWithMyPhone(userMessageList));
+                isCloseNotify = true;
+                break;*/
             default:
                 return;
         }
@@ -1747,7 +1763,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                     data.put("fUserId", MySharedPreference.getInstance(MapActivity.this).getUserId() + "");
                     data.put("tUserId", "0.0");
                     data.put("mFlag", "1");
-                    data.put("tripId", "0.0");
+                    data.put("tripId", post.getId().toString());
                     data.put("distance", myDistance);
                     data.put("price", "" + tripSeatPrice);
                     data.put("mTripTime", "" + startingTime);

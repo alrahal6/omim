@@ -42,6 +42,9 @@ public interface UserMessageApi {
     @POST("sendCancelled.php")
     Call<UserMessage> sendTripCancelled(@Body List<UserMessage> userMessage);
 
+    @POST("sendPassengerCancelled.php")
+    Call<IsValid> sendPassengerCancelled(@Body UserMessage userMessage);
+
     @POST("checkBeforeConfirm.php")
     Call<IsValid> checkBeforeConfirm(@Body List<UserMessage> userMessage);
 

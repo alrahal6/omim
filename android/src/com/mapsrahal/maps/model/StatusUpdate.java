@@ -1,6 +1,5 @@
 package com.mapsrahal.maps.model;
 
-
 public class StatusUpdate {
 
     private int userId;
