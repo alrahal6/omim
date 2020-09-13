@@ -57,6 +57,7 @@ import com.mapsrahal.maps.intent.MapTask;
 import com.mapsrahal.maps.location.CompassData;
 import com.mapsrahal.maps.location.LocationHelper;
 import com.mapsrahal.maps.model.CallLog;
+import com.mapsrahal.maps.model.GetMyHistory;
 import com.mapsrahal.maps.model.IsValid;
 import com.mapsrahal.maps.model.MatchingItem;
 import com.mapsrahal.maps.model.Post;
@@ -624,9 +625,13 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     private void cancelTrip() {
         //todo write close logic
-        String notify = MySharedPreference.getInstance(this).getUserNotification();
-        userMessage = gSon.fromJson(notify, UserMessage.class);
-        Call<IsValid> call = userMessageApi.sendPassengerCancelled(userMessage);
+        //String notify = MySharedPreference.getInstance(this).getUserNotification();
+        //userMessage = gSon.fromJson(notify, UserMessage.class);
+        GetMyHistory getMyHistory = new GetMyHistory(
+                MySharedPreference.getInstance(this).getUserId(),
+                MySharedPreference.getInstance(this).getPhoneNumber()
+        );
+        Call<IsValid> call = userMessageApi.sendPassengerCancelled(getMyHistory);
         call.enqueue(new Callback<IsValid>() {
             @Override
             public void onResponse(Call<IsValid> call, Response<IsValid> response) {
@@ -1763,7 +1768,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                     data.put("fUserId", MySharedPreference.getInstance(MapActivity.this).getUserId() + "");
                     data.put("tUserId", "0.0");
                     data.put("mFlag", "1");
-                    data.put("tripId", post.getId().toString());
+                    data.put("tripId", "0.0");
                     data.put("distance", myDistance);
                     data.put("price", "" + tripSeatPrice);
                     data.put("mTripTime", "" + startingTime);

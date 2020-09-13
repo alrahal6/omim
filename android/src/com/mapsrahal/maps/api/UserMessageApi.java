@@ -1,5 +1,6 @@
 package com.mapsrahal.maps.api;
 
+import com.mapsrahal.maps.model.GetMyHistory;
 import com.mapsrahal.maps.model.IsValid;
 import com.mapsrahal.maps.model.UserMessage;
 import java.util.List;
@@ -43,7 +44,7 @@ public interface UserMessageApi {
     Call<UserMessage> sendTripCancelled(@Body List<UserMessage> userMessage);
 
     @POST("sendPassengerCancelled.php")
-    Call<IsValid> sendPassengerCancelled(@Body UserMessage userMessage);
+    Call<IsValid> sendPassengerCancelled(@Body GetMyHistory getMyHistory);
 
     @POST("checkBeforeConfirm.php")
     Call<IsValid> checkBeforeConfirm(@Body List<UserMessage> userMessage);
