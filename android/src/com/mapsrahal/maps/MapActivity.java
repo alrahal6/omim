@@ -704,7 +704,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 MapFragment.nativeScaleMinus();
                 break;
             case R.id.closable_l:
-                closeList();
+                //closeList();
                 break;
             case R.id.closable_n:
                 closeNotification();
