@@ -7,6 +7,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public class DateUtils
 {
@@ -50,6 +51,7 @@ public class DateUtils
     Date afterAddingMins = new Date(curTimeInMs);
     String pattern = "d MMM-HH:mm";
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+    //simpleDateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
     return simpleDateFormat.format(afterAddingMins);
   }
 
@@ -58,8 +60,18 @@ public class DateUtils
     Date afterAddingMins = new Date(date.getTime());
     String pattern = "d MMM-HH:mm";
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+    //simpleDateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
     return simpleDateFormat.format(afterAddingMins);
   }
+
+    public static String formatDateStrGmt(Date date) {
+        //long curTimeInMs = date.getTime();
+        Date afterAddingMins = new Date(date.getTime());
+        String pattern = "d MMM-HH:mm";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+        return simpleDateFormat.format(afterAddingMins);
+    }
 
   public static String formatString(String dateStr) {
     //final long FIFTEEN_MINUTE_IN_MILLIS = 60000 * 15;//millisecs
@@ -67,6 +79,7 @@ public class DateUtils
     //Date afterAddingMins = new Date(curTimeInMs + FIFTEEN_MINUTE_IN_MILLIS);
     String pattern = "d MMM-HH:mm";
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+    simpleDateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
     Date date = null;
     try {
       date = simpleDateFormat.parse(dateStr);
@@ -78,7 +91,8 @@ public class DateUtils
 
   public static String formatDateCustom(Date date) {
     //long curTimeInMs = date.getTime();
-    DateFormat dateFormat = new SimpleDateFormat("hh.mm aa");
+    DateFormat dateFormat = new SimpleDateFormat("d MMM-HH:mm");
+    //dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
     return dateFormat.format(date);
   }
 }

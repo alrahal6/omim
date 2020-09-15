@@ -25,7 +25,7 @@ public class PlaceholderFragment extends Fragment {
 
     private PostApi postApi;
     private static final String ARG_SECTION_NUMBER = "section_number";
-    private TextView mFrom,mTo,mDistance,mSeats,mTime,mGender,mAmount;
+    private TextView mFrom,mTo,mDistance,mSeats,mTime,mGender,mAmount,mCaptain;
 
     public static PlaceholderFragment newInstance(int index) {
         PlaceholderFragment fragment = new PlaceholderFragment();
@@ -53,6 +53,7 @@ public class PlaceholderFragment extends Fragment {
         mTime = root.findViewById(R.id.my_time);
         mGender = root.findViewById((R.id.my_gender));
         mAmount = root.findViewById(R.id.my_amount);
+        mCaptain = root.findViewById(R.id.my_captain);
         getCurrent();
         return root;
     }
@@ -78,6 +79,7 @@ public class PlaceholderFragment extends Fragment {
                 mTime.setText(res.getmTripTime());
                 mGender.setText("");
                 mAmount.setText(res.getPrice()+" SDG");
+                mCaptain.setText("Captain : "+res.getCaptain());
             }
 
             @Override

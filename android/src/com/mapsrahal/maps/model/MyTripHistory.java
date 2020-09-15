@@ -18,8 +18,13 @@ public class MyTripHistory {
     private double fLng;
     private double tLat;
     private double tLng;
+    private String captain;
 
-    public MyTripHistory(int fUserId, int tUserId, int mFlag, double tripId, double distance, String price, String mTripTime, String phone, String name, String fAddress, String tAddress, String note, double fLat, double fLng, double tLat, double tLng) {
+    public MyTripHistory(int fUserId, int tUserId, int mFlag, double tripId,
+                         double distance, String price, String mTripTime,
+                         String phone, String name, String fAddress,
+                         String tAddress, String note, double fLat, double fLng,
+                         double tLat, double tLng,String captain) {
         this.fUserId = fUserId;
         this.tUserId = tUserId;
         this.mFlag = mFlag;
@@ -36,6 +41,15 @@ public class MyTripHistory {
         this.fLng = fLng;
         this.tLat = tLat;
         this.tLng = tLng;
+        this.captain = captain;
+    }
+
+    public String getCaptain() {
+        return captain;
+    }
+
+    public void setCaptain(String captain) {
+        this.captain = captain;
     }
 
     public int getfUserId() {

@@ -37,14 +37,24 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/my_captain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/my_to"
+            android:text="Captain : "
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_below="@+id/my_captain"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <LinearLayout
-                android:layout_below="@+id/my_to"
+                android:layout_below="@+id/my_captain"
                 android:orientation="horizontal"
                 android:padding="@dimen/space5"
                 android:weightSum="3"

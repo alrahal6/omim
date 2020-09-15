@@ -344,7 +344,6 @@ public class MapActivity extends BaseMwmFragmentActivity
         AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this);
         builder.setMessage(getString(R.string.sure_cancel)).setPositiveButton(getString(R.string.yes), cancelDialogClickListener)
                 .setNegativeButton(getString(R.string.no), cancelDialogClickListener).show();
-
     }
 
     DialogInterface.OnClickListener cancelDialogClickListener = new DialogInterface.OnClickListener() {
@@ -355,7 +354,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                     //sendConfirmation();
                     if (confirmedUserList.size() > 0) {
                         sendUserMessage(confirmedUserList, Constants.Notification.DRIVER_CANCELLED);
-                        reloadMe();
+                        //reloadMe();
                     }
                     // cancelMe();
                     break;
@@ -656,7 +655,7 @@ public class MapActivity extends BaseMwmFragmentActivity
             mCloseList.setVisibility(View.GONE);
             MySharedPreference.getInstance(MapActivity.this).addActiveProcess(0);
             MySharedPreference.getInstance(MapActivity.this).userNotification(null);
-            reloadMe();
+            //reloadMe();
         }
     }
 
@@ -1360,10 +1359,7 @@ public class MapActivity extends BaseMwmFragmentActivity
             case Constants.Notification.DRIVER_CANCELLED:
                 call = userMessageApi.sendTripCancelled(listWithMyPhone(userMessageList));
                 isCloseNotify = true;
-            /*case Constants.Notification.PASSENGER_CANCELLED:
-                call = userMessageApi.sendPassengerCancelled(listWithMyPhone(userMessageList));
-                isCloseNotify = true;
-                break;*/
+                break;
             default:
                 return;
         }
@@ -1381,6 +1377,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 if(finalIsConfirmed) {
                     turnStartToFinish();
                 }
+
             }
 
             @Override
@@ -1811,7 +1808,7 @@ public class MapActivity extends BaseMwmFragmentActivity
             String extraDistance = "";
             insert(new MatchingItem(post.getId(), post.getUserId(),
                     post.getSourceAddress(), post.getDestinationAddress(),
-                    DateUtils.formatDateStr(post.getStartTime()), Double.toString(post.getTripDistance()),
+                    DateUtils.formatDateStrGmt(post.getStartTime()), Double.toString(post.getTripDistance()),
                     Double.toString(totDist), extraDistance, post.getPhone(),
                     amount, mMyTripDistance, post.getSrcLat(), post.getSrcLng(), post.getDestLat(), post.getDestLng()
                     , post.getSeats(), post.getDropDownVal(), post.getPrice(), post.getName()));

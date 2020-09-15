@@ -91,7 +91,7 @@ public class TripHistoryFragment extends Fragment {
                     res.getfUserId(),res.gettUserId(),res.getmFlag(),
                     res.getTripId(),res.getDistance(),res.getPrice(),res.getmTripTime(),
                     res.getPhone(),res.getName(),res.getfAddress(),res.gettAddress(),
-                    res.getNote(),res.getfLat(),res.gettLng(),res.gettLat(),res.gettLng()
+                    res.getNote(),res.getfLat(),res.gettLng(),res.gettLat(),res.gettLng(),res.getCaptain()
             ));
 
         }
