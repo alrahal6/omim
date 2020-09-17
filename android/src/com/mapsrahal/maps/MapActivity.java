@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -402,7 +403,9 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     private void showHideRequest(boolean showHide) {
         if (showHide) {
-            btRequest.setVisibility(View.VISIBLE);
+            if(Double.parseDouble(myDistance) > 1) {
+                btRequest.setVisibility(View.VISIBLE);
+            }
         } else {
             btRequest.setVisibility(View.GONE);
         }
@@ -765,27 +768,31 @@ public class MapActivity extends BaseMwmFragmentActivity
             case R.id.tv_pickup:
                 isPickupSearch = true;
                 showProgress(true);
+                showHideRequest(true);
                 showSearch();
                 break;
             case R.id.tv_dropoff:
                 isPickupSearch = false;
                 showProgress(true);
+                showHideRequest(true);
                 showSearch();
                 break;
             case R.id.set_pickup:
                 //showProgress(true);
+                myDistance = "0";
                 showProgress(true);
                 //showBtnRequest();
                 //if()
                 //if(toLocation != null) {
-                showHideRequest(true);
+                showHideRequest(false);
                 //}
                 setPickup();
                 break;
             case R.id.set_drop:
+                myDistance = "0";
                 showProgress(true);
                 //if(fromLocation != null) {
-                showHideRequest(true);
+                showHideRequest(false);
                 //}
                 setDropoff();
                 break;
@@ -922,6 +929,8 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     private void setPickup() {
         //addTestBookMark();
+        myDistance = "0";
+        //Log.d(TAG,"my distance - "+myDistance);
         fromLocation = tempLocation;
         mSourceAddress = fromLocation.getTitle();
         tvPickup.setText(mSourceAddress);
@@ -931,6 +940,8 @@ public class MapActivity extends BaseMwmFragmentActivity
     }
 
     private void setDropoff() {
+        myDistance = "0";
+        //Log.d(TAG,"my distance - "+myDistance);
         toLocation = tempLocation;
         mDestinationAddress = toLocation.getTitle();
         tvDropOff.setText(mDestinationAddress);
@@ -951,27 +962,32 @@ public class MapActivity extends BaseMwmFragmentActivity
     }
 
     private void getPrice(String myDistance, int mSelector) {
-        PostApi postApi = ApiClient.getClient().create(PostApi.class);
-        Price price = new Price(0.0, myDistance, mSelector);
-        Call<Price> call = postApi.createPrice(price);
-        call.enqueue(new Callback<Price>() {
-            @Override
-            public void onResponse(Call<Price> call, Response<Price> response) {
-                if (!response.isSuccessful()) {
-                    Toast.makeText(MapActivity.this, getString(R.string.error_calc_price), Toast.LENGTH_LONG).show();
-                    return;
+        double t = Double.parseDouble(myDistance);
+        //Log.d(TAG,"my distance - "+t);
+        if(t > 1) {
+            PostApi postApi = ApiClient.getClient().create(PostApi.class);
+            Price price = new Price(0.0, myDistance, mSelector);
+            Call<Price> call = postApi.createPrice(price);
+            call.enqueue(new Callback<Price>() {
+                @Override
+                public void onResponse(Call<Price> call, Response<Price> response) {
+                    if (!response.isSuccessful()) {
+                        Toast.makeText(MapActivity.this, getString(R.string.error_calc_price), Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                    tripPrice = roundTwoDecimals(response.body().getPrice());
+                    if (!isOnRequestBtn) {
+                        getCalculatedPrice();
+                    }
                 }
-                tripPrice = roundTwoDecimals(response.body().getPrice());
-                if (!isOnRequestBtn) {
-                    getCalculatedPrice();
-                }
-            }
 
-            @Override
-            public void onFailure(Call<Price> call, Throwable t) {
-                Toast.makeText(MapActivity.this, getString(R.string.error_calc_price), Toast.LENGTH_LONG).show();
-            }
-        });
+                @Override
+                public void onFailure(Call<Price> call, Throwable t) {
+                    Toast.makeText(MapActivity.this, getString(R.string.error_calc_price), Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+        showBtnRequest();
     }
 
     private void getCalculatedPrice() {
@@ -1654,6 +1670,8 @@ public class MapActivity extends BaseMwmFragmentActivity
                 mTextView.setText(getString(R.string.captain_reached));
                 break;
             case Constants.Notification.TRIP_STARTED:
+                pb.setVisibility(View.GONE);
+                wtv.setVisibility(View.GONE);
                 phoneNumber = "0" + userMessage.getPhone();
                 stName.setText("Captain : " + userMessage.getName());
                 stPhone.setText("Phone : " + phoneNumber);

@@ -38,6 +38,7 @@ import com.mapsrahal.util.UiUtils;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -105,9 +106,10 @@ public class MatchingListActivity extends AppCompatActivity {
 
     // todo add more criteria
     private void nearbyPost() {
+        String dt = ""+new Date();
         NearbySearch nSearch = new NearbySearch(
                 1, "", "", "",
-                "", "", "", "",
+                "", dt, "", "",
                  fromLat, fromLng,
                 1.1, 1.1
         );
