@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -169,7 +170,12 @@ public class MatchingListActivity extends AppCompatActivity {
                     + fromLng + "&daddr=" + toLat + "," + toLng + "&mode=driving";
             Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(url));
             intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
+        try {
             startActivity(intent);
+        } catch(Exception e) {
+            Toast.makeText(this,"Please install Google Map",Toast.LENGTH_LONG).show();
+        }
+
     }
 
     @Override

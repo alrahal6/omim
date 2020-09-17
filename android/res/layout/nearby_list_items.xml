@@ -41,27 +41,37 @@
             android:textStyle="bold"
             android:layout_toRightOf="@+id/near_image" />
 
-        <LinearLayout
+        <TextView
             android:layout_below="@+id/near_to"
+            android:id="@+id/near_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:textStyle="bold"
+            android:text="time : "
+            android:textSize="20sp" />
+
+        <LinearLayout
+            android:layout_below="@+id/near_time"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <LinearLayout
-                android:layout_below="@+id/near_to"
+                android:layout_below="@+id/near_time"
                 android:orientation="horizontal"
                 android:padding="@dimen/space5"
                 android:weightSum="3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-
                 <TextView
-                    android:id="@+id/near_distance"
+                    android:id="@+id/near_gender"
                     android:layout_width="wrap_content"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="10 KM "
+                    android:text="Gender  "
                     android:textSize="15sp" />
+
                 <TextView
                     android:id="@+id/near_seats"
                     android:layout_width="wrap_content"
@@ -83,31 +93,25 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:padding="@dimen/space5"
-                android:weightSum="5"
+                android:weightSum="2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/near_time"
+                    android:id="@+id/near_distance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:text="time : "
-                    android:textSize="15sp" />
-                <TextView
-                    android:id="@+id/near_gender"
-                    android:layout_width="wrap_content"
                     android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:text="Gender  "
-                    android:textSize="15sp" />
+                    android:text="10 KM "
+                    android:textSize="20sp" />
+
                 <TextView
                     android:id="@+id/near_amount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="200 SDG "
-                    android:textSize="15sp"/>
+                    android:textSize="20sp"/>
             </LinearLayout>
         </LinearLayout>
     </RelativeLayout>

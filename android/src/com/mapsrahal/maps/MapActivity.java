@@ -265,7 +265,12 @@ public class MapActivity extends BaseMwmFragmentActivity
                 + fromLng + "&daddr=" + toLat + "," + toLng + "&mode=driving";
         Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(url));
         intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
-        startActivity(intent);
+        //startActivity(intent);
+        try {
+            startActivity(intent);
+        } catch(Exception e) {
+            Toast.makeText(this,"Please install Google Map",Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -636,6 +641,7 @@ public class MapActivity extends BaseMwmFragmentActivity
             public void onResponse(Call<IsValid> call, Response<IsValid> response) {
                 if(response.body().getFlag() == 1) {
                     closeMyNotification(true);
+                    reloadMe();
                 } else {
                     Toast.makeText(MapActivity.this,"Sorry!,Unable to cancel now",Toast.LENGTH_LONG).show();
                 }
@@ -1372,6 +1378,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 displayConfirmedList();
                 if(finalIsCloseNotify) {
                     closeMyNotification(true);
+                    reloadMe();
                 }
 
                 if(finalIsConfirmed) {
