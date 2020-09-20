@@ -4,6 +4,8 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.util.Log;
 import android.widget.Switch;
 
@@ -38,7 +40,7 @@ public class FCMListenerService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        Log.d(TAG, "Message from server " + remoteMessage.getFrom());
+        //Log.d(TAG, "Message from server " + remoteMessage.getFrom());
 
         if (remoteMessage.getData().size() > 0) {
             sendNotification(null, remoteMessage.getData());
@@ -123,7 +125,8 @@ public class FCMListenerService extends FirebaseMessagingService {
                         .setContentText(body)
                         .setAutoCancel(true)
                         .setContentIntent(pendingIntent);
-
+        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        notificationBuilder.setSound(alarmSound);
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -160,6 +163,18 @@ public class FCMListenerService extends FirebaseMessagingService {
             case Constants.Notification.DRIVER_REFUSED:
                 title = getString(R.string.captain_cancelled);
                 break;
+            case Constants.Notification.TRIP_STARTED:
+                title = getString(R.string.trip_started);
+                break;
+            case Constants.Notification.TRIP_COMPLETED:
+                title = getString(R.string.trip_completed);
+                break;
+            case Constants.Notification.DRIVER_CANCELLED:
+                title = getString(R.string.trip_cancelled);
+                break;
+            case Constants.Notification.PASSENGER_CANCELLED:
+                title = "Carpooler have cancelled trip";
+                break;
         }
         return title;
     }
@@ -186,7 +201,18 @@ public class FCMListenerService extends FirebaseMessagingService {
             case Constants.Notification.DRIVER_REFUSED:
                 body = "Driver Rejected your request!";
                 break;
-
+            case Constants.Notification.TRIP_STARTED:
+                body = "Your Captain started trip";
+                break;
+            case Constants.Notification.TRIP_COMPLETED:
+                body = "Your trip completed successfully";
+                break;
+            case Constants.Notification.DRIVER_CANCELLED:
+                body = "Contact your captain for details";
+                break;
+            case Constants.Notification.PASSENGER_CANCELLED:
+                body = "Contact your carpooler for details";
+                break;
         }
         return body;
     }
