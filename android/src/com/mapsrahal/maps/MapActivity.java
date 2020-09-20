@@ -1626,6 +1626,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 mTextView.setText(getString(R.string.passenger_accepted_request));
                 break;
             case Constants.Notification.PASSENGER_CANCELLED:
+                mCloseNotification.setVisibility(View.GONE);
                 isCloseNotify = true;
                 mTextView.setText(getString(R.string.passenger_cancel));
                 break;
