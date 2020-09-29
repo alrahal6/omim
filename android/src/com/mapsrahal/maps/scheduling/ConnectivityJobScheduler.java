@@ -8,7 +8,6 @@ import android.content.Context;
 import android.os.Build;
 import androidx.annotation.NonNull;
 
-import com.crashlytics.android.Crashlytics;
 import com.firebase.jobdispatcher.Constraint;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.firebase.jobdispatcher.GooglePlayDriver;
@@ -127,7 +126,7 @@ public class ConnectivityJobScheduler implements ConnectivityListener
     {
       IllegalStateException exception = new IllegalStateException("Play services doesn't exist on" +
                                                                   " the device");
-      Crashlytics.logException(exception);
+      //Crashlytics.logException(exception);
     }
 
     @Override

@@ -9,7 +9,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import android.text.TextUtils;
 
-import com.crashlytics.android.Crashlytics;
+//import com.crashlytics.android.Crashlytics;
 import com.mapsrahal.maps.DownloadResourcesLegacyActivity;
 import com.mapsrahal.maps.Framework;
 import com.mapsrahal.maps.MapFragment;
@@ -169,7 +169,7 @@ public class Factory
       String msg = this.getClass().getSimpleName() + ": incoming intent uri: " + uri;
       LOGGER.i(this.getClass().getSimpleName(), msg);
       org.alohalytics.Statistics.logEvent(msg);
-      Crashlytics.log(msg);
+      //Crashlytics.log(msg);
       return createMapTask(uri);
     }
 

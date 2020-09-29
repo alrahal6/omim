@@ -20,7 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cocosw.bottomsheet.BottomSheet;
-import com.crashlytics.android.Crashlytics;
+//import com.crashlytics.android.Crashlytics;
 import com.mapsrahal.maps.MwmActivity;
 import com.mapsrahal.maps.R;
 import com.mapsrahal.maps.base.BaseMwmRecyclerFragment;
@@ -99,7 +99,7 @@ public class BookmarksListFragment extends BaseMwmRecyclerFragment<BookmarkListA
   public void onCreate(@Nullable Bundle savedInstanceState)
   {
     super.onCreate(savedInstanceState);
-    Crashlytics.log("onCreate");
+    //Crashlytics.log("onCreate");
     BookmarkCategory category = getCategoryOrThrow();
     mCategoryDataSource = new CategoryDataSource(category);
     mCatalogListener = new CatalogListenerDecorator(this);
@@ -134,7 +134,7 @@ public class BookmarksListFragment extends BaseMwmRecyclerFragment<BookmarkListA
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
   {
     super.onViewCreated(view, savedInstanceState);
-    Crashlytics.log("onViewCreated");
+    //Crashlytics.log("onViewCreated");
     configureAdapter();
     configureFab(view);
 
@@ -155,7 +155,7 @@ public class BookmarksListFragment extends BaseMwmRecyclerFragment<BookmarkListA
   public void onStart()
   {
     super.onStart();
-    Crashlytics.log("onStart");
+    //Crashlytics.log("onStart");
     SearchEngine.INSTANCE.addBookmarkListener(this);
     BookmarkManager.INSTANCE.addSortingListener(this);
     BookmarkManager.INSTANCE.addSharingListener(this);
@@ -166,7 +166,7 @@ public class BookmarksListFragment extends BaseMwmRecyclerFragment<BookmarkListA
   public void onResume()
   {
     super.onResume();
-    Crashlytics.log("onResume");
+    //Crashlytics.log("onResume");
     BookmarkListAdapter adapter = getAdapter();
     adapter.notifyDataSetChanged();
     updateSorting();
@@ -178,14 +178,14 @@ public class BookmarksListFragment extends BaseMwmRecyclerFragment<BookmarkListA
   public void onPause()
   {
     super.onPause();
-    Crashlytics.log("onPause");
+    //Crashlytics.log("onPause");
   }
 
   @Override
   public void onStop()
   {
     super.onStop();
-    Crashlytics.log("onStop");
+    //Crashlytics.log("onStop");
     SearchEngine.INSTANCE.removeBookmarkListener(this);
     BookmarkManager.INSTANCE.removeSortingListener(this);
     BookmarkManager.INSTANCE.removeSharingListener(this);

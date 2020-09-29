@@ -18,7 +18,7 @@ PRIVATE_CAR_MODEL_COEFS="$BASE_PATH/routing_common/car_model_coefs.hpp"
 DEFAULT_PRIVATE_CAR_MODEL_COEFS="$BASE_PATH/routing_common/car_model_coefs_default.hpp"
 
 PRIVATE_PROPERTIES="$BASE_PATH/android/secure.properties"
-PRIVATE_FABRIC_PROPERTIES="$BASE_PATH/android/fabric.properties"
+PRIVATE_GOOGLE_SERVICES="$BASE_PATH/android/google-services.json"
 PRIVATE_PUSHWOOSH_PROPERTIES="$BASE_PATH/android/pushwoosh.properties"
 PRIVATE_NETWORK_CONFIG="$BASE_PATH/android/res/xml/network_security_config.xml"
 SAVED_PRIVATE_REPO_FILE="$BASE_PATH/.private_repository_url"
@@ -46,15 +46,13 @@ setup_opensource() {
 }
 ' > "$PRIVATE_PROPERTIES"
 
-  echo 'apiSecret=0000000000000000000000000000000000000000000000000000000000000000
-apiKey=0000000000000000000000000000000000000000
-' > "$PRIVATE_FABRIC_PROPERTIES"
   echo 'pwAppId=XXXXX
 pwProjectId=A123456789012
 ' > "$PRIVATE_PUSHWOOSH_PROPERTIES"
   echo '<?xml version="1.0" encoding="utf-8"?>
 <network-security-config/>
 ' > "$PRIVATE_NETWORK_CONFIG"
+echo '{}' > "$PRIVATE_GOOGLE_SERVICES"
 }
 
 setup_private() {

@@ -10,6 +10,7 @@ import android.util.Log;
 import com.mapsrahal.maps.BuildConfig;
 import com.mapsrahal.maps.MwmApplication;
 import com.mapsrahal.maps.R;
+import com.mapsrahal.util.CrashlyticsUtils;
 import com.mapsrahal.util.StorageUtils;
 import net.jcip.annotations.GuardedBy;
 import net.jcip.annotations.ThreadSafe;
@@ -179,6 +180,7 @@ public class LoggerFactory
       default:
         logger.v(CORE_TAG, msg);
     }
+    CrashlyticsUtils.log(level, CORE_TAG, msg);
   }
 
   private static native void nativeToggleCoreDebugLogs(boolean enabled);

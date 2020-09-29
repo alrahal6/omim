@@ -26,6 +26,7 @@ import android.view.ViewGroup;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.mapsrahal.maps.Framework;
 import com.mapsrahal.maps.MwmApplication;
 import com.mapsrahal.maps.R;
@@ -290,6 +291,7 @@ public class SettingsPrefsFragment extends BaseXmlSettingsFragment
   {
     boolean isEnabled = (boolean) newValue;
     Statistics.INSTANCE.trackSettingsToggle(isEnabled);
+    FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(isEnabled);
     return true;
   }
 

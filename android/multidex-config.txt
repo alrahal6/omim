@@ -17,3 +17,4 @@ com/mapsrahal/util/sharing/ShareableInfoProvider.class
 com/mapsrahal/util/StorageUtils.class
 com/mapsrahal/util/Utils.class
 com/my/tracker/MyTracker.class
+com/google/firebase/iid/Registrar.class

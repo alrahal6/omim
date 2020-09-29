@@ -120,6 +120,7 @@ public class SelectorActivity extends AppCompatActivity implements View.OnClickL
                     Intent intent = new Intent(SelectorActivity.this, MapActivity.class);
                     intent.putExtra(PASSENGER_CAPTAIN_SELECTOR,v);
                     startActivity(intent);
+                    //finish();
                 } else {
                     showUserAlreadyConfirmed(m.getMessage());
                 }
@@ -157,15 +158,19 @@ public class SelectorActivity extends AppCompatActivity implements View.OnClickL
 
     private void showUserAlreadyConfirmed(String msg) {
         mProgressbar.setVisibility(View.GONE);
-        DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
-            switch (which) {
-                case DialogInterface.BUTTON_POSITIVE:
-                    dialog.dismiss();
-                    break;
-            }
-        };
-        AlertDialog.Builder builder = new AlertDialog.Builder(SelectorActivity.this);
-        builder.setMessage("Alert! " +msg).setPositiveButton("Dismiss", dialogClickListener)
-                .show();
+        try {
+            DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        dialog.dismiss();
+                        break;
+                }
+            };
+            AlertDialog.Builder builder = new AlertDialog.Builder(SelectorActivity.this);
+            builder.setMessage("Alert! " + msg).setPositiveButton("Dismiss", dialogClickListener)
+                    .show();
+        } catch (Exception e) {
+
+        }
     }
 }

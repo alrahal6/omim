@@ -145,75 +145,72 @@ public class ServerConnection extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        startMe();
         //mViewModel = ViewModelProviders.of(getApplicationContext()).get(WebSocketViewModel.class);
-        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
-        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyWakelockTag");
-        wakeLock.acquire();
-        try {
-            //Uri notificationRaw = Uri.parse("android.resource://" + this.getPackageName() + "/raw/driver_call.mp3");
-            //Log.i(TAG,"Uri "+ notificationRaw);get
-            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
-            //mediaPlayer = MediaPlayer.create(getApplicationContext(), notification);
-            r = RingtoneManager.getRingtone(this, notification);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        //Log.i("MyWakeLockIsWorking","Connected");
-        mClient = new OkHttpClient.Builder()
-                .addInterceptor(new HttpLoggingInterceptor())
-                //.cache(new Cache(cacheDir, cacheSize))
-                .connectTimeout(0, TimeUnit.SECONDS)
-                .pingInterval(10000L, TimeUnit.MILLISECONDS)
-                .readTimeout(0, TimeUnit.SECONDS)
-                .retryOnConnectionFailure(true)
-                .build();
-        //mClient.dispatcher().executorService().shutdown();
-        locationRequest = LocationRequest.create();
-        locationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
-        locationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
-        builder.addLocationRequest(locationRequest);
-        LocationSettingsRequest locationSettingsRequest = builder.build();
-
-        locationCallback = new LocationCallback() {
+        new Thread(new Runnable() {
             @Override
-            public void onLocationResult(LocationResult locationResult) {
-                super.onLocationResult(locationResult);
-                if (locationResult == null) {
-                    return;
+            public void run() {
+                PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+                wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyWakelockTag");
+                wakeLock.acquire();
+                try {
+                    //Uri notificationRaw = Uri.parse("android.resource://" + this.getPackageName() + "/raw/driver_call.mp3");
+                    //Log.i(TAG,"Uri "+ notificationRaw);get
+                    Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+                    //mediaPlayer = MediaPlayer.create(getApplicationContext(), notification);
+                    r = RingtoneManager.getRingtone(ServerConnection.this, notification);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                for (Location currentLocation : locationResult.getLocations()) {
-                    UserLocation userLocation = new UserLocation(
-                            userId,
-                            currentLocation.getLatitude(),
-                            currentLocation.getLongitude(),
-                            1, 1, phone);
-                    sendMe("" + gSon.toJson(userLocation));
-                    //Log.i(TAG,"Connection Count "+mClient.connectionPool().connectionCount());
-                    //Log.i(TAG,"Idle Connection Count "+mClient.connectionPool().idleConnectionCount());
-                    //Log.i(TAG,"location coordinates "+ currentLocation.getLatitude() + " - " + currentLocation.getLongitude());
-                }
-            }
-        };
+                //Log.i("MyWakeLockIsWorking","Connected");
+                mClient = new OkHttpClient.Builder()
+                        .addInterceptor(new HttpLoggingInterceptor())
+                        //.cache(new Cache(cacheDir, cacheSize))
+                        .connectTimeout(0, TimeUnit.SECONDS)
+                        .pingInterval(10000L, TimeUnit.MILLISECONDS)
+                        .readTimeout(0, TimeUnit.SECONDS)
+                        .retryOnConnectionFailure(true)
+                        .build();
+                //mClient.dispatcher().executorService().shutdown();
+                locationRequest = LocationRequest.create();
+                locationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
+                locationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
+                locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(MwmApplication.get().getApplicationContext());
-        start();
-        setAlarm();
+                LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
+                builder.addLocationRequest(locationRequest);
+                LocationSettingsRequest locationSettingsRequest = builder.build();
+
+                locationCallback = new LocationCallback() {
+                    @Override
+                    public void onLocationResult(LocationResult locationResult) {
+                        super.onLocationResult(locationResult);
+                        if (locationResult == null) {
+                            return;
+                        }
+                        for (Location currentLocation : locationResult.getLocations()) {
+                            UserLocation userLocation = new UserLocation(
+                                    userId,
+                                    currentLocation.getLatitude(),
+                                    currentLocation.getLongitude(),
+                                    1, 1, phone);
+                            sendMe("" + gSon.toJson(userLocation));
+                            //Log.i(TAG,"Connection Count "+mClient.connectionPool().connectionCount());
+                            //Log.i(TAG,"Idle Connection Count "+mClient.connectionPool().idleConnectionCount());
+                            //Log.i(TAG,"location coordinates "+ currentLocation.getLatitude() + " - " + currentLocation.getLongitude());
+                        }
+                    }
+                };
+
+                mFusedLocationClient = LocationServices.getFusedLocationProviderClient(MwmApplication.get().getApplicationContext());
+                connect();
+                start();
+                setAlarm();
+            }
+        }).start();
     }
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        super.onStartCommand(intent, flags, startId);
-        if (intent.getAction().equals( Constants.STOPFOREGROUND_ACTION)) {
-            //Log.i(TAG, "Received Stop Foreground Intent");
-            //your end servce code
-            disconnect();
-            //cancelAlarm();
-            stopForeground(true);
-            stopSelf();
-        }
+    private void startMe() {
         Intent notificationIntent = new Intent(this, MapActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
                 0, notificationIntent, 0);
@@ -225,13 +222,30 @@ public class ServerConnection extends Service {
                 .build();
 
         startForeground(1, notification);
-        //Log.i(TAG,"Service thread Id Connect : "+ Thread.currentThread().getId());
+    }
 
-        connect();
-        start();
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        super.onStartCommand(intent, flags, startId);
+        try {
+            if (intent.getAction().equals(Constants.STOPFOREGROUND_ACTION)) {
+                //Log.i(TAG, "Received Stop Foreground Intent");
+                //your end servce code
+                disconnect();
+                //cancelAlarm();
+                stopForeground(true);
+                stopSelf();
+            }
+            startMe();
+            connect();
+            start();
+        } catch (Exception e) {
+
+        }
+        //Log.i(TAG,"Service thread Id Connect : "+ Thread.currentThread().getId());
         //setAlarm();
         //Log.i(TAG,"Service thread Id "+ Thread.currentThread().getId());
-        return START_STICKY;
+        return START_REDELIVER_INTENT;
     }
 
     @SuppressLint("MissingPermission")
@@ -285,7 +299,6 @@ public class ServerConnection extends Service {
     }*/
 
     private void setAlarm() {
-
         AlarmManager alarmMgr = (AlarmManager) (this.getSystemService(Context.ALARM_SERVICE));
         PendingIntent alarmIntent = PendingIntent.getBroadcast(this, 0, new Intent(RECONNECT_IF_BROKEN), 0);
         alarmMgr.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
