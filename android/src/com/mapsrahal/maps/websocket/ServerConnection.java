@@ -147,9 +147,9 @@ public class ServerConnection extends Service {
         super.onCreate();
         startMe();
         //mViewModel = ViewModelProviders.of(getApplicationContext()).get(WebSocketViewModel.class);
-        new Thread(new Runnable() {
+        /*new Thread(new Runnable() {
             @Override
-            public void run() {
+            public void run() {*/
                 PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
                 wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyWakelockTag");
                 wakeLock.acquire();
@@ -203,11 +203,11 @@ public class ServerConnection extends Service {
                 };
 
                 mFusedLocationClient = LocationServices.getFusedLocationProviderClient(MwmApplication.get().getApplicationContext());
-                connect();
-                start();
+                //connect();
+                //start();
                 setAlarm();
-            }
-        }).start();
+            //}
+       // }).start();
     }
 
     private void startMe() {

@@ -1,6 +1,8 @@
 package com.mapsrahal.maps;
 
+import android.app.ActivityManager;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -34,6 +36,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -565,6 +568,58 @@ public class MapActivity extends BaseMwmFragmentActivity
         });
 
         mCustomerPhone.setOnClickListener(v -> callDriver());
+        mSwitch.setVisibility(View.VISIBLE);
+        mSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if(isChecked) {
+                connect();
+            } else {
+                disconnect();
+            }
+        });
+    }
+
+    private void connect() {
+        //Log.i(TAG, "Main thread Id " + Thread.currentThread().getId());
+        //mViewModel.setIsConnected(true);
+        if(!isMyServiceRunning(ServerConnection.class)) {
+            if(mSelector != PASSENGER_TAXI_ONLY) {
+                MySharedPreference.getInstance(this).setCaptainOnline(true);
+            }
+            final Intent intent = getMyIntent();
+            intent.setAction(Constants.STARTFOREGROUND_ACTION);
+            ContextCompat.startForegroundService(getContext(), intent);
+            //bindMyService(intent);
+        }
+    }
+
+    private Context getContext() {
+        return MwmApplication.get().getApplicationContext();
+    }
+
+    private void disconnect() {
+        Log.i(TAG, "Stop service called ");
+        //if(isMyServiceRunning(ServerConnection.class)) {
+        MySharedPreference.getInstance(this).setCaptainOnline(false);
+        Intent stopIntent = getMyIntent();
+        //unBindMyService();
+        stopIntent.setAction(Constants.STOPFOREGROUND_ACTION);
+        ContextCompat.startForegroundService(getContext(), stopIntent);
+        Log.i(TAG, "Stop service called inside");
+    }
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Intent getMyIntent() {
+        Context context = getContext();
+        return new Intent(context, ServerConnection.class);
     }
 
     @Override
