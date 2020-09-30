@@ -3055,9 +3055,12 @@
     <string name="still_trip_valid">Still trip is valid</string>
     <string name="confirm">Confirm</string>
     <string name="passengers_nearby">Passengers Nearby</string>
+    <string name="captains_nearby">Captains Nearby</string>
     <string name="google_map">Google Map</string>
     <string name="my_account">My Account</string>
     <string name="account_bal">Account Balance</string>
     <string name="unable_fetch_location">Sorry! Unable to fetch Location</string>
     <string name="notification">Notification</string>
+    <string name="captains">Captains</string>
+    <string name="passengers">Passengers</string>
 </resources>

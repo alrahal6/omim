@@ -101,8 +101,12 @@ public class SelectorActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void startActivity(int v) {
+        MySharedPreference.getInstance(SelectorActivity.this).setSelectorId(v);
+        Intent intent = new Intent(SelectorActivity.this, MapActivity.class);
+        intent.putExtra(PASSENGER_CAPTAIN_SELECTOR,v);
+        startActivity(intent);
         //isBlocked(v);
-        mProgressbar.setVisibility(View.VISIBLE);
+        /*mProgressbar.setVisibility(View.VISIBLE);
         AmIBlocked amIBlocked = new AmIBlocked(
                 MySharedPreference.getInstance(this).getUserId(),
                 MySharedPreference.getInstance(this).getPhoneNumber(),
@@ -130,7 +134,7 @@ public class SelectorActivity extends AppCompatActivity implements View.OnClickL
             public void onFailure(Call<IsBlocked> call, Throwable t) {
                 showUserAlreadyConfirmed("Failed to connect,please check your internet");
             }
-        });
+        });*/
     }
 
     private void startMatchActivity() {
@@ -156,7 +160,7 @@ public class SelectorActivity extends AppCompatActivity implements View.OnClickL
         return false;
     }
 
-    private void showUserAlreadyConfirmed(String msg) {
+    /*private void showUserAlreadyConfirmed(String msg) {
         mProgressbar.setVisibility(View.GONE);
         try {
             DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
@@ -172,5 +176,5 @@ public class SelectorActivity extends AppCompatActivity implements View.OnClickL
         } catch (Exception e) {
 
         }
-    }
+    }*/
 }

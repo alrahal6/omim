@@ -2431,12 +2431,15 @@
 	<string name = "sure_finish_current">هل تريد انهاء الرحله الحالية ?</string>
 	<string name="confirm">تأكيد</string>
 	<string name="passengers_nearby">ابحث عن ركاب بالقرب منك</string>
+	<string name="captains_nearby">Captains Nearby</string>
 	<string name="google_map">خريطة قوقل </string>
     <string name="my_account">حسابي</string>
     <string name="account_bal">الرصيد </string>
 	<string name="unable_fetch_location">  عذرا !   غير قادرعلي قراءة مواقع الركاب  </string>
     <string name="notification">Notification</string>
-    <string-array name="select_vehicle">
+	<string name="captains">كاربولر</string>
+	<string name="passengers">ركاب</string>
+	<string-array name="select_vehicle">
 		<item>اقتصاد</item>
 	</string-array>
 	<string-array name="select_gender">

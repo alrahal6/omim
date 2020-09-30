@@ -20,17 +20,16 @@
         android:id="@+id/passenger_cab_only"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/space5"
         android:textColor="@color/white_primary"
         android:background="@drawable/button_corner"
-        android:visibility="gone"
-        android:text="@string/taxi_soon" />
+        android:text="@string/taxi" />
     <Button
         android:id="@+id/passenger_pool_only"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space10"
         android:background="@drawable/button_corner"
-        android:layout_marginTop="10dp"
         android:textColor="@color/white_primary"
         android:text="@string/car_pool_share" />
 
@@ -47,11 +46,10 @@
         android:id="@+id/captain_cab_only"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:textColor="@color/white_primary"
         android:background="@drawable/button_corner"
-        android:visibility="gone"
-        android:text="@string/taxi_soon" />
+        android:text="@string/taxi" />
     <Button
         android:id="@+id/captain_pool_only"
         android:layout_width="match_parent"
@@ -74,7 +72,7 @@
         android:id="@+id/passenger_any"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:textColor="@color/white_primary"
         android:background="@drawable/button_corner"
         android:text="@string/provider" />
@@ -95,25 +93,41 @@
         android:padding="@dimen/space5"
         android:textColor="@color/black"
         android:drawableStart="@drawable/ic_search_brown_24dp"
-        android:text="Find"/>
-
+        android:text="Find Nearby"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:weightSum="2"
+        android:orientation="horizontal">
     <Button
         android:id="@+id/passengers_nearby"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_weight="1"
         android:textColor="@color/white_primary"
         android:background="@drawable/button_corner"
-        android:text="@string/passengers_nearby" />
+        android:text="@string/passengers" />
 
-    <TextView
+    <Button
+        android:id="@+id/captains_nearby"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginLeft="@dimen/space5"
+        android:layout_marginRight="@dimen/space5"
+        android:textColor="@color/white_primary"
+        android:background="@drawable/button_corner"
+        android:text="@string/captains" />
+    </LinearLayout>
+    <!--<TextView
         android:textSize="19sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/space5"
         android:textColor="@color/base_green"
         android:layout_marginTop="@dimen/space15"
-        android:text="Taxi Services will be available soon..."/>
+        android:text="Taxi Services will be available soon..."/>-->
 
     <ProgressBar
         android:visibility="gone"
