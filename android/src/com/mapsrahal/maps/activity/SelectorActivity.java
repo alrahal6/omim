@@ -56,13 +56,13 @@ public class SelectorActivity extends AppCompatActivity implements View.OnClickL
          */
         mProgressbar = findViewById(R.id.select_progress);
         mPassengerCab = findViewById(R.id.passenger_cab_only);
-        //mPassengerCab.setOnClickListener(this);
+        mPassengerCab.setOnClickListener(this);
         mPassengerPool = findViewById(R.id.passenger_pool_only);
         mPassengerPool.setOnClickListener(this);
         mPassengerAny = findViewById(R.id.passenger_any);
         mPassengerAny.setOnClickListener(this);
         mCaptainCab = findViewById(R.id.captain_cab_only);
-        //mCaptainCab.setOnClickListener(this);
+        mCaptainCab.setOnClickListener(this);
         mCaptainPool = findViewById(R.id.captain_pool_only);
         mCaptainPool.setOnClickListener(this);
         mCaptainAny = findViewById(R.id.captain_any);
@@ -75,12 +75,12 @@ public class SelectorActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
 
         switch (v.getId()) {
-            /*case R.id.passenger_cab_only:
+            case R.id.passenger_cab_only:
                 startActivity(PASSENGER_TAXI_ONLY);
                 break;
             case R.id.captain_cab_only:
                 startActivity(CAPTAIN_TAXI_ONLY);
-                break;*/
+                break;
             case R.id.passenger_pool_only:
                 startActivity(PASSENGER_SHARE_ONLY);
                 break;

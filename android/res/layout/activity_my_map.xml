@@ -25,16 +25,22 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         android:text="@string/send_request"/>
-    <Switch
+    <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/switch2"
-        android:gravity="center_horizontal"
-        android:visibility="gone"
+        android:gravity="center"
         android:layout_below="@+id/send_request_test"
         android:layout_marginLeft="60dp"
         android:layout_marginTop="160dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/is_online" />
+        android:text=""
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:textOff="Offline"
+        android:textOn="Online"
+        android:thumb="@drawable/sw_thumb"
+        app:track="@drawable/sw_track"
+        app:showText="true"/>
 
     <include layout="@layout/from_to"/>
     <include layout="@layout/captain_content" />

@@ -35,6 +35,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
@@ -227,7 +228,7 @@ public class MapActivity extends BaseMwmFragmentActivity
     private final Handler timerHandler = new Handler();
     private final Handler tripRecordHandler = new Handler();
     private UserTripInfo userTripInfo;
-    private Switch mSwitch;
+    private SwitchCompat mSwitch;
     private CargoStatePagerAdapter mCargoAdapter;
     private MatchingStatePagerAdapter mAdapter;
     private ConfirmedListPagerAdapter mConfirmedAdapter;
