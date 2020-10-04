@@ -131,12 +131,13 @@ public final class Config
 
   public static boolean isTtsEnabled()
   {
-    return getBool(KEY_TTS_ENABLED, true);
+    return getBool(KEY_TTS_ENABLED, false);
   }
 
   public static void setTtsEnabled(boolean enabled)
   {
-    setBool(KEY_TTS_ENABLED, enabled);
+    setBool(KEY_TTS_ENABLED, false);
+    //setBool(KEY_TTS_ENABLED, enabled);
   }
 
   public static String getTtsLanguage()

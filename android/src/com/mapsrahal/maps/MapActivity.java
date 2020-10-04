@@ -582,14 +582,18 @@ public class MapActivity extends BaseMwmFragmentActivity
     private void connect() {
         //Log.i(TAG, "Main thread Id " + Thread.currentThread().getId());
         //mViewModel.setIsConnected(true);
-        if(!isMyServiceRunning(ServerConnection.class)) {
-            if(mSelector != PASSENGER_TAXI_ONLY) {
-                MySharedPreference.getInstance(this).setCaptainOnline(true);
+        try {
+            if (!isMyServiceRunning(ServerConnection.class)) {
+                if (mSelector != PASSENGER_TAXI_ONLY) {
+                    MySharedPreference.getInstance(this).setCaptainOnline(true);
+                }
+                final Intent intent = getMyIntent();
+                intent.setAction(Constants.STARTFOREGROUND_ACTION);
+                ContextCompat.startForegroundService(getContext(), intent);
+                //bindMyService(intent);
             }
-            final Intent intent = getMyIntent();
-            intent.setAction(Constants.STARTFOREGROUND_ACTION);
-            ContextCompat.startForegroundService(getContext(), intent);
-            //bindMyService(intent);
+        } catch (Exception e) {
+
         }
     }
 
@@ -598,14 +602,18 @@ public class MapActivity extends BaseMwmFragmentActivity
     }
 
     private void disconnect() {
-        Log.i(TAG, "Stop service called ");
-        //if(isMyServiceRunning(ServerConnection.class)) {
-        MySharedPreference.getInstance(this).setCaptainOnline(false);
-        Intent stopIntent = getMyIntent();
-        //unBindMyService();
-        stopIntent.setAction(Constants.STOPFOREGROUND_ACTION);
-        ContextCompat.startForegroundService(getContext(), stopIntent);
-        Log.i(TAG, "Stop service called inside");
+        //Log.i(TAG, "Stop service called ");
+        try {
+            //if(isMyServiceRunning(ServerConnection.class)) {
+            MySharedPreference.getInstance(this).setCaptainOnline(false);
+            Intent stopIntent = getMyIntent();
+            //unBindMyService();
+            stopIntent.setAction(Constants.STOPFOREGROUND_ACTION);
+            ContextCompat.startForegroundService(getContext(), stopIntent);
+            //Log.i(TAG, "Stop service called inside");
+        } catch (Exception e) {
+
+        }
     }
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {
@@ -759,6 +767,10 @@ public class MapActivity extends BaseMwmFragmentActivity
         //reloadMe();
     }
 
+    private void wstest() {
+        mService.sendMessage(4,1,1.1,1.2,1.1);
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -794,9 +806,9 @@ public class MapActivity extends BaseMwmFragmentActivity
                 break;
             case R.id.bt_request:
                 showProgress(true);
-                hideBtnRequest();
-                getPrice(myDistance, mSelector);
-
+                //hideBtnRequest();
+                //getPrice(myDistance, mSelector);
+                wstest();
                 break;
             case R.id.date_time:
                 dateTime();

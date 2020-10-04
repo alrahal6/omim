@@ -198,7 +198,7 @@ public class SettingsPrefsFragment extends BaseXmlSettingsFragment
     if (mPrefLanguages != null)
       mPrefLanguages.setSummary(lang.name);
 
-    updateTts();
+    //updateTts();
   }
 
   private void updateTts()
@@ -344,7 +344,7 @@ public class SettingsPrefsFragment extends BaseXmlSettingsFragment
     initUseMobileDataPrefsCallbacks();
     initPowerManagementPrefsCallbacks();
     initOptOut();
-    updateTts();
+    //updateTts();
   }
 
   private void initSpeedCamerasPrefs()
@@ -389,7 +389,7 @@ public class SettingsPrefsFragment extends BaseXmlSettingsFragment
     super.onResume();
 
     initTrackRecordPrefsCallbacks();
-    updateTts();
+    //updateTts();
   }
 
   @Override
@@ -400,7 +400,7 @@ public class SettingsPrefsFragment extends BaseXmlSettingsFragment
 
     if (requestCode == REQUEST_INSTALL_DATA)
     {
-      updateTts();
+      //updateTts();
 
       LanguageData lang = mLanguages.get(mSelectedLanguage);
       if (lang != null && lang.downloaded)

@@ -221,7 +221,8 @@ public enum TtsPlayer
   public static void setEnabled(boolean enabled)
   {
     Config.setTtsEnabled(enabled);
-    nativeEnableTurnNotifications(enabled);
+    //nativeEnableTurnNotifications(enabled);
+    nativeEnableTurnNotifications(false);
   }
 
   private boolean getUsableLanguages(List<LanguageData> outList)

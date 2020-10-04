@@ -6,6 +6,9 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.media.AudioAttributes;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -220,6 +223,13 @@ public class MwmApplication extends Application implements AppBackgroundTracker.
       mChannel.enableLights(true);
       mChannel.setLightColor(Color.GREEN);
       mChannel.enableVibration(true);
+      //Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+      Uri alarmSound = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.cancel_alarm);
+      AudioAttributes att = new AudioAttributes.Builder()
+              .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+              .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+              .build();
+      mChannel.setSound(alarmSound,att);
       mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
       mNotificationManager.createNotificationChannel(mChannel);
 

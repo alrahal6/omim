@@ -3,6 +3,7 @@ package com.mapsrahal.maps.websocket;
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -45,6 +46,7 @@ import com.mapsrahal.maps.MySharedPreference;
 import com.mapsrahal.maps.R;
 import com.mapsrahal.maps.SplashActivity;
 import com.mapsrahal.maps.UserTripInfo;
+import com.mapsrahal.maps.activity.CaptainActivity;
 import com.mapsrahal.util.Constants;
 
 import java.util.concurrent.TimeUnit;
@@ -88,7 +90,7 @@ public class ServerConnection extends Service {
     private boolean isUpdating = false;
     private boolean isAlarmSet = false;
     private Handler mMessageHandler;
-    //private ServerListener mListener;
+    private ServerListener mListener;
     private Ringtone r;
     private static final long START_TIME_IN_MILLIS = 20000;
     private UserTripInfo g;
@@ -109,6 +111,11 @@ public class ServerConnection extends Service {
     public enum ConnectionStatus {
         DISCONNECTED,
         CONNECTED
+    }
+
+    public interface ServerListener {
+        void onNewMessage(String myFlag);
+        void onStatusChange(ConnectionStatus status);
     }
 
     private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
@@ -211,17 +218,21 @@ public class ServerConnection extends Service {
     }
 
     private void startMe() {
-        Intent notificationIntent = new Intent(this, MapActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this,
-                0, notificationIntent, 0);
-        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle(CHANNEL_NAME)
-                //.setContentText(input)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentIntent(pendingIntent)
-                .build();
+        try {
+            Intent notificationIntent = new Intent(this, MapActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this,
+                    0, notificationIntent, 0);
+            Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                    .setContentTitle(CHANNEL_NAME)
+                    //.setContentText(input)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentIntent(pendingIntent)
+                    .build();
 
-        startForeground(1, notification);
+            startForeground(1, notification);
+        } catch (Exception e) {
+
+        }
     }
 
     @Override
@@ -276,6 +287,7 @@ public class ServerConnection extends Service {
     @Override
     public void onTaskRemoved(Intent rootIntent) {
         super.onTaskRemoved(rootIntent);
+        stopForeground(true);
         stopSelf();
     }
 
@@ -294,9 +306,9 @@ public class ServerConnection extends Service {
         return false;
     }
 
-    /*public void registerListener(ServerListener listener) {
+    public void registerListener(ServerListener listener) {
         mListener = listener;
-    }*/
+    }
 
     private void setAlarm() {
         AlarmManager alarmMgr = (AlarmManager) (this.getSystemService(Context.ALARM_SERVICE));
@@ -334,7 +346,7 @@ public class ServerConnection extends Service {
         isMessageReceived = true;
         receivedMessage = myMsg;
         //receivedMessage = myMsg;
-        Intent intent = new Intent(this, MapActivity.class);
+        Intent intent = new Intent(this, CaptainActivity.class);
         //Intent intent = new Intent(this, SplashActivity.class);
         //intent.putExtra(EXTRA_ACTIVITY_TO_START, MapActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK );
@@ -342,26 +354,56 @@ public class ServerConnection extends Service {
         intent.addCategory(Intent.CATEGORY_DEFAULT);
         g = gSon.fromJson(myMsg, UserTripInfo.class);
         int flag = g.getMyFlag();
+        MySharedPreference.getInstance(this).userMessage(myMsg);
         //mBinder.pingBinder()
         if(flag == 4) {
-            MySharedPreference.getInstance(this).userMessage(myMsg);
-            startActivity(intent);
-            /*boolean isForeground = MwmApplication.backgroundTracker(MwmApplication.get().getApplicationContext()).isForeground();
-            if(!isForeground) {
+
+            //startActivity(intent);
+            boolean isForeground = MwmApplication.backgroundTracker(MwmApplication.get().getApplicationContext()).isForeground();
+            if(isForeground) {
                 startActivity(intent);
                 //return;
             } else {
-                final Intent notificationIntent = new Intent(this, MapActivity.class);
+                /*final Intent notificationIntent = new Intent(this, MapActivity.class);
                 notificationIntent.setAction(Intent.ACTION_MAIN);
                 notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-                notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);*/
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
+                        PendingIntent.FLAG_ONE_SHOT);
+
+                NotificationCompat.Builder notificationBuilder =
+                        new NotificationCompat.Builder(this,CHANNEL_ID)
+                                .setSmallIcon(R.drawable.about_logo)
+                                .setContentTitle("Passenger Request")
+                                .setContentText("Passenger Requesting for Ride")
+                                .setAutoCancel(true)
+                                .setContentIntent(pendingIntent);
+                Uri alarmSound = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.cancel_alarm);
+                //Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+                notificationBuilder.setSound(alarmSound);
+                NotificationManager notificationManager =
+                        (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+                notificationManager.notify(0, notificationBuilder.build());
+                playRingtone();
                 //Intent intent1 = new Intent(this, MapActivity.class);
                 //intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(notificationIntent);
+                //startActivity(notificationIntent);
                 //sendMessageReceivedBroadcast(myMsg);
-            }*/
+            }
         } else {
             sendMessageReceivedBroadcast(myMsg);
+        }
+
+    }
+
+    private void playRingtone() {
+        try {
+            if(r != null) {
+                r.play();
+            }
+        } catch (Exception e) {
+
         }
 
     }

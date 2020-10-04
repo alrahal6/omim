@@ -36,7 +36,7 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.BATTERY_STATS" />
@@ -62,10 +62,18 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute"
         tools:replace="android:supportsRtl">
-        <activity android:name=".activity.ResultActivity"
+        <activity android:name=".activity.CaptainActivity">
+            <intent-filter>
+                <action android:name="intent.mycustom.action" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.ResultActivity"
+            android:excludeFromRecents="true"
             android:launchMode="singleTask"
-            android:taskAffinity=""
-            android:excludeFromRecents="true"></activity>
+            android:taskAffinity="" />
         <activity android:name=".activity.MyAccountActivity" />
         <activity android:name=".activity.ui.BlockActivity" />
         <activity android:name=".activity.ContactActivity" />
@@ -83,11 +91,7 @@
             android:name=".MapActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="intent.mycustom.action" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
         </activity>
 
         <meta-data
@@ -96,7 +100,6 @@
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
-
         <meta-data
             android:name="PW_APPID"
             android:value="${PW_APPID}" />
@@ -602,6 +605,7 @@ meta-data
         </service>
         <service
             android:name=".websocket.ServerConnection"
+            android:stopWithTask="true"
             android:exported="false" />
         <!--
 <service
