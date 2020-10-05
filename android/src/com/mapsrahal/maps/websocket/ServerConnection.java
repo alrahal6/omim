@@ -51,6 +51,8 @@ import com.mapsrahal.maps.UserTripInfo;
 import com.mapsrahal.maps.activity.CaptainActivity;
 import com.mapsrahal.util.Constants;
 
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -238,10 +240,47 @@ public class ServerConnection extends Service {
         }
     }
 
+    private void notifyTimer(int sec) {
+
+        final int[] timeRemaining = {sec};
+        final Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                Intent intent1local = new Intent();
+                intent1local.setAction("Counter");
+                timeRemaining[0]--;
+                //NotificationUpdate(timeRemaining[0]);
+                startMe();
+                if (timeRemaining[0] <= 0) {
+                    timer.cancel();
+                    closeNotification();
+                }
+                //intent1local.putExtra("TimeRemaining", timeRemaining[0][0]);
+                //sendBroadcast(intent1local);
+            }
+        }, 0,4000);
+
+        /*Timer t = new Timer();
+        //Set the schedule function and rate
+        t.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                startMe();
+            }
+        },0,4000);*/
+    }
+
+    private void closeNotification() {
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(14);
+    }
+
     private void startMe() {
         //try {
             Bundle data = null;
-            String name = "",callType = "Audio";
+            String name = "",callType = "Request";
             int NOTIFICATION_ID = 120;
             /*if (intent != null && intent.getExtras() != null) {
                 data = intent.getExtras();
@@ -255,27 +294,33 @@ public class ServerConnection extends Service {
 
             }*/
             try {
-                Intent receiveCallAction = new Intent(MwmApplication.get().getApplicationContext(), CallNotificationActionReceiver.class);
-
+                Intent receiveCallAction = new Intent(MwmApplication.get().getApplicationContext(), CaptainActivity.class);
+                receiveCallAction.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 receiveCallAction.putExtra("ConstantApp.CALL_RESPONSE_ACTION_KEY", "ConstantApp.CALL_RECEIVE_ACTION");
                 receiveCallAction.putExtra("ACTION_TYPE", "RECEIVE_CALL");
                 receiveCallAction.putExtra("NOTIFICATION_ID",NOTIFICATION_ID);
                 receiveCallAction.setAction("RECEIVE_CALL");
 
-                Intent cancelCallAction = new Intent(MwmApplication.get().getApplicationContext(), CallNotificationActionReceiver.class);
+                Intent cancelCallAction = new Intent(MwmApplication.get().getApplicationContext(), CaptainActivity.class);
+                cancelCallAction.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 cancelCallAction.putExtra("ConstantApp.CALL_RESPONSE_ACTION_KEY", "ConstantApp.CALL_CANCEL_ACTION");
                 cancelCallAction.putExtra("ACTION_TYPE", "CANCEL_CALL");
                 cancelCallAction.putExtra("NOTIFICATION_ID",NOTIFICATION_ID);
                 cancelCallAction.setAction("CANCEL_CALL");
 
-                Intent callDialogAction = new Intent(MwmApplication.get().getApplicationContext(), CallNotificationActionReceiver.class);
+                Intent callDialogAction = new Intent(MwmApplication.get().getApplicationContext(), CaptainActivity.class);
+                callDialogAction.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 callDialogAction.putExtra("ACTION_TYPE", "DIALOG_CALL");
                 callDialogAction.putExtra("NOTIFICATION_ID",NOTIFICATION_ID);
                 callDialogAction.setAction("DIALOG_CALL");
-
+                /*
                 PendingIntent receiveCallPendingIntent = PendingIntent.getBroadcast(MwmApplication.get().getApplicationContext(), 1200, receiveCallAction, PendingIntent.FLAG_UPDATE_CURRENT);
                 PendingIntent cancelCallPendingIntent = PendingIntent.getBroadcast(MwmApplication.get().getApplicationContext(), 1201, cancelCallAction, PendingIntent.FLAG_UPDATE_CURRENT);
                 PendingIntent callDialogPendingIntent = PendingIntent.getBroadcast(MwmApplication.get().getApplicationContext(), 1202, callDialogAction, PendingIntent.FLAG_UPDATE_CURRENT);
+                */
+                PendingIntent receiveCallPendingIntent = PendingIntent.getActivity(MwmApplication.get().getApplicationContext(), 1200, receiveCallAction, PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent cancelCallPendingIntent = PendingIntent.getActivity(MwmApplication.get().getApplicationContext(), 1201, cancelCallAction, PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent callDialogPendingIntent = PendingIntent.getActivity(MwmApplication.get().getApplicationContext(), 1202, callDialogAction, PendingIntent.FLAG_UPDATE_CURRENT);
 
                 //createChannel();
                 NotificationCompat.Builder notificationBuilder = null;
@@ -283,14 +328,17 @@ public class ServerConnection extends Service {
                     Uri ringUri= Settings.System.DEFAULT_RINGTONE_URI;
                     notificationBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
                             .setContentTitle(CHANNEL_NAME)
-                            .setContentText("Incoming "+callType+" Call")
+                            .setContentText("Incoming "+callType)
                             .setSmallIcon(R.drawable.ic_call_green_24dp)
                             .setPriority(NotificationCompat.PRIORITY_MAX)
                             .setCategory(NotificationCompat.CATEGORY_CALL)
                             .addAction(R.drawable.bg_active_icon, getString(R.string.cancel), cancelCallPendingIntent)
                             .addAction(R.drawable.bg_active_icon, getString(R.string.accept), receiveCallPendingIntent)
+                            .setContentIntent(callDialogPendingIntent)
+                            //.setOngoing(true)
                             .setAutoCancel(true)
                             .setSound(ringUri)
+                            //.setTimeoutAfter(20000)
                             .setFullScreenIntent(callDialogPendingIntent, true);
 
                 //}
@@ -428,7 +476,7 @@ public class ServerConnection extends Service {
         Intent intent = new Intent(this, CaptainActivity.class);
         //Intent intent = new Intent(this, SplashActivity.class);
         //intent.putExtra(EXTRA_ACTIVITY_TO_START, MapActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK );
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.setAction("intent.mycustom.action");
         intent.addCategory(Intent.CATEGORY_DEFAULT);
         g = gSon.fromJson(myMsg, UserTripInfo.class);
@@ -464,7 +512,8 @@ public class ServerConnection extends Service {
                         (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
                 notificationManager.notify(0, notificationBuilder.build());*/
-                startMe();
+                //startMe();
+                notifyTimer(7);
                 //playRingtone();
                 //Intent intent1 = new Intent(this, MapActivity.class);
                 //intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

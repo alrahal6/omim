@@ -239,7 +239,7 @@ public class MwmApplication extends Application implements AppBackgroundTracker.
 
       try {
         Uri ringUri= Settings.System.DEFAULT_RINGTONE_URI;
-        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);
+        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_MAX);
         channel.setDescription("Call Notifications");
         channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
            channel.setSound(ringUri,

@@ -4,7 +4,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.app.NotificationManager;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.ServiceConnection;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -39,6 +41,9 @@ public class CaptainActivity extends AppCompatActivity implements ServerConnecti
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_captain);
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(14);
         //initRingTone();
         mViewModel = ViewModelProviders.of(this).get(WebSocketViewModel.class);
         setObservers();
