@@ -512,8 +512,8 @@ public class ServerConnection extends Service {
                         (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
                 notificationManager.notify(0, notificationBuilder.build());*/
-                //startMe();
-                notifyTimer(7);
+                startMe();
+                //notifyTimer(7);
                 //playRingtone();
                 //Intent intent1 = new Intent(this, MapActivity.class);
                 //intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

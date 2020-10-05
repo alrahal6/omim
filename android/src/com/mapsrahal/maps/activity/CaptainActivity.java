@@ -44,10 +44,10 @@ public class CaptainActivity extends AppCompatActivity implements ServerConnecti
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(14);
-        //initRingTone();
+        initRingTone();
         mViewModel = ViewModelProviders.of(this).get(WebSocketViewModel.class);
         setObservers();
-        //processMessage("");
+        processMessage("");
     }
 
     @Override
@@ -132,9 +132,9 @@ public class CaptainActivity extends AppCompatActivity implements ServerConnecti
         //Log.i(TAG,"request received");
         switch (flag) {
             case 4:
-                /*if (ringtone != null) {
+                if (ringtone != null) {
                     ringtone.play();
-                }*/
+                }
                 //mediaPlayer.start();
                 /*mCustomerInfo.setVisibility(View.VISIBLE);
                 mAcceptBusyInfo.setVisibility(View.VISIBLE);
