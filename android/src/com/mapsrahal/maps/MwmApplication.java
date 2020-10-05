@@ -238,8 +238,9 @@ public class MwmApplication extends Application implements AppBackgroundTracker.
       mNotificationManager.createNotificationChannel(mChannel);*/
 
       try {
-        Uri ringUri= Settings.System.DEFAULT_RINGTONE_URI;
-        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_MAX);
+        //Uri ringUri= Settings.System.DEFAULT_RINGTONE_URI;
+        Uri ringUri= Uri.parse("android.resource://com.mapsrahal.maps/raw/calling");
+        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);
         channel.setDescription("Call Notifications");
         channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
            channel.setSound(ringUri,
