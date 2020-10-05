@@ -16,6 +16,7 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.IBinder;
@@ -23,6 +24,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.PowerManager;
 import android.os.SystemClock;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 
@@ -59,7 +61,9 @@ import okhttp3.WebSocketListener;
 import okhttp3.logging.HttpLoggingInterceptor;
 
 import static com.mapsrahal.maps.MwmApplication.CHANNEL_ID;
+import static com.mapsrahal.maps.MwmApplication.CHANNEL_ID_CALL_CAPTAIN;
 import static com.mapsrahal.maps.MwmApplication.CHANNEL_NAME;
+import static com.mapsrahal.maps.MwmApplication.CHANNEL_NAME_CAPTAIN;
 import static com.mapsrahal.maps.SplashActivity.EXTRA_ACTIVITY_TO_START;
 import static com.mapsrahal.maps.activity.SelectorActivity.PASSENGER_CAPTAIN_SELECTOR;
 
@@ -152,7 +156,7 @@ public class ServerConnection extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        startMe();
+        startOnline();
         //mViewModel = ViewModelProviders.of(getApplicationContext()).get(WebSocketViewModel.class);
         /*new Thread(new Runnable() {
             @Override
@@ -217,22 +221,97 @@ public class ServerConnection extends Service {
        // }).start();
     }
 
-    private void startMe() {
+    private void startOnline() {
         try {
             Intent notificationIntent = new Intent(this, MapActivity.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(this,
                     0, notificationIntent, 0);
-            Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                    .setContentTitle(CHANNEL_NAME)
+            Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID_CALL_CAPTAIN)
+                    .setContentTitle(CHANNEL_NAME_CAPTAIN)
                     //.setContentText(input)
                     .setSmallIcon(R.mipmap.ic_launcher)
                     .setContentIntent(pendingIntent)
                     .build();
-
             startForeground(1, notification);
         } catch (Exception e) {
 
         }
+    }
+
+    private void startMe() {
+        //try {
+            Bundle data = null;
+            String name = "",callType = "Audio";
+            int NOTIFICATION_ID = 120;
+            /*if (intent != null && intent.getExtras() != null) {
+                data = intent.getExtras();
+                name = data.getString("inititator");
+                if(MwmApplication.get().getCall_type().equalsIgnoreCase(ApplicationRef.Constants.AUDIO_CALL)){
+                    callType ="Audio";
+                }
+                else {
+                    callType ="Video";
+                }
+
+            }*/
+            try {
+                Intent receiveCallAction = new Intent(MwmApplication.get().getApplicationContext(), CallNotificationActionReceiver.class);
+
+                receiveCallAction.putExtra("ConstantApp.CALL_RESPONSE_ACTION_KEY", "ConstantApp.CALL_RECEIVE_ACTION");
+                receiveCallAction.putExtra("ACTION_TYPE", "RECEIVE_CALL");
+                receiveCallAction.putExtra("NOTIFICATION_ID",NOTIFICATION_ID);
+                receiveCallAction.setAction("RECEIVE_CALL");
+
+                Intent cancelCallAction = new Intent(MwmApplication.get().getApplicationContext(), CallNotificationActionReceiver.class);
+                cancelCallAction.putExtra("ConstantApp.CALL_RESPONSE_ACTION_KEY", "ConstantApp.CALL_CANCEL_ACTION");
+                cancelCallAction.putExtra("ACTION_TYPE", "CANCEL_CALL");
+                cancelCallAction.putExtra("NOTIFICATION_ID",NOTIFICATION_ID);
+                cancelCallAction.setAction("CANCEL_CALL");
+
+                Intent callDialogAction = new Intent(MwmApplication.get().getApplicationContext(), CallNotificationActionReceiver.class);
+                callDialogAction.putExtra("ACTION_TYPE", "DIALOG_CALL");
+                callDialogAction.putExtra("NOTIFICATION_ID",NOTIFICATION_ID);
+                callDialogAction.setAction("DIALOG_CALL");
+
+                PendingIntent receiveCallPendingIntent = PendingIntent.getBroadcast(MwmApplication.get().getApplicationContext(), 1200, receiveCallAction, PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent cancelCallPendingIntent = PendingIntent.getBroadcast(MwmApplication.get().getApplicationContext(), 1201, cancelCallAction, PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent callDialogPendingIntent = PendingIntent.getBroadcast(MwmApplication.get().getApplicationContext(), 1202, callDialogAction, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                //createChannel();
+                NotificationCompat.Builder notificationBuilder = null;
+                //if (data != null) {
+                    Uri ringUri= Settings.System.DEFAULT_RINGTONE_URI;
+                    notificationBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                            .setContentTitle(CHANNEL_NAME)
+                            .setContentText("Incoming "+callType+" Call")
+                            .setSmallIcon(R.drawable.ic_call_green_24dp)
+                            .setPriority(NotificationCompat.PRIORITY_MAX)
+                            .setCategory(NotificationCompat.CATEGORY_CALL)
+                            .addAction(R.drawable.bg_active_icon, getString(R.string.cancel), cancelCallPendingIntent)
+                            .addAction(R.drawable.bg_active_icon, getString(R.string.accept), receiveCallPendingIntent)
+                            .setAutoCancel(true)
+                            .setSound(ringUri)
+                            .setFullScreenIntent(callDialogPendingIntent, true);
+
+                //}
+
+                Notification incomingCallNotification = null;
+                if (notificationBuilder != null) {
+                    incomingCallNotification = notificationBuilder.build();
+                }
+
+                //if(isNotify) {
+                    NotificationManager notificationManager =
+                            (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                    notificationManager.notify(14,incomingCallNotification);
+                //} else {
+                    //startForeground(NOTIFICATION_ID, incomingCallNotification);
+                //}
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
     }
 
     @Override
@@ -247,7 +326,7 @@ public class ServerConnection extends Service {
                 stopForeground(true);
                 stopSelf();
             }
-            startMe();
+            startOnline();
             connect();
             start();
         } catch (Exception e) {
@@ -368,7 +447,7 @@ public class ServerConnection extends Service {
                 notificationIntent.setAction(Intent.ACTION_MAIN);
                 notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER);
                 notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);*/
-                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
+                /*PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
                         PendingIntent.FLAG_ONE_SHOT);
 
                 NotificationCompat.Builder notificationBuilder =
@@ -384,8 +463,9 @@ public class ServerConnection extends Service {
                 NotificationManager notificationManager =
                         (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-                notificationManager.notify(0, notificationBuilder.build());
-                playRingtone();
+                notificationManager.notify(0, notificationBuilder.build());*/
+                startMe();
+                //playRingtone();
                 //Intent intent1 = new Intent(this, MapActivity.class);
                 //intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 //startActivity(notificationIntent);

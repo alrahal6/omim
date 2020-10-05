@@ -642,7 +642,14 @@ meta-data
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
-
+        <receiver
+            android:name=".websocket.CallNotificationActionReceiver"
+            android:enabled="true">
+            <intent-filter android:priority="999">
+                <action android:name="ConstantApp.CALL_RECEIVE_ACTION" />
+                <action android:name="ConstantApp.CALL_CANCEL_ACTION"/>
+            </intent-filter>
+        </receiver>
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${FILE_PROVIDER_PLACEHOLDER}"

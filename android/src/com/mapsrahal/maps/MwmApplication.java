@@ -1,16 +1,19 @@
 package com.mapsrahal.maps;
 
 import android.app.Application;
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.AudioAttributes;
+import android.media.AudioManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -58,6 +61,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class MwmApplication extends Application implements AppBackgroundTracker.OnTransitionListener
 {
@@ -75,9 +79,9 @@ public class MwmApplication extends Application implements AppBackgroundTracker.
   private SubwayManager mSubwayManager;
   public static final String CHANNEL_ID = "my_rahal_01";
   public static final String CHANNEL_ID_NOTIFY = "carpoolee_notification";
-  public static final String CHANNEL_ID_CALL_CAPTAIN = "call_captatin" ;
-  public static final String CHANNEL_NAME = "Captain Online";
-  public static final String CHANNEL_NAME_CAPTAIN = "Captain Request";
+  public static final String CHANNEL_ID_CALL_CAPTAIN = "online_captatin" ;
+  public static final String CHANNEL_NAME = "Captain Request";
+  public static final String CHANNEL_NAME_CAPTAIN = "Captain Online";
   public static final String CHANNEL_NAME_USER = "User Message";
   private static final String CHANNEL_DESCRIPTION = "Taxi CarPool App";
   private boolean mFrameworkInitialized;
@@ -217,7 +221,7 @@ public class MwmApplication extends Application implements AppBackgroundTracker.
     //channelProvider.setUGCChannel();
     //channelProvider.setDownloadingChannel();
     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-      NotificationManager mNotificationManager = getSystemService(NotificationManager.class);
+      /*NotificationManager mNotificationManager = getSystemService(NotificationManager.class);
       NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);
       mChannel.setDescription(CHANNEL_DESCRIPTION);
       mChannel.enableLights(true);
@@ -231,25 +235,41 @@ public class MwmApplication extends Application implements AppBackgroundTracker.
               .build();
       mChannel.setSound(alarmSound,att);
       mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
-      mNotificationManager.createNotificationChannel(mChannel);
+      mNotificationManager.createNotificationChannel(mChannel);*/
+
+      try {
+        Uri ringUri= Settings.System.DEFAULT_RINGTONE_URI;
+        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);
+        channel.setDescription("Call Notifications");
+        channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+           channel.setSound(ringUri,
+                    new AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                            .setLegacyStreamType(AudioManager.STREAM_RING)
+                            .setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION).build());
+        NotificationManager mNotificationManagerCapt = getSystemService(NotificationManager.class);
+        channel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+        mNotificationManagerCapt.createNotificationChannel(channel);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
 
       NotificationManager mNotificationManager1 = getSystemService(NotificationManager.class);
-      NotificationChannel mChannel1 = new NotificationChannel(CHANNEL_ID_CALL_CAPTAIN, CHANNEL_NAME_CAPTAIN, NotificationManager.IMPORTANCE_HIGH);
+      NotificationChannel mChannel1 = new NotificationChannel(CHANNEL_ID_CALL_CAPTAIN, CHANNEL_NAME_CAPTAIN, NotificationManager.IMPORTANCE_NONE);
       mChannel1.setDescription(CHANNEL_DESCRIPTION);
       mChannel1.enableLights(true);
       mChannel1.setLightColor(Color.GREEN);
       mChannel1.enableVibration(true);
       mChannel1.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
-      mNotificationManager1.createNotificationChannel(mChannel);
+      mNotificationManager1.createNotificationChannel(mChannel1);
 
-      NotificationManager mNotificationManager2 = getSystemService(NotificationManager.class);
-      NotificationChannel mChannel2 = new NotificationChannel(CHANNEL_ID_NOTIFY, CHANNEL_NAME_USER, NotificationManager.IMPORTANCE_HIGH);
-      mChannel1.setDescription(CHANNEL_DESCRIPTION);
-      mChannel1.enableLights(true);
-      mChannel1.setLightColor(Color.GREEN);
-      mChannel1.enableVibration(true);
-      mChannel1.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
-      mNotificationManager1.createNotificationChannel(mChannel);
+      //NotificationManager mNotificationManager2 = getSystemService(NotificationManager.class);
+      NotificationChannel mChannel2 = new NotificationChannel(CHANNEL_ID_NOTIFY, CHANNEL_NAME_USER, NotificationManager.IMPORTANCE_DEFAULT);
+      mChannel2.setDescription(CHANNEL_DESCRIPTION);
+      mChannel2.enableLights(true);
+      mChannel2.setLightColor(Color.GREEN);
+      mChannel2.enableVibration(true);
+      mChannel2.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+      mNotificationManager1.createNotificationChannel(mChannel2);
     }
   }
 

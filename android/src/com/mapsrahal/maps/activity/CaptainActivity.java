@@ -39,7 +39,7 @@ public class CaptainActivity extends AppCompatActivity implements ServerConnecti
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_captain);
-        initRingTone();
+        //initRingTone();
         mViewModel = ViewModelProviders.of(this).get(WebSocketViewModel.class);
         setObservers();
         //processMessage("");
@@ -127,9 +127,9 @@ public class CaptainActivity extends AppCompatActivity implements ServerConnecti
         //Log.i(TAG,"request received");
         switch (flag) {
             case 4:
-                if (ringtone != null) {
+                /*if (ringtone != null) {
                     ringtone.play();
-                }
+                }*/
                 //mediaPlayer.start();
                 /*mCustomerInfo.setVisibility(View.VISIBLE);
                 mAcceptBusyInfo.setVisibility(View.VISIBLE);
