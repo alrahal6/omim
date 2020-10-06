@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.app.KeyguardManager;
 import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -11,11 +12,13 @@ import android.content.ServiceConnection;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 
 import com.google.gson.Gson;
 import com.mapsrahal.maps.MapActivity;
@@ -40,6 +43,28 @@ public class CaptainActivity extends AppCompatActivity implements ServerConnecti
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            setShowWhenLocked(true);
+            setTurnScreenOn(true);
+            KeyguardManager myKM = (KeyguardManager) this.getSystemService(Context.KEYGUARD_SERVICE);
+            //if( myKM.inKeyguardRestrictedInputMode()) {
+                myKM.requestDismissKeyguard(this,null);
+                //it is locked
+            //} else {
+                //it is not locked
+            //}
+            //keyguardManager KeyguardManager = getSystemService(Context.KEYGUARD_SERVICE);
+            //KeyguardManager.requestDismissKeyguard(this, null);
+        } else {
+            /*this.window.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
+                    WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
+                    WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)*/
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                    | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+                    |WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
+
         setContentView(R.layout.activity_captain);
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -80,8 +105,9 @@ public class CaptainActivity extends AppCompatActivity implements ServerConnecti
 
     private void initRingTone() {
         try {
-            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
-            ringtone = RingtoneManager.getRingtone(this, notification);
+            //Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+            Uri ringUri= Uri.parse("android.resource://com.mapsrahal.maps/raw/calling");
+            ringtone = RingtoneManager.getRingtone(this, ringUri);
         } catch (Exception e) {
             e.printStackTrace();
         }
