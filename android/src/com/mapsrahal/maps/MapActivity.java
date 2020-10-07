@@ -584,12 +584,13 @@ public class MapActivity extends BaseMwmFragmentActivity
         //mViewModel.setIsConnected(true);
         try {
             if (!isMyServiceRunning(ServerConnection.class)) {
-                if (mSelector != PASSENGER_TAXI_ONLY) {
-                    MySharedPreference.getInstance(this).setCaptainOnline(true);
-                }
+
                 final Intent intent = getMyIntent();
                 intent.setAction(Constants.STARTFOREGROUND_ACTION);
                 ContextCompat.startForegroundService(getContext(), intent);
+                if (mSelector != PASSENGER_TAXI_ONLY) {
+                    MySharedPreference.getInstance(this).setCaptainOnline(true);
+                }
                 //bindMyService(intent);
             }
         } catch (Exception e) {
@@ -598,18 +599,19 @@ public class MapActivity extends BaseMwmFragmentActivity
     }
 
     private Context getContext() {
-        return MwmApplication.get().getApplicationContext();
+        //return MwmApplication.get().getApplicationContext();
+        return MapActivity.this;
     }
 
     private void disconnect() {
         //Log.i(TAG, "Stop service called ");
         try {
             //if(isMyServiceRunning(ServerConnection.class)) {
-            MySharedPreference.getInstance(this).setCaptainOnline(false);
             Intent stopIntent = getMyIntent();
             //unBindMyService();
             stopIntent.setAction(Constants.STOPFOREGROUND_ACTION);
             ContextCompat.startForegroundService(getContext(), stopIntent);
+            //MySharedPreference.getInstance(this).setCaptainOnline(false);
             //Log.i(TAG, "Stop service called inside");
         } catch (Exception e) {
 
@@ -1202,6 +1204,10 @@ public class MapActivity extends BaseMwmFragmentActivity
             isSelectorFree = false;
             //processMessage(msg);
             MySharedPreference.getInstance(this).userMessage(null);
+        }
+
+        if(MySharedPreference.getInstance(this).isCaptainOnline()) {
+            mSwitch.setChecked(true);
         }
 
         String notify = MySharedPreference.getInstance(this).getUserNotification();

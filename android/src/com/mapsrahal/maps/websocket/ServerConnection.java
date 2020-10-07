@@ -78,7 +78,7 @@ public class ServerConnection extends Service {
     public static final String ACTION_NETWORK_STATE_CHANGED = "networkStateChanged";
     private static final long INTERVAL_FIVE_MINS = 3 * 60 * 1000;
     private static final String TAG = ServerConnection.class.getSimpleName();
-    private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 15000;
+    private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 30000;
     private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = 15000;
     private final IBinder mBinder = new ServerConnectionBinder();
     private final int userId;
@@ -174,6 +174,19 @@ public class ServerConnection extends Service {
                     r = RingtoneManager.getRingtone(ServerConnection.this, notification);
                 } catch (Exception e) {
                     e.printStackTrace();
+                }
+                try {
+                    if(mWebSocket != null) {
+                        mWebSocket = null;
+                    }
+                    //mClient.dispatcher().executorService().shutdownNow();
+                    if(mClient != null) {
+                        mClient.dispatcher().executorService().shutdown();
+                        mClient.connectionPool().evictAll();
+                        mClient = null;
+                    }
+                } catch (Exception e) {
+
                 }
                 //Log.i("MyWakeLockIsWorking","Connected");
                 mClient = new OkHttpClient.Builder()
@@ -327,8 +340,8 @@ public class ServerConnection extends Service {
                 //if (data != null) {
                     Uri ringUri= Settings.System.DEFAULT_RINGTONE_URI;
                     notificationBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                            .setContentTitle(CHANNEL_NAME)
-                            .setContentText("Incoming "+callType)
+                            .setContentTitle("To : Khartoum Airport")
+                            .setContentText("10 KM - 400 SDG")
                             .setSmallIcon(R.drawable.ic_call_green_24dp)
                             .setPriority(NotificationCompat.PRIORITY_MAX)
                             .setCategory(NotificationCompat.CATEGORY_CALL)
@@ -372,11 +385,12 @@ public class ServerConnection extends Service {
                 disconnect();
                 //cancelAlarm();
                 stopForeground(true);
-                stopSelf();
+                this.stopSelf();
+            } else {
+                startOnline();
+                connect();
+                start();
             }
-            startOnline();
-            connect();
-            start();
         } catch (Exception e) {
 
         }
@@ -414,8 +428,24 @@ public class ServerConnection extends Service {
     @Override
     public void onTaskRemoved(Intent rootIntent) {
         super.onTaskRemoved(rootIntent);
-        stopForeground(true);
-        stopSelf();
+        try {
+            //mClient.dispatcher().executorService().shutdownNow();
+            if(mClient != null) {
+                mClient.dispatcher().executorService().shutdown();
+                mClient.connectionPool().evictAll();
+            }
+            disconnect();
+            stopForeground(true);
+            this.stopSelf();
+            /*PendingIntent alarmIntent = PendingIntent.getBroadcast(this, 0, new Intent(RECONNECT_IF_BROKEN), 0);
+            AlarmManager alarmMgr = (AlarmManager) (this.getSystemService(Context.ALARM_SERVICE));
+            alarmMgr.cancel(alarmIntent);
+            isAlarmSet = false;
+            mClient.dispatcher().executorService().shutdown();
+            MySharedPreference.getInstance(this).setCaptainOnline(false);*/
+        } catch (Exception e) {
+
+        }
     }
 
     @Nullable
@@ -550,7 +580,8 @@ public class ServerConnection extends Service {
     }*/
 
     private void connect() {
-        if (!isHaveMessage) {
+        //if (!isHaveMessage) {
+        if (mClient.connectionPool().connectionCount() == 0) {
             Request request = new Request.Builder()
                     .url(Framework.nativeGetWsUrl() + "?token=" + userId +"&is="+MySharedPreference.getInstance(this).isCaptainOnline())
                     .build();
@@ -580,6 +611,7 @@ public class ServerConnection extends Service {
         //mListener = null;
         stop();
         cancelAlarm();
+        MySharedPreference.getInstance(this).setCaptainOnline(false);
     }
 
     public void sendReq(UserTripInfo userTripInfo) {

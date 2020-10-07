@@ -356,13 +356,21 @@ android {
 
     buildTypes {
         debug {
-            applicationIdSuffix '.debug'   // Allows to install debug and release builds together
+            signingConfig signingConfigs.mapsrahal
+            minifyEnabled true
+            shrinkResources true
+            proguardFile('proguard-mwm.txt')
+            resValue 'string', 'app_id', android.defaultConfig.applicationId
+            firebaseCrashlytics {
+                nativeSymbolUploadEnabled false
+            }
+            /*applicationIdSuffix '.debug'   // Allows to install debug and release builds together
             versionNameSuffix '-debug'
             jniDebuggable true           // Enable jni debug build
             zipAlignEnabled true
             signingConfig signingConfigs.mapsrahalDebug
             android.sourceSets.debug.setRoot('flavors/debug')
-            resValue 'string', 'app_id', android.defaultConfig.applicationId + applicationIdSuffix
+            resValue 'string', 'app_id', android.defaultConfig.applicationId + applicationIdSuffix*/
         }
 
         release {
