@@ -580,7 +580,7 @@ public class ServerConnection extends Service {
             //try {
             String body = "";
             body = getFlagTitle(flag);
-                alsoNotify(body);
+                //alsoNotify(body);
                 sendMessageReceivedBroadcast(myMsg);
             //} catch (Exception e) {
         }
@@ -592,7 +592,7 @@ public class ServerConnection extends Service {
             MySharedPreference.getInstance(this).addToNotify(true);
             MySharedPreference.getInstance(this).putNotification(title, body);
             Intent notifyIntent = new Intent(this, ResultActivity.class);
-            notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             PendingIntent notifyPendingIntent = PendingIntent.getActivity(
                     this, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT
             );

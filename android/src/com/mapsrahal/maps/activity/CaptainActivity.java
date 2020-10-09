@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.mapsrahal.maps.MapActivity;
@@ -32,6 +33,9 @@ import com.mapsrahal.maps.UserTripInfo;
 import com.mapsrahal.maps.websocket.ServerConnection;
 import com.mapsrahal.maps.websocket.WebSocketViewModel;
 import com.mapsrahal.util.UiUtils;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class CaptainActivity extends AppCompatActivity implements ServerConnection.ServerListener {
 
@@ -89,10 +93,7 @@ public class CaptainActivity extends AppCompatActivity implements ServerConnecti
         setContentView(R.layout.activity_captain);
         mCaptProgress = findViewById(R.id.capt_progress_bar);
         mProgressText = findViewById(R.id.text_view_progress);
-
         //mCaptProgress.setTe
-        mCaptProgress.setProgress(70);
-        mProgressText.setText("14");
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(14);
@@ -116,6 +117,42 @@ public class CaptainActivity extends AppCompatActivity implements ServerConnecti
             MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).userMessage(null);
             //}
         }
+    }
+
+    private void notifyTimer(int sec) {
+        final int[] timeRemaining = {sec};
+        final Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                Intent intent1local = new Intent();
+                intent1local.setAction("Counter");
+                timeRemaining[0]--;
+                updateProgress(((timeRemaining[0] * 100) / sec),timeRemaining[0]);
+                if (timeRemaining[0] <= 0) {
+                    timer.cancel();
+                    sendBusy();
+                }
+            }
+        }, 0,1000);
+    }
+
+    private void updateProgress(int pro,int progress) {
+        runOnUiThread(() -> {
+            String remPer = progress+" Sec";
+            mCaptProgress.setProgress(pro);
+            mProgressText.setText(remPer);
+        });
+    }
+
+    private void sendBusy() {
+        if (ringtone.isPlaying()) {
+            ringtone.stop();
+        }
+    }
+
+    private void acceptTrip() {
+
     }
 
     private void setObservers() {
@@ -177,18 +214,18 @@ public class CaptainActivity extends AppCompatActivity implements ServerConnecti
     }
 
     private void processMessage(String myMsg) {
-        //g = gSon.fromJson(myMsg, UserTripInfo.class);
-        //int flag = g.getMyFlag();
-        final int flag = 4;
-        //requestingPassenger = g.getUserId();
-        //tripId = String.valueOf(g.getTripId());
-        //Log.i(TAG,"request received");
-        switch (flag) {
-            case 4:
-                if (ringtone != null) {
-                    ringtone.play();
-                }
-                //mediaPlayer.start();
+        String msg = MySharedPreference.getInstance(this).getUserMessage();
+        if(msg != null) {
+            try {
+                g = gSon.fromJson(msg, UserTripInfo.class);
+                int flag = g.getMyFlag();
+                switch (flag) {
+                    case 4:
+                        notifyTimer(g.getMinDis());
+                        if (ringtone != null) {
+                            ringtone.play();
+                        }
+                        //mediaPlayer.start();
                 /*mCustomerInfo.setVisibility(View.VISIBLE);
                 mAcceptBusyInfo.setVisibility(View.VISIBLE);
                 mSwipeButton.setText("Reached Customer");
@@ -202,10 +239,15 @@ public class CaptainActivity extends AppCompatActivity implements ServerConnecti
                 if (!mTimerRunning) {
                     startTimer();
                 }*/
-                break;
-            default:
-                //userTripInfo.setDriverId(driverId);
-                break;
+                        break;
+                    default:
+                        //userTripInfo.setDriverId(driverId);
+                        Toast.makeText(this, "No Progress", Toast.LENGTH_LONG).show();
+                        break;
+                }
+            } catch (Exception e) {
+
+            }
         }
     }
 
