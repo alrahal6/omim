@@ -8,6 +8,7 @@ import android.app.KeyguardManager;
 import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.ServiceConnection;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -19,6 +20,8 @@ import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.mapsrahal.maps.MapActivity;
@@ -28,6 +31,7 @@ import com.mapsrahal.maps.R;
 import com.mapsrahal.maps.UserTripInfo;
 import com.mapsrahal.maps.websocket.ServerConnection;
 import com.mapsrahal.maps.websocket.WebSocketViewModel;
+import com.mapsrahal.util.UiUtils;
 
 public class CaptainActivity extends AppCompatActivity implements ServerConnection.ServerListener {
 
@@ -37,13 +41,15 @@ public class CaptainActivity extends AppCompatActivity implements ServerConnecti
     private WebSocketViewModel mViewModel;
     private ServerConnection mService;
     private int requestingPassenger = 0;
+    private ProgressBar mCaptProgress;
+    private TextView mProgressText;
     private int requestResponse = 3;
     private static final String TAG = CaptainActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        UiUtils.setupColorStatusBar(this, R.color.bg_captain_call);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             setShowWhenLocked(true);
             setTurnScreenOn(true);
@@ -65,7 +71,28 @@ public class CaptainActivity extends AppCompatActivity implements ServerConnecti
                     |WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
 
+        //String name = null;
+        Intent intent = getIntent();
+        if (intent != null && intent.getExtras() != null) {
+            String name = intent.getStringExtra("ACTION_TYPE");
+            if(name == "RECEIVE_CALL") {
+                // trip accepted
+                //callType ="Audio";
+            } else if(name == "DIALOG_CALL") {
+                // wanna see the details
+                //callType ="Video";
+            } else {
+                // trip cancelled
+            }
+
+        }
         setContentView(R.layout.activity_captain);
+        mCaptProgress = findViewById(R.id.capt_progress_bar);
+        mProgressText = findViewById(R.id.text_view_progress);
+
+        //mCaptProgress.setTe
+        mCaptProgress.setProgress(70);
+        mProgressText.setText("14");
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(14);

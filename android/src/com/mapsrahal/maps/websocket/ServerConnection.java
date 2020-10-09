@@ -49,6 +49,7 @@ import com.mapsrahal.maps.R;
 import com.mapsrahal.maps.SplashActivity;
 import com.mapsrahal.maps.UserTripInfo;
 import com.mapsrahal.maps.activity.CaptainActivity;
+import com.mapsrahal.maps.activity.ResultActivity;
 import com.mapsrahal.util.Constants;
 
 import java.util.Timer;
@@ -64,6 +65,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 
 import static com.mapsrahal.maps.MwmApplication.CHANNEL_ID;
 import static com.mapsrahal.maps.MwmApplication.CHANNEL_ID_CALL_CAPTAIN;
+import static com.mapsrahal.maps.MwmApplication.CHANNEL_ID_NOTIFY;
 import static com.mapsrahal.maps.MwmApplication.CHANNEL_NAME;
 import static com.mapsrahal.maps.MwmApplication.CHANNEL_NAME_CAPTAIN;
 import static com.mapsrahal.maps.SplashActivity.EXTRA_ACTIVITY_TO_START;
@@ -95,11 +97,13 @@ public class ServerConnection extends Service {
     private LocationRequest locationRequest;
     private boolean isUpdating = false;
     private boolean isAlarmSet = false;
+    private boolean isCaptainAccepted = false;
     private Handler mMessageHandler;
     private ServerListener mListener;
     private Ringtone r;
     private static final long START_TIME_IN_MILLIS = 20000;
     private UserTripInfo g;
+    public static final int NOTIFICATION_ID = 120;
     private int requestingPassenger = 0;
     private String tripId;
     private boolean mTimerRunning;
@@ -181,8 +185,8 @@ public class ServerConnection extends Service {
                     }
                     //mClient.dispatcher().executorService().shutdownNow();
                     if(mClient != null) {
-                        mClient.dispatcher().executorService().shutdown();
-                        mClient.connectionPool().evictAll();
+                        //mClient.dispatcher().executorService().shutdown();
+                        //mClient.connectionPool().evictAll();
                         mClient = null;
                     }
                 } catch (Exception e) {
@@ -264,7 +268,7 @@ public class ServerConnection extends Service {
                 intent1local.setAction("Counter");
                 timeRemaining[0]--;
                 //NotificationUpdate(timeRemaining[0]);
-                startMe();
+                //startMe();
                 if (timeRemaining[0] <= 0) {
                     timer.cancel();
                     closeNotification();
@@ -285,27 +289,46 @@ public class ServerConnection extends Service {
     }
 
     private void closeNotification() {
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancel(14);
+        try {
+            NotificationManager notificationManager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.cancel(14);
+            if(!isCaptainAccepted) {
+                sendCancelled();
+            }
+        } catch (Exception e) {
+
+        }
+    }
+
+    private void sendCancelled() {
+        UserLocation userLocation = new UserLocation(
+                userId,
+                0.0,
+                0.0,
+                2, 1, phone);
+        sendMe("" + gSon.toJson(userLocation));
+    }
+
+    private void sendAccepted() {
+        UserLocation userLocation = new UserLocation(
+                userId,
+                0.0,
+                0.0,
+                3, 1, phone);
+        sendMe("" + gSon.toJson(userLocation));
+    }
+
+    public void captainAccepted() {
+        isCaptainAccepted = true;
+        sendAccepted();
     }
 
     private void startMe() {
         //try {
             Bundle data = null;
             String name = "",callType = "Request";
-            int NOTIFICATION_ID = 120;
-            /*if (intent != null && intent.getExtras() != null) {
-                data = intent.getExtras();
-                name = data.getString("inititator");
-                if(MwmApplication.get().getCall_type().equalsIgnoreCase(ApplicationRef.Constants.AUDIO_CALL)){
-                    callType ="Audio";
-                }
-                else {
-                    callType ="Video";
-                }
 
-            }*/
             try {
                 Intent receiveCallAction = new Intent(MwmApplication.get().getApplicationContext(), CaptainActivity.class);
                 receiveCallAction.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -508,6 +531,8 @@ public class ServerConnection extends Service {
         //intent.putExtra(EXTRA_ACTIVITY_TO_START, MapActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.setAction("intent.mycustom.action");
+        //intent.putExtra("ACTION_TYPE", "RECEIVE_CALL");
+        //intent.putExtra("NOTIFICATION_ID",NOTIFICATION_ID);
         intent.addCategory(Intent.CATEGORY_DEFAULT);
         g = gSon.fromJson(myMsg, UserTripInfo.class);
         int flag = g.getMyFlag();
@@ -542,6 +567,7 @@ public class ServerConnection extends Service {
                         (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
                 notificationManager.notify(0, notificationBuilder.build());*/
+                notifyTimer(15);
                 startMe();
                 //notifyTimer(7);
                 //playRingtone();
@@ -551,37 +577,62 @@ public class ServerConnection extends Service {
                 //sendMessageReceivedBroadcast(myMsg);
             }
         } else {
-            sendMessageReceivedBroadcast(myMsg);
+            //try {
+            String body = "";
+            body = getFlagTitle(flag);
+                alsoNotify(body);
+                sendMessageReceivedBroadcast(myMsg);
+            //} catch (Exception e) {
         }
-
     }
 
-    private void playRingtone() {
+    private void alsoNotify(String body) {
         try {
-            if(r != null) {
-                r.play();
-            }
+            String title = "Trip Update";
+            MySharedPreference.getInstance(this).addToNotify(true);
+            MySharedPreference.getInstance(this).putNotification(title, body);
+            Intent notifyIntent = new Intent(this, ResultActivity.class);
+            notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            PendingIntent notifyPendingIntent = PendingIntent.getActivity(
+                    this, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT
+            );
+            NotificationCompat.Builder notificationBuilder =
+                    new NotificationCompat.Builder(this, CHANNEL_ID_NOTIFY)
+                            .setSmallIcon(R.drawable.about_logo)
+                            .setContentTitle(title)
+                            .setContentText(body)
+                            //.setAutoCancel(true)
+                            .setContentIntent(notifyPendingIntent);
+
+            NotificationManager notificationManager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+            notificationManager.notify(0, notificationBuilder.build());
         } catch (Exception e) {
 
         }
-
     }
 
-    //@SuppressLint("HandlerLeak")
-    /*private void connect() {
-        if (!isHaveMessage) {
-            Request request = new Request.Builder()
-                    .url(Framework.nativeGetWsUrlLocal() + "?token=" + userId +"&is="+MySharedPreference.getInstance(this).isCaptainOnline())
-                    .build();
-            mWebSocket = mClient.newWebSocket(request, new SocketListener());
-            isHaveMessage = true;
+    private String getFlagTitle(int flag) {
+        String title = "";
+        //int mFlag = Integer.parseInt(flag);
+        switch (flag) {
+            case Constants.Notification.PASSENGER_REQUEST:
+                title = getString(R.string.passenger_request);
+                break;
+            case Constants.Notification.PASSENGER_ACCEPTED:
+                title = getString(R.string.passenger_accepted_request);
+                break;
+            default:
+                title = "Message from Carpoolee";
+                break;
         }
-        start();
-    }*/
+        return title;
+    }
 
     private void connect() {
-        //if (!isHaveMessage) {
-        if (mClient.connectionPool().connectionCount() == 0) {
+        if (!isHaveMessage) {
+        //if (mClient.connectionPool().connectionCount() == 0) {
             Request request = new Request.Builder()
                     .url(Framework.nativeGetWsUrl() + "?token=" + userId +"&is="+MySharedPreference.getInstance(this).isCaptainOnline())
                     .build();

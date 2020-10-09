@@ -259,8 +259,8 @@ public class MwmApplication extends Application implements AppBackgroundTracker.
       mChannel1.setDescription(CHANNEL_DESCRIPTION);
       mChannel1.enableLights(true);
       mChannel1.setLightColor(Color.GREEN);
-      mChannel1.enableVibration(true);
-      mChannel1.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+      //mChannel1.enableVibration(true);
+      //mChannel1.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
       mNotificationManager1.createNotificationChannel(mChannel1);
 
       //NotificationManager mNotificationManager2 = getSystemService(NotificationManager.class);
@@ -268,8 +268,8 @@ public class MwmApplication extends Application implements AppBackgroundTracker.
       mChannel2.setDescription(CHANNEL_DESCRIPTION);
       mChannel2.enableLights(true);
       mChannel2.setLightColor(Color.GREEN);
-      mChannel2.enableVibration(true);
-      mChannel2.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+      //mChannel2.enableVibration(true);
+      //mChannel2.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
       mNotificationManager1.createNotificationChannel(mChannel2);
     }
   }
