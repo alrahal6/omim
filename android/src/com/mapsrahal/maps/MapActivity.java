@@ -165,17 +165,17 @@ public class MapActivity extends BaseMwmFragmentActivity
     private int requestResponse = 3;
     private static final String CONFIRMED_LIST_KEY = "confirmedlistkey";
     //private static final String CONFIRMED_LIST_KEY = "confirmedlistkey";
-    private static final int SEND_BUSY = 2;
-    private static final int ACCEPT_REQUEST = 3;
-    private static final int TRIP_CANCELLED = 5;
-    private static final int REACHED_CUSTOMER = 11;
-    private static final int TRIP_STARTED = 12;
-    private static final int TRIP_COMPLETED = 13;
-    private static final int DISTANCE_NOTIFY = 50;
+    public static final int SEND_BUSY = 2;
+    public static final int ACCEPT_REQUEST = 3;
+    public static final int TRIP_CANCELLED = 5;
+    public static final int REACHED_CUSTOMER = 11;
+    public static final int TRIP_STARTED = 12;
+    public static final int TRIP_COMPLETED = 13;
+    public static final int DISTANCE_NOTIFY = 50;
     private int minDis, requestCounter = 0, driverId = 0;
-    private static final int NEW_REQUEST = 4;
-    private static final int CANCEL_DRIVER = 5;
-    private static final int END_TRIP = 13;
+    public static final int NEW_REQUEST = 4;
+    public static final int CANCEL_DRIVER = 5;
+    public static final int END_TRIP = 13;
     private final int[] requestedDrivers = new int[10];
     private int mSelector;
 
@@ -1237,6 +1237,10 @@ public class MapActivity extends BaseMwmFragmentActivity
                     prepareForAll();
                     break;
             }
+        }
+
+        if(mSelector == ACCEPT_REQUEST) {
+            Toast.makeText(this,"Captain Accepted Test",Toast.LENGTH_LONG).show();
         }
     }
 

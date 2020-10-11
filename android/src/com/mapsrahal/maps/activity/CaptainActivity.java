@@ -37,6 +37,9 @@ import com.mapsrahal.util.UiUtils;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static com.mapsrahal.maps.MapActivity.ACCEPT_REQUEST;
+import static com.mapsrahal.maps.activity.SelectorActivity.PASSENGER_CAPTAIN_SELECTOR;
+
 public class CaptainActivity extends AppCompatActivity implements ServerConnection.ServerListener {
 
     private Ringtone ringtone;
@@ -149,6 +152,12 @@ public class CaptainActivity extends AppCompatActivity implements ServerConnecti
         if (ringtone.isPlaying()) {
             ringtone.stop();
         }
+        // todo send busy and finish
+        Intent mapIntent = new Intent(this,MapActivity.class);
+        MySharedPreference.getInstance(CaptainActivity.this).setSelectorId(ACCEPT_REQUEST);
+        mapIntent.putExtra(PASSENGER_CAPTAIN_SELECTOR,ACCEPT_REQUEST);
+        startActivity(mapIntent);
+        finish();
     }
 
     private void acceptTrip() {
