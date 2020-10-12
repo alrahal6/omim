@@ -134,7 +134,7 @@
         app:layout_constraintTop_toBottomOf="@+id/ll_capt">
 
         <Button
-            android:id="@+id/busyResponse"
+            android:id="@+id/captainBusy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="3dp"
@@ -145,7 +145,7 @@
             android:textSize="20sp" />
 
         <Button
-            android:id="@+id/rideStatus"
+            android:id="@+id/captainAccept"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="3dp"

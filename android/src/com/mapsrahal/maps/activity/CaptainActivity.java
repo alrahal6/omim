@@ -20,12 +20,14 @@ import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.mapsrahal.maps.MapActivity;
+import com.mapsrahal.maps.MapFragment;
 import com.mapsrahal.maps.MwmApplication;
 import com.mapsrahal.maps.MySharedPreference;
 import com.mapsrahal.maps.R;
@@ -38,9 +40,11 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import static com.mapsrahal.maps.MapActivity.ACCEPT_REQUEST;
+import static com.mapsrahal.maps.MapActivity.SEND_BUSY;
 import static com.mapsrahal.maps.activity.SelectorActivity.PASSENGER_CAPTAIN_SELECTOR;
 
-public class CaptainActivity extends AppCompatActivity implements ServerConnection.ServerListener {
+public class CaptainActivity extends AppCompatActivity
+        implements ServerConnection.ServerListener, View.OnClickListener {
 
     private Ringtone ringtone;
     private UserTripInfo g;
@@ -51,6 +55,7 @@ public class CaptainActivity extends AppCompatActivity implements ServerConnecti
     private ProgressBar mCaptProgress;
     private TextView mProgressText;
     private int requestResponse = 3;
+    private Button mCaptainAccept,mCaptainBusy;
     private static final String TAG = CaptainActivity.class.getSimpleName();
 
     @Override
@@ -94,6 +99,10 @@ public class CaptainActivity extends AppCompatActivity implements ServerConnecti
 
         }
         setContentView(R.layout.activity_captain);
+        mCaptainAccept = findViewById(R.id.captainAccept);
+        mCaptainBusy = findViewById(R.id.captainBusy);
+        mCaptainAccept.setOnClickListener(this);
+        mCaptainBusy.setOnClickListener(this);
         mCaptProgress = findViewById(R.id.capt_progress_bar);
         mProgressText = findViewById(R.id.text_view_progress);
         //mCaptProgress.setTe
@@ -160,8 +169,16 @@ public class CaptainActivity extends AppCompatActivity implements ServerConnecti
         finish();
     }
 
-    private void acceptTrip() {
-
+    private void sendAccepted() {
+        if (ringtone.isPlaying()) {
+            ringtone.stop();
+        }
+        // todo send busy and finish
+        Intent mapIntent = new Intent(this,MapActivity.class);
+        MySharedPreference.getInstance(CaptainActivity.this).setSelectorId(SEND_BUSY);
+        mapIntent.putExtra(PASSENGER_CAPTAIN_SELECTOR,SEND_BUSY);
+        startActivity(mapIntent);
+        finish();
     }
 
     private void setObservers() {
@@ -273,5 +290,19 @@ public class CaptainActivity extends AppCompatActivity implements ServerConnecti
     @Override
     public void onStatusChange(ServerConnection.ConnectionStatus status) {
 
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.captainAccept:
+                sendAccepted();
+                break;
+            case R.id.captainBusy:
+                sendBusy();
+                break;
+            default:
+                break;
+        }
     }
 }

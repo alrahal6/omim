@@ -1238,7 +1238,11 @@ public class MapActivity extends BaseMwmFragmentActivity
                     break;
             }
         }
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
         if(mSelector == ACCEPT_REQUEST) {
             Toast.makeText(this,"Captain Accepted Test",Toast.LENGTH_LONG).show();
         }
