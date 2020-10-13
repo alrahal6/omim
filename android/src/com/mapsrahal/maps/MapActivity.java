@@ -1243,9 +1243,19 @@ public class MapActivity extends BaseMwmFragmentActivity
     @Override
     protected void onResume() {
         super.onResume();
-        if(mSelector == ACCEPT_REQUEST) {
+        int captRes = MySharedPreference.getInstance(this).getCaptRespId();
+        if(captRes == ACCEPT_REQUEST) {
             Toast.makeText(this,"Captain Accepted Test",Toast.LENGTH_LONG).show();
+            clearRequest();
         }
+        if(captRes == SEND_BUSY) {
+            Toast.makeText(this,"Captain Busy Test",Toast.LENGTH_LONG).show();
+            clearRequest();
+        }
+    }
+
+    private void clearRequest() {
+        MySharedPreference.getInstance(this).setCaptRespId(0);
     }
 
     private void displayConfirmedList() {

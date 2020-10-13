@@ -21,6 +21,7 @@ public class MySharedPreference {
     private static final String KEY_BINDED = "serviceBinded";
     private static final String KEY_MSG_TIME = "msgTime";
     private static final String KEY_SELECTOR = "keySelector";
+    private static final String KEY_CAPT_RES = "keyCaptRes";
     private static final String KEY_USER_ID = "userid";
     private static final String KEY_USER_TYPE = "usertype";
     private static final String KEY_MESSAGE = "keyMessage";
@@ -167,6 +168,18 @@ public class MySharedPreference {
     public int getSelectorId() {
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         return sharedPreferences.getInt(KEY_SELECTOR, 0);
+    }
+
+    public void setCaptRespId(int id) {
+        //SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = getSharedPreference().edit();
+        editor.putInt(KEY_CAPT_RES, id);
+        editor.apply();
+    }
+
+    public int getCaptRespId() {
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getInt(KEY_CAPT_RES, 0);
     }
 
     public long getMsgRcvdTime() {

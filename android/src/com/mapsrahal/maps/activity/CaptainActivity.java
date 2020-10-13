@@ -80,7 +80,8 @@ public class CaptainActivity extends AppCompatActivity
                     WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)*/
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
                     | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
-                    |WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                    | WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
+                    | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
         }
 
         //String name = null;
@@ -157,25 +158,25 @@ public class CaptainActivity extends AppCompatActivity
         });
     }
 
+    private void sendAccepted() {
+        if (ringtone.isPlaying()) {
+            ringtone.stop();
+        }
+        // todo send accepted and finish
+        Intent mapIntent = new Intent(this,MapActivity.class);
+        MySharedPreference.getInstance(CaptainActivity.this).setCaptRespId(ACCEPT_REQUEST);
+        mapIntent.putExtra(PASSENGER_CAPTAIN_SELECTOR,ACCEPT_REQUEST);
+        startActivity(mapIntent);
+        finish();
+    }
+
     private void sendBusy() {
         if (ringtone.isPlaying()) {
             ringtone.stop();
         }
         // todo send busy and finish
         Intent mapIntent = new Intent(this,MapActivity.class);
-        MySharedPreference.getInstance(CaptainActivity.this).setSelectorId(ACCEPT_REQUEST);
-        mapIntent.putExtra(PASSENGER_CAPTAIN_SELECTOR,ACCEPT_REQUEST);
-        startActivity(mapIntent);
-        finish();
-    }
-
-    private void sendAccepted() {
-        if (ringtone.isPlaying()) {
-            ringtone.stop();
-        }
-        // todo send busy and finish
-        Intent mapIntent = new Intent(this,MapActivity.class);
-        MySharedPreference.getInstance(CaptainActivity.this).setSelectorId(SEND_BUSY);
+        MySharedPreference.getInstance(CaptainActivity.this).setCaptRespId(SEND_BUSY);
         mapIntent.putExtra(PASSENGER_CAPTAIN_SELECTOR,SEND_BUSY);
         startActivity(mapIntent);
         finish();
