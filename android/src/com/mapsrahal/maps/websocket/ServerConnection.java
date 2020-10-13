@@ -16,6 +16,7 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -25,10 +26,15 @@ import android.os.Message;
 import android.os.PowerManager;
 import android.os.SystemClock;
 import android.provider.Settings;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.ColorRes;
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.core.app.NotificationCompat;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -363,13 +369,16 @@ public class ServerConnection extends Service {
                 //if (data != null) {
                     Uri ringUri= Settings.System.DEFAULT_RINGTONE_URI;
                     notificationBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                            // todo
                             .setContentTitle("To : Khartoum Airport")
                             .setContentText("10 KM - 400 SDG")
                             .setSmallIcon(R.drawable.ic_call_green_24dp)
                             .setPriority(NotificationCompat.PRIORITY_MAX)
                             .setCategory(NotificationCompat.CATEGORY_CALL)
-                            .addAction(R.drawable.bg_active_icon, getString(R.string.cancel), cancelCallPendingIntent)
-                            .addAction(R.drawable.bg_active_icon, getString(R.string.accept), receiveCallPendingIntent)
+                            .addAction(R.drawable.bg_circle_red, getActionText(
+                                    R.string.busy, R.color.dark_red), cancelCallPendingIntent)
+                            .addAction(R.drawable.bg_circle_green, getActionText(
+                                    R.string.accept, R.color.base_green), receiveCallPendingIntent)
                             .setContentIntent(callDialogPendingIntent)
                             //.setOngoing(true)
                             .setAutoCancel(true)
@@ -395,7 +404,15 @@ public class ServerConnection extends Service {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+    }
 
+    private Spannable getActionText(@StringRes int stringRes, @ColorRes int colorRes) {
+        Spannable spannable = new SpannableString(this.getText(stringRes));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            spannable.setSpan(
+                    new ForegroundColorSpan(this.getColor(colorRes)), 0, spannable.length(), 0);
+        }
+        return spannable;
     }
 
     @Override
@@ -567,7 +584,7 @@ public class ServerConnection extends Service {
                         (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
                 notificationManager.notify(0, notificationBuilder.build());*/
-                notifyTimer(15);
+                notifyTimer(g.getMinDis());
                 startMe();
                 //notifyTimer(7);
                 //playRingtone();

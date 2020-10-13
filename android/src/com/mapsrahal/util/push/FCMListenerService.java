@@ -61,7 +61,7 @@ public class FCMListenerService extends FirebaseMessagingService {
         MySharedPreference.getInstance(this).putNotification(title,body);
         Intent notifyIntent = new Intent(this, ResultActivity.class);
         // Set the Activity to start in a new, empty task
-        notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         //notifyIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         //notifyIntent.putExtra("title", title);
         //notifyIntent.putExtra("message", body);

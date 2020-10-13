@@ -83,22 +83,7 @@ public class CaptainActivity extends AppCompatActivity
                     | WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
                     | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
         }
-
         //String name = null;
-        Intent intent = getIntent();
-        if (intent != null && intent.getExtras() != null) {
-            String name = intent.getStringExtra("ACTION_TYPE");
-            if(name == "RECEIVE_CALL") {
-                // trip accepted
-                //callType ="Audio";
-            } else if(name == "DIALOG_CALL") {
-                // wanna see the details
-                //callType ="Video";
-            } else {
-                // trip cancelled
-            }
-
-        }
         setContentView(R.layout.activity_captain);
         mCaptainAccept = findViewById(R.id.captainAccept);
         mCaptainBusy = findViewById(R.id.captainBusy);
@@ -114,6 +99,26 @@ public class CaptainActivity extends AppCompatActivity
         mViewModel = ViewModelProviders.of(this).get(WebSocketViewModel.class);
         setObservers();
         processMessage("");
+        Intent intent = getIntent();
+        if (intent != null && intent.getExtras() != null) {
+            String name = intent.getStringExtra("ACTION_TYPE");
+            //Log.d(TAG,"name : "+name);
+            if(name.equals("RECEIVE_CALL")) {
+                sendAccepted();
+                //Log.d(TAG,"Send Accepted");
+                // trip accepted
+                //callType ="Audio";
+            } else if(name.equals("DIALOG_CALL")) {
+                // wanna see the details
+                //Log.d(TAG,"Just show");
+                //callType ="Video";
+            } else {
+                //Log.d(TAG,"Send Busy");
+                sendBusy();
+                // trip cancelled
+            }
+
+        }
     }
 
     @Override
