@@ -8,8 +8,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -52,6 +50,7 @@ import com.mapsrahal.maps.activity.ui.main.CargoStatePagerAdapter;
 import com.mapsrahal.maps.activity.ui.main.ConfirmedListPagerAdapter;
 import com.mapsrahal.maps.activity.ui.main.MatchingStatePagerAdapter;
 import com.mapsrahal.maps.api.ApiClient;
+import com.mapsrahal.maps.api.FindDriverApi;
 import com.mapsrahal.maps.api.ParsedMwmRequest;
 import com.mapsrahal.maps.api.PostApi;
 import com.mapsrahal.maps.api.UserMessageApi;
@@ -62,6 +61,7 @@ import com.mapsrahal.maps.intent.MapTask;
 import com.mapsrahal.maps.location.CompassData;
 import com.mapsrahal.maps.location.LocationHelper;
 import com.mapsrahal.maps.model.CallLog;
+import com.mapsrahal.maps.model.FindDriver;
 import com.mapsrahal.maps.model.GetMyHistory;
 import com.mapsrahal.maps.model.IsValid;
 import com.mapsrahal.maps.model.MatchingItem;
@@ -110,6 +110,7 @@ import retrofit2.Response;
 
 import static com.mapsrahal.maps.activity.SelectorActivity.CAPTAIN_ANY;
 import static com.mapsrahal.maps.activity.SelectorActivity.CAPTAIN_SHARE_ONLY;
+import static com.mapsrahal.maps.activity.SelectorActivity.CAPTAIN_TAXI_ONLY;
 import static com.mapsrahal.maps.activity.SelectorActivity.PASSENGER_ANY;
 import static com.mapsrahal.maps.activity.SelectorActivity.PASSENGER_SHARE_ONLY;
 import static com.mapsrahal.maps.activity.SelectorActivity.PASSENGER_TAXI_ONLY;
@@ -140,7 +141,7 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     private Button btRequest, mOpenGMap, mConfirmList;
     private SwipeButton mSwipeButton;
-    private ImageButton mAddressToggle, mMainMenu;
+    private ImageButton mAddressToggle, mMainMenu,mCloseDest;
 
     private ImageView mAddSeat, mRemoveSeat, mCloseList, mCloseNotification;
     private LinearLayout mNotificationCard, mStartTripLayout;
@@ -206,8 +207,6 @@ public class MapActivity extends BaseMwmFragmentActivity
     private FusedLocationProviderClient mFusedLocationClient;
     private Location mLastLocation;
     private ProgressBar mProgressbar;
-    private Ringtone ringtone;
-    //MediaPlayer mediaPlayer;
     private boolean isConfirmationTimerOn = false;
     private CountDownTimer mCountDownTimer, mTimeOutTimer;
     private static final long START_TIME_IN_MILLIS = 20000;
@@ -260,9 +259,9 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     private void prepareForNone() {
         isOnRequestBtn = true;
-        hideFromTo();
+        //hideFromTo();
+        hideFrom();
         onlineAsCaptain();
-        initRingTone();
     }
 
     private void openInGoogleMap(double fromLat, double fromLng, double toLat, double toLng) {
@@ -423,13 +422,13 @@ public class MapActivity extends BaseMwmFragmentActivity
         hideExceptFromTo();
     }
 
-    private void initRingTone() {
-        try {
-            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
-            ringtone = RingtoneManager.getRingtone(this, notification);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    private void hideFrom() {
+        //tvDropOff.setVisibility(View.GONE);
+        tvDropOff.setText(R.string.set_destination);
+        tvPickup.setVisibility(View.GONE);
+        mAddressToggle.setVisibility(View.GONE);
+        mCloseDest.setVisibility(View.VISIBLE);
+        hideExceptFromTo();
     }
 
     @Override
@@ -489,6 +488,8 @@ public class MapActivity extends BaseMwmFragmentActivity
         btRequest.setOnClickListener(this);
         mAddressToggle = findViewById(R.id.addressToggle);
         mAddressToggle.setOnClickListener(this);
+        mCloseDest = findViewById(R.id.closeDest);
+        mCloseDest.setOnClickListener(this);
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         View headerView = navigationView.getHeaderView(0);
@@ -534,6 +535,22 @@ public class MapActivity extends BaseMwmFragmentActivity
             prepareList();
         }
 
+        switch (mSelector) {
+            case PASSENGER_TAXI_ONLY:
+                prepareForAll();
+                mDateTime.setVisibility(View.GONE);
+                connect();
+                break;
+            case PASSENGER_SHARE_ONLY:
+            case PASSENGER_ANY:
+                prepareForAll();
+                break;
+            case CAPTAIN_TAXI_ONLY:
+                prepareForNone();
+                isCaptainInitialised = true;
+                break;
+        }
+
         ArrayAdapter<CharSequence> adapter;
         Spinner spinner = findViewById(R.id.gender_spinner);
 
@@ -569,7 +586,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         });
 
         mCustomerPhone.setOnClickListener(v -> callDriver());
-        mSwitch.setVisibility(View.VISIBLE);
+        //mSwitch.setVisibility(View.VISIBLE);
         mSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if(isChecked) {
                 connect();
@@ -790,6 +807,9 @@ public class MapActivity extends BaseMwmFragmentActivity
             case R.id.addressToggle:
                 toggleAddress();
                 break;
+            case R.id.closeDest:
+                closeDestAddress();
+                break;
             case R.id.confirm_list:
                 if (selectionList.size() > 0) {
                     sendConfirmList();
@@ -806,10 +826,21 @@ public class MapActivity extends BaseMwmFragmentActivity
                 //mMainMenu.animate().rotation(mMainMenu.getRotation()+360).start();
                 break;
             case R.id.bt_request:
+                hideBtnRequest();
                 showProgress(true);
-                //hideBtnRequest();
-                //getPrice(myDistance, mSelector);
-                wstest();
+                if (mSelector == PASSENGER_TAXI_ONLY) {
+                    if(isValidateFrom()) {
+                        showConfirmDialog();
+                    } else {
+                        Toast.makeText(this,getString(R.string.enter_valid_address),Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    if(isValidateFromAndTo()) {
+                        showConfirmDialog();
+                    } else {
+                        Toast.makeText(this,getString(R.string.enter_valid_address),Toast.LENGTH_LONG).show();
+                    }
+                }
                 break;
             case R.id.date_time:
                 dateTime();
@@ -962,6 +993,13 @@ public class MapActivity extends BaseMwmFragmentActivity
         }
     }
 
+    private void closeDestAddress() {
+        if (toLocation != null) {
+            toLocation = null;
+            tvDropOff.setText(R.string.set_destination);
+        }
+    }
+
     @Override
     public void onMapObjectActivated(MapObject object) {
         if (MapObject.isOfType(MapObject.API_POINT, object)) {
@@ -975,6 +1013,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         tempLocation = object;
         if (!isResultBySearch) {
             showMenu();
+            showToMenu();
         } else {
             isResultBySearch = false;
             if (isPickupSearch) {
@@ -990,6 +1029,16 @@ public class MapActivity extends BaseMwmFragmentActivity
         if (!isOnRequestBtn) {
             mMnuForm.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void showToMenu() {
+        //if (!isOnRequestBtn) {
+        if(mSelector == CAPTAIN_TAXI_ONLY) {
+            mMnuForm.setVisibility(View.VISIBLE);
+            mSetPickup.setVisibility(View.GONE);
+            mSetDrop.setText(R.string.set_destination);
+        }
+        //}
     }
 
     private void hideMenu() {
@@ -1094,6 +1143,9 @@ public class MapActivity extends BaseMwmFragmentActivity
     @Override
     protected void onSafeDestroy() {
         super.onSafeDestroy();
+        if(mSelector == PASSENGER_TAXI_ONLY) {
+            disconnect();
+        }
         removePointsAndRoute();
     }
 
@@ -1528,7 +1580,7 @@ public class MapActivity extends BaseMwmFragmentActivity
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (mSelector == PASSENGER_TAXI_ONLY) {
-                    //getNearestDriver();
+                    getNearestDriver();
                 } else {
                     saveAndSearchPost();
                 }
@@ -1633,7 +1685,6 @@ public class MapActivity extends BaseMwmFragmentActivity
             @Override
             public void onFinish() {
                 isConfirmationTimerOn = false;
-                //mService.stopRingTone();
                 timeOutClose();
                 //Log.i(TAG,"Finished timer");
             }
@@ -2303,4 +2354,111 @@ public class MapActivity extends BaseMwmFragmentActivity
         LocationHelper.INSTANCE.restart();
     }
 
+
+    List<FindDriver> mNearestDriver = new ArrayList<>();
+    int listSize = 0;
+    int listCurrent = 0;
+
+    private void getNearestDriver() {
+        showProgress(true);
+        //String notIn = getNotIn();
+        //Log.d(TAG,"User Id"+ MySharedPreference.getInstance(this).getUserId());
+        if(isValidateFrom()) {
+            double lat = fromLocation.getLat();
+            double lng = fromLocation.getLon();
+            FindDriver findDriver = new FindDriver(
+                    MySharedPreference.getInstance(this).getUserId(), lat, lng,
+                    0
+            );
+            FindDriverApi findDriverApi = ApiClient.getClient().create(FindDriverApi.class);
+            Call<List<FindDriver>> call = findDriverApi.findDriver(findDriver);
+
+            call.enqueue(new Callback<List<FindDriver>>() {
+                @Override
+                public void onResponse(Call<List<FindDriver>> call, Response<List<FindDriver>> response) {
+                    if (response.isSuccessful()) {
+                        isOnRequestBtn = true;
+                        showProgress(false);
+                        removeRequest();
+                        mNearestDriver = new ArrayList<>();
+                        mNearestDriver = response.body();
+                        listCurrent = 0;
+                        listSize = mNearestDriver.size();
+                        //Log.d(TAG, "Sizze " + mNearestDriver.size());
+                        if(listSize > 0) {
+                            requestHandler.postDelayed(requestRunnable, 0);
+                        } else {
+                            Toast.makeText(MapActivity.this, getString(R.string.no_driver_found), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<FindDriver>> call, Throwable t) {
+                    Toast.makeText(MapActivity.this, "Sorry! No Drivers found! Try Later", Toast.LENGTH_LONG).show();
+                }
+
+            });
+        } else {
+            Toast.makeText(this,getString(R.string.enter_valid_address),Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private final Runnable requestRunnable = new Runnable() {
+        @Override
+        public void run() {
+            //Iterator<FindDriver> i = mNearestDriver.iterator();
+            //Log.d(TAG,"Sizze "+ mNearestDriver.size());
+            //for (FindDriver driverList : mNearestDriver) {
+            //while (i.hasNext()) {
+            FindDriver driverList = mNearestDriver.get(listCurrent);
+            int dId = driverList.getUserId();
+            if (dId > 0) {
+                userTripInfo = new UserTripInfo(MySharedPreference.getInstance(MapActivity.this).getUserId(),
+                        MySharedPreference.getInstance(getApplicationContext()).getPhoneNumber(),
+                        MySharedPreference.getInstance(getApplicationContext()).getUserName(),
+                        mSourceAddress,mDestinationAddress,fromLocation.getLat(),fromLocation.getLon(),
+                        tripSeatPrice,Double.parseDouble(myDistance)
+                );
+                //double dLat = driverList.getLat();
+                //double dLng = driverList.getLng();
+                driverId = dId;
+                //Log.d(TAG,"driver id "+ driverId);
+                userTripInfo.setDriverId(driverId);
+                //addMarker(new LatLng(dLat, dLng));
+                btRequest.setVisibility(View.GONE);
+                mCancelRequest.setVisibility(View.VISIBLE);
+                mCallingCaptain.setVisibility(View.VISIBLE);
+                //requestedDrivers[++requestCounter] = driverId;
+                isRequestInProgress = true;
+                if (!isDriverAccepted) {
+                    //mNearestDriver.remove(driverList);
+                    //Log.d(TAG,"sending request");
+                    //i.remove();
+                    userTripInfo.setMyFlag(NEW_REQUEST);
+                    sendMe();
+                    isDriverBusy = false;
+                }
+            } else {
+                isRequestInProgress = false;
+                requestCounter = 9;
+                removeRequest();
+                mCallingCaptain.setText("Sorry! No Captain found, please try later");
+                Toast.makeText(MapActivity.this, "Sorry! No Captain found", Toast.LENGTH_LONG).show();
+            }
+            //}
+        }
+    };
+
+    private void sendMe() {
+        try {
+            mService.sendReq(userTripInfo);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void removeRequest() {
+        requestHandler.removeCallbacks(requestRunnable);
+    }
 }

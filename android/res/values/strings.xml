@@ -3063,4 +3063,5 @@
     <string name="notification">Notification</string>
     <string name="captains">Captains</string>
     <string name="passengers">Passengers</string>
+    <string name="set_destination">Set Destination</string>
 </resources>

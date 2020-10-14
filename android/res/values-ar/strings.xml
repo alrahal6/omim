@@ -2436,10 +2436,11 @@
     <string name="my_account">حسابي</string>
     <string name="account_bal">الرصيد </string>
 	<string name="unable_fetch_location">  عذرا !   غير قادرعلي قراءة مواقع الركاب  </string>
-    <string name="notification">Notification</string>
+    <string name="notification">رسالة تنبيه</string>
 	<string name="captains">كاربولر</string>
 	<string name="passengers">ركاب</string>
-	<string-array name="select_vehicle">
+    <string name="set_destination">ادخل وجهتك</string>
+    <string-array name="select_vehicle">
 		<item>اقتصاد</item>
 	</string-array>
 	<string-array name="select_gender">
