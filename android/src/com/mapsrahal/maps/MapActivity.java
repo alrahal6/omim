@@ -584,7 +584,6 @@ public class MapActivity extends BaseMwmFragmentActivity
         //mViewModel.setIsConnected(true);
         try {
             if (!isMyServiceRunning(ServerConnection.class)) {
-
                 final Intent intent = getMyIntent();
                 intent.setAction(Constants.STARTFOREGROUND_ACTION);
                 ContextCompat.startForegroundService(getContext(), intent);
@@ -770,7 +769,7 @@ public class MapActivity extends BaseMwmFragmentActivity
     }
 
     private void wstest() {
-        mService.sendMessage(4,1,1.1,1.2,1.1);
+        //mService.sendMessage(4,1,1.1,1.2,1.1);
     }
 
     @Override
@@ -2023,8 +2022,7 @@ public class MapActivity extends BaseMwmFragmentActivity
     //_______________________ Almost never change methods
 
     @Override
-    public void onDismiss(boolean switchFullScreenMode) {
-    }
+    public void onDismiss(boolean switchFullScreenMode) { }
 
     @Override
     public FragmentActivity getActivity() {

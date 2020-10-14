@@ -104,6 +104,7 @@ public class ServerConnection extends Service {
     private boolean isUpdating = false;
     private boolean isAlarmSet = false;
     private boolean isCaptainAccepted = false;
+    private boolean isResponded = false;
     private Handler mMessageHandler;
     private ServerListener mListener;
     private Ringtone r;
@@ -548,7 +549,7 @@ public class ServerConnection extends Service {
         //intent.putExtra(EXTRA_ACTIVITY_TO_START, MapActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.setAction("intent.mycustom.action");
-        //intent.putExtra("ACTION_TYPE", "RECEIVE_CALL");
+        intent.putExtra("ACTION_TYPE", "DIALOG_CALL");
         //intent.putExtra("NOTIFICATION_ID",NOTIFICATION_ID);
         intent.addCategory(Intent.CATEGORY_DEFAULT);
         g = gSon.fromJson(myMsg, UserTripInfo.class);
@@ -556,7 +557,7 @@ public class ServerConnection extends Service {
         MySharedPreference.getInstance(this).userMessage(myMsg);
         //mBinder.pingBinder()
         if(flag == 4) {
-
+            isResponded = false;
             //startActivity(intent);
             boolean isForeground = MwmApplication.backgroundTracker(MwmApplication.get().getApplicationContext()).isForeground();
             if(isForeground) {
@@ -687,13 +688,17 @@ public class ServerConnection extends Service {
     }
 
     public void sendMessage(int flag, int driverId, double distance, double duration, double price) {
-        String mPrice = (price == 0) ? phone : String.valueOf(price);
-        UserLocation userLocation = new UserLocation(
-                userId,
-                distance,
-                duration,
-                flag, driverId, mPrice);
-        sendMe("" + gSon.toJson(userLocation));
+        Log.d(TAG,"message sending... ok");
+        if(!isResponded) {
+            isResponded = true;
+            String mPrice = (price == 0) ? phone : String.valueOf(price);
+            UserLocation userLocation = new UserLocation(
+                    userId,
+                    distance,
+                    duration,
+                    flag, driverId, mPrice);
+            sendMe("" + gSon.toJson(userLocation));
+        }
     }
 
     public final class ServerConnectionBinder extends Binder {

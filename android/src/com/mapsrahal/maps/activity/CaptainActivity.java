@@ -56,6 +56,8 @@ public class CaptainActivity extends AppCompatActivity
     private TextView mProgressText;
     private int requestResponse = 3;
     private Button mCaptainAccept,mCaptainBusy;
+    private boolean isSendAccepted = false;
+    private boolean isSendBusy = false;
     private static final String TAG = CaptainActivity.class.getSimpleName();
 
     @Override
@@ -100,24 +102,29 @@ public class CaptainActivity extends AppCompatActivity
         setObservers();
         processMessage("");
         Intent intent = getIntent();
-        if (intent != null && intent.getExtras() != null) {
-            String name = intent.getStringExtra("ACTION_TYPE");
+        final Intent bIntent = getMyIntent();
+        bindMyService(bIntent);
+        if (intent != null && intent.getAction() != null) {
+            //String name = intent.getStringExtra("ACTION_TYPE");
+            String name = intent.getAction();
             //Log.d(TAG,"name : "+name);
-            if(name.equals("RECEIVE_CALL")) {
-                sendAccepted();
-                //Log.d(TAG,"Send Accepted");
-                // trip accepted
-                //callType ="Audio";
-            } else if(name.equals("DIALOG_CALL")) {
-                // wanna see the details
-                //Log.d(TAG,"Just show");
-                //callType ="Video";
-            } else {
-                //Log.d(TAG,"Send Busy");
-                sendBusy();
-                // trip cancelled
-            }
+            if(name != null) {
+                if (name.equals("RECEIVE_CALL")) {
+                    //sendAccepted();
+                    //Log.d(TAG,"Send Accepted");
+                    // trip accepted
+                    //callType ="Audio";
+                } else if(name.equals("CANCEL_CALL")) {
+                    //sendBusy();
+                    // wanna see the details
+                    //Log.d(TAG,"Just show");
+                    //callType ="Video";
+                } else {
+                    //Log.d(TAG,"Send Busy");
 
+                    // trip cancelled
+                }
+            }
         }
     }
 
@@ -164,33 +171,60 @@ public class CaptainActivity extends AppCompatActivity
     }
 
     private void sendAccepted() {
-        if (ringtone.isPlaying()) {
-            ringtone.stop();
+        if(!isSendAccepted) {
+            isSendAccepted = true;
+            if (ringtone.isPlaying()) {
+                ringtone.stop();
+            }
+            // todo send accepted and finish
+            send(3, 10, 1.1, 1.0);
+            Intent mapIntent = new Intent(this, MapActivity.class);
+            MySharedPreference.getInstance(CaptainActivity.this).setCaptRespId(ACCEPT_REQUEST);
+            mapIntent.putExtra(PASSENGER_CAPTAIN_SELECTOR, ACCEPT_REQUEST);
+            startActivity(mapIntent);
+            //unBindMyService();
+            //finish();
         }
-        // todo send accepted and finish
-        Intent mapIntent = new Intent(this,MapActivity.class);
-        MySharedPreference.getInstance(CaptainActivity.this).setCaptRespId(ACCEPT_REQUEST);
-        mapIntent.putExtra(PASSENGER_CAPTAIN_SELECTOR,ACCEPT_REQUEST);
-        startActivity(mapIntent);
-        finish();
     }
 
     private void sendBusy() {
-        if (ringtone.isPlaying()) {
-            ringtone.stop();
+        if(!isSendBusy) {
+            isSendBusy = true;
+            if (ringtone.isPlaying()) {
+                ringtone.stop();
+            }
+            // todo send busy and finish
+            //Intent mapIntent = new Intent(this,MapActivity.class);
+            //MySharedPreference.getInstance(CaptainActivity.this).setCaptRespId(SEND_BUSY);
+            //mapIntent.putExtra(PASSENGER_CAPTAIN_SELECTOR,SEND_BUSY);
+            //startActivity(mapIntent);
+            send(2, 10, 1.1, 1.0);
+
         }
-        // todo send busy and finish
-        Intent mapIntent = new Intent(this,MapActivity.class);
-        MySharedPreference.getInstance(CaptainActivity.this).setCaptRespId(SEND_BUSY);
-        mapIntent.putExtra(PASSENGER_CAPTAIN_SELECTOR,SEND_BUSY);
-        startActivity(mapIntent);
-        finish();
+    }
+
+    private Intent getMyIntent() {
+        //Context context = getContext();
+        return new Intent(this, ServerConnection.class);
+    }
+
+    private void bindMyService(Intent intent) {
+        MySharedPreference.getInstance(this).setBind(true);
+        bindService(intent, mViewModel.getServiceConnection(), Context.BIND_AUTO_CREATE);
+    }
+
+    private void unBindMyService() {
+        if(MySharedPreference.getInstance(this).isBinded()) {
+            MySharedPreference.getInstance(this).setBind(false);
+            unbindService(mViewModel.getServiceConnection());
+            //LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+        }
     }
 
     private void setObservers() {
         mViewModel.getBinder().observe(this, myBinder -> {
             if (myBinder == null) {
-                //Log.d(TAG, "onChanged: unbound from service");
+                Log.d(TAG, "onChanged: unbound from service");
             } else {
                 //Log.d(TAG, "onChanged: bound to service.");
                 mService = myBinder.getService();
@@ -211,10 +245,13 @@ public class CaptainActivity extends AppCompatActivity
 
     private void send(int flag, double distance, double duration, double price) {
         try {
-            mService.sendMessage(flag, requestingPassenger, distance, duration, price);
+            mService.sendMessage(flag, 3, distance, duration, price);
             updateResponse(flag);
         } catch (Exception e) {
             Log.d(TAG, "Error sending message " + e.getMessage());
+        } finally {
+            unBindMyService();
+            finish();
         }
     }
 
