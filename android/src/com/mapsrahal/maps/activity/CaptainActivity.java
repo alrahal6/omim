@@ -245,12 +245,12 @@ public class CaptainActivity extends AppCompatActivity
 
     private void send(int flag, double distance, double duration, double price) {
         try {
-            mService.sendMessage(flag, 3, distance, duration, price);
+            mService.sendMessage(flag, requestingPassenger, distance, duration, price);
             updateResponse(flag);
         } catch (Exception e) {
             Log.d(TAG, "Error sending message " + e.getMessage());
         } finally {
-            unBindMyService();
+            //unBindMyService();
             finish();
         }
     }
@@ -288,6 +288,7 @@ public class CaptainActivity extends AppCompatActivity
             try {
                 g = gSon.fromJson(msg, UserTripInfo.class);
                 int flag = g.getMyFlag();
+                requestingPassenger = g.getUserId();
                 switch (flag) {
                     case 4:
                         notifyTimer(g.getMinDis());

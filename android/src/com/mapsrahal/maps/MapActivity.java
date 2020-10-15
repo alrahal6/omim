@@ -2672,4 +2672,35 @@ public class MapActivity extends BaseMwmFragmentActivity
     public void onStatusChange(ServerConnection.ConnectionStatus status) {
 
     }
+
+    private void acceptRequest() {
+        try {
+            //send(ACCEPT_REQUEST, 0, 0, 0);
+            mAcceptBusyInfo.setVisibility(View.GONE);
+            mSwipeLayout.setVisibility(View.VISIBLE);
+            mOpenGMap.setVisibility(View.VISIBLE);
+            //mCustomerName.setText("");
+            //mCustomerPhone.setText("");
+            /*base = g.getBase();
+            km = g.getKm();
+            mins = g.getMins();
+            minDis = g.getMinDis();
+            tripId = String.valueOf(g.getTripId());
+            distance = g.getDistance();
+            duration = g.getDuration();
+            price = g.getPrice();*/
+            prepareGoToCustomer();
+        } catch (Exception e) {
+            Log.d(TAG, "Error accept request " + e.getMessage());
+        }
+    }
+
+    private void send(int flag, double distance, double duration, double price) {
+        try {
+            mService.sendMessage(flag, requestingPassenger, distance, duration, price);
+            updateResponse(flag);
+        } catch (Exception e) {
+            Log.d(TAG, "Error sending message " + e.getMessage());
+        }
+    }
 }
