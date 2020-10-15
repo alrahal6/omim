@@ -63,6 +63,7 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute"
         tools:replace="android:supportsRtl">
+        <activity android:name=".activity.CheckInternet"></activity>
         <activity android:name=".activity.CaptainActivity">
             <intent-filter>
                 <action android:name="intent.mycustom.action" />
@@ -91,9 +92,7 @@
         <activity
             android:name=".MapActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait">
-
-        </activity>
+            android:screenOrientation="portrait"></activity>
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -606,8 +605,8 @@ meta-data
         </service>
         <service
             android:name=".websocket.ServerConnection"
-            android:stopWithTask="true"
-            android:exported="false" />
+            android:exported="false"
+            android:stopWithTask="true" />
         <!--
 <service
             android:name="com.mapsrahal.util.push.FirebaseRegistrationTokenService">
@@ -643,14 +642,16 @@ meta-data
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
-        <!--<receiver
+        <!--
+<receiver
             android:name=".websocket.CallNotificationActionReceiver"
             android:enabled="true">
             <intent-filter android:priority="999">
                 <action android:name="ConstantApp.CALL_RECEIVE_ACTION" />
                 <action android:name="ConstantApp.CALL_CANCEL_ACTION"/>
             </intent-filter>
-        </receiver>-->
+        </receiver>
+        -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${FILE_PROVIDER_PLACEHOLDER}"

@@ -81,7 +81,7 @@ public class MwmApplication extends Application implements AppBackgroundTracker.
   public static final String CHANNEL_ID_NOTIFY = "carpoolee_notification";
   public static final String CHANNEL_ID_CALL_CAPTAIN = "online_captatin" ;
   public static final String CHANNEL_NAME = "Captain Request";
-  public static final String CHANNEL_NAME_CAPTAIN = "Captain Online";
+  public static final String CHANNEL_NAME_CAPTAIN = "Online";
   public static final String CHANNEL_NAME_USER = "User Message";
   private static final String CHANNEL_DESCRIPTION = "Taxi CarPool App";
   private boolean mFrameworkInitialized;

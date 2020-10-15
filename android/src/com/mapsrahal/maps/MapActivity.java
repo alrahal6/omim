@@ -531,6 +531,10 @@ public class MapActivity extends BaseMwmFragmentActivity
         mAmount = findViewById(R.id.payAmount);
         Button mSendFeedback = findViewById(R.id.submitRating);
         mSelector = MySharedPreference.getInstance(this).getSelectorId();
+        if(MySharedPreference.getInstance(this).isCaptainOnline()) {
+            mSwitch.setChecked(true);
+            mSelector = CAPTAIN_TAXI_ONLY;
+        }
         if (mSelector == CAPTAIN_SHARE_ONLY || mSelector == CAPTAIN_ANY) {
             prepareList();
         }
@@ -1012,8 +1016,12 @@ public class MapActivity extends BaseMwmFragmentActivity
         }
         tempLocation = object;
         if (!isResultBySearch) {
-            showMenu();
-            showToMenu();
+            if (!isOnRequestBtn) {
+                showMenu();
+            }
+            if(mSelector == CAPTAIN_TAXI_ONLY) {
+                showToMenu();
+            }
         } else {
             isResultBySearch = false;
             if (isPickupSearch) {
@@ -1026,19 +1034,13 @@ public class MapActivity extends BaseMwmFragmentActivity
     }
 
     private void showMenu() {
-        if (!isOnRequestBtn) {
-            mMnuForm.setVisibility(View.VISIBLE);
-        }
+        mMnuForm.setVisibility(View.VISIBLE);
     }
 
     private void showToMenu() {
-        //if (!isOnRequestBtn) {
-        if(mSelector == CAPTAIN_TAXI_ONLY) {
-            mMnuForm.setVisibility(View.VISIBLE);
-            mSetPickup.setVisibility(View.GONE);
-            mSetDrop.setText(R.string.set_destination);
-        }
-        //}
+        mMnuForm.setVisibility(View.VISIBLE);
+        mSetPickup.setVisibility(View.GONE);
+        mSetDrop.setText(R.string.set_destination);
     }
 
     private void hideMenu() {
@@ -1255,10 +1257,6 @@ public class MapActivity extends BaseMwmFragmentActivity
             isSelectorFree = false;
             //processMessage(msg);
             MySharedPreference.getInstance(this).userMessage(null);
-        }
-
-        if(MySharedPreference.getInstance(this).isCaptainOnline()) {
-            mSwitch.setChecked(true);
         }
 
         String notify = MySharedPreference.getInstance(this).getUserNotification();

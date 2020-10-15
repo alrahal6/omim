@@ -28,4 +28,7 @@ public interface ApiInterface {
 
     @POST("verifyUser.php")
     Call<IsBlocked> verifyUser(@Body AmIBlocked amIBlocked);
+
+    //@POST("verifyUser.php")
+    //Call<IsBlocked> blockedUser(@Body IsBlocked isBlocked);
 }

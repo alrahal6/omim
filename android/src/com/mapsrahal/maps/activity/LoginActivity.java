@@ -33,6 +33,7 @@ import com.mapsrahal.maps.api.ApiInterface;
 import com.mapsrahal.maps.api.TokenApi;
 import com.mapsrahal.maps.auth.IsBlocked;
 import com.mapsrahal.maps.auth.MessageResponse;
+import com.mapsrahal.maps.model.AmIBlocked;
 import com.mapsrahal.maps.model.NewToken;
 import com.mapsrahal.maps.model.User;
 import com.mapsrahal.util.UiUtils;
@@ -66,32 +67,35 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         UiUtils.setupColorStatusBar(this, R.color.bg_statusbar);
-        setContentView(R.layout.activity_login);
-        mTextViewCountDown = findViewById(R.id.text_view_countdown);
         //Log.i("id token", "here");
         apiService = ApiClient.getClient().create(ApiInterface.class);
         tokenApi = ApiClient.getClient().create(TokenApi.class);
         if(MySharedPreference.getInstance(getApplicationContext()).isLoggedIn()) {
             //startActivity();
             sendTokenToServer();
-            startActivity(new Intent(this, SelectorActivity.class));
-            finish();
-            return;
+            startActivity();
+            //return;
+            //MySharedPreference.getInstance(this).setCaptainOnline(false);
+            //startActivity(new Intent(this, SelectorActivity.class));
+            //finish();
+            //return;
+        } else {
+            setContentView(R.layout.activity_login);
+            mTextViewCountDown = findViewById(R.id.text_view_countdown);
+            mNamePhone = findViewById(R.id.name_phone);
+            btnSubmit = findViewById(R.id.btnSubmit);
+            name = findViewById(R.id.name);
+            //email = findViewById(R.id.email);
+            mobileNumber = findViewById(R.id.mobileNumber);
+            mOtpTab = findViewById(R.id.otp_tab);
+            etOTP = findViewById(R.id.etOTP);
+            mOtpSubmit = findViewById(R.id.btnOtp);
+            mOtpSubmit.setOnClickListener(this);
+            mProgressBar = findViewById(R.id.loginProgressOtp);
+            mOtpProgress = findViewById(R.id.otpVerifyProgress);
+            mProgressBar.setVisibility(View.GONE);
+            btnSubmit.setOnClickListener(this);
         }
-        mNamePhone = findViewById(R.id.name_phone);
-        btnSubmit = findViewById(R.id.btnSubmit);
-        name = findViewById(R.id.name);
-        //email = findViewById(R.id.email);
-        mobileNumber = findViewById(R.id.mobileNumber);
-        mOtpTab = findViewById(R.id.otp_tab);
-        etOTP = findViewById(R.id.etOTP);
-        mOtpSubmit = findViewById(R.id.btnOtp);
-        mOtpSubmit.setOnClickListener(this);
-        mProgressBar = findViewById(R.id.loginProgressOtp);
-        mOtpProgress = findViewById(R.id.otpVerifyProgress);
-        mProgressBar.setVisibility(View.GONE);
-        btnSubmit.setOnClickListener(this);
-
     }
 
     private void sendTokenToServer() {
@@ -325,10 +329,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mTextViewCountDown.setText(timeLeftFormatted);
     }
 
-    /*private void startActivity() {
+    private void startActivity() {
         int id = MySharedPreference.getInstance(getApplicationContext()).getUserId();
         String phone = MySharedPreference.getInstance(getApplicationContext()).getPhoneNumber();
-        IsBlocked isBlocked = new IsBlocked(phone,id,false);
+        AmIBlocked isBlocked = new AmIBlocked(id,phone,10);
         Call<IsBlocked> call = apiService.verifyUser(isBlocked);
         call.enqueue(new Callback<IsBlocked>() {
             @Override
@@ -336,11 +340,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 if(!response.isSuccessful()) {
                     //doNotAllow();
                     //return;
+                    checkInternet();
                 }
                 if(response.body().isAllowed()) {
-                    //allowIn();
+                    allowIn();
                 } else {
-                    //doNotAllow();
+                    doNotAllow();
                 }
             }
 
@@ -348,6 +353,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             public void onFailure(Call<IsBlocked> call, Throwable t) {
                 //doNotAllow();
                 //return;
+                checkInternet();
             }
         });
     }
@@ -362,6 +368,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void doNotAllow() {
         Intent intent = new Intent(this, BlockActivity.class);
         startActivity(intent);
-    }*/
+    }
+
+    private void checkInternet() {
+        Intent intent = new Intent(this, CheckInternet.class);
+        startActivity(intent);
+    }
 
 }
