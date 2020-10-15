@@ -2,9 +2,11 @@ package com.mapsrahal.maps;
 
 import android.app.ActivityManager;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -39,6 +41,8 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.github.florent37.singledateandtimepicker.dialog.SingleDateAndTimePickerDialog;
@@ -123,6 +127,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         RoutingController.Container,
         Framework.MapObjectListener,
         View.OnClickListener,
+        ServerConnection.ServerListener,
         NavigationButtonsAnimationController.OnTranslationChangedListener,
         AdapterView.OnItemSelectedListener,
         MatchingStatePagerAdapter.MatchingSelectionListener,
@@ -509,6 +514,8 @@ public class MapActivity extends BaseMwmFragmentActivity
         mNavigationController = new NavigationController(this);
         initNavigationButtons();
         requestCounter = 0;
+        mViewModel = ViewModelProviders.of(this).get(WebSocketViewModel.class);
+        setObservers();
         mPriceLayout = findViewById(R.id.ll_form_price);
         mPriceText = findViewById(R.id.tv_price);
         mCustomerInfo = findViewById(R.id.customerInfo);
@@ -611,7 +618,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 if (mSelector != PASSENGER_TAXI_ONLY) {
                     MySharedPreference.getInstance(this).setCaptainOnline(true);
                 }
-                //bindMyService(intent);
+                bindMyService(intent);
             }
         } catch (Exception e) {
 
@@ -628,7 +635,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         try {
             //if(isMyServiceRunning(ServerConnection.class)) {
             Intent stopIntent = getMyIntent();
-            //unBindMyService();
+            unBindMyService();
             stopIntent.setAction(Constants.STOPFOREGROUND_ACTION);
             ContextCompat.startForegroundService(getContext(), stopIntent);
             //MySharedPreference.getInstance(this).setCaptainOnline(false);
@@ -900,9 +907,9 @@ public class MapActivity extends BaseMwmFragmentActivity
                 //}
                 setDropoff();
                 break;
-            //case R.id.cancelRequest:
-            //cancelDriver();
-            //break;
+            case R.id.cancelRequest:
+                cancelDriver();
+            break;
             case R.id.finish_trip:
                 cancelConfirmedRequest(1);
                 break;
@@ -1300,6 +1307,11 @@ public class MapActivity extends BaseMwmFragmentActivity
         if(captRes == SEND_BUSY) {
             Toast.makeText(this,"Captain Busy Test",Toast.LENGTH_LONG).show();
             clearRequest();
+        }
+        final Intent intent = getMyIntent();
+        if(MySharedPreference.getInstance(this).isCaptainOnline() || mSelector == PASSENGER_TAXI_ONLY) {
+            bindMyService(intent);
+            LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(ServerConnection.ACTION_MSG_RECEIVED));
         }
     }
 
@@ -2450,6 +2462,7 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     private void sendMe() {
         try {
+            Log.d(TAG,"sending request...");
             mService.sendReq(userTripInfo);
         } catch (Exception e) {
             e.printStackTrace();
@@ -2458,5 +2471,205 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     private void removeRequest() {
         requestHandler.removeCallbacks(requestRunnable);
+    }
+
+    private void cancelDriver() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setMessage(getString(R.string.sure_cancel_current));
+        alertDialogBuilder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                userTripInfo.setMyFlag(CANCEL_DRIVER);
+                // todo handle below code for different cancel
+                if (isRequestInProgress && !isDriverAccepted) {
+                    sendMe();
+                    isRequestInProgress = false;
+                }
+
+                if (isDriverAccepted) {
+                    sendMe();
+                    isDriverAccepted = false;
+                }
+
+                removeRequest();
+                bringBackDriver();
+                //MyBase.getInstance(mContext).addToRequestQueue(updateIsOnReq);
+                //iPassengerMapsActivity.setRating(userTripInfo.getTripId(), 1.2f);
+            }
+        });
+        alertDialogBuilder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
+
+    private void bringBackDriver() {
+        if(driverId > 0) {
+            // send cancel to previous request
+            if(!isDriverBusy) {
+                userTripInfo.setMyFlag(CANCEL_DRIVER);
+                sendMe();
+            }
+
+            // todo bring driver back online
+            //MyBase.getInstance(mContext).addToRequestQueue(bringBackDriver);
+        }
+    }
+
+    private void bindMyService(Intent intent) {
+        MySharedPreference.getInstance(this).setBind(true);
+        bindService(intent, mViewModel.getServiceConnection(), Context.BIND_AUTO_CREATE);
+    }
+
+    private void unBindMyService() {
+        if(MySharedPreference.getInstance(this).isBinded()) {
+            MySharedPreference.getInstance(this).setBind(false);
+            unbindService(mViewModel.getServiceConnection());
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+        }
+    }
+
+    private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //Log.i(TAG,"Success! Message received from server");
+            String myMsg = intent.getStringExtra("MyDriverMessage");
+            UserTripInfo g = gSon.fromJson(myMsg, UserTripInfo.class);
+            int flag = g.getMyFlag();
+
+            if(isDriverAccepted && flag == 3) {
+                flag = 99;
+            }
+
+            //if (mTimerRunning) {
+            //stopTimer();
+            //}
+            switch (flag) {
+                case 3:
+                    removeRequest();
+                    // mCancelRequest.setVisibility(View.GONE);
+                    mDriverInfo.setVisibility(View.VISIBLE);
+                    //mDriverName.setText("Driver Phone: "+g.getPhone());
+                    //Log.i(TAG,g.getUserId() + " D - " +g.getDriverId());
+                    g.setMyFlag(9);
+                    try {
+                        mService.sendMe(""+g);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    mDriverPhone.setVisibility(View.VISIBLE);
+                    mDriverPhone.setText(getString(R.string.captain_phone) + g.getPhone());
+                    mCallingCaptain.setText(getString(R.string.captain_on_way));
+                    MyNotificationManager.getInstance(MapActivity.this).displayNotification(getString(R.string.captain_found), getString(R.string.captain_on_way));
+                    //mRequest.setText("Driver Found, Coming to you");
+                    phoneNumber = "0" + g.getPhone();
+                    isDriverAccepted = true;
+                    isRequestInProgress = false;
+                    //erasePolylines();
+                    //if(mMap != null) {
+                    //mMap.clear();
+                    //}
+                    break;
+                case 2:
+                    isDriverBusy = true;
+                    isRequestInProgress = false;
+                    listCurrent++;
+                    if(listCurrent >= listSize) {
+                        removeRequest();
+                        Toast.makeText(MapActivity.this,getString(R.string.no_driver_found),Toast.LENGTH_LONG).show();
+                    } else {
+                        requestHandler.postDelayed(requestRunnable, 0);
+                    }
+                    break;
+                case 5:
+                    cancelRequest();
+                    break;
+                case 11:
+                    mCallingCaptain.setText(getString(R.string.captain_reached));
+                    MyNotificationManager.getInstance(MapActivity.this).displayNotification(getString(R.string.captain_reached), getString(R.string.captain_reached));
+                    break;
+                case 9:
+                    break;
+                case 6:
+                    MyNotificationManager.getInstance(MapActivity.this).displayNotification(getString(R.string.trip_cancelled), getString(R.string.captain_cancel_trip));
+                    //mDriverPhone.setVisibility(View.VISIBLE);
+                    //mCustomerInfo.setVisibility(View.VISIBLE);
+                    //mCustomerName.setText("");
+                    //mCustomerPickup.setText("");
+                    //mCustomerDestination.setText("");
+                    //mCustomerPhone.setText("Sorry! Passenger Canceled the carPriceArray");
+                    //mTripDistance.setText("");
+                    break;
+                case 12:
+                    mCancelRequest.setVisibility(View.GONE);
+                    mCallingCaptain.setText(getString(R.string.trip_started));
+                    MyNotificationManager.getInstance(MapActivity.this).displayNotification(getString(R.string.trip_started), getString(R.string.trip_started));
+                    startTime = System.currentTimeMillis();
+                    timerHandler.postDelayed(timerRunnable, 0);
+                    //mCustomerInfo.setVisibility(View.VISIBLE);
+                    //mCustomerName.setText("Trip Started");
+                    break;
+                case 13:
+                    //onEndtrip(Double.valueOf(g.getPhone()));
+                    timerHandler.removeCallbacks(timerRunnable);
+                    mDriverInfo.setVisibility(View.GONE);
+                    mpayAndRating.setVisibility(View.VISIBLE);
+                    mAmount.setText(getString(R.string.pay_driver) + g.getPhone() + getString(R.string.sdg));
+                    MyNotificationManager.getInstance(MapActivity.this).displayNotification(getString(R.string.trip_completed), getString(R.string.trip_completed));
+                    // mCustomerInfo.setVisibility(View.GONE);
+                    // todo display payment details
+                    break;
+                case 99:
+                    //userTripInfo.setDriverId(driverId);
+                    break;
+            }
+        }
+    };
+
+    private void cancelRequest() {
+        //ringtone.play();
+        /*mCustomerInfo.setVisibility(View.VISIBLE);
+        mSwipeLayout.setVisibility(View.GONE);
+        mCustomerName.setText(R.string.passenger_cancel);
+        mCustomerPickup.setText("");
+        mCustomerDestination.setText("");
+        //mCustomerPhone.setText("");
+        mTripDistance.setText("");
+        mAcceptBusyInfo.setVisibility(View.GONE);
+        updateResponse(TRIP_CANCELLED);
+        MyNotificationManager.getInstance(MapActivity.this).displayNotification(getString(R.string.req_cancelled), getString(R.string.req_cancel_by_pas));
+        if (ringtone.isPlaying()) {
+            ringtone.stop();
+        }
+        if (mTimerRunning) {
+            stopTimer();
+        }
+        cancelCall();*/
+    }
+
+    private void setObservers() {
+        mViewModel.getBinder().observe(this, myBinder -> {
+            if (myBinder == null) {
+                //Log.d(TAG, "onChanged: unbound from service");
+            } else {
+                //Log.d(TAG, "onChanged: bound to service.");
+                mService = myBinder.getService();
+                mService.registerListener(this);
+            }
+        });
+    }
+
+    @Override
+    public void onNewMessage(String myFlag) {
+
+    }
+
+    @Override
+    public void onStatusChange(ServerConnection.ConnectionStatus status) {
+
     }
 }
