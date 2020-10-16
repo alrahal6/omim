@@ -151,10 +151,14 @@ public class ServerConnection extends Service {
         @Override
         public void onReceive(Context context, Intent intent) {
             //Log.i(TAG," Alarm received Outside");
-            if (mClient.connectionPool().connectionCount() == 0) {
-                isHaveMessage = false;
-                connect();
-                //Log.i(TAG," Alarm received Inside");
+            try {
+                if (mClient.connectionPool().connectionCount() == 0) {
+                    isHaveMessage = false;
+                    connect();
+                    //Log.i(TAG," Alarm received Inside");
+                }
+            } catch (Exception e) {
+
             }
         }
     };
@@ -471,10 +475,10 @@ public class ServerConnection extends Service {
         super.onTaskRemoved(rootIntent);
         try {
             //mClient.dispatcher().executorService().shutdownNow();
-            if(mClient != null) {
+            /*if(mClient != null) {
                 mClient.dispatcher().executorService().shutdown();
                 mClient.connectionPool().evictAll();
-            }
+            }*/
             disconnect();
             stopForeground(true);
             this.stopSelf();

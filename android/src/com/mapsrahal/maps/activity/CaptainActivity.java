@@ -56,6 +56,7 @@ public class CaptainActivity extends AppCompatActivity
     private TextView mProgressText;
     private int requestResponse = 3;
     private Button mCaptainAccept,mCaptainBusy;
+    private boolean isBounded = false;
     private boolean isSendAccepted = false;
     private boolean isSendBusy = false;
     private static final String TAG = CaptainActivity.class.getSimpleName();
@@ -182,8 +183,10 @@ public class CaptainActivity extends AppCompatActivity
             MySharedPreference.getInstance(CaptainActivity.this).setCaptRespId(ACCEPT_REQUEST);
             mapIntent.putExtra(PASSENGER_CAPTAIN_SELECTOR, ACCEPT_REQUEST);
             startActivity(mapIntent);
-            //unBindMyService();
-            //finish();
+            if(isBounded) {
+                unBindMyService();
+            }
+            finish();
         }
     }
 
@@ -199,7 +202,10 @@ public class CaptainActivity extends AppCompatActivity
             //mapIntent.putExtra(PASSENGER_CAPTAIN_SELECTOR,SEND_BUSY);
             //startActivity(mapIntent);
             send(2, 10, 1.1, 1.0);
-
+            if(isBounded) {
+                unBindMyService();
+            }
+            finish();
         }
     }
 
@@ -225,7 +231,9 @@ public class CaptainActivity extends AppCompatActivity
         mViewModel.getBinder().observe(this, myBinder -> {
             if (myBinder == null) {
                 Log.d(TAG, "onChanged: unbound from service");
+                isBounded = false;
             } else {
+                isBounded = true;
                 //Log.d(TAG, "onChanged: bound to service.");
                 mService = myBinder.getService();
                 mService.registerListener(this);
@@ -249,9 +257,6 @@ public class CaptainActivity extends AppCompatActivity
             updateResponse(flag);
         } catch (Exception e) {
             Log.d(TAG, "Error sending message " + e.getMessage());
-        } finally {
-            //unBindMyService();
-            finish();
         }
     }
 
