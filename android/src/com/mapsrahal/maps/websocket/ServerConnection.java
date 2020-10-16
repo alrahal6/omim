@@ -475,10 +475,10 @@ public class ServerConnection extends Service {
         super.onTaskRemoved(rootIntent);
         try {
             //mClient.dispatcher().executorService().shutdownNow();
-            /*if(mClient != null) {
+            if(mClient != null) {
                 mClient.dispatcher().executorService().shutdown();
                 mClient.connectionPool().evictAll();
-            }*/
+            }
             disconnect();
             stopForeground(true);
             this.stopSelf();

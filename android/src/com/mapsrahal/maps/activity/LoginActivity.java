@@ -366,13 +366,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void doNotAllow() {
-        Intent intent = new Intent(this, BlockActivity.class);
-        startActivity(intent);
+        //Intent intent = new Intent(this, BlockActivity.class);
+        //startActivity(intent);
+        setContentView(R.layout.activity_block);
     }
 
     private void checkInternet() {
-        Intent intent = new Intent(this, CheckInternet.class);
-        startActivity(intent);
+        //Intent intent = new Intent(this, CheckInternet.class);
+        //startActivity(intent);
+        setContentView(R.layout.activity_check_internet);
     }
 
 }
