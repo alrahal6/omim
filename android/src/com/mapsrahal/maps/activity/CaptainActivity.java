@@ -185,6 +185,7 @@ public class CaptainActivity extends AppCompatActivity
             startActivity(mapIntent);
             if(isBounded) {
                 unBindMyService();
+                isBounded = false;
             }
             finish();
         }
@@ -204,6 +205,7 @@ public class CaptainActivity extends AppCompatActivity
             send(2, 10, 1.1, 1.0);
             if(isBounded) {
                 unBindMyService();
+                isBounded = false;
             }
             finish();
         }
@@ -215,13 +217,13 @@ public class CaptainActivity extends AppCompatActivity
     }
 
     private void bindMyService(Intent intent) {
-        MySharedPreference.getInstance(this).setBind(true);
+        isBounded = true;
         bindService(intent, mViewModel.getServiceConnection(), Context.BIND_AUTO_CREATE);
     }
 
     private void unBindMyService() {
-        if(MySharedPreference.getInstance(this).isBinded()) {
-            MySharedPreference.getInstance(this).setBind(false);
+        if(isBounded) {
+            isBounded = false;
             unbindService(mViewModel.getServiceConnection());
             //LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
         }
