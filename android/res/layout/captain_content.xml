@@ -24,7 +24,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/open_google_map"
                 android:textColor="@android:color/holo_green_dark"
-                android:visibility="gone" />
+                 />
             <TextView
                 android:id="@+id/tripTimer"
                 android:layout_width="wrap_content"
@@ -88,10 +88,10 @@
             android:layout_gravity="bottom"
             android:background="@android:color/white"
             android:orientation="vertical"
-            android:visibility="gone">
+            >
 
             <LinearLayout
-                android:visibility="gone"
+
                 android:id="@+id/swipeLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
