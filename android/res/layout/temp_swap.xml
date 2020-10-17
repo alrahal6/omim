@@ -6,13 +6,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/tripTimer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:textColor="@android:color/holo_green_dark"
+        android:textSize="50sp"
+        app:layout_constraintBottom_toTopOf="@+id/swipeLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
     <LinearLayout
         android:id="@+id/swipeLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/cardView"
+        app:layout_constraintBottom_toTopOf="@+id/passengerDetails"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -29,7 +39,7 @@
     </LinearLayout>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView"
+        android:id="@+id/passengerDetails"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
@@ -44,7 +54,7 @@
             android:layout_margin="4dp">
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/customerName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
@@ -54,46 +64,44 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/textView2"
+                android:id="@+id/customerPhone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/textView"
+                android:layout_below="@+id/customerName"
                 android:text="Phone : "
                 android:textSize="20sp" />
 
             <TextView
-                android:id="@+id/textView3"
+                android:id="@+id/customerDestination"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/textView2"
+                android:layout_below="@+id/customerPhone"
                 android:text="Drop-off : "
                 android:textSize="20sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/textView3"
+                android:layout_below="@+id/customerDestination"
                 android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/trip_route_plan"
                     android:orientation="horizontal"
                     android:paddingBottom="@dimen/space10"
                     android:weightSum="2">
 
                     <TextView
-                        android:id="@+id/trip_distance"
+                        android:id="@+id/tripDistance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/start_time"
                         android:layout_weight="1"
                         android:text="Distance : "
                         android:textSize="20sp" />
 
                     <TextView
-                        android:id="@+id/trip_amount"
+                        android:id="@+id/tripAmount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -128,23 +136,21 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/textView2"
                     android:orientation="horizontal"
                     android:paddingBottom="@dimen/space10"
                     android:weightSum="2">
 
                     <Button
-                        android:id="@+id/request_match"
+                        android:id="@+id/navigateMap"
                         android:layout_width="wrap_content"
                         android:layout_height="32dp"
-                        android:layout_below="@+id/textView2"
                         android:layout_weight="1"
                         android:background="@layout/rounded_border_edittext"
                         android:text="Direction"
                         android:textColor="@color/base_green" />
 
                     <Button
-                        android:id="@+id/remove_match"
+                        android:id="@+id/openGMap"
                         android:layout_width="wrap_content"
                         android:layout_height="32dp"
                         android:layout_marginLeft="@dimen/space20"

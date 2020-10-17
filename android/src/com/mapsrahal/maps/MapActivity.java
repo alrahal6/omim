@@ -151,7 +151,7 @@ public class MapActivity extends BaseMwmFragmentActivity
     private ImageView mAddSeat, mRemoveSeat, mCloseList, mCloseNotification;
     private LinearLayout mNotificationCard, mStartTripLayout;
     private LinearLayout mDriverInfo, mllForm, mMnuForm, mConfirmLayout;
-    private LinearLayout mCustomerInfo, mAcceptBusyInfo, mSwipeLayout, mpayAndRating, mPriceLayout;
+    private LinearLayout mCustomerInfo, mSwipeLayout, mpayAndRating, mPriceLayout;
     private ProgressBar mMyprogress;
 
     private boolean mIsTabletLayout = false, isPickupSearch = true, isResultBySearch = false;
@@ -520,7 +520,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         mPriceText = findViewById(R.id.tv_price);
         mCustomerInfo = findViewById(R.id.customerInfo);
         mOpenGMap = findViewById(R.id.openGMap);
-        mAcceptBusyInfo = findViewById(R.id.acceptBusyInfo);
+        //mAcceptBusyInfo = findViewById(R.id.acceptBusyInfo);
         mTripTimer = findViewById(R.id.tripTimer);
         mSwipeLayout = findViewById(R.id.swipeLayout);
         mSwipeButton = findViewById(R.id.swipeButton);
@@ -532,11 +532,11 @@ public class MapActivity extends BaseMwmFragmentActivity
         mProgressbar = findViewById(R.id.myProgress);
         mProgressbar.setVisibility(View.GONE);
         usrId = String.valueOf(MySharedPreference.getInstance(this).getUserId());
-        mpayAndRating = findViewById(R.id.payAndRating);
-        mpayAndRating.setVisibility(View.GONE);
-        final RatingBar mRatingBar = findViewById(R.id.ratingBar);
-        mAmount = findViewById(R.id.payAmount);
-        Button mSendFeedback = findViewById(R.id.submitRating);
+        //mpayAndRating = findViewById(R.id.payAndRating);
+        //mpayAndRating.setVisibility(View.GONE);
+        //final RatingBar mRatingBar = findViewById(R.id.ratingBar);
+        //mAmount = findViewById(R.id.payAmount);
+        //Button mSendFeedback = findViewById(R.id.submitRating);
         mSelector = MySharedPreference.getInstance(this).getSelectorId();
         if(MySharedPreference.getInstance(this).isCaptainOnline()) {
             mSwitch.setChecked(true);
@@ -591,12 +591,23 @@ public class MapActivity extends BaseMwmFragmentActivity
 
         mOpenGMap.setOnClickListener(this);
 
-        mSendFeedback.setOnClickListener(view -> {
+        /*mSendFeedback.setOnClickListener(view -> {
             mpayAndRating.setVisibility(View.GONE);
             // todo save rating
-        });
+        });*/
 
         mCustomerPhone.setOnClickListener(v -> callDriver());
+        swipeButtonSettings = new SwipeButtonCustomItems() {
+            @Override
+            public void onSwipeConfirm() {
+                swipeButtonPressed();
+                //Log.d("NEW_STUFF", "New swipe confirm callback");
+            }
+        };
+
+        if (mSwipeButton != null) {
+            mSwipeButton.setSwipeButtonCustomItems(swipeButtonSettings);
+        }
         //mSwitch.setVisibility(View.VISIBLE);
         mSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if(isChecked) {
@@ -1282,7 +1293,7 @@ public class MapActivity extends BaseMwmFragmentActivity
             isOnTrip = true;
             price = 1;
             mCustomerInfo.setVisibility(View.VISIBLE);
-            mAcceptBusyInfo.setVisibility(View.GONE);
+            //mAcceptBusyInfo.setVisibility(View.GONE);
             mSwipeLayout.setVisibility(View.VISIBLE);
             mSwipeButton.setText(getString(R.string.end_trip));
         }
@@ -1301,13 +1312,14 @@ public class MapActivity extends BaseMwmFragmentActivity
         super.onResume();
         int captRes = MySharedPreference.getInstance(this).getCaptRespId();
         if(captRes == ACCEPT_REQUEST) {
-            Toast.makeText(this,"Captain Accepted Test",Toast.LENGTH_LONG).show();
+            //Toast.makeText(this,"Captain Accepted Test",Toast.LENGTH_LONG).show();
             clearRequest();
+            acceptRequest();
         }
-        if(captRes == SEND_BUSY) {
+        /*if(captRes == SEND_BUSY) {
             Toast.makeText(this,"Captain Busy Test",Toast.LENGTH_LONG).show();
             clearRequest();
-        }
+        }*/
         final Intent intent = getMyIntent();
         if(MySharedPreference.getInstance(this).isCaptainOnline() || mSelector == PASSENGER_TAXI_ONLY) {
             bindMyService(intent);
@@ -2676,7 +2688,7 @@ public class MapActivity extends BaseMwmFragmentActivity
     private void acceptRequest() {
         try {
             //send(ACCEPT_REQUEST, 0, 0, 0);
-            mAcceptBusyInfo.setVisibility(View.GONE);
+            //mAcceptBusyInfo.setVisibility(View.GONE);
             mSwipeLayout.setVisibility(View.VISIBLE);
             mOpenGMap.setVisibility(View.VISIBLE);
             //mCustomerName.setText("");
@@ -2703,4 +2715,94 @@ public class MapActivity extends BaseMwmFragmentActivity
             Log.d(TAG, "Error sending message " + e.getMessage());
         }
     }
+
+    private void swipeButtonPressed() {
+        if (isOnWaytoCustomer) {
+            reachedCustomer();
+        } else if (!isOnTrip) {
+            send(TRIP_STARTED, 0, 0, 0);
+            startTrip();
+        } else if (isOnTrip) {
+            endTrip();
+        }
+    }
+
+    private void reachedCustomer() {
+        send(REACHED_CUSTOMER, 0, 0, 0);
+        isOnWaytoCustomer = false;
+        swipeButtonSettings.setActionConfirmText(getString(R.string.start_trip));
+        mSwipeButton.setSwipeButtonCustomItems(swipeButtonSettings);
+        //mSwipeButton.setText(R.string.start_trip);
+    }
+
+    private void startTrip() {
+        startTime = System.currentTimeMillis();
+        timerHandler.postDelayed(timerRunnable, 0);
+        tripStartTime = startTime / 1000;
+        isOnTrip = true;
+        //mMap.clear();
+        //LatLng pickupLatLng = new LatLng(g.getLat(), g.getLng());
+        //LatLng destinationLatLng = new LatLng(g.getDestLat(), g.getDestLng());
+        swipeButtonSettings.setActionConfirmText(getString(R.string.end_trip));
+        mSwipeButton.setSwipeButtonCustomItems(swipeButtonSettings);
+        //mSwipeButton.setText(R.string.end_trip);
+        mOpenGMap.setVisibility(View.VISIBLE);
+        if (g.getDestLat() > 0) {
+            //getDirectionDistance();
+        } else {
+            mOpenGMap.setVisibility(View.GONE);
+        }
+        if(price == 0) {
+            //tempLatLng = pickupLatLng;
+            distance = 0;
+            tripRecordHandler.postDelayed(recordTripRunnable,0);
+        }
+    }
+
+    private void endTrip() {
+        tripRecordHandler.removeCallbacks(recordTripRunnable);
+        timerHandler.removeCallbacks(timerRunnable);
+        MySharedPreference.getInstance(MapActivity.this).finishTrip();
+        //NumberFormat format = NumberFormat.getCurrencyInstance();
+        if (price == 0) {
+            // todo get price from server
+            long startedTime = MySharedPreference.getInstance(MapActivity.this).getStartTime();
+            duration = (getCurrentTimestamp() - startedTime) / 60;
+            price = base + (((distance < minDis) ? 0 : (distance - minDis)) * km) + (duration * mins);
+            price = roundTwoDecimals(price);
+            //Log.i(TAG,"Distance : "+distance);
+            //Log.i(TAG,"Duration : "+duration);
+            //Log.i(TAG,"Price : "+price);
+            mOpenGMap.setVisibility(View.GONE);
+            mAmount.setText(getString(R.string.collect_payment) + price + getString(R.string.sdg));
+            mpayAndRating.setVisibility(View.VISIBLE);
+            isOnTrip = false;
+            mCustomerInfo.setVisibility(View.GONE);
+            send(TRIP_COMPLETED, distance, duration, price);
+
+            //MyBase.getInstance(MapActivity.this).addToRequestQueue(savePrice);
+            //Long tripEndTime = getCurrentTimestamp();
+            //duration = (tripEndTime - tripStartTime) / 60;
+            //Log.i(TAG,"Duration : "+ duration);
+            //distance = getDistance(pickupLatLng.latitude, pickupLatLng.longitude,
+            //mLastLocation.getLatitude(), mLastLocation.getLongitude()) / 1000;
+            //Log.i(TAG,"Distance : "+ distance);
+
+            //((TextView) findViewById(R.id.text_result)).setText(format.format(result));
+        } else {
+            isOnTrip = false;
+            mOpenGMap.setVisibility(View.GONE);
+            mpayAndRating.setVisibility(View.VISIBLE);
+            mCustomerInfo.setVisibility(View.GONE);
+            if(price == 1) {
+                mAmount.setText(getString(R.string.collect_payment) + " " + getString(R.string.sdg));
+                updateResponse(TRIP_COMPLETED);
+            } else {
+                price = roundTwoDecimals(price);
+                mAmount.setText(getString(R.string.collect_payment) + price + getString(R.string.sdg));
+                send(TRIP_COMPLETED, distance, duration, price);
+            }
+        }
+    }
+
 }

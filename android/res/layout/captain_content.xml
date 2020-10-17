@@ -1,201 +1,167 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-        <LinearLayout
-            android:id="@+id/mySwitch"
-            android:layout_marginTop="50dp"
+    <TextView
+        android:id="@+id/tripTimer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:textColor="@android:color/holo_green_dark"
+        android:textSize="50sp"
+        app:layout_constraintBottom_toTopOf="@+id/swipeLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+    <LinearLayout
+        android:id="@+id/swipeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/passengerDetails"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.mapsrahal.util.SwipeButton
+            android:id="@+id/swipeButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_marginLeft="@dimen/space10"
+            android:layout_marginRight="@dimen/space10"
+            android:background="@android:color/holo_green_dark"
+            android:padding="@dimen/space10"
+            android:text="@string/reached_customer"
+            android:textColor="@android:color/black" />
+    </LinearLayout>
 
-            <!--<TextView
-                android:id="@+id/workingSwitch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="5dp"
-                android:text="you_are_online"
-                android:textColor="@android:color/holo_green_dark" />-->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/passengerDetails"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        app:cardCornerRadius="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
-            <Button
-                android:id="@+id/openGMap"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/open_google_map"
-                android:textColor="@android:color/holo_green_dark"
-                 />
-            <TextView
-                android:id="@+id/tripTimer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="5dp"
-                android:textSize="50sp"
-                android:textColor="@android:color/holo_green_dark" />
-        </LinearLayout>
-
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/payAndRating"
-            android:layout_gravity="bottom"
-            android:orientation="vertical"
-            android:visibility="gone"
-            android:background="@android:color/white">
+            android:layout_height="match_parent"
+            android:layout_margin="4dp">
 
             <TextView
-                android:id="@+id/payAmount"
+                android:id="@+id/customerName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:text="Name : "
+                android:textColor="@android:color/black"
                 android:textSize="20sp"
-                android:padding="5dp"
-                android:text="@string/pay"
-                android:textColor="#7b0505" />
+                android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/thanks"
+                android:id="@+id/customerPhone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="5dp"
-                android:text="@string/thank_you"
-                android:textColor="#7b0505" />
+                android:layout_below="@+id/customerName"
+                android:text="Phone : "
+                android:textSize="20sp" />
 
-            <RatingBar
-                android:id="@+id/ratingBar"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:numStars="5"
-                android:stepSize="0.5"
-                android:rating="5"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="15dp"
-                android:layout_weight="1" />
-
-            <Button
-                android:id="@+id/submitRating"
+            <TextView
+                android:id="@+id/customerDestination"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/rate_ride"
-                />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/customerInfo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:background="@android:color/white"
-            android:orientation="vertical"
-            >
+                android:layout_below="@+id/customerPhone"
+                android:text="Drop-off : "
+                android:textSize="20sp" />
 
             <LinearLayout
-
-                android:id="@+id/swipeLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_horizontal">
+                android:layout_below="@+id/customerDestination"
+                android:orientation="vertical">
 
-                <com.mapsrahal.util.SwipeButton
-                    android:id="@+id/swipeButton"
-                    android:padding="@dimen/space10"
-                    android:layout_marginLeft="@dimen/space10"
-                    android:layout_marginRight="@dimen/space10"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@android:color/holo_green_dark"
-                    android:text="@string/reached_customer"
-                    android:textColor="@android:color/black" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <!--<ImageView
-                    android:layout_width="100sp"
-                    android:layout_height="100sp"
-                    android:id="@+id/customerProfileImage"
-                    android:src="@mipmap/ic_default_user"
-                    android:padding="20sp"/>-->
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingEnd="10dp"
-                    android:paddingStart="10dp">
-
-                    <TextView
-                        android:id="@+id/customerPhone"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:drawableEnd="@drawable/ic_call_green_24dp"
-                        android:paddingBottom="10dp"
-                        android:paddingTop="5dp"
-                        android:text="@string/customer_phone"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/customerPickup"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingBottom="10sp"
-                        android:text="" />
-
-                    <TextView
-                        android:id="@+id/customerDestination"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingBottom="10sp"
-                        android:text="" />
-
-                    <TextView
-                        android:id="@+id/customerName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingBottom="10sp"
-                        android:text="" />
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/space10"
+                    android:weightSum="2">
 
                     <TextView
                         android:id="@+id/tripDistance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingBottom="10sp"
-                        android:text=""
-                        android:textStyle="bold" />
+                        android:layout_weight="1"
+                        android:text="Distance : "
+                        android:textSize="20sp" />
 
+                    <TextView
+                        android:id="@+id/tripAmount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Amount : "
+                        android:textSize="20sp" />
+                    <!--<TextView
+                        android:visibility="gone"
+                        android:id="@+id/your_distance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/start_time"
+                        android:text="Your Distance : "
+                        android:textSize="15sp" />
+                    <TextView
+                        android:visibility="gone"
+                        android:id="@+id/extra_distance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/your_distance"
+                        android:text="Distance : "
+                        android:textSize="15sp"/>
+                    <TextView
+                        android:visibility="gone"
+                        android:id="@+id/trip_route_plan"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/extra_distance"
+                        android:text="Trip Plan "
+                        android:textSize="15sp"/>-->
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/space10"
+                    android:weightSum="2">
+
+                    <Button
+                        android:id="@+id/navigateMap"
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:layout_weight="1"
+                        android:background="@layout/rounded_border_edittext"
+                        android:text="Direction"
+                        android:textColor="@color/base_green" />
+
+                    <Button
+                        android:id="@+id/openGMap"
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:layout_marginLeft="@dimen/space20"
+                        android:layout_weight="1"
+                        android:background="@layout/rounded_border_edittext"
+                        android:text="Google Map"
+                        android:textColor="@color/base_green" />
 
                 </LinearLayout>
+
             </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/acceptBusyInfo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/rideStatus"
-                    style="@style/Widget.AppCompat.Button.Borderless.Colored"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@android:color/holo_green_dark"
-                    android:text="@string/accept_request"
-                    android:textColor="@android:color/black" />
-
-                <Button
-                    android:id="@+id/busyResponse"
-                    style="@style/Widget.AppCompat.Button.Borderless.Colored"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@android:color/holo_red_light"
-                    android:text="@string/busy"
-                    android:textColor="@android:color/black" />
-            </LinearLayout>
-        </LinearLayout>
-</LinearLayout>
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>
