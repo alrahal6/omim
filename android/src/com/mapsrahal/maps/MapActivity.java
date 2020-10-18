@@ -36,6 +36,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
@@ -240,7 +241,7 @@ public class MapActivity extends BaseMwmFragmentActivity
     private WebSocketViewModel mViewModel;
     private final Handler requestHandler = new Handler();
     ArrayList<UserMessage> confirmedUserList;
-
+    private ConstraintLayout mCaptCont;
     Map<Integer, Integer> selectionList = new HashMap<>();
     private double totAmount = 0d;
     private Button mPlanTrip;
@@ -503,6 +504,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mMainMenu = findViewById(R.id.mainMenu);
         mMainMenu.setOnClickListener(this);
+        mCaptCont = findViewById(R.id.capt_cont);
         mMapFragment = (MapFragment) getSupportFragmentManager()
                 .findFragmentByTag(MapFragment.class.getName());
 
@@ -2687,6 +2689,8 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     private void acceptRequest() {
         try {
+
+            mCaptCont.setVisibility(View.VISIBLE);
             //send(ACCEPT_REQUEST, 0, 0, 0);
             //mAcceptBusyInfo.setVisibility(View.GONE);
             mSwipeLayout.setVisibility(View.VISIBLE);
