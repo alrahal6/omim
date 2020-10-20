@@ -91,8 +91,6 @@ import com.mapsrahal.maps.widget.menu.MyPositionButton;
 import com.mapsrahal.util.Constants;
 import com.mapsrahal.util.DateUtils;
 import com.mapsrahal.util.PermissionsUtils;
-import com.mapsrahal.util.SwipeButton;
-import com.mapsrahal.util.SwipeButtonCustomItems;
 import com.mapsrahal.util.UiUtils;
 import com.mapsrahal.util.Utils;
 import com.mapsrahal.util.sharing.TargetUtils;
@@ -146,7 +144,7 @@ public class MapActivity extends BaseMwmFragmentActivity
     private int mCancelId;
 
     private Button btRequest, mOpenGMap, mConfirmList;
-    private SwipeButton mSwipeButton;
+
     private ImageButton mAddressToggle, mMainMenu,mCloseDest;
 
     private ImageView mAddSeat, mRemoveSeat, mCloseList, mCloseNotification;
@@ -160,8 +158,9 @@ public class MapActivity extends BaseMwmFragmentActivity
     private boolean mTimerRunning, isLaunchByDeepLink = false;
     private boolean isDriverAccepted = false, isDriverBusy = false;
     private boolean isRequestInProgress = false, isStartedCounter = false;
-    private Boolean isOnWaytoCustomer = false;
-    private Boolean isOnTrip = false, isOnRequestBtn = false, isCaptainInitialised = false;
+    private boolean isOnWaytoCustomer = false;
+    private boolean isOnTrip = false, isOnRequestBtn = false, isCaptainInitialised = false;
+    private boolean isPassengerRequesting = false;
 
     private String genderCargoTxt = "";
 
@@ -226,7 +225,6 @@ public class MapActivity extends BaseMwmFragmentActivity
     private String tripId;
     private float base, km, mins;
     private ViewPager mViewPager;
-    private SwipeButtonCustomItems swipeButtonSettings;
     private double distance, duration, price;
     private long startTime = 0;
     private boolean isSelectorFree = true;
@@ -245,6 +243,7 @@ public class MapActivity extends BaseMwmFragmentActivity
     Map<Integer, Integer> selectionList = new HashMap<>();
     private double totAmount = 0d;
     private Button mPlanTrip;
+    private Button mSwipeButton;
 
     // preparations
 
@@ -526,6 +525,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         mTripTimer = findViewById(R.id.tripTimer);
         mSwipeLayout = findViewById(R.id.swipeLayout);
         mSwipeButton = findViewById(R.id.swipeButton);
+        mSwipeButton.setOnClickListener(this);
         mCustomerName = findViewById(R.id.customerName);
         mCustomerPickup = findViewById(R.id.customerPickup);
         mCustomerPhone = findViewById(R.id.customerPhone);
@@ -599,17 +599,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         });*/
 
         mCustomerPhone.setOnClickListener(v -> callDriver());
-        swipeButtonSettings = new SwipeButtonCustomItems() {
-            @Override
-            public void onSwipeConfirm() {
-                swipeButtonPressed();
-                //Log.d("NEW_STUFF", "New swipe confirm callback");
-            }
-        };
 
-        if (mSwipeButton != null) {
-            mSwipeButton.setSwipeButtonCustomItems(swipeButtonSettings);
-        }
         //mSwitch.setVisibility(View.VISIBLE);
         mSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if(isChecked) {
@@ -818,6 +808,9 @@ public class MapActivity extends BaseMwmFragmentActivity
         switch (v.getId()) {
             case R.id.nav_zoom_in:
                 MapFragment.nativeScalePlus();
+                break;
+            case R.id.swipeButton:
+                swipeButtonPressed();
                 break;
             case R.id.nav_zoom_out:
                 MapFragment.nativeScaleMinus();
@@ -1209,7 +1202,31 @@ public class MapActivity extends BaseMwmFragmentActivity
         } else {
             super.onBackPressed();
         }
+        if(isPassengerRequesting) {
+            alertDgCancelTaxiRequest();
+        }
     }
+
+    private void alertDgCancelTaxiRequest() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this);
+        builder.setMessage(getString(R.string.request_progress)).setPositiveButton(getString(R.string.yes), cancelPassReq)
+                .setNegativeButton(getString(R.string.no), cancelPassReq).show();
+    }
+
+    DialogInterface.OnClickListener cancelPassReq = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE:
+                    isPassengerRequesting = false;
+                    break;
+
+                case DialogInterface.BUTTON_NEGATIVE:
+                    Toast.makeText(MapActivity.this, "Requesting...", Toast.LENGTH_LONG).show();
+                    break;
+            }
+        }
+    };
 
     private void prepareGoToCustomer() {
         isOnWaytoCustomer = true;
@@ -1297,7 +1314,6 @@ public class MapActivity extends BaseMwmFragmentActivity
             mCustomerInfo.setVisibility(View.VISIBLE);
             //mAcceptBusyInfo.setVisibility(View.GONE);
             mSwipeLayout.setVisibility(View.VISIBLE);
-            mSwipeButton.setText(getString(R.string.end_trip));
         }
         if (isSelectorFree) {
             switch (mSelector) {
@@ -2388,6 +2404,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         //String notIn = getNotIn();
         //Log.d(TAG,"User Id"+ MySharedPreference.getInstance(this).getUserId());
         if(isValidateFrom()) {
+            isPassengerRequesting = true;
             double lat = fromLocation.getLat();
             double lng = fromLocation.getLon();
             FindDriver findDriver = new FindDriver(
@@ -2412,6 +2429,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                         if(listSize > 0) {
                             requestHandler.postDelayed(requestRunnable, 0);
                         } else {
+                            isPassengerRequesting = false;
                             Toast.makeText(MapActivity.this, getString(R.string.no_driver_found), Toast.LENGTH_LONG).show();
                         }
                     }
@@ -2419,6 +2437,7 @@ public class MapActivity extends BaseMwmFragmentActivity
 
                 @Override
                 public void onFailure(Call<List<FindDriver>> call, Throwable t) {
+                    isPassengerRequesting = false;
                     Toast.makeText(MapActivity.this, "Sorry! No Drivers found! Try Later", Toast.LENGTH_LONG).show();
                 }
 
@@ -2689,7 +2708,6 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     private void acceptRequest() {
         try {
-
             mCaptCont.setVisibility(View.VISIBLE);
             //send(ACCEPT_REQUEST, 0, 0, 0);
             //mAcceptBusyInfo.setVisibility(View.GONE);
@@ -2734,8 +2752,6 @@ public class MapActivity extends BaseMwmFragmentActivity
     private void reachedCustomer() {
         send(REACHED_CUSTOMER, 0, 0, 0);
         isOnWaytoCustomer = false;
-        swipeButtonSettings.setActionConfirmText(getString(R.string.start_trip));
-        mSwipeButton.setSwipeButtonCustomItems(swipeButtonSettings);
         //mSwipeButton.setText(R.string.start_trip);
     }
 
@@ -2747,9 +2763,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         //mMap.clear();
         //LatLng pickupLatLng = new LatLng(g.getLat(), g.getLng());
         //LatLng destinationLatLng = new LatLng(g.getDestLat(), g.getDestLng());
-        swipeButtonSettings.setActionConfirmText(getString(R.string.end_trip));
-        mSwipeButton.setSwipeButtonCustomItems(swipeButtonSettings);
-        //mSwipeButton.setText(R.string.end_trip);
+        mSwipeButton.setText(R.string.end_trip);
         mOpenGMap.setVisibility(View.VISIBLE);
         if (g.getDestLat() > 0) {
             //getDirectionDistance();
