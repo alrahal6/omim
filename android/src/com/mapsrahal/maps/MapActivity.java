@@ -1197,13 +1197,14 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     @Override
     public void onBackPressed() {
+        if(isPassengerRequesting) {
+            alertDgCancelTaxiRequest();
+            return;
+        }
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
-        }
-        if(isPassengerRequesting) {
-            alertDgCancelTaxiRequest();
         }
     }
 
@@ -1219,10 +1220,11 @@ public class MapActivity extends BaseMwmFragmentActivity
             switch (which) {
                 case DialogInterface.BUTTON_POSITIVE:
                     isPassengerRequesting = false;
+                    MapActivity.super.onBackPressed();
                     break;
 
                 case DialogInterface.BUTTON_NEGATIVE:
-                    Toast.makeText(MapActivity.this, "Requesting...", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MapActivity.this, "ok", Toast.LENGTH_LONG).show();
                     break;
             }
         }
@@ -2650,8 +2652,8 @@ public class MapActivity extends BaseMwmFragmentActivity
                     //onEndtrip(Double.valueOf(g.getPhone()));
                     timerHandler.removeCallbacks(timerRunnable);
                     mDriverInfo.setVisibility(View.GONE);
-                    mpayAndRating.setVisibility(View.VISIBLE);
-                    mAmount.setText(getString(R.string.pay_driver) + g.getPhone() + getString(R.string.sdg));
+                    //mpayAndRating.setVisibility(View.VISIBLE);
+                    //mAmount.setText(getString(R.string.pay_driver) + g.getPhone() + getString(R.string.sdg));
                     MyNotificationManager.getInstance(MapActivity.this).displayNotification(getString(R.string.trip_completed), getString(R.string.trip_completed));
                     // mCustomerInfo.setVisibility(View.GONE);
                     // todo display payment details
@@ -2708,6 +2710,12 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     private void acceptRequest() {
         try {
+            String msg = MySharedPreference.getInstance(this).getUserMessage();
+            if(msg != null) {
+                g = gSon.fromJson(msg, UserTripInfo.class);
+                int flag = g.getMyFlag();
+                requestingPassenger = g.getUserId();
+            }
             mCaptCont.setVisibility(View.VISIBLE);
             //send(ACCEPT_REQUEST, 0, 0, 0);
             //mAcceptBusyInfo.setVisibility(View.GONE);
@@ -2752,7 +2760,7 @@ public class MapActivity extends BaseMwmFragmentActivity
     private void reachedCustomer() {
         send(REACHED_CUSTOMER, 0, 0, 0);
         isOnWaytoCustomer = false;
-        //mSwipeButton.setText(R.string.start_trip);
+        mSwipeButton.setText(R.string.start_trip);
     }
 
     private void startTrip() {
@@ -2780,10 +2788,12 @@ public class MapActivity extends BaseMwmFragmentActivity
     private void endTrip() {
         tripRecordHandler.removeCallbacks(recordTripRunnable);
         timerHandler.removeCallbacks(timerRunnable);
+        mCaptCont.setVisibility(View.GONE);
         MySharedPreference.getInstance(MapActivity.this).finishTrip();
+        // todo open payment activity and send notification
+
         //NumberFormat format = NumberFormat.getCurrencyInstance();
-        if (price == 0) {
-            // todo get price from server
+        /*if (price == 0) {
             long startedTime = MySharedPreference.getInstance(MapActivity.this).getStartTime();
             duration = (getCurrentTimestamp() - startedTime) / 60;
             price = base + (((distance < minDis) ? 0 : (distance - minDis)) * km) + (duration * mins);
@@ -2792,7 +2802,7 @@ public class MapActivity extends BaseMwmFragmentActivity
             //Log.i(TAG,"Duration : "+duration);
             //Log.i(TAG,"Price : "+price);
             mOpenGMap.setVisibility(View.GONE);
-            mAmount.setText(getString(R.string.collect_payment) + price + getString(R.string.sdg));
+            //mAmount.setText(getString(R.string.collect_payment) + price + getString(R.string.sdg));
             mpayAndRating.setVisibility(View.VISIBLE);
             isOnTrip = false;
             mCustomerInfo.setVisibility(View.GONE);
@@ -2820,7 +2830,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 mAmount.setText(getString(R.string.collect_payment) + price + getString(R.string.sdg));
                 send(TRIP_COMPLETED, distance, duration, price);
             }
-        }
+        }*/
     }
 
 }

@@ -140,7 +140,7 @@ public class CaptainActivity extends AppCompatActivity
             //isOnRequestBtn = true;
             processMessage(msg);
             //if(activeProcess != Constants.ActiveProcess.PASSENGER_HAVE_ACTIVE_RIDE) {
-            MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).userMessage(null);
+
             //}
         }
     }
@@ -203,6 +203,7 @@ public class CaptainActivity extends AppCompatActivity
             //mapIntent.putExtra(PASSENGER_CAPTAIN_SELECTOR,SEND_BUSY);
             //startActivity(mapIntent);
             send(2, 10, 1.1, 1.0);
+            MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).userMessage(null);
             if(isBounded) {
                 unBindMyService();
                 isBounded = false;

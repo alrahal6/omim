@@ -1,6 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-</FrameLayout>
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/driverInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@android:color/white"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:id="@+id/tripTimer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:textColor="@android:color/holo_green_dark"
+            android:textSize="50sp" />
+
+        <TextView
+            android:id="@+id/driverPhone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="30dp"
+            android:drawableEnd="@drawable/ic_call_green_24dp"
+            android:padding="5dp"
+            android:text="@string/captain_phone"
+            android:textSize="@dimen/space20"
+            android:textStyle="bold" />
+
+        <Button
+
+            android:id="@+id/cancelRequest"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@layout/rounded_border_edittext"
+            android:text="@string/cancel"
+            android:textColor="@color/base_red" />
+
+        <TextView
+
+            android:id="@+id/callingCaptain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:padding="10dp"
+            android:text="@string/calling_captain"
+            android:textColor="@color/base_green"
+            android:textSize="15dp" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

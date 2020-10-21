@@ -700,7 +700,7 @@ public class ServerConnection extends Service {
                     userId,
                     distance,
                     duration,
-                    flag, driverId, mPrice);
+                    flag, driverId, phone);
             sendMe("" + gSon.toJson(userLocation));
         }
     }
