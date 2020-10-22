@@ -2,10 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:id="@+id/pass_cont"
-
+    android:visibility="gone"
     android:layout_height="match_parent">
 
     <TextView
@@ -23,6 +22,7 @@
         android:id="@+id/cancelLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/white"
         android:gravity="start"
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/captDetails"
@@ -66,9 +66,9 @@
                 android:id="@+id/captainName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:text="Captain : "
+                android:text="Name : "
                 android:textColor="@android:color/black"
+                android:ellipsize="end"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
@@ -79,7 +79,7 @@
                 android:layout_marginEnd="30dp"
                 android:drawableEnd="@drawable/ic_call_green_24dp"
                 android:padding="5dp"
-                android:text="@string/captain_phone"
+                android:text="@string/phone"
                 android:textSize="@dimen/space20"
                 android:textStyle="bold" />
 
@@ -87,34 +87,9 @@
                 android:id="@+id/captainVehicle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/customerPhone"
                 android:text="Vehicle : "
                 android:textSize="20sp" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/customerDestination"
-                android:weightSum="2"
-                android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/tripDistance"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Distance : "
-                        android:textSize="20sp" />
-
-                    <TextView
-                        android:id="@+id/tripAmount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Amount : "
-                        android:textSize="20sp" />
-
-            </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -149,7 +149,7 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     private ImageView mAddSeat, mRemoveSeat, mCloseList, mCloseNotification;
     private LinearLayout mNotificationCard, mStartTripLayout;
-    private LinearLayout mDriverInfo, mllForm, mMnuForm, mConfirmLayout;
+    private LinearLayout mllForm, mMnuForm, mConfirmLayout;
     private LinearLayout mCustomerInfo, mSwipeLayout, mpayAndRating, mPriceLayout;
     private ProgressBar mMyprogress;
 
@@ -239,7 +239,7 @@ public class MapActivity extends BaseMwmFragmentActivity
     private WebSocketViewModel mViewModel;
     private final Handler requestHandler = new Handler();
     ArrayList<UserMessage> confirmedUserList;
-    private ConstraintLayout mCaptCont;
+    private ConstraintLayout mCaptCont,mPassCont;
     Map<Integer, Integer> selectionList = new HashMap<>();
     private double totAmount = 0d;
     private Button mPlanTrip;
@@ -441,13 +441,13 @@ public class MapActivity extends BaseMwmFragmentActivity
         super.onSafeCreate(savedInstanceState);
         setContentView(R.layout.activity_my_map);
 
-        mDriverInfo = findViewById(R.id.driverInfo);
+        //mDriverInfo = findViewById(R.id.driverInfo);
         mNotificationCard = findViewById(R.id.notification_req_res);
         mMyprogress = findViewById(R.id.myProgress);
         //mDriverName = (TextView) view.findViewById(R.id.driverName);
         mDriverPhone = findViewById(R.id.driverPhone);
         mDriverPhone.setOnClickListener(this);
-        mDriverPhone.setVisibility(View.GONE);
+        //mDriverPhone.setVisibility(View.GONE);
         mCancelRequest = findViewById(R.id.cancelRequest);
         mCallingCaptain = findViewById(R.id.callingCaptain);
         mCancelRequest.setOnClickListener(this);
@@ -504,6 +504,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         mMainMenu = findViewById(R.id.mainMenu);
         mMainMenu.setOnClickListener(this);
         mCaptCont = findViewById(R.id.capt_cont);
+        mPassCont = findViewById(R.id.pass_cont);
         mMapFragment = (MapFragment) getSupportFragmentManager()
                 .findFragmentByTag(MapFragment.class.getName());
 
@@ -2472,8 +2473,9 @@ public class MapActivity extends BaseMwmFragmentActivity
                 userTripInfo.setDriverId(driverId);
                 //addMarker(new LatLng(dLat, dLng));
                 btRequest.setVisibility(View.GONE);
-                mCancelRequest.setVisibility(View.VISIBLE);
-                mCallingCaptain.setVisibility(View.VISIBLE);
+                //mCancelRequest.setVisibility(View.VISIBLE);
+                //mCallingCaptain.setVisibility(View.VISIBLE);
+                mPassCont.setVisibility(View.VISIBLE);
                 //requestedDrivers[++requestCounter] = driverId;
                 isRequestInProgress = true;
                 if (!isDriverAccepted) {
@@ -2486,6 +2488,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 }
             } else {
                 isRequestInProgress = false;
+                isPassengerRequesting = false;
                 requestCounter = 9;
                 removeRequest();
                 mCallingCaptain.setText("Sorry! No Captain found, please try later");
@@ -2587,7 +2590,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 case 3:
                     removeRequest();
                     // mCancelRequest.setVisibility(View.GONE);
-                    mDriverInfo.setVisibility(View.VISIBLE);
+                    //mDriverInfo.setVisibility(View.VISIBLE);
                     //mDriverName.setText("Driver Phone: "+g.getPhone());
                     //Log.i(TAG,g.getUserId() + " D - " +g.getDriverId());
                     g.setMyFlag(9);
@@ -2651,7 +2654,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 case 13:
                     //onEndtrip(Double.valueOf(g.getPhone()));
                     timerHandler.removeCallbacks(timerRunnable);
-                    mDriverInfo.setVisibility(View.GONE);
+                    //mDriverInfo.setVisibility(View.GONE);
                     //mpayAndRating.setVisibility(View.VISIBLE);
                     //mAmount.setText(getString(R.string.pay_driver) + g.getPhone() + getString(R.string.sdg));
                     MyNotificationManager.getInstance(MapActivity.this).displayNotification(getString(R.string.trip_completed), getString(R.string.trip_completed));
