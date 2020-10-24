@@ -94,7 +94,7 @@
                 android:textSize="20sp" />
 
             <TextView
-                android:id="@+id/customerName"
+                android:id="@+id/tripAmount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingBottom="10dp"
@@ -112,7 +112,7 @@
                 android:textSize="20sp" />
 
             <TextView
-                android:id="@+id/customerPhone"
+                android:id="@+id/custDistance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingBottom="10sp"

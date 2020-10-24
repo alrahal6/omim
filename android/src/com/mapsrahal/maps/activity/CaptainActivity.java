@@ -54,6 +54,7 @@ public class CaptainActivity extends AppCompatActivity
     private int requestingPassenger = 0;
     private ProgressBar mCaptProgress;
     private TextView mProgressText;
+    private TextView mPickupAddress,mDropoffAddress,mDistance,mTripAmount,mToDistance;
     private int requestResponse = 3;
     private Button mCaptainAccept,mCaptainBusy;
     private boolean isBounded = false;
@@ -94,6 +95,11 @@ public class CaptainActivity extends AppCompatActivity
         mCaptainBusy.setOnClickListener(this);
         mCaptProgress = findViewById(R.id.capt_progress_bar);
         mProgressText = findViewById(R.id.text_view_progress);
+        mPickupAddress = findViewById(R.id.customerPickup);
+        mDropoffAddress = findViewById(R.id.customerDestination);
+        mDistance = findViewById(R.id.tripDistance);
+        mTripAmount = findViewById(R.id.tripAmount);
+        mToDistance = findViewById(R.id.custDistance);
         //mCaptProgress.setTe
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -303,7 +309,11 @@ public class CaptainActivity extends AppCompatActivity
                         if (ringtone != null) {
                             ringtone.play();
                         }
-                        //mediaPlayer.start();
+                        mPickupAddress.setText(g.getPickupAddress());
+                        mDropoffAddress.setText(g.getDestAddress());
+                        mTripAmount.setText(g.getPrice()+"");
+                        mDistance.setText(g.getDistance()+"");
+                        mToDistance.setText(g.getTripId()+"");
                 /*mCustomerInfo.setVisibility(View.VISIBLE);
                 mAcceptBusyInfo.setVisibility(View.VISIBLE);
                 mSwipeButton.setText("Reached Customer");

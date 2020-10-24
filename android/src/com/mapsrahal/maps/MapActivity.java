@@ -848,13 +848,15 @@ public class MapActivity extends BaseMwmFragmentActivity
                 showProgress(true);
                 if (mSelector == PASSENGER_TAXI_ONLY) {
                     if(isValidateFrom()) {
-                        showConfirmDialog();
+                        //showConfirmDialog();
+                        getPrice(myDistance, mSelector);
                     } else {
                         Toast.makeText(this,getString(R.string.enter_valid_address),Toast.LENGTH_LONG).show();
                     }
                 } else {
                     if(isValidateFromAndTo()) {
-                        showConfirmDialog();
+                        //showConfirmDialog();
+                        getPrice(myDistance, mSelector);
                     } else {
                         Toast.makeText(this,getString(R.string.enter_valid_address),Toast.LENGTH_LONG).show();
                     }
@@ -1064,6 +1066,7 @@ public class MapActivity extends BaseMwmFragmentActivity
     private void setPickup() {
         //addTestBookMark();
         myDistance = "0";
+        tripPrice = 0.0d;
         //Log.d(TAG,"my distance - "+myDistance);
         fromLocation = tempLocation;
         mSourceAddress = fromLocation.getTitle();
@@ -1075,6 +1078,7 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     private void setDropoff() {
         myDistance = "0";
+        tripPrice = 0.0d;
         //Log.d(TAG,"my distance - "+myDistance);
         toLocation = tempLocation;
         mDestinationAddress = toLocation.getTitle();
@@ -1087,6 +1091,8 @@ public class MapActivity extends BaseMwmFragmentActivity
     @Override
     public void updateBuildProgress(int progress, int router) {
         final RoutingInfo rinfo = RoutingController.get().getCachedRoutingInfo();
+        myDistance = "0";
+        tripPrice = 0.0d;
         if (rinfo != null) {
             myDistance = rinfo.distToTarget;
             String units = rinfo.distToTarget + " " + rinfo.targetUnits;
@@ -2410,12 +2416,22 @@ public class MapActivity extends BaseMwmFragmentActivity
             isPassengerRequesting = true;
             double lat = fromLocation.getLat();
             double lng = fromLocation.getLon();
-            FindDriver findDriver = new FindDriver(
+            userTripInfo = new UserTripInfo(MySharedPreference.getInstance(MapActivity.this).getUserId(),
+                    MySharedPreference.getInstance(getApplicationContext()).getPhoneNumber(),
+                    MySharedPreference.getInstance(getApplicationContext()).getUserName(),
+                    mSourceAddress,mDestinationAddress,fromLocation.getLat(),fromLocation.getLon(),
+                    tripSeatPrice,Double.parseDouble(myDistance)
+            );
+            if(toLocation != null) {
+                userTripInfo.setDestLat(toLocation.getLat());
+                userTripInfo.setDestLng(toLocation.getLon());
+            }
+            /*FindDriver findDriver = new FindDriver(
                     MySharedPreference.getInstance(this).getUserId(), lat, lng,
                     0
-            );
+            );*/
             FindDriverApi findDriverApi = ApiClient.getClient().create(FindDriverApi.class);
-            Call<List<FindDriver>> call = findDriverApi.findDriver(findDriver);
+            Call<List<FindDriver>> call = findDriverApi.findDriver(userTripInfo);
 
             call.enqueue(new Callback<List<FindDriver>>() {
                 @Override
@@ -2433,6 +2449,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                             requestHandler.postDelayed(requestRunnable, 0);
                         } else {
                             isPassengerRequesting = false;
+                            mCallingCaptain.setText("Sorry! No Captain found, please try later");
                             Toast.makeText(MapActivity.this, getString(R.string.no_driver_found), Toast.LENGTH_LONG).show();
                         }
                     }
@@ -2441,6 +2458,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 @Override
                 public void onFailure(Call<List<FindDriver>> call, Throwable t) {
                     isPassengerRequesting = false;
+                    mCallingCaptain.setText("Sorry! No Captain found, please try later");
                     Toast.makeText(MapActivity.this, "Sorry! No Drivers found! Try Later", Toast.LENGTH_LONG).show();
                 }
 
@@ -2460,17 +2478,18 @@ public class MapActivity extends BaseMwmFragmentActivity
             FindDriver driverList = mNearestDriver.get(listCurrent);
             int dId = driverList.getUserId();
             if (dId > 0) {
-                userTripInfo = new UserTripInfo(MySharedPreference.getInstance(MapActivity.this).getUserId(),
+                /*userTripInfo = new UserTripInfo(MySharedPreference.getInstance(MapActivity.this).getUserId(),
                         MySharedPreference.getInstance(getApplicationContext()).getPhoneNumber(),
                         MySharedPreference.getInstance(getApplicationContext()).getUserName(),
                         mSourceAddress,mDestinationAddress,fromLocation.getLat(),fromLocation.getLon(),
                         tripSeatPrice,Double.parseDouble(myDistance)
-                );
+                );*/
                 //double dLat = driverList.getLat();
                 //double dLng = driverList.getLng();
                 driverId = dId;
                 //Log.d(TAG,"driver id "+ driverId);
                 userTripInfo.setDriverId(driverId);
+                userTripInfo.setTripId(driverList.getTripId());
                 //addMarker(new LatLng(dLat, dLng));
                 btRequest.setVisibility(View.GONE);
                 //mCancelRequest.setVisibility(View.VISIBLE);

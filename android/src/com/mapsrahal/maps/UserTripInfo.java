@@ -36,7 +36,7 @@ public class UserTripInfo {
         this.destLng = 0;
         this.destAddress = destAddress;
         this.myFlag = 4;
-        this.driverId = driverId;
+        this.driverId = 0;
         this.phone = phone;
         this.tripId = 0 ;
         this.base = 0;

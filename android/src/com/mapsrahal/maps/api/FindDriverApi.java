@@ -1,5 +1,6 @@
 package com.mapsrahal.maps.api;
 
+import com.mapsrahal.maps.UserTripInfo;
 import com.mapsrahal.maps.model.FindDriver;
 import java.util.List;
 import retrofit2.Call;
@@ -11,5 +12,5 @@ public interface FindDriverApi {
     Call<List<FindDriver>> findDriver(@Body FindDriver findDriver);*/
 
     @POST("getNearByDrivers.php")
-    Call<List<FindDriver>> findDriver(@Body FindDriver findDriver);
+    Call<List<FindDriver>> findDriver(@Body UserTripInfo userTripInfo);
 }

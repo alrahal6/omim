@@ -6,12 +6,14 @@ public class FindDriver {
     private double lat;
     private double lng;
     private double distance;
+    private int tripId;
 
-    public FindDriver(int userId, double lat, double lng, double distance) {
+    public FindDriver(int userId, double lat, double lng, double distance,int tripId) {
         this.userId = userId;
         this.lat = lat;
         this.lng = lng;
         this.distance = distance;
+        this.tripId = tripId;
     }
 
     public int getUserId() {
@@ -44,5 +46,13 @@ public class FindDriver {
 
     public void setDistance(double distance) {
         this.distance = distance;
+    }
+
+    public int getTripId() {
+        return tripId;
+    }
+
+    public void setTripId(int tripId) {
+        this.tripId = tripId;
     }
 }
