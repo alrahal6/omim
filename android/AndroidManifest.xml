@@ -63,7 +63,8 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute"
         tools:replace="android:supportsRtl">
-        <activity android:name=".activity.CheckInternet"></activity>
+        <activity android:name=".activity.PaymentActivity"></activity>
+        <activity android:name=".activity.CheckInternet" />
         <activity android:name=".activity.CaptainActivity">
             <intent-filter>
                 <action android:name="intent.mycustom.action" />
@@ -92,7 +93,7 @@
         <activity
             android:name=".MapActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="com.google.android.gms.version"

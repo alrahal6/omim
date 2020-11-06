@@ -656,7 +656,7 @@ public class ServerConnection extends Service {
         if (!isHaveMessage) {
         //if (mClient.connectionPool().connectionCount() == 0) {
             Request request = new Request.Builder()
-                    .url(Framework.nativeGetWsUrl() + "?token=" + userId +"&is="+MySharedPreference.getInstance(this).isCaptainOnline())
+                    .url(Framework.nativeGetWsUrlLocal() + "?token=" + userId +"&is="+MySharedPreference.getInstance(this).isCaptainOnline())
                     .build();
             mWebSocket = mClient.newWebSocket(request, new SocketListener());
             isHaveMessage = true;

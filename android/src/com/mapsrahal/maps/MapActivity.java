@@ -50,6 +50,7 @@ import com.github.florent37.singledateandtimepicker.dialog.SingleDateAndTimePick
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
+import com.mapsrahal.maps.activity.PaymentActivity;
 import com.mapsrahal.maps.activity.SelectorActivity;
 import com.mapsrahal.maps.activity.ui.main.CargoStatePagerAdapter;
 import com.mapsrahal.maps.activity.ui.main.ConfirmedListPagerAdapter;
@@ -66,6 +67,7 @@ import com.mapsrahal.maps.intent.MapTask;
 import com.mapsrahal.maps.location.CompassData;
 import com.mapsrahal.maps.location.LocationHelper;
 import com.mapsrahal.maps.model.CallLog;
+import com.mapsrahal.maps.model.CaptainTaxiMessage;
 import com.mapsrahal.maps.model.FindDriver;
 import com.mapsrahal.maps.model.GetMyHistory;
 import com.mapsrahal.maps.model.IsValid;
@@ -2743,6 +2745,7 @@ public class MapActivity extends BaseMwmFragmentActivity
             //mAcceptBusyInfo.setVisibility(View.GONE);
             mSwipeLayout.setVisibility(View.VISIBLE);
             mOpenGMap.setVisibility(View.VISIBLE);
+            sendCaptainNotification(ACCEPT_REQUEST);
             //mCustomerName.setText("");
             //mCustomerPhone.setText("");
             /*base = g.getBase();
@@ -2772,7 +2775,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         if (isOnWaytoCustomer) {
             reachedCustomer();
         } else if (!isOnTrip) {
-            send(TRIP_STARTED, 0, 0, 0);
+            //send(TRIP_STARTED, 0, 0, 0);
             startTrip();
         } else if (isOnTrip) {
             endTrip();
@@ -2780,7 +2783,8 @@ public class MapActivity extends BaseMwmFragmentActivity
     }
 
     private void reachedCustomer() {
-        send(REACHED_CUSTOMER, 0, 0, 0);
+        //send(REACHED_CUSTOMER, 0, 0, 0);
+        sendCaptainNotification(REACHED_CUSTOMER);
         isOnWaytoCustomer = false;
         mSwipeButton.setText(R.string.start_trip);
     }
@@ -2790,6 +2794,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         timerHandler.postDelayed(timerRunnable, 0);
         tripStartTime = startTime / 1000;
         isOnTrip = true;
+        sendCaptainNotification(TRIP_STARTED);
         //mMap.clear();
         //LatLng pickupLatLng = new LatLng(g.getLat(), g.getLng());
         //LatLng destinationLatLng = new LatLng(g.getDestLat(), g.getDestLng());
@@ -2812,8 +2817,10 @@ public class MapActivity extends BaseMwmFragmentActivity
         timerHandler.removeCallbacks(timerRunnable);
         mCaptCont.setVisibility(View.GONE);
         MySharedPreference.getInstance(MapActivity.this).finishTrip();
+        sendCaptainNotification(TRIP_COMPLETED);
         // todo open payment activity and send notification
-
+        Intent payIntent = new Intent(this, PaymentActivity.class);
+        startActivity(payIntent);
         //NumberFormat format = NumberFormat.getCurrencyInstance();
         /*if (price == 0) {
             long startedTime = MySharedPreference.getInstance(MapActivity.this).getStartTime();
@@ -2853,6 +2860,26 @@ public class MapActivity extends BaseMwmFragmentActivity
                 send(TRIP_COMPLETED, distance, duration, price);
             }
         }*/
+    }
+
+    private void sendCaptainNotification(int notificationFlag) {
+        Log.d(TAG,"notification send for"+ notificationFlag);
+        /*PostApi postApi = ApiClient.getClient().create(PostApi.class);
+        CallLog callLog = new CallLog(
+                MySharedPreference.getInstance(this).getUserId(), phone, tripId
+        );
+        Call<CallLog> call = postApi.callLog(callLog);
+        call.enqueue(new Callback<CallLog>() {
+            @Override
+            public void onResponse(Call<CallLog> call, Response<CallLog> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<CallLog> call, Throwable t) {
+
+            }
+        });*/
     }
 
 }
