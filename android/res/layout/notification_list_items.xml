@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<!--<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -7,47 +7,60 @@
     android:orientation="horizontal"
     android:layout_marginTop="90dp"
     android:visibility="gone"
-    android:background="@color/white">
+    android:background="@color/white">-->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:id="@+id/notification_req_res"
+        android:background="@color/white"
+        android:visibility="gone"
+        android:layout_height="match_parent">
 
     <LinearLayout
         android:id="@+id/accept_reject"
-        android:layout_marginTop="@dimen/space20"
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="4dp">
+        android:layout_margin="4dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:weightSum="4"
-            android:orientation="horizontal">
-        <TextView
-            android:id="@+id/n_notification_title"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_weight="3"
-            android:text="Waiting For Captain..."
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:orientation="horizontal"
+            android:weightSum="4">
+
+            <TextView
+                android:id="@+id/n_notification_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:text="Waiting For Captain..."
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
             <ImageView
                 android:id="@+id/closable_n"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_alignParentEnd="true"
-                android:background="@drawable/ic_close"
                 android:layout_marginLeft="@dimen/space20"
+                android:background="@drawable/ic_close"
                 android:padding="2dp" />
         </LinearLayout>
 
         <ImageView
-            android:layout_below="@+id/n_notification_title"
             android:id="@+id/n_imageView"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:background="@drawable/ic_person_black_24dp"
+            android:layout_below="@+id/n_notification_title"
             android:layout_margin="@dimen/space5"
+            android:background="@drawable/ic_person_black_24dp"
             android:padding="2dp" />
         <!--<ImageView
             android:id="@+id/n_closable"
@@ -61,24 +74,26 @@
             android:id="@+id/n_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/n_imageView"
             android:layout_below="@+id/n_notification_title"
+            android:layout_toEndOf="@+id/n_imageView"
+            android:layout_toRightOf="@+id/n_imageView"
             android:text="Name : "
             android:textColor="@android:color/black"
             android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_toRightOf="@+id/n_imageView" />
+            android:textStyle="bold" />
+
         <TextView
             android:id="@+id/n_textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/n_textView"
             android:layout_marginStart="8dp"
-            android:layout_toEndOf="@+id/n_imageView"
-            android:text="Address : "
-            android:textSize="15sp"
             android:layout_marginLeft="8dp"
-            android:layout_toRightOf="@+id/n_imageView" />
+            android:layout_toEndOf="@+id/n_imageView"
+            android:layout_toRightOf="@+id/n_imageView"
+            android:text="Address : "
+            android:textSize="15sp" />
+
         <TextView
             android:id="@+id/n_start_time"
             android:layout_width="wrap_content"
@@ -94,43 +109,48 @@
             android:layout_below="@+id/n_start_time"
             android:text="Your Distance : "
             android:textSize="15sp" />
+
         <TextView
-            android:visibility="gone"
             android:id="@+id/n_user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/n_your_distance"
             android:text="Captain Name : "
-            android:textSize="15sp"/>
+            android:textSize="15sp"
+            android:visibility="gone" />
+
         <TextView
-            android:visibility="gone"
             android:id="@+id/n_user_phone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/n_user_name"
             android:drawableEnd="@drawable/ic_call_green_24dp"
             android:text="Captain Phone : "
-            android:textSize="15sp"/>
+            android:textSize="15sp"
+            android:visibility="gone" />
+
         <LinearLayout
             android:id="@+id/ll__req"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/n_user_phone"
             android:orientation="horizontal"
-            android:weightSum="5"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:weightSum="5">
+
             <TextView
                 android:id="@+id/n_trip_amount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:text=" "
-                android:textSize="15sp"/>
+                android:textSize="15sp" />
+
             <TextView
                 android:id="@+id/n_trip_distance"
                 android:layout_width="wrap_content"
-                android:layout_weight="2"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/n_start_time"
+                android:layout_weight="2"
                 android:text=" "
                 android:textSize="15sp" />
             <!--<Button
@@ -143,33 +163,37 @@
                 android:text="Request"/>-->
 
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/ll__button"
-            android:layout_below="@+id/ll__req"
-            android:orientation="horizontal"
-            android:layout_marginTop="@dimen/space10"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ll__req"
+            android:layout_marginTop="@dimen/space10"
+            android:orientation="horizontal">
+
             <Button
                 android:id="@+id/n_accept_request"
-                android:layout_weight="1"
-                android:layout_height="32dp"
                 android:layout_width="wrap_content"
-                android:textColor="@color/base_red"
-                android:visibility="invisible"
+                android:layout_height="32dp"
+                android:layout_weight="1"
                 android:background="@layout/rounded_border_edittext"
-                android:text="Cancel Trip"/>
+                android:text="Cancel Trip"
+                android:textColor="@color/base_red"
+                android:visibility="invisible" />
+
             <ProgressBar
                 android:id="@+id/waiting_progress"
-                android:layout_marginLeft="@dimen/space20"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/space20" />
+
             <TextView
                 android:id="@+id/waiting_for_c"
-                android:paddingLeft="@dimen/space5"
-                android:text="Waiting for captain..."
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/space5"
+                android:text="Waiting for captain..." />
             <!--<Button
                 android:id="@+id/n_deny_request"
                 android:layout_weight="1"
@@ -181,7 +205,7 @@
                 android:text="Cancel"/>-->
         </LinearLayout>
 
-            <!--<Button
+        <!--<Button
                 android:visibility="gone"
                 android:id="@+id/n_cancel_request"
                 android:layout_height="32dp"
@@ -193,4 +217,5 @@
 
     </LinearLayout>
 
-</LinearLayout>
+<!--</LinearLayout>-->
+</androidx.constraintlayout.widget.ConstraintLayout>

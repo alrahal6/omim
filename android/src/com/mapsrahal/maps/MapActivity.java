@@ -150,7 +150,8 @@ public class MapActivity extends BaseMwmFragmentActivity
     private ImageButton mAddressToggle, mMainMenu,mCloseDest;
 
     private ImageView mAddSeat, mRemoveSeat, mCloseList, mCloseNotification;
-    private LinearLayout mNotificationCard, mStartTripLayout;
+    private ConstraintLayout mNotificationCard;
+    private LinearLayout mStartTripLayout;
     private LinearLayout mllForm, mMnuForm, mConfirmLayout;
     private LinearLayout mCustomerInfo, mSwipeLayout, mpayAndRating, mPriceLayout;
     private ProgressBar mMyprogress;
@@ -2739,11 +2740,15 @@ public class MapActivity extends BaseMwmFragmentActivity
                 g = gSon.fromJson(msg, UserTripInfo.class);
                 int flag = g.getMyFlag();
                 requestingPassenger = g.getUserId();
+                isOnWaytoCustomer = true;
             }
             mCaptCont.setVisibility(View.VISIBLE);
+            MySharedPreference.getInstance(this).recordTrip(Double.toString(g.getTripId()),getCurrentTimestamp()
+            ,(float) g.getDistance());
             //send(ACCEPT_REQUEST, 0, 0, 0);
             //mAcceptBusyInfo.setVisibility(View.GONE);
             mSwipeLayout.setVisibility(View.VISIBLE);
+            mSwipeButton.setText(getString(R.string.reached_customer));
             mOpenGMap.setVisibility(View.VISIBLE);
             sendCaptainNotification(ACCEPT_REQUEST);
             //mCustomerName.setText("");
@@ -2863,23 +2868,31 @@ public class MapActivity extends BaseMwmFragmentActivity
     }
 
     private void sendCaptainNotification(int notificationFlag) {
-        Log.d(TAG,"notification send for"+ notificationFlag);
-        /*PostApi postApi = ApiClient.getClient().create(PostApi.class);
-        CallLog callLog = new CallLog(
-                MySharedPreference.getInstance(this).getUserId(), phone, tripId
+        Log.d(TAG,"to user : "+requestingPassenger);
+        UserMessage captMessage = new UserMessage(
+                MySharedPreference.getInstance(this).getUserId(),
+                requestingPassenger,
+                notificationFlag, 1,
+                0.0,
+                "0",
+                "0",
+                "0","0","0","0","0",0.0,0.0,0.0,0.0
         );
-        Call<CallLog> call = postApi.callLog(callLog);
-        call.enqueue(new Callback<CallLog>() {
-            @Override
-            public void onResponse(Call<CallLog> call, Response<CallLog> response) {
+        UserMessageApi userMessageApi = ApiClient.getClient().create(UserMessageApi.class);
+        Call<UserMessage> call = userMessageApi.sentMessage(captMessage);
 
+        call.enqueue(new Callback<UserMessage>() {
+            @Override
+            public void onResponse(Call<UserMessage> call, Response<UserMessage> response) {
+                //Toast.makeText(mContext, "Request Send Successfully ", Toast.LENGTH_LONG).show();
             }
 
             @Override
-            public void onFailure(Call<CallLog> call, Throwable t) {
+            public void onFailure(Call<UserMessage> call, Throwable t) {
+                //Toast.makeText(mContext, "Request Send Failed! ", Toast.LENGTH_LONG).show();
 
             }
-        });*/
+        });
     }
 
 }
