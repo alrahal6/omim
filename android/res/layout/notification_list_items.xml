@@ -35,6 +35,14 @@
             android:orientation="horizontal"
             android:weightSum="4">
 
+            <ImageView
+                android:id="@+id/closable_n"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginRight="@dimen/space20"
+                android:background="@drawable/ic_close"
+                android:padding="2dp" />
+
             <TextView
                 android:id="@+id/n_notification_title"
                 android:layout_width="wrap_content"
@@ -43,15 +51,6 @@
                 android:text="Waiting For Captain..."
                 android:textSize="20sp"
                 android:textStyle="bold" />
-
-            <ImageView
-                android:id="@+id/closable_n"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_alignParentEnd="true"
-                android:layout_marginLeft="@dimen/space20"
-                android:background="@drawable/ic_close"
-                android:padding="2dp" />
         </LinearLayout>
 
         <ImageView
@@ -183,12 +182,14 @@
                 android:visibility="invisible" />
 
             <ProgressBar
+                android:visibility="gone"
                 android:id="@+id/waiting_progress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/space20" />
 
             <TextView
+                android:visibility="gone"
                 android:id="@+id/waiting_for_c"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

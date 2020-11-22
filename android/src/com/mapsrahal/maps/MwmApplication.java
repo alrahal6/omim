@@ -258,16 +258,20 @@ public class MwmApplication extends Application implements AppBackgroundTracker.
       NotificationChannel mChannel1 = new NotificationChannel(CHANNEL_ID_CALL_CAPTAIN, CHANNEL_NAME_CAPTAIN, NotificationManager.IMPORTANCE_NONE);
       mChannel1.setDescription(CHANNEL_DESCRIPTION);
       mChannel1.enableLights(true);
+
       mChannel1.setLightColor(Color.GREEN);
       //mChannel1.enableVibration(true);
       //mChannel1.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
       mNotificationManager1.createNotificationChannel(mChannel1);
-
+      Uri notifySound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
       //NotificationManager mNotificationManager2 = getSystemService(NotificationManager.class);
       NotificationChannel mChannel2 = new NotificationChannel(CHANNEL_ID_NOTIFY, CHANNEL_NAME_USER, NotificationManager.IMPORTANCE_DEFAULT);
       mChannel2.setDescription(CHANNEL_DESCRIPTION);
       mChannel2.enableLights(true);
       mChannel2.setLightColor(Color.GREEN);
+      mChannel2.setSound(notifySound,new AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+              .setLegacyStreamType(AudioManager.STREAM_RING)
+              .setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION).build());
       //mChannel2.enableVibration(true);
       //mChannel2.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
       mNotificationManager1.createNotificationChannel(mChannel2);

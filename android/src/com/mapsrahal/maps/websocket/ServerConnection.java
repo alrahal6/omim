@@ -372,7 +372,8 @@ public class ServerConnection extends Service {
                 //createChannel();
                 NotificationCompat.Builder notificationBuilder = null;
                 //if (data != null) {
-                    Uri ringUri= Settings.System.DEFAULT_RINGTONE_URI;
+                    //Uri ringUri= Settings.System.DEFAULT_RINGTONE_URI;
+                    Uri ringUri = Uri.parse("android.resource://com.mapsrahal.maps/raw/calling");
                     notificationBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
                             // todo
                             .setContentTitle("To : Khartoum Airport")

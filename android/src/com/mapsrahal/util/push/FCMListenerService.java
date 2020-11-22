@@ -83,11 +83,11 @@ public class FCMListenerService extends FirebaseMessagingService {
 
         notificationManager.notify(0, notificationBuilder.build());
 
-        boolean isForeground = MwmApplication.backgroundTracker(MwmApplication.get().getApplicationContext()).isForeground();
-        if(isForeground) {
-            startActivity(notifyIntent);
+        //boolean isForeground = MwmApplication.backgroundTracker(MwmApplication.get().getApplicationContext()).isForeground();
+        //if(isForeground) {
+            //startActivity(notifyIntent);
             //return;
-        }
+        //}
         //SplashActivity.start(this,ResultActivity.class,notifyIntent);
     }
 
@@ -119,7 +119,7 @@ public class FCMListenerService extends FirebaseMessagingService {
                 PendingIntent.FLAG_ONE_SHOT);
 
         NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(this,CHANNEL_ID)
+                new NotificationCompat.Builder(this,CHANNEL_ID_NOTIFY)
                         .setSmallIcon(R.drawable.about_logo)
                         .setContentTitle(title)
                         .setContentText(body)
@@ -131,11 +131,11 @@ public class FCMListenerService extends FirebaseMessagingService {
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         notificationManager.notify(0, notificationBuilder.build());
-        boolean isForeground = MwmApplication.backgroundTracker(MwmApplication.get().getApplicationContext()).isForeground();
-        if(isForeground) {
-            startActivity(intent);
+        //boolean isForeground = MwmApplication.backgroundTracker(MwmApplication.get().getApplicationContext()).isForeground();
+        //if(isForeground) {
+            //startActivity(intent);
             //return;
-        }
+        //}
     }
 
     private String getFlagTitle(String flag) {
