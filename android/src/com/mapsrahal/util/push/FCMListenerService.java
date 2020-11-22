@@ -11,6 +11,7 @@ import android.widget.Switch;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -27,6 +28,7 @@ import java.util.Map;
 
 import static com.mapsrahal.maps.MwmApplication.CHANNEL_ID;
 import static com.mapsrahal.maps.MwmApplication.CHANNEL_ID_NOTIFY;
+import static com.mapsrahal.maps.websocket.ServerConnection.ACTION_MSG_RECEIVED;
 
 public class FCMListenerService extends FirebaseMessagingService {
     private static final String TAG = FCMListenerService.class.getSimpleName();
@@ -83,11 +85,11 @@ public class FCMListenerService extends FirebaseMessagingService {
 
         notificationManager.notify(0, notificationBuilder.build());
 
-        //boolean isForeground = MwmApplication.backgroundTracker(MwmApplication.get().getApplicationContext()).isForeground();
-        //if(isForeground) {
-            //startActivity(notifyIntent);
+        boolean isForeground = MwmApplication.backgroundTracker(MwmApplication.get().getApplicationContext()).isForeground();
+        if(isForeground) {
+            startActivity(notifyIntent);
             //return;
-        //}
+        }
         //SplashActivity.start(this,ResultActivity.class,notifyIntent);
     }
 
@@ -131,11 +133,18 @@ public class FCMListenerService extends FirebaseMessagingService {
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         notificationManager.notify(0, notificationBuilder.build());
-        //boolean isForeground = MwmApplication.backgroundTracker(MwmApplication.get().getApplicationContext()).isForeground();
-        //if(isForeground) {
-            //startActivity(intent);
+        //sendMessageReceivedBroadcast(usrNotification);
+        boolean isForeground = MwmApplication.backgroundTracker(MwmApplication.get().getApplicationContext()).isForeground();
+        if(isForeground) {
+            startActivity(intent);
             //return;
-        //}
+        }
+    }
+
+    private void sendMessageReceivedBroadcast(String myMsg) {
+        Intent intent = new Intent(ACTION_MSG_RECEIVED);
+        intent.putExtra("MyDriverMessage",myMsg);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
     private String getFlagTitle(String flag) {

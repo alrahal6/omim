@@ -46,7 +46,7 @@
     <include layout="@layout/from_to"/>
     <include layout="@layout/captain_content" />
     <include layout="@layout/fragment_driver_request" />
-    <include layout="@layout/notification_list_items" />
+
 
     <include
         android:id="@+id/navigation_buttons"
@@ -75,7 +75,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true" />
+    <include layout="@layout/notification_list_items" />
 </RelativeLayout>
+
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"

@@ -150,8 +150,8 @@ public class MapActivity extends BaseMwmFragmentActivity
     private ImageButton mAddressToggle, mMainMenu,mCloseDest;
 
     private ImageView mAddSeat, mRemoveSeat, mCloseList, mCloseNotification;
-    private ConstraintLayout mNotificationCard;
-    private LinearLayout mStartTripLayout;
+    //private ConstraintLayout mNotificationCard;
+    private LinearLayout mNotificationCard,mStartTripLayout;
     private LinearLayout mllForm, mMnuForm, mConfirmLayout;
     private LinearLayout mCustomerInfo, mSwipeLayout, mpayAndRating, mPriceLayout;
     private ProgressBar mMyprogress;
@@ -1816,6 +1816,12 @@ public class MapActivity extends BaseMwmFragmentActivity
             case Constants.Notification.PASSENGER_REQUEST:
                 mTextView.setText(getString(R.string.passenger_ride_request));
                 break;
+            /*case REACHED_CUSTOMER:
+                mTextView.setText("Your Captain Reached");
+                break;
+            case TRIP_STARTED:
+                mTextView.setText("Your Captain Reached");
+                break;*/
             case Constants.Notification.PASSENGER_ACCEPTED:
                 mTextView.setText(getString(R.string.passenger_accepted_request));
                 break;
@@ -1862,6 +1868,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 accept.setVisibility(View.GONE);
                 break;
             case Constants.Notification.DRIVER_REACHED:
+            case REACHED_CUSTOMER:
                 mTextView.setText(getString(R.string.captain_reached));
                 break;
             case Constants.Notification.TRIP_STARTED:
@@ -2599,6 +2606,7 @@ public class MapActivity extends BaseMwmFragmentActivity
             //Log.i(TAG,"Success! Message received from server");
             String myMsg = intent.getStringExtra("MyDriverMessage");
             UserTripInfo g = gSon.fromJson(myMsg, UserTripInfo.class);
+            //userMessage = gSon.fromJson(myMsg, UserMessage.class);
             int flag = g.getMyFlag();
 
             if(isDriverAccepted && flag == 3) {
@@ -2650,7 +2658,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                     break;
                 case 11:
                     mCallingCaptain.setText(getString(R.string.captain_reached));
-                    MyNotificationManager.getInstance(MapActivity.this).displayNotification(getString(R.string.captain_reached), getString(R.string.captain_reached));
+                    //MyNotificationManager.getInstance(MapActivity.this).displayNotification(getString(R.string.captain_reached), getString(R.string.captain_reached));
                     break;
                 case 9:
                     break;
@@ -2667,7 +2675,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 case 12:
                     mCancelRequest.setVisibility(View.GONE);
                     mCallingCaptain.setText(getString(R.string.trip_started));
-                    MyNotificationManager.getInstance(MapActivity.this).displayNotification(getString(R.string.trip_started), getString(R.string.trip_started));
+                    //MyNotificationManager.getInstance(MapActivity.this).displayNotification(getString(R.string.trip_started), getString(R.string.trip_started));
                     startTime = System.currentTimeMillis();
                     timerHandler.postDelayed(timerRunnable, 0);
                     //mCustomerInfo.setVisibility(View.VISIBLE);
@@ -2679,7 +2687,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                     //mDriverInfo.setVisibility(View.GONE);
                     //mpayAndRating.setVisibility(View.VISIBLE);
                     //mAmount.setText(getString(R.string.pay_driver) + g.getPhone() + getString(R.string.sdg));
-                    MyNotificationManager.getInstance(MapActivity.this).displayNotification(getString(R.string.trip_completed), getString(R.string.trip_completed));
+                    //MyNotificationManager.getInstance(MapActivity.this).displayNotification(getString(R.string.trip_completed), getString(R.string.trip_completed));
                     // mCustomerInfo.setVisibility(View.GONE);
                     // todo display payment details
                     break;
@@ -2750,7 +2758,7 @@ public class MapActivity extends BaseMwmFragmentActivity
             mSwipeLayout.setVisibility(View.VISIBLE);
             mSwipeButton.setText(getString(R.string.reached_customer));
             mOpenGMap.setVisibility(View.VISIBLE);
-            sendCaptainNotification(ACCEPT_REQUEST);
+            //sendCaptainNotification(ACCEPT_REQUEST);
             //mCustomerName.setText("");
             //mCustomerPhone.setText("");
             /*base = g.getBase();
