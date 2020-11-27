@@ -87,7 +87,7 @@ public class ServerConnection extends Service {
     private static final long INTERVAL_FIVE_MINS = 3 * 60 * 1000;
     private static final String TAG = ServerConnection.class.getSimpleName();
     private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 30000;
-    private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = 15000;
+    private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = 30000;
     private final IBinder mBinder = new ServerConnectionBinder();
     private final int userId;
     private final String phone;

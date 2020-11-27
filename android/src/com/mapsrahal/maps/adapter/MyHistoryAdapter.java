@@ -1,16 +1,25 @@
 package com.mapsrahal.maps.adapter;
 
+import android.content.Context;
+import android.content.Intent;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mapsrahal.maps.R;
+import com.mapsrahal.maps.activity.ContactActivity;
+import com.mapsrahal.maps.activity.MyAccountActivity;
+import com.mapsrahal.maps.activity.MyRidesActivity;
 import com.mapsrahal.maps.model.MyTripHistory;
 import com.mapsrahal.maps.model.MyTripHistory;
 
@@ -29,13 +38,17 @@ public class MyHistoryAdapter extends RecyclerView.Adapter<MyHistoryAdapter.Matc
         mListener = listener;
     }
 
-    public class MatchingViewHolder extends RecyclerView.ViewHolder {
+    public class MatchingViewHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener, PopupMenu.OnMenuItemClickListener {
         public TextView mFrom,mTo;
         public TextView mDistance,mSeats,mTime,
                 mGender,mAmount;
+        public ImageButton mRegularMenu;
+        private final Context context;
 
         public MatchingViewHolder(View itemView, final OnItemClickListener listener) {
             super(itemView);
+            context = itemView.getContext();
             mFrom = itemView.findViewById(R.id.hist_from);
             mTo = itemView.findViewById(R.id.hist_to);
             mDistance = itemView.findViewById(R.id.hist_distance);
@@ -43,6 +56,50 @@ public class MyHistoryAdapter extends RecyclerView.Adapter<MyHistoryAdapter.Matc
             mTime = itemView.findViewById(R.id.hist_time);
             mGender = itemView.findViewById((R.id.hist_gender));
             mAmount = itemView.findViewById(R.id.hist_amount);
+            mRegularMenu = itemView.findViewById(R.id.regular_menu);
+            mRegularMenu.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            showRegularMenu(view);
+        }
+
+        private void showRegularMenu(View v) {
+            PopupMenu regularMenu = new PopupMenu(v.getContext(),v);
+            regularMenu.inflate(R.menu.regular_menu);
+            regularMenu.setOnMenuItemClickListener(this);
+            regularMenu.show();
+        }
+
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+            Intent intent;
+            switch (item.getItemId()) {
+                case R.id.reschedule:
+                   intent = new Intent(context,MyAccountActivity.class);
+                   //startActivity(intent);
+                    context.startActivity(intent);
+                    return true;
+                case R.id.need_return:
+                    intent = new Intent(context,MyRidesActivity.class);
+                    //startActivity(intent);
+                    context.startActivity(intent);
+                    return true;
+                /*case R.id.repeat_once:
+                    intent = new Intent(context,MyAccountActivity.class);
+                    //startActivity(intent);
+                    context.startActivity(intent);
+                    return true;
+                case R.id.repeat_regular:
+                    intent = new Intent(context,MyAccountActivity.class);
+                    //startActivity(intent);
+                    context.startActivity(intent);
+                    return true;*/
+                default:
+                    return false;
+                    //throw new IllegalStateException("Unexpected value: " + item.getItemId());
+            }
         }
     }
 

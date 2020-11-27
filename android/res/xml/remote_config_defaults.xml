@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<defaultsMap>
+    <entry>
+        <key>UPDATE_INTERVAL_IN_MILLISECONDS</key>
+        <value>30000</value>
+    </entry>
+    <entry>
+        <key>FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS</key>
+        <value>15000</value>
+    </entry>
+</defaultsMap>

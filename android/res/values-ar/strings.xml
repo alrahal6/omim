@@ -2441,7 +2441,12 @@
 	<string name="captains">كاربولر</string>
 	<string name="passengers">ركاب</string>
     <string name="set_destination">ادخل وجهتك</string>
-    <string-array name="select_vehicle">
+    <string name="reschedule">Reschedule</string>
+	<string name="return_trip">Return Trip</string>
+	<string name="repeat_regular">Repeat regular</string>
+	<string name="repeat_once">Repeat Once</string>
+	<string name="suspend">Suspend</string>
+	<string-array name="select_vehicle">
 		<item>اقتصاد</item>
 	</string-array>
 	<string-array name="select_gender">

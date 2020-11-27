@@ -30,7 +30,7 @@ import retrofit2.Response;
 public class SelectorActivity extends AppCompatActivity implements View.OnClickListener {
 
     Button mPassengerCab,mPassengerPool,mPassengerAny,mCaptainCab,mCaptainPool,
-            mCaptainAny,mNearByPassenger;
+            mCaptainAny,mNearByPassenger,mPassHist;
     public static final String PASSENGER_CAPTAIN_SELECTOR = "passenger_captain_selector";
 
     public static final int PASSENGER_TAXI_ONLY = 1;
@@ -69,6 +69,8 @@ public class SelectorActivity extends AppCompatActivity implements View.OnClickL
         mCaptainAny.setOnClickListener(this);
         mNearByPassenger = findViewById(R.id.passengers_nearby);
         mNearByPassenger.setOnClickListener(this);
+        mPassHist = findViewById(R.id.passenger_history);
+
     }
 
     @Override

@@ -33,6 +33,7 @@
         android:textColor="@color/white_primary"
         android:text="@string/car_pool_share" />
 
+
     <TextView
         android:textSize="19sp"
         android:layout_width="match_parent"
@@ -60,6 +61,7 @@
         android:text="@string/car_pool_share" />
 
     <TextView
+        android:visibility="gone"
         android:textSize="19sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -69,6 +71,7 @@
         android:text="@string/cargo_logistics"/>
 
     <Button
+        android:visibility="gone"
         android:id="@+id/passenger_any"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -78,6 +81,7 @@
         android:text="@string/provider" />
 
     <Button
+        android:visibility="gone"
         android:id="@+id/captain_any"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -92,8 +96,15 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/space5"
         android:textColor="@color/black"
-        android:drawableStart="@drawable/ic_search_brown_24dp"
-        android:text="Find Nearby"/>
+        android:text=""/>
+    <Button
+        android:id="@+id/passenger_history"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space10"
+        android:background="@drawable/button_corner"
+        android:textColor="@color/white_primary"
+        android:text="Trip History" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -107,9 +118,10 @@
         android:layout_weight="1"
         android:textColor="@color/white_primary"
         android:background="@drawable/button_corner"
-        android:text="@string/passengers" />
+        android:text="Find Nearby Passengers" />
 
     <Button
+        android:visibility="gone"
         android:id="@+id/captains_nearby"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
