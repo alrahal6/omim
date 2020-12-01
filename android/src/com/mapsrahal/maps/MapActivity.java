@@ -59,6 +59,7 @@ import com.mapsrahal.maps.api.ApiClient;
 import com.mapsrahal.maps.api.FindDriverApi;
 import com.mapsrahal.maps.api.ParsedMwmRequest;
 import com.mapsrahal.maps.api.PostApi;
+import com.mapsrahal.maps.api.RequestApi;
 import com.mapsrahal.maps.api.UserMessageApi;
 import com.mapsrahal.maps.base.BaseMwmFragmentActivity;
 import com.mapsrahal.maps.bookmarks.data.FeatureId;
@@ -71,6 +72,7 @@ import com.mapsrahal.maps.model.CaptainTaxiMessage;
 import com.mapsrahal.maps.model.FindDriver;
 import com.mapsrahal.maps.model.GetMyHistory;
 import com.mapsrahal.maps.model.IsValid;
+import com.mapsrahal.maps.model.LatLngDestination;
 import com.mapsrahal.maps.model.MatchingItem;
 import com.mapsrahal.maps.model.Post;
 import com.mapsrahal.maps.model.Price;
@@ -1019,6 +1021,7 @@ public class MapActivity extends BaseMwmFragmentActivity
     private void closeDestAddress() {
         if (toLocation != null) {
             toLocation = null;
+            removeDestination();
             tvDropOff.setText(R.string.set_destination);
         }
     }
@@ -1089,6 +1092,9 @@ public class MapActivity extends BaseMwmFragmentActivity
         hideMenu();
         hideBtnRequest();
         RoutingController.get().setEndPoint(toLocation);
+        if(mSelector == CAPTAIN_TAXI_ONLY) {
+            saveDestination();
+        }
     }
 
     @Override
@@ -2876,7 +2882,7 @@ public class MapActivity extends BaseMwmFragmentActivity
     }
 
     private void sendCaptainNotification(int notificationFlag) {
-        Log.d(TAG,"to user : "+requestingPassenger);
+        //Log.d(TAG,"to user : "+requestingPassenger);
         UserMessage captMessage = new UserMessage(
                 MySharedPreference.getInstance(this).getUserId(),
                 requestingPassenger,
@@ -2899,6 +2905,67 @@ public class MapActivity extends BaseMwmFragmentActivity
             public void onFailure(Call<UserMessage> call, Throwable t) {
                 //Toast.makeText(mContext, "Request Send Failed! ", Toast.LENGTH_LONG).show();
 
+            }
+        });
+    }
+
+    // save destination
+    // check and turn captain online if not online
+
+    private void saveDestination() {
+        double toLat = toLocation.getLat();
+        double toLng = toLocation.getLon();
+        LatLngDestination latLngDestination = new LatLngDestination(toLat,toLng,
+                MySharedPreference.getInstance(this).getUserId()
+        );
+        RequestApi requestApi = ApiClient.getClient().create(RequestApi.class);
+        Call<LatLngDestination> call = requestApi.setDestination(latLngDestination);
+
+        call.enqueue(new Callback<LatLngDestination>() {
+            @Override
+            public void onResponse(Call<LatLngDestination> call, Response<LatLngDestination> response) {
+                if(response.isSuccessful()) {
+                    turnCaptainOnline();
+                } else {
+                    Toast.makeText(MapActivity.this,"Error Occurred! Please try later",Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<LatLngDestination> call, Throwable t) {
+                Toast.makeText(MapActivity.this,"Error Occurred! Please try later",Toast.LENGTH_LONG).show();
+            }
+        });
+        // todo save to destination table
+    }
+
+    private void turnCaptainOnline() {
+        if(!mSwitch.isChecked()) {
+            mSwitch.setChecked(true);
+            connect();
+        }
+    }
+
+    private void removeDestination() {
+        double toLat = 1.1;
+        double toLng = 1.1;
+        LatLngDestination latLngDestination = new LatLngDestination(toLat,toLng,
+                MySharedPreference.getInstance(this).getUserId()
+        );
+        RequestApi requestApi = ApiClient.getClient().create(RequestApi.class);
+        Call<LatLngDestination> call = requestApi.removeDestination(latLngDestination);
+
+        call.enqueue(new Callback<LatLngDestination>() {
+            @Override
+            public void onResponse(Call<LatLngDestination> call, Response<LatLngDestination> response) {
+                if(!response.isSuccessful()) {
+                    Toast.makeText(MapActivity.this,"Error Occurred! Please try later",Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<LatLngDestination> call, Throwable t) {
+                Toast.makeText(MapActivity.this,"Error Occurred! Please try later",Toast.LENGTH_LONG).show();
             }
         });
     }

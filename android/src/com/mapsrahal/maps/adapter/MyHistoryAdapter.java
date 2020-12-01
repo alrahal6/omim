@@ -76,7 +76,7 @@ public class MyHistoryAdapter extends RecyclerView.Adapter<MyHistoryAdapter.Matc
         public boolean onMenuItemClick(MenuItem item) {
             Intent intent;
             switch (item.getItemId()) {
-                case R.id.reschedule:
+                /*case R.id.reschedule:
                    intent = new Intent(context,MyAccountActivity.class);
                    //startActivity(intent);
                     context.startActivity(intent);
@@ -85,17 +85,17 @@ public class MyHistoryAdapter extends RecyclerView.Adapter<MyHistoryAdapter.Matc
                     intent = new Intent(context,MyRidesActivity.class);
                     //startActivity(intent);
                     context.startActivity(intent);
-                    return true;
-                /*case R.id.repeat_once:
+                    return true;*/
+                case R.id.repeat_once:
                     intent = new Intent(context,MyAccountActivity.class);
                     //startActivity(intent);
                     context.startActivity(intent);
                     return true;
                 case R.id.repeat_regular:
-                    intent = new Intent(context,MyAccountActivity.class);
+                    intent = new Intent(context,MyRidesActivity.class);
                     //startActivity(intent);
                     context.startActivity(intent);
-                    return true;*/
+                    return true;
                 default:
                     return false;
                     //throw new IllegalStateException("Unexpected value: " + item.getItemId());
