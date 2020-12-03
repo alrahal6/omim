@@ -70,6 +70,7 @@ public class SelectorActivity extends AppCompatActivity implements View.OnClickL
         mNearByPassenger = findViewById(R.id.passengers_nearby);
         mNearByPassenger.setOnClickListener(this);
         mPassHist = findViewById(R.id.passenger_history);
+        mPassHist.setOnClickListener(this);
 
     }
 
@@ -99,7 +100,17 @@ public class SelectorActivity extends AppCompatActivity implements View.OnClickL
             case R.id.passengers_nearby:
                 startMatchActivity();
                 break;
+            case R.id.passenger_history:
+            default:
+                showHistory();
+                break;
+
         }
+    }
+
+    private void showHistory() {
+        Intent intent = new Intent(this, MyRidesActivity.class);
+        startActivity(intent);
     }
 
     private void startActivity(int v) {

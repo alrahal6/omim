@@ -20,6 +20,8 @@ import com.mapsrahal.maps.R;
 import com.mapsrahal.maps.activity.ContactActivity;
 import com.mapsrahal.maps.activity.MyAccountActivity;
 import com.mapsrahal.maps.activity.MyRidesActivity;
+import com.mapsrahal.maps.activity.RepeatOnceActivity;
+import com.mapsrahal.maps.activity.RepeatRegularActivity;
 import com.mapsrahal.maps.model.MyTripHistory;
 import com.mapsrahal.maps.model.MyTripHistory;
 
@@ -87,12 +89,12 @@ public class MyHistoryAdapter extends RecyclerView.Adapter<MyHistoryAdapter.Matc
                     context.startActivity(intent);
                     return true;*/
                 case R.id.repeat_once:
-                    intent = new Intent(context,MyAccountActivity.class);
+                    intent = new Intent(context, RepeatOnceActivity.class);
                     //startActivity(intent);
                     context.startActivity(intent);
                     return true;
                 case R.id.repeat_regular:
-                    intent = new Intent(context,MyRidesActivity.class);
+                    intent = new Intent(context, RepeatRegularActivity.class);
                     //startActivity(intent);
                     context.startActivity(intent);
                     return true;
