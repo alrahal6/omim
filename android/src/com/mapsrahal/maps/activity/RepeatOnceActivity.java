@@ -10,17 +10,25 @@ import android.widget.TextView;
 
 import com.github.florent37.singledateandtimepicker.dialog.SingleDateAndTimePickerDialog;
 import com.mapsrahal.maps.R;
+import com.mapsrahal.maps.api.ApiClient;
+import com.mapsrahal.maps.api.PostApi;
 import com.mapsrahal.maps.bookmarks.data.AbstractCategoriesSnapshot;
+import com.mapsrahal.maps.model.NearbySearch;
+import com.mapsrahal.maps.model.RepeatOnce;
 import com.mapsrahal.util.DateUtils;
 import com.mapsrahal.util.UiUtils;
 
 import java.util.Date;
+import java.util.List;
+
+import retrofit2.Call;
 
 public class RepeatOnceActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Date startingTime;
     private TextView mDateTime;
     private Button mRepeatTrip;
+    private PostApi postApi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +46,7 @@ public class RepeatOnceActivity extends AppCompatActivity implements View.OnClic
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        postApi = ApiClient.getClient().create(PostApi.class);
     }
 
     @Override
@@ -60,7 +69,11 @@ public class RepeatOnceActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void repeatTrip() {
+        RepeatOnce repeatOnce = new RepeatOnce(1,new Date(),
+                1,1,"any",20.0,new Date()
+        );
 
+        //Call<List<NearbySearch>> call = postApi.nearbySearch(nSearch);
     }
 
     @Override
