@@ -6,20 +6,18 @@ public class RepeatOnce {
 
     private int tripId;
     private Date newTime;
-    private int newSeats;
+    private double newPrice;
     private int dropDownId;
     private String dropDownVal;
-    private double newPrice;
-    private Date entryTime;
+    private int newSeats;
 
-    public RepeatOnce(int tripId, Date newTime, int newSeats, int dropDownId, String dropDownVal, double newPrice, Date entryTime) {
+    public RepeatOnce(int tripId, Date newTime, double newPrice, int dropDownId, String dropDownVal, int newSeats) {
         this.tripId = tripId;
         this.newTime = newTime;
-        this.newSeats = newSeats;
+        this.newPrice = newPrice;
         this.dropDownId = dropDownId;
         this.dropDownVal = dropDownVal;
-        this.newPrice = newPrice;
-        this.entryTime = entryTime;
+        this.newSeats = newSeats;
     }
 
     public int getTripId() {
@@ -38,12 +36,12 @@ public class RepeatOnce {
         this.newTime = newTime;
     }
 
-    public int getNewSeats() {
-        return newSeats;
+    public double getNewPrice() {
+        return newPrice;
     }
 
-    public void setNewSeats(int newSeats) {
-        this.newSeats = newSeats;
+    public void setNewPrice(double newPrice) {
+        this.newPrice = newPrice;
     }
 
     public int getDropDownId() {
@@ -62,19 +60,11 @@ public class RepeatOnce {
         this.dropDownVal = dropDownVal;
     }
 
-    public double getNewPrice() {
-        return newPrice;
+    public int getNewSeats() {
+        return newSeats;
     }
 
-    public void setNewPrice(double newPrice) {
-        this.newPrice = newPrice;
-    }
-
-    public Date getEntryTime() {
-        return entryTime;
-    }
-
-    public void setEntryTime(Date entryTime) {
-        this.entryTime = entryTime;
+    public void setNewSeats(int newSeats) {
+        this.newSeats = newSeats;
     }
 }

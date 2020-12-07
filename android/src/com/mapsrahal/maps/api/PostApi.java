@@ -7,6 +7,7 @@ import com.mapsrahal.maps.model.MyTripHistory;
 import com.mapsrahal.maps.model.NearbySearch;
 import com.mapsrahal.maps.model.Post;
 import com.mapsrahal.maps.model.Price;
+import com.mapsrahal.maps.model.RepeatOnce;
 import com.mapsrahal.maps.model.StatusUpdate;
 import java.util.List;
 import retrofit2.Call;
@@ -38,4 +39,5 @@ public interface PostApi {
 
     @POST("getMyAccount.php")
     Call<MyAccount> myAccount(@Body GetMyHistory getMyHistory);
+
 }

@@ -4,14 +4,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.florent37.singledateandtimepicker.dialog.SingleDateAndTimePickerDialog;
 import com.mapsrahal.maps.R;
 import com.mapsrahal.maps.api.ApiClient;
+import com.mapsrahal.maps.api.ApiInterface;
 import com.mapsrahal.maps.api.PostApi;
+import com.mapsrahal.maps.api.RequestApi;
 import com.mapsrahal.maps.bookmarks.data.AbstractCategoriesSnapshot;
 import com.mapsrahal.maps.model.NearbySearch;
 import com.mapsrahal.maps.model.RepeatOnce;
@@ -22,13 +26,16 @@ import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.http.POST;
 
 public class RepeatOnceActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Date startingTime;
     private TextView mDateTime;
     private Button mRepeatTrip;
-    private PostApi postApi;
+    private String TAG = RepeatOnceActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +53,7 @@ public class RepeatOnceActivity extends AppCompatActivity implements View.OnClic
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        postApi = ApiClient.getClient().create(PostApi.class);
+
     }
 
     @Override
@@ -69,11 +76,31 @@ public class RepeatOnceActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void repeatTrip() {
-        RepeatOnce repeatOnce = new RepeatOnce(1,new Date(),
-                1,1,"any",20.0,new Date()
-        );
+        //String myDt = ""+startingTime;
+        //Log.d(TAG,"date : "+startingTime);
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        RepeatOnce repeatOnce = new RepeatOnce(11,startingTime,
+                1,1,"any",2);
+        //Log.d(TAG,""+ repeatOnce);
+        Call<List<RepeatOnce>> call = apiInterface.repeatOnce(repeatOnce);
 
-        //Call<List<NearbySearch>> call = postApi.nearbySearch(nSearch);
+        call.enqueue(new Callback<List<RepeatOnce>>() {
+            @Override
+            public void onResponse(Call<List<RepeatOnce>> call, Response<List<RepeatOnce>> response) {
+                //Log.d(TAG,"Response "+response.body());
+                //Log.d(TAG,"Repeat Success"+response.message());
+                //onBackPressed();
+                //Log.d(TAG,"Repeat Success");
+                finish();
+            }
+
+            @Override
+            public void onFailure(Call<List<RepeatOnce>> call, Throwable t) {
+                Toast.makeText(RepeatOnceActivity.this,"An error occurred! please try again",Toast.LENGTH_LONG).show();
+                //Log.d(TAG,"Repeat failed" + t.getMessage());
+            }
+
+        });
     }
 
     @Override

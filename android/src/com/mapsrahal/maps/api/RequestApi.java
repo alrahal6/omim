@@ -1,6 +1,7 @@
 package com.mapsrahal.maps.api;
 
 import com.mapsrahal.maps.model.LatLngDestination;
+import com.mapsrahal.maps.model.RepeatOnce;
 import com.mapsrahal.maps.model.RequestMatch;
 import java.util.List;
 import retrofit2.Call;
@@ -17,6 +18,8 @@ public interface RequestApi {
 
     @POST("removeDestination.php")
     Call<LatLngDestination> removeDestination(@Body LatLngDestination latLngDestination);
+
+
     
     /*
     @GET("posts")

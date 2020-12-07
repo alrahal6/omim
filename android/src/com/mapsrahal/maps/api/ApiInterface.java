@@ -4,7 +4,11 @@ import com.mapsrahal.maps.auth.IsBlocked;
 import com.mapsrahal.maps.auth.MessageResponse;
 import com.mapsrahal.maps.model.AmIBlocked;
 import com.mapsrahal.maps.model.GetMyHistory;
+import com.mapsrahal.maps.model.RepeatOnce;
 import com.mapsrahal.maps.model.User;
+
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -31,4 +35,6 @@ public interface ApiInterface {
 
     //@POST("verifyUser.php")
     //Call<IsBlocked> blockedUser(@Body IsBlocked isBlocked);
+    @POST("repeatOnce.php")
+    Call<List<RepeatOnce>> repeatOnce(@Body RepeatOnce repeatOnce);
 }
