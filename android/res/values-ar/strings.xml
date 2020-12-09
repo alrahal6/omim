@@ -2446,7 +2446,8 @@
 	<string name="repeat_regular">Repeat regular</string>
 	<string name="repeat_once">Repeat Once</string>
 	<string name="suspend">Suspend</string>
-	<string-array name="select_vehicle">
+    <string name="repeat_trip">Repeat Trip</string>
+    <string-array name="select_vehicle">
 		<item>اقتصاد</item>
 	</string-array>
 	<string-array name="select_gender">

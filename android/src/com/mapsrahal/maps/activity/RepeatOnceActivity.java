@@ -6,7 +6,10 @@ import androidx.appcompat.widget.Toolbar;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,7 +33,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.http.POST;
 
-public class RepeatOnceActivity extends AppCompatActivity implements View.OnClickListener {
+public class RepeatOnceActivity extends AppCompatActivity implements
+        View.OnClickListener,AdapterView.OnItemSelectedListener {
 
     private Date startingTime;
     private TextView mDateTime;
@@ -45,9 +49,16 @@ public class RepeatOnceActivity extends AppCompatActivity implements View.OnClic
         Toolbar toolbar = findViewById(R.id.toolbar);
         mDateTime = findViewById(R.id.new_time);
         mRepeatTrip = findViewById(R.id.save_repeat_once);
+        ArrayAdapter<CharSequence> adapter;
+        adapter = ArrayAdapter.createFromResource(this,
+                R.array.select_gender, android.R.layout.simple_spinner_item);
+        Spinner spinner = findViewById(R.id.gender_spinner);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(this);
         mRepeatTrip.setOnClickListener(this);
         mDateTime.setOnClickListener(this);
-        toolbar.setTitle("Repeat Trip");
+        toolbar.setTitle(R.string.repeat_trip);
         startingTime = DateUtils.timePlusFifteen(new Date());
         mDateTime.setText(DateUtils.formatDate(startingTime));
         setSupportActionBar(toolbar);
@@ -113,5 +124,15 @@ public class RepeatOnceActivity extends AppCompatActivity implements View.OnClic
                 repeatTrip();
                 break;
         }
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        String text = adapterView.getItemAtPosition(i).toString();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
     }
 }
