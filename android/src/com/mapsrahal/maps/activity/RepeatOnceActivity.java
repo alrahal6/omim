@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,12 +34,23 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.http.POST;
 
+import static com.mapsrahal.maps.adapter.MyHistoryAdapter.FROM_ADDR;
+import static com.mapsrahal.maps.adapter.MyHistoryAdapter.TO_ADDR;
+import static com.mapsrahal.maps.adapter.MyHistoryAdapter.TRIP_DISTANCE;
+import static com.mapsrahal.maps.adapter.MyHistoryAdapter.TRIP_ID;
+
 public class RepeatOnceActivity extends AppCompatActivity implements
         View.OnClickListener,AdapterView.OnItemSelectedListener {
 
     private Date startingTime;
-    private TextView mDateTime;
+    private TextView mDateTime,mRoFrom,mRoTo,mRoDistance,mRequiredSeats;
     private Button mRepeatTrip;
+    private double tripId;
+    private String genderCargoTxt = "";
+
+    private int seatCount = 1;
+    private int genderCargoId = 0;
+    private ImageView mAddSeat, mRemoveSeat;
     private String TAG = RepeatOnceActivity.class.getSimpleName();
 
     @Override
@@ -49,6 +61,22 @@ public class RepeatOnceActivity extends AppCompatActivity implements
         Toolbar toolbar = findViewById(R.id.toolbar);
         mDateTime = findViewById(R.id.new_time);
         mRepeatTrip = findViewById(R.id.save_repeat_once);
+        mRoFrom = findViewById(R.id.ro_from);
+        mRoTo = findViewById(R.id.ro_to);
+        mRoDistance = findViewById(R.id.ro_distance);
+        tripId = getIntent().getDoubleExtra(TRIP_ID,0);
+        String fromAddress = getIntent().getStringExtra(FROM_ADDR);
+        String toAddress = getIntent().getStringExtra(TO_ADDR);
+        double distance = getIntent().getDoubleExtra(TRIP_DISTANCE,0);
+        mRoFrom.setText(fromAddress);
+        mRoTo.setText(toAddress);
+        mRequiredSeats = findViewById(R.id.required_ro_seats);
+        mRoDistance.setText(distance+" KM");
+        mAddSeat = findViewById(R.id.add_ro_seat);
+        mAddSeat.setOnClickListener(this);
+        mRemoveSeat = findViewById(R.id.remove_ro_seat);
+        mRemoveSeat.setOnClickListener(this);
+        //bundle.get(TRIP_ID);
         ArrayAdapter<CharSequence> adapter;
         adapter = ArrayAdapter.createFromResource(this,
                 R.array.select_gender, android.R.layout.simple_spinner_item);
@@ -90,8 +118,8 @@ public class RepeatOnceActivity extends AppCompatActivity implements
         //String myDt = ""+startingTime;
         //Log.d(TAG,"date : "+startingTime);
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        RepeatOnce repeatOnce = new RepeatOnce(11,startingTime,
-                1,1,"any",2);
+        RepeatOnce repeatOnce = new RepeatOnce(tripId,startingTime,
+                1,genderCargoId,genderCargoTxt,seatCount);
         //Log.d(TAG,""+ repeatOnce);
         Call<List<RepeatOnce>> call = apiInterface.repeatOnce(repeatOnce);
 
@@ -123,12 +151,34 @@ public class RepeatOnceActivity extends AppCompatActivity implements
             case R.id.save_repeat_once:
                 repeatTrip();
                 break;
+            case R.id.add_ro_seat:
+                if (seatCount < 4) {
+                    seatCount++;
+                    setSeat();
+                    //getCalculatedPrice();
+                } else {
+                    Toast.makeText(this, getString(R.string.max_4_seats), Toast.LENGTH_LONG).show();
+                }
+                break;
+            case R.id.remove_ro_seat:
+                if (seatCount > 1) {
+                    seatCount--;
+                    setSeat();
+                    //getCalculatedPrice();
+                }
+                break;
         }
+    }
+
+    private void setSeat() {
+        mRequiredSeats.setText("" + seatCount);
     }
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         String text = adapterView.getItemAtPosition(i).toString();
+        genderCargoTxt = text;
+        genderCargoId = i;
     }
 
     @Override

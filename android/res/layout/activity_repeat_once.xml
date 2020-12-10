@@ -29,7 +29,7 @@
 
         <TextView
             android:layout_marginLeft="@dimen/space20"
-            android:id="@+id/hist_from"
+            android:id="@+id/ro_from"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -39,10 +39,10 @@
             android:textStyle="bold" />
         <TextView
             android:layout_marginLeft="@dimen/space20"
-            android:id="@+id/hist_to"
+            android:id="@+id/ro_to"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/hist_from"
+            android:layout_below="@+id/ro_from"
             android:text="To : "
             android:textColor="@android:color/black"
             android:textSize="20sp"
@@ -50,7 +50,7 @@
 
         <LinearLayout
             android:layout_marginLeft="@dimen/space20"
-            android:layout_below="@+id/hist_to"
+            android:layout_below="@+id/ro_to"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -65,7 +65,7 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/hist_distance"
+                    android:id="@+id/ro_distance"
                     android:layout_width="wrap_content"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
@@ -106,14 +106,14 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:id="@+id/remove_seat"
+                    android:id="@+id/remove_ro_seat"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
                     android:background="@drawable/bg_white_left_border"
                     app:srcCompat="@drawable/ic_minus_black" />
                 <TextView
-                    android:id="@+id/required_seats"
+                    android:id="@+id/required_ro_seats"
                     android:layout_width="0dp"
                     android:layout_weight="4"
                     android:layout_height="wrap_content"
@@ -122,7 +122,7 @@
                     style="@style/TextView14spGrayPad"
                     android:gravity="center" />
                 <ImageView
-                    android:id="@+id/add_seat"
+                    android:id="@+id/add_ro_seat"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="5dp"

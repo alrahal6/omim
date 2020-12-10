@@ -31,6 +31,10 @@ public class MyHistoryAdapter extends RecyclerView.Adapter<MyHistoryAdapter.Matc
     private ArrayList<MyTripHistory> mMatchingList;
     private OnItemClickListener mListener;
     private SparseBooleanArray itemStateArray= new SparseBooleanArray();
+    public static final String TRIP_ID = "hist_trip_id";
+    public static final String FROM_ADDR = "from_address";
+    public static final String TO_ADDR = "to_address";
+    public static final String TRIP_DISTANCE = "trip_distance";
 
     public interface OnItemClickListener {
         void onItemClick(int position);
@@ -90,6 +94,12 @@ public class MyHistoryAdapter extends RecyclerView.Adapter<MyHistoryAdapter.Matc
                     return true;*/
                 case R.id.repeat_once:
                     intent = new Intent(context, RepeatOnceActivity.class);
+                    int position = getAdapterPosition();
+                    MyTripHistory currentItem = mMatchingList.get(position);
+                    intent.putExtra(TRIP_ID,currentItem.getTripId());
+                    intent.putExtra(FROM_ADDR,currentItem.getfAddress());
+                    intent.putExtra(TO_ADDR,currentItem.gettAddress());
+                    intent.putExtra(TRIP_DISTANCE,currentItem.getDistance());
                     //startActivity(intent);
                     context.startActivity(intent);
                     return true;

@@ -4,14 +4,14 @@ import java.util.Date;
 
 public class RepeatOnce {
 
-    private int tripId;
+    private double tripId;
     private Date newTime;
     private double newPrice;
     private int dropDownId;
     private String dropDownVal;
     private int newSeats;
 
-    public RepeatOnce(int tripId, Date newTime, double newPrice, int dropDownId, String dropDownVal, int newSeats) {
+    public RepeatOnce(double tripId, Date newTime, double newPrice, int dropDownId, String dropDownVal, int newSeats) {
         this.tripId = tripId;
         this.newTime = newTime;
         this.newPrice = newPrice;
@@ -20,11 +20,11 @@ public class RepeatOnce {
         this.newSeats = newSeats;
     }
 
-    public int getTripId() {
+    public double getTripId() {
         return tripId;
     }
 
-    public void setTripId(int tripId) {
+    public void setTripId(double tripId) {
         this.tripId = tripId;
     }
 
