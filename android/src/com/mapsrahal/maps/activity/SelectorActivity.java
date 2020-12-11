@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -19,6 +20,7 @@ import com.mapsrahal.maps.api.ApiInterface;
 import com.mapsrahal.maps.auth.IsBlocked;
 import com.mapsrahal.maps.model.AmIBlocked;
 import com.mapsrahal.maps.model.GetMyHistory;
+import com.mapsrahal.maps.model.IsRequiredNotify;
 import com.mapsrahal.util.UiUtils;
 
 import java.util.concurrent.TimeUnit;
@@ -41,6 +43,7 @@ public class SelectorActivity extends AppCompatActivity implements View.OnClickL
     public static final int CAPTAIN_ANY = 6;
     private ProgressBar mProgressbar;
     private ApiInterface apiService;
+    private Switch mNotify;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +57,18 @@ public class SelectorActivity extends AppCompatActivity implements View.OnClickL
           2. confirmed trip
           3. isCaptain online
          */
+        mNotify = findViewById(R.id.notify_switch);
+
+
+
+        mNotify.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if(isChecked) {
+                addToNotify(true);
+            } else {
+                addToNotify(false);
+            }
+        });
+
         mProgressbar = findViewById(R.id.select_progress);
         mPassengerCab = findViewById(R.id.passenger_cab_only);
         mPassengerCab.setOnClickListener(this);
@@ -106,6 +121,27 @@ public class SelectorActivity extends AppCompatActivity implements View.OnClickL
                 break;
 
         }
+    }
+
+    private void addToNotify(boolean isRequired) {
+        IsRequiredNotify isRequiredNotify = new IsRequiredNotify(
+                MySharedPreference.getInstance(this).getUserId(),
+                isRequired
+        );
+
+        Call<IsRequiredNotify> call = apiService.isRequired(isRequiredNotify);
+
+        call.enqueue(new Callback<IsRequiredNotify>() {
+            @Override
+            public void onResponse(Call<IsRequiredNotify> call, Response<IsRequiredNotify> response) {
+                // todo  add to shared preference
+            }
+
+            @Override
+            public void onFailure(Call<IsRequiredNotify> call, Throwable t) {
+                // todo remove from shared preference
+            }
+        });
     }
 
     private void showHistory() {
