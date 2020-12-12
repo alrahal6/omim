@@ -40,7 +40,7 @@
   <style name="MwmWidget.Editor.DayText">
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>
-    <item name="android:textAppearance">@style/MwmTextAppearance.Body1</item>
+    <item name="android:textAppearance">@style/MwmTextAppearance.BodyT</item>
   </style>
 
   <style name="MwmWidget.Editor.DayLayout">

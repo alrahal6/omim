@@ -31,6 +31,11 @@
     <item name="android:textColor">?android:textColorPrimary</item>
   </style>
 
+  <style name="MwmTextAppearance.BodyT" parent="TextAppearance.AppCompat.Large">
+    <item name="android:textSize">@dimen/text_size_body_1</item>
+    <item name="android:textColor">@color/black</item>
+  </style>
+
   <style name="MwmTextAppearance.Body1.Secondary">
     <item name="android:textColor">?android:textColorSecondary</item>
   </style>

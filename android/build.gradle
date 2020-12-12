@@ -56,7 +56,7 @@ dependencies {
     implementation 'com.android.support:customtabs:' + propSupportLibraryVersion
     implementation 'com.android.support:support-annotations:' + propSupportLibraryVersion
     implementation 'com.android.support:support-compat:27.1.1' + propSupportLibraryVersion
-
+    implementation 'com.github.DavidProdinger:weekdays-selector:1.1.1'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
     //implementation 'com.google.android.gms:play-services-analytics:17.0.0'
     implementation 'com.google.android.gms:play-services-gcm:17.0.0'

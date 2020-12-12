@@ -6,6 +6,7 @@ import com.mapsrahal.maps.model.AmIBlocked;
 import com.mapsrahal.maps.model.GetMyHistory;
 import com.mapsrahal.maps.model.IsRequiredNotify;
 import com.mapsrahal.maps.model.RepeatOnce;
+import com.mapsrahal.maps.model.RepeatRegular;
 import com.mapsrahal.maps.model.User;
 
 import java.util.List;
@@ -38,6 +39,9 @@ public interface ApiInterface {
     //Call<IsBlocked> blockedUser(@Body IsBlocked isBlocked);
     @POST("repeatOnce.php")
     Call<List<RepeatOnce>> repeatOnce(@Body RepeatOnce repeatOnce);
+
+    @POST("repeatRegular.php")
+    Call<List<RepeatRegular>> repeatRegular(@Body RepeatRegular repeatOnce);
 
     @POST("isRequiredNotify.php")
     Call<IsRequiredNotify> isRequired(@Body IsRequiredNotify isRequiredNotify);

@@ -105,6 +105,13 @@ public class MyHistoryAdapter extends RecyclerView.Adapter<MyHistoryAdapter.Matc
                     return true;
                 case R.id.repeat_regular:
                     intent = new Intent(context, RepeatRegularActivity.class);
+                    int positionA = getAdapterPosition();
+                    MyTripHistory currentRItem = mMatchingList.get(positionA);
+                    intent.putExtra(TRIP_ID,currentRItem.getTripId());
+                    intent.putExtra(FROM_ADDR,currentRItem.getfAddress());
+                    intent.putExtra(TO_ADDR,currentRItem.gettAddress());
+                    intent.putExtra(TRIP_DISTANCE,currentRItem.getDistance());
+                    //startActivity(intent);
                     //startActivity(intent);
                     context.startActivity(intent);
                     return true;
