@@ -37,6 +37,7 @@ public class MySharedPreference {
     private static final String KEY_FROM_ADDRESS = "frmAddress";
     private static final String KEY_TO_ADDRESS = "toAddress";
     private static final String KEY_SEARCHED_TIME = "searchedTime";
+    private static final String KEY_IS_NOTIFY = "isRequired";
 
     private static final String KEY_NOTIFY = "isNotify";
     private static final String KEY_NOTIFY_TITLE = "notifyTitle";
@@ -189,6 +190,16 @@ public class MySharedPreference {
 
     public boolean isBinded() {
         return getSharedPreference().getBoolean(KEY_BINDED, false);
+    }
+
+    public void setNotify(boolean isRequired) {
+        SharedPreferences.Editor editor = getSharedPreference().edit();
+        editor.putBoolean(KEY_IS_NOTIFY, isRequired);
+        editor.apply();
+    }
+
+    public boolean getNotify() {
+        return getSharedPreference().getBoolean(KEY_IS_NOTIFY, false);
     }
 
     public String getUserMessage() {

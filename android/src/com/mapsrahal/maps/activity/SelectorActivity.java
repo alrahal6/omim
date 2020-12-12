@@ -3,6 +3,7 @@ package com.mapsrahal.maps.activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -58,9 +59,6 @@ public class SelectorActivity extends AppCompatActivity implements View.OnClickL
           3. isCaptain online
          */
         mNotify = findViewById(R.id.notify_switch);
-
-
-
         mNotify.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if(isChecked) {
                 addToNotify(true);
@@ -86,6 +84,10 @@ public class SelectorActivity extends AppCompatActivity implements View.OnClickL
         mNearByPassenger.setOnClickListener(this);
         mPassHist = findViewById(R.id.passenger_history);
         mPassHist.setOnClickListener(this);
+        boolean isReq = MySharedPreference.getInstance(this).getNotify();
+        if(isReq) {
+            mNotify.setChecked(true);
+        }
 
     }
 
@@ -130,16 +132,22 @@ public class SelectorActivity extends AppCompatActivity implements View.OnClickL
         );
 
         Call<IsRequiredNotify> call = apiService.isRequired(isRequiredNotify);
-
+        final boolean isReq = isRequired;
         call.enqueue(new Callback<IsRequiredNotify>() {
             @Override
             public void onResponse(Call<IsRequiredNotify> call, Response<IsRequiredNotify> response) {
                 // todo  add to shared preference
+                if(response.isSuccessful()) {
+                    MySharedPreference.getInstance(SelectorActivity.this).setNotify(isReq);
+                    //Log.d("Selector","is req : "+isReq);
+                }
+                //Log.d("Selector","outside : "+isReq);
             }
 
             @Override
             public void onFailure(Call<IsRequiredNotify> call, Throwable t) {
                 // todo remove from shared preference
+                //Log.d("Selector","error : "+t.getMessage());
             }
         });
     }
