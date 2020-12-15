@@ -10,15 +10,16 @@ public class RepeatRegular {
     private int dropDownId;
     private String dropDownVal;
     private int newSeats;
-    private boolean sun;
-    private boolean mon;
-    private boolean tue;
-    private boolean wed;
-    private boolean thu;
-    private boolean fri;
-    private boolean sat;
+    private int sun;
+    private int mon;
+    private int tue;
+    private int wed;
+    private int thu;
+    private int fri;
+    private int sat;
 
-    public RepeatRegular(double tripId, Date newTime, double newPrice, int dropDownId, String dropDownVal, int newSeats, boolean sun, boolean mon, boolean tue, boolean wed, boolean thu, boolean fri, boolean sat) {
+    public RepeatRegular(double tripId, Date newTime, double newPrice, int dropDownId, String dropDownVal,
+                         int newSeats, int sun, int mon, int tue, int wed, int thu, int fri, int sat) {
         this.tripId = tripId;
         this.newTime = newTime;
         this.newPrice = newPrice;
@@ -82,59 +83,59 @@ public class RepeatRegular {
         this.newSeats = newSeats;
     }
 
-    public boolean isSun() {
+    public int getSun() {
         return sun;
     }
 
-    public void setSun(boolean sun) {
+    public void setSun(int sun) {
         this.sun = sun;
     }
 
-    public boolean isMon() {
+    public int getMon() {
         return mon;
     }
 
-    public void setMon(boolean mon) {
+    public void setMon(int mon) {
         this.mon = mon;
     }
 
-    public boolean isTue() {
+    public int getTue() {
         return tue;
     }
 
-    public void setTue(boolean tue) {
+    public void setTue(int tue) {
         this.tue = tue;
     }
 
-    public boolean isWed() {
+    public int getWed() {
         return wed;
     }
 
-    public void setWed(boolean wed) {
+    public void setWed(int wed) {
         this.wed = wed;
     }
 
-    public boolean isThu() {
+    public int getThu() {
         return thu;
     }
 
-    public void setThu(boolean thu) {
+    public void setThu(int thu) {
         this.thu = thu;
     }
 
-    public boolean isFri() {
+    public int getFri() {
         return fri;
     }
 
-    public void setFri(boolean fri) {
+    public void setFri(int fri) {
         this.fri = fri;
     }
 
-    public boolean isSat() {
+    public int getSat() {
         return sat;
     }
 
-    public void setSat(boolean sat) {
+    public void setSat(int sat) {
         this.sat = sat;
     }
 }

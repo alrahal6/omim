@@ -128,7 +128,7 @@ public class RepeatRegularActivity extends AppCompatActivity implements
     private void repeatTrip() {
         //String myDt = ""+startingTime;
         //Log.d(TAG,"date : "+startingTime);
-        boolean sun = false,mon=false,tue=false,wed=false,thu=false,fri=false,sat=false;
+        int sun = 2,mon=2,tue=2,wed=2,thu=2,fri=2,sat=2;
         List<Integer> selectedDays = widget.getSelectedDays();
         int[] array = new int[selectedDays.size()];
         if(array.length == 0) {
@@ -138,25 +138,25 @@ public class RepeatRegularActivity extends AppCompatActivity implements
             array[i] = selectedDays.get(i);
             switch (array[i]) {
                 case 1:
-                    sun = true;
+                    sun = 1;
                     break;
                 case 2:
-                    mon = true;
+                    mon = 1;
                     break;
                 case 3:
-                    tue = true;
+                    tue = 1;
                     break;
                 case 4:
-                    wed = true;
+                    wed = 1;
                     break;
                 case 5:
-                    thu = true;
+                    thu = 1;
                     break;
                 case 6:
-                    fri = true;
+                    fri = 1;
                     break;
                 case 7:
-                    sat = true;
+                    sat = 1;
                     break;
             }
             //boolean sun =
