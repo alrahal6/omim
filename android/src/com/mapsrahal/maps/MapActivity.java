@@ -140,7 +140,7 @@ public class MapActivity extends BaseMwmFragmentActivity
     private TextView tvDropOff, tvPickup, tvDistance, mDateTime, mRequiredSeats, mSetPickup, mSetDrop;
     private TextView mAmount, mTripTimer, mCustomerName, mCustomerPhone, mCustomerPickup;
     private TextView mCustomerDestination, mTripDistance;
-    private TextView mDriverName, mDriverPhone;
+    private TextView mDriverName, mDriverPhone,mTripAmount;
     private TextView mListCount, mListAmount, mCallingCaptain, mPriceText;
     private double tripPrice = 0.0d;
     private double tripSeatPrice = 0.0d;
@@ -525,7 +525,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         setObservers();
         mPriceLayout = findViewById(R.id.ll_form_price);
         mPriceText = findViewById(R.id.tv_price);
-        mCustomerInfo = findViewById(R.id.customerInfo);
+        //mCustomerInfo = findViewById(R.id.customerInfo);
         mOpenGMap = findViewById(R.id.openGMap);
         //mAcceptBusyInfo = findViewById(R.id.acceptBusyInfo);
         mTripTimer = findViewById(R.id.tripTimer);
@@ -536,6 +536,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         mCustomerPickup = findViewById(R.id.customerPickup);
         mCustomerPhone = findViewById(R.id.customerPhone);
         mTripDistance = findViewById(R.id.tripDistance);
+        mTripAmount = findViewById(R.id.tripAmount);
         mCustomerDestination = findViewById(R.id.customerDestination);
         mProgressbar = findViewById(R.id.myProgress);
         mProgressbar.setVisibility(View.GONE);
@@ -1329,9 +1330,9 @@ public class MapActivity extends BaseMwmFragmentActivity
             isOnWaytoCustomer = false;
             isOnTrip = true;
             price = 1;
-            mCustomerInfo.setVisibility(View.VISIBLE);
+            //mCustomerInfo.setVisibility(View.VISIBLE);
             //mAcceptBusyInfo.setVisibility(View.GONE);
-            mSwipeLayout.setVisibility(View.VISIBLE);
+            //mSwipeLayout.setVisibility(View.VISIBLE);
         }
         if (isSelectorFree) {
             switch (mSelector) {
@@ -2763,7 +2764,12 @@ public class MapActivity extends BaseMwmFragmentActivity
             //mAcceptBusyInfo.setVisibility(View.GONE);
             mSwipeLayout.setVisibility(View.VISIBLE);
             mSwipeButton.setText(getString(R.string.reached_customer));
-            mOpenGMap.setVisibility(View.VISIBLE);
+            mCustomerName.setText(g.getCustomerName());
+            mCustomerPhone.setText(g.getPhone());
+            mCustomerDestination.setText("To"+g.getDestAddress());
+            mTripDistance.setText(g.getDistance()+" KM");
+            mTripAmount.setText(g.getPrice()+" SDG");
+            //mOpenGMap.setVisibility(View.VISIBLE);
             //sendCaptainNotification(ACCEPT_REQUEST);
             //mCustomerName.setText("");
             //mCustomerPhone.setText("");

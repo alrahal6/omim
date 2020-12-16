@@ -335,7 +335,7 @@ public class ServerConnection extends Service {
         sendAccepted();
     }
 
-    private void startMe() {
+    private void startMe(String address,double price,double distance) {
         //try {
             Bundle data = null;
             String name = "",callType = "Request";
@@ -376,8 +376,8 @@ public class ServerConnection extends Service {
                     Uri ringUri = Uri.parse("android.resource://com.mapsrahal.maps/raw/calling");
                     notificationBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
                             // todo
-                            .setContentTitle("To : Khartoum Airport")
-                            .setContentText("10 KM - 400 SDG")
+                            .setContentTitle("To : "+address)
+                            .setContentText(distance+" KM - "+price+ "SDG")
                             .setSmallIcon(R.drawable.ic_call_green_24dp)
                             .setPriority(NotificationCompat.PRIORITY_MAX)
                             .setCategory(NotificationCompat.CATEGORY_CALL)
@@ -591,7 +591,7 @@ public class ServerConnection extends Service {
 
                 notificationManager.notify(0, notificationBuilder.build());*/
                 notifyTimer(g.getMinDis());
-                startMe();
+                startMe(g.getDestAddress(),g.getPrice(),g.getDistance());
                 //notifyTimer(7);
                 //playRingtone();
                 //Intent intent1 = new Intent(this, MapActivity.class);
