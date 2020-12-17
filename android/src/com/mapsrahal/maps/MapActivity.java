@@ -89,6 +89,7 @@ import com.mapsrahal.maps.search.SearchFilterController;
 import com.mapsrahal.maps.sound.TtsPlayer;
 import com.mapsrahal.maps.taxi.TaxiInfo;
 import com.mapsrahal.maps.taxi.TaxiManager;
+import com.mapsrahal.maps.websocket.CaptainAccepted;
 import com.mapsrahal.maps.websocket.ServerConnection;
 import com.mapsrahal.maps.websocket.WebSocketViewModel;
 import com.mapsrahal.maps.widget.menu.MyPositionButton;
@@ -140,7 +141,7 @@ public class MapActivity extends BaseMwmFragmentActivity
     private TextView tvDropOff, tvPickup, tvDistance, mDateTime, mRequiredSeats, mSetPickup, mSetDrop;
     private TextView mAmount, mTripTimer, mCustomerName, mCustomerPhone, mCustomerPickup;
     private TextView mCustomerDestination, mTripDistance;
-    private TextView mDriverName, mDriverPhone,mTripAmount;
+    private TextView mDriverName, mDriverPhone,mTripAmount,mCaptName,mCaptVehicle;
     private TextView mListCount, mListAmount, mCallingCaptain, mPriceText;
     private double tripPrice = 0.0d;
     private double tripSeatPrice = 0.0d;
@@ -451,6 +452,8 @@ public class MapActivity extends BaseMwmFragmentActivity
         mMyprogress = findViewById(R.id.myProgress);
         //mDriverName = (TextView) view.findViewById(R.id.driverName);
         mDriverPhone = findViewById(R.id.driverPhone);
+        mCaptName = findViewById(R.id.captainName);
+        mCaptVehicle = findViewById(R.id.captainVehicle);
         mDriverPhone.setOnClickListener(this);
         //mDriverPhone.setVisibility(View.GONE);
         mCancelRequest = findViewById(R.id.cancelRequest);
@@ -2475,8 +2478,8 @@ public class MapActivity extends BaseMwmFragmentActivity
                 @Override
                 public void onFailure(Call<List<FindDriver>> call, Throwable t) {
                     isPassengerRequesting = false;
-                    mCallingCaptain.setText("Sorry! No Captain found, please try later");
-                    Toast.makeText(MapActivity.this, "Sorry! No Drivers found! Try Later", Toast.LENGTH_LONG).show();
+                    //mCallingCaptain.setText("Sorry! No Captain found, please try later");
+                    //Toast.makeText(MapActivity.this, "Sorry! No Drivers found! Try Later", Toast.LENGTH_LONG).show();
                 }
 
             });
@@ -2612,7 +2615,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         public void onReceive(Context context, Intent intent) {
             //Log.i(TAG,"Success! Message received from server");
             String myMsg = intent.getStringExtra("MyDriverMessage");
-            UserTripInfo g = gSon.fromJson(myMsg, UserTripInfo.class);
+            CaptainAccepted g = gSon.fromJson(myMsg, CaptainAccepted.class);
             //userMessage = gSon.fromJson(myMsg, UserMessage.class);
             int flag = g.getMyFlag();
 
@@ -2639,6 +2642,9 @@ public class MapActivity extends BaseMwmFragmentActivity
                     mDriverPhone.setVisibility(View.VISIBLE);
                     mDriverPhone.setText(getString(R.string.captain_phone) + g.getPhone());
                     mCallingCaptain.setText(getString(R.string.captain_on_way));
+                    mCaptName.setText(g.getCaptainName());
+                    mCaptVehicle.setText(g.getCaptainVehicle());
+                    //mCaptVehicle.setText(g.)
                     MyNotificationManager.getInstance(MapActivity.this).displayNotification(getString(R.string.captain_found), getString(R.string.captain_on_way));
                     //mRequest.setText("Driver Found, Coming to you");
                     phoneNumber = "0" + g.getPhone();

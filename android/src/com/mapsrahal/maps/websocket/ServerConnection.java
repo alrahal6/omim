@@ -321,19 +321,21 @@ public class ServerConnection extends Service {
         sendMe("" + gSon.toJson(userLocation));
     }
 
-    private void sendAccepted() {
-        UserLocation userLocation = new UserLocation(
+    public void sendAccepted(int flag, int driverId, double distance,
+                             double duration, double price) {
+        CaptainAccepted captainAccepted = new CaptainAccepted(
                 userId,
                 0.0,
                 0.0,
-                3, 1, phone);
-        sendMe("" + gSon.toJson(userLocation));
+                flag, driverId, phone,MySharedPreference.getInstance(this).getUserName(),
+                "vehicle");
+        sendMe("" + gSon.toJson(captainAccepted));
     }
 
-    public void captainAccepted() {
+    /*public void captainAccepted() {
         isCaptainAccepted = true;
         sendAccepted();
-    }
+    }*/
 
     private void startMe(String address,double price,double distance) {
         //try {
@@ -693,7 +695,7 @@ public class ServerConnection extends Service {
     }
 
     public void sendMessage(int flag, int driverId, double distance, double duration, double price) {
-        Log.d(TAG,"message sending... ok");
+        //Log.d(TAG,"message sending... ok");
         if(!isResponded) {
             isResponded = true;
             String mPrice = (price == 0) ? phone : String.valueOf(price);

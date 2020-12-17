@@ -262,7 +262,7 @@ public class CaptainActivity extends AppCompatActivity
 
     private void send(int flag, double distance, double duration, double price) {
         try {
-            mService.sendMessage(flag, requestingPassenger, distance, duration, price);
+            mService.sendAccepted(flag, requestingPassenger, distance, duration, price);
             updateResponse(flag);
         } catch (Exception e) {
             Log.d(TAG, "Error sending message " + e.getMessage());
