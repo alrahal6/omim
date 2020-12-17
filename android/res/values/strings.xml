@@ -3071,4 +3071,5 @@
     <string name="repeat_once">Repeat Once</string>
     <string name="suspend">Suspend</string>
     <string name="repeat_trip">Repeat Trip</string>
+    <string name="payment">Payment</string>
 </resources>

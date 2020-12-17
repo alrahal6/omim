@@ -2432,7 +2432,6 @@
 	<string name = "sure_finish_current">هل تريد انهاء الرحله الحالية ?</string>
 	<string name="confirm">تأكيد</string>
 	<string name="passengers_nearby">ابحث عن ركاب بالقرب منك</string>
-	<string name="captains_nearby">Captains Nearby</string>
 	<string name="google_map">خريطة قوقل </string>
     <string name="my_account">حسابي</string>
     <string name="account_bal">الرصيد </string>
@@ -2441,12 +2440,14 @@
 	<string name="captains">كاربولر</string>
 	<string name="passengers">ركاب</string>
     <string name="set_destination">ادخل وجهتك</string>
+	<string name="captains_nearby">Captains Nearby</string>
     <string name="reschedule">Reschedule</string>
 	<string name="return_trip">Return Trip</string>
 	<string name="repeat_regular">Repeat regular</string>
 	<string name="repeat_once">Repeat Once</string>
 	<string name="suspend">Suspend</string>
     <string name="repeat_trip">Repeat Trip</string>
+    <string name="payment">Payment</string>
     <string-array name="select_vehicle">
 		<item>اقتصاد</item>
 	</string-array>
