@@ -2772,7 +2772,7 @@ public class MapActivity extends BaseMwmFragmentActivity
             mSwipeButton.setText(getString(R.string.reached_customer));
             mCustomerName.setText(g.getCustomerName());
             mCustomerPhone.setText(g.getPhone());
-            mCustomerDestination.setText("To"+g.getDestAddress());
+            mCustomerDestination.setText("To : "+g.getDestAddress());
             mTripDistance.setText(g.getDistance()+" KM");
             mTripAmount.setText(g.getPrice()+" SDG");
             //mOpenGMap.setVisibility(View.VISIBLE);
