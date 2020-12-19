@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RatingBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mapsrahal.maps.R;
@@ -16,12 +17,17 @@ public class PaymentActivity extends AppCompatActivity implements View.OnClickLi
 
     private RatingBar ratingbar;
     private Button mSubmit;
+    public static String PAYMENT_EXTRA = "payment_extra";
+    private TextView mPayAmount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         UiUtils.setupColorStatusBar(this,R.color.bg_statusbar);
         setContentView(R.layout.activity_payment);
+        String pay = getIntent().getStringExtra(PAYMENT_EXTRA);
+        mPayAmount = findViewById(R.id.pay_amount);
+        mPayAmount.setText("Amount : "+pay);
         ratingbar = findViewById(R.id.rating_bar);
         mSubmit = findViewById(R.id.rating_button);
         mSubmit.setOnClickListener(this);

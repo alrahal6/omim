@@ -22,6 +22,7 @@ import com.mapsrahal.maps.MySharedPreference;
 import com.mapsrahal.maps.R;
 import com.mapsrahal.maps.SplashActivity;
 import com.mapsrahal.maps.activity.ResultActivity;
+import com.mapsrahal.maps.activity.SelectorActivity;
 import com.mapsrahal.util.Constants;
 
 import java.util.Map;
@@ -136,6 +137,7 @@ public class FCMListenerService extends FirebaseMessagingService {
         //sendMessageReceivedBroadcast(usrNotification);
         boolean isForeground = MwmApplication.backgroundTracker(MwmApplication.get().getApplicationContext()).isForeground();
         if(isForeground) {
+            MySharedPreference.getInstance(MwmApplication.get().getApplicationContext()).setSelectorId(0);
             startActivity(intent);
             //return;
         }

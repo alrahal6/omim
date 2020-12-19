@@ -116,6 +116,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.mapsrahal.maps.activity.PaymentActivity.PAYMENT_EXTRA;
 import static com.mapsrahal.maps.activity.SelectorActivity.CAPTAIN_ANY;
 import static com.mapsrahal.maps.activity.SelectorActivity.CAPTAIN_SHARE_ONLY;
 import static com.mapsrahal.maps.activity.SelectorActivity.CAPTAIN_TAXI_ONLY;
@@ -1869,13 +1870,15 @@ public class MapActivity extends BaseMwmFragmentActivity
                 isCloseNotify = true;
                 pb.setVisibility(View.GONE);
                 wtv.setVisibility(View.GONE);
-                phoneNumber = "0" + userMessage.getPhone();
+                mTextView.setText(getString(R.string.trip_completed));
+                /*phoneNumber = "0" + userMessage.getPhone();
                 stName.setText("Captain : " + userMessage.getName());
                 stPhone.setText("Phone : " + phoneNumber);
-                mTextView.setText(getString(R.string.trip_completed));
+
                 stName.setVisibility(View.VISIBLE);
-                stPhone.setVisibility(View.VISIBLE);
+                stPhone.setVisibility(View.VISIBLE);*/
                 accept.setVisibility(View.GONE);
+                goToPayment(userMessage.getPrice());
                 break;
             case Constants.Notification.DRIVER_REACHED:
             case REACHED_CUSTOMER:
@@ -2478,7 +2481,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 @Override
                 public void onFailure(Call<List<FindDriver>> call, Throwable t) {
                     isPassengerRequesting = false;
-                    //mCallingCaptain.setText("Sorry! No Captain found, please try later");
+                    mCallingCaptain.setText("Sorry! No Captain found, please try later");
                     //Toast.makeText(MapActivity.this, "Sorry! No Drivers found! Try Later", Toast.LENGTH_LONG).show();
                 }
 
@@ -2531,7 +2534,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 requestCounter = 9;
                 removeRequest();
                 mCallingCaptain.setText("Sorry! No Captain found, please try later");
-                Toast.makeText(MapActivity.this, "Sorry! No Captain found", Toast.LENGTH_LONG).show();
+                //Toast.makeText(MapActivity.this, "Sorry! No Captain found", Toast.LENGTH_LONG).show();
             }
             //}
         }
@@ -2843,6 +2846,12 @@ public class MapActivity extends BaseMwmFragmentActivity
         }
     }
 
+    private void goToPayment(String pay) {
+        Intent payIntent = new Intent(this, PaymentActivity.class);
+        payIntent.putExtra(PAYMENT_EXTRA,pay);
+        startActivity(payIntent);
+    }
+
     private void endTrip() {
         tripRecordHandler.removeCallbacks(recordTripRunnable);
         timerHandler.removeCallbacks(timerRunnable);
@@ -2850,8 +2859,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         MySharedPreference.getInstance(MapActivity.this).finishTrip();
         sendCaptainNotification(TRIP_COMPLETED);
         // todo open payment activity and send notification
-        Intent payIntent = new Intent(this, PaymentActivity.class);
-        startActivity(payIntent);
+        goToPayment("0");
         //NumberFormat format = NumberFormat.getCurrencyInstance();
         /*if (price == 0) {
             long startedTime = MySharedPreference.getInstance(MapActivity.this).getStartTime();
