@@ -130,6 +130,8 @@ public class RepeatOnceActivity extends AppCompatActivity implements
                 //Log.d(TAG,"Repeat Success"+response.message());
                 //onBackPressed();
                 //Log.d(TAG,"Repeat Success");
+                Toast.makeText(RepeatOnceActivity.this, "Saved Successfully", Toast.LENGTH_LONG).show();
+
                 finish();
             }
 

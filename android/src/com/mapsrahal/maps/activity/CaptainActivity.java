@@ -185,6 +185,7 @@ public class CaptainActivity extends AppCompatActivity
             }
             // todo send accepted and finish
             send(3, 10, 1.1, 1.0);
+            recordTaxiTrip();
             Intent mapIntent = new Intent(this, MapActivity.class);
             MySharedPreference.getInstance(CaptainActivity.this).setCaptRespId(ACCEPT_REQUEST);
             mapIntent.putExtra(PASSENGER_CAPTAIN_SELECTOR, ACCEPT_REQUEST);
@@ -194,6 +195,24 @@ public class CaptainActivity extends AppCompatActivity
                 isBounded = false;
             }
             finish();
+        }
+    }
+
+    private void recordTaxiTrip() {
+        try {
+            String msg = MySharedPreference.getInstance(this).getUserMessage();
+            if (msg != null) {
+                g = gSon.fromJson(msg, UserTripInfo.class);
+                int flag = g.getMyFlag();
+                requestingPassenger = g.getUserId();
+                //recordTaxiTrip(g);
+                MySharedPreference.getInstance(this).recordTaxiTrip(g.getTripId(),g.getDistance(),
+                        g.getPickupAddress(),g.getDestAddress(),
+                        Double.toString(g.getPrice()),g.getPhone(),g.getCustomerName(),
+                        g.getLat(),g.getLng(),g.getDestLat(),g.getDestLng(),g.getUserId());
+            }
+        } catch (Exception e) {
+
         }
     }
 
@@ -309,11 +328,11 @@ public class CaptainActivity extends AppCompatActivity
                         if (ringtone != null) {
                             ringtone.play();
                         }
-                        mPickupAddress.setText(g.getPickupAddress());
-                        mDropoffAddress.setText(g.getDestAddress());
-                        mTripAmount.setText(g.getPrice()+"");
-                        mDistance.setText(g.getDistance()+"");
-                        mToDistance.setText(g.getTripId()+"");
+                        mPickupAddress.setText(getString(R.string.from)+g.getPickupAddress());
+                        mDropoffAddress.setText(getString(R.string.to)+g.getDestAddress());
+                        mTripAmount.setText(g.getPrice()+getString(R.string.sdg));
+                        mDistance.setText(g.getDistance()+getString(R.string.kilometer));
+                        mToDistance.setText(g.getCustomerName());
                 /*mCustomerInfo.setVisibility(View.VISIBLE);
                 mAcceptBusyInfo.setVisibility(View.VISIBLE);
                 mSwipeButton.setText("Reached Customer");

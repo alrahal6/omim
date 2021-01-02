@@ -50,6 +50,7 @@ import com.github.florent37.singledateandtimepicker.dialog.SingleDateAndTimePick
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
+import com.mapsrahal.maps.activity.CaptainActivity;
 import com.mapsrahal.maps.activity.PaymentActivity;
 import com.mapsrahal.maps.activity.SelectorActivity;
 import com.mapsrahal.maps.activity.ui.main.CargoStatePagerAdapter;
@@ -955,6 +956,31 @@ public class MapActivity extends BaseMwmFragmentActivity
                     }
                 }
                 break;
+            case R.id.navigateMap:
+                try {
+                    MapObject m = LocationHelper.INSTANCE.getMyPosition();
+                    double lat = MySharedPreference.getInstance(this).getTTFrmLat();
+                    double lng = MySharedPreference.getInstance(this).getTTFrmLng();
+                    openInGoogleMap(m.getLat(), m.getLon(), lat, lng);
+                } catch (Exception e) {
+                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+                break;
+
+            case R.id.openGMapp:
+                try {
+                    //MapObject m = LocationHelper.INSTANCE.getMyPosition();
+                    double lat = MySharedPreference.getInstance(this).getTTFrmLat();
+                    double lng = MySharedPreference.getInstance(this).getTTFrmLng();
+                    double tLat = MySharedPreference.getInstance(this).getTTToLat();
+                    double tLng = MySharedPreference.getInstance(this).getTTToLng();
+                    if(tLat != 0) {
+                        openInGoogleMap(lat, lng, tLat, tLng);
+                    }
+                } catch (Exception e) {
+                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+                break;
         }
     }
 
@@ -1352,10 +1378,41 @@ public class MapActivity extends BaseMwmFragmentActivity
     protected void onResume() {
         super.onResume();
         int captRes = MySharedPreference.getInstance(this).getCaptRespId();
-        if(captRes == ACCEPT_REQUEST) {
-            //Toast.makeText(this,"Captain Accepted Test",Toast.LENGTH_LONG).show();
-            clearRequest();
-            acceptRequest();
+        switch (captRes) {
+            case ACCEPT_REQUEST:
+                //Toast.makeText(this,"Captain Accepted Test",Toast.LENGTH_LONG).show();
+                //clearRequest(ACCEPT_REQUEST);
+                acceptRequest();
+                showCaptCont(
+                        MySharedPreference.getInstance(this).getTTName(),
+                        MySharedPreference.getInstance(this).getTTPhone(),
+                        MySharedPreference.getInstance(this).getTTTo(),
+                        MySharedPreference.getInstance(this).getTTDistance(),
+                        MySharedPreference.getInstance(this).getTTPrice()
+                );
+                break;
+            case REACHED_CUSTOMER:
+                clearRequest(REACHED_CUSTOMER);
+                showCaptCont(
+                        MySharedPreference.getInstance(this).getTTName(),
+                        MySharedPreference.getInstance(this).getTTPhone(),
+                        MySharedPreference.getInstance(this).getTTTo(),
+                        MySharedPreference.getInstance(this).getTTDistance(),
+                        MySharedPreference.getInstance(this).getTTPrice()
+                );
+                mSwipeButton.setText(getString(R.string.start_trip));
+                break;
+            case TRIP_STARTED:
+                clearRequest(TRIP_STARTED);
+                showCaptCont(
+                        MySharedPreference.getInstance(this).getTTName(),
+                        MySharedPreference.getInstance(this).getTTPhone(),
+                        MySharedPreference.getInstance(this).getTTTo(),
+                        MySharedPreference.getInstance(this).getTTDistance(),
+                        MySharedPreference.getInstance(this).getTTPrice()
+                );
+                mSwipeButton.setText(getString(R.string.start_trip));
+                break;
         }
         /*if(captRes == SEND_BUSY) {
             Toast.makeText(this,"Captain Busy Test",Toast.LENGTH_LONG).show();
@@ -1368,8 +1425,8 @@ public class MapActivity extends BaseMwmFragmentActivity
         }
     }
 
-    private void clearRequest() {
-        MySharedPreference.getInstance(this).setCaptRespId(0);
+    private void clearRequest(int respId) {
+        MySharedPreference.getInstance(this).setCaptRespId(respId);
     }
 
     private void displayConfirmedList() {
@@ -1882,6 +1939,11 @@ public class MapActivity extends BaseMwmFragmentActivity
                 break;
             case Constants.Notification.DRIVER_REACHED:
             case REACHED_CUSTOMER:
+                phoneNumber = "0" + userMessage.getPhone();
+                stName.setText("Captain : " + userMessage.getName());
+                stPhone.setText("Phone : " + phoneNumber);
+                stName.setVisibility(View.VISIBLE);
+                stPhone.setVisibility(View.VISIBLE);
                 mTextView.setText(getString(R.string.captain_reached));
                 break;
             case Constants.Notification.TRIP_STARTED:
@@ -2449,6 +2511,8 @@ public class MapActivity extends BaseMwmFragmentActivity
                 userTripInfo.setDestLat(toLocation.getLat());
                 userTripInfo.setDestLng(toLocation.getLon());
             }
+            mPassCont.setVisibility(View.VISIBLE);
+
             /*FindDriver findDriver = new FindDriver(
                     MySharedPreference.getInstance(this).getUserId(), lat, lng,
                     0
@@ -2482,7 +2546,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 public void onFailure(Call<List<FindDriver>> call, Throwable t) {
                     isPassengerRequesting = false;
                     mCallingCaptain.setText("Sorry! No Captain found, please try later");
-                    //Toast.makeText(MapActivity.this, "Sorry! No Drivers found! Try Later", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MapActivity.this, "Sorry! No Drivers found! Try Later", Toast.LENGTH_LONG).show();
                 }
 
             });
@@ -2491,6 +2555,8 @@ public class MapActivity extends BaseMwmFragmentActivity
         }
     }
 
+
+    private boolean isHaveCaptFlag = false;
     private final Runnable requestRunnable = new Runnable() {
         @Override
         public void run() {
@@ -2510,6 +2576,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 //double dLat = driverList.getLat();
                 //double dLng = driverList.getLng();
                 driverId = dId;
+                isHaveCaptFlag = true;
                 //Log.d(TAG,"driver id "+ driverId);
                 userTripInfo.setDriverId(driverId);
                 userTripInfo.setTripId(driverList.getTripId());
@@ -2533,9 +2600,14 @@ public class MapActivity extends BaseMwmFragmentActivity
                 isPassengerRequesting = false;
                 requestCounter = 9;
                 removeRequest();
-                mCallingCaptain.setText("Sorry! No Captain found, please try later");
-                //Toast.makeText(MapActivity.this, "Sorry! No Captain found", Toast.LENGTH_LONG).show();
+                mPassCont.setVisibility(View.VISIBLE);
+                if (!isHaveCaptFlag) {
+                    mCallingCaptain.setText("Sorry! No Captain found, please try later");
+                    Toast.makeText(MapActivity.this, "Sorry! No Captain found", Toast.LENGTH_LONG).show();
+
+                }
             }
+
             //}
         }
     };
@@ -2661,10 +2733,12 @@ public class MapActivity extends BaseMwmFragmentActivity
                 case 2:
                     isDriverBusy = true;
                     isRequestInProgress = false;
+                    mPassCont.setVisibility(View.VISIBLE);
+                    //mCallingCaptain.setText("Captain Busy");
                     listCurrent++;
                     if(listCurrent >= listSize) {
                         removeRequest();
-                        Toast.makeText(MapActivity.this,getString(R.string.no_driver_found),Toast.LENGTH_LONG).show();
+                        //Toast.makeText(MapActivity.this,getString(R.string.no_driver_found),Toast.LENGTH_LONG).show();
                     } else {
                         requestHandler.postDelayed(requestRunnable, 0);
                     }
@@ -2757,6 +2831,29 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     }
 
+    private void showCaptCont(String name,String phone,String dAddress,double distance,String price) {
+        mCaptCont.setVisibility(View.VISIBLE);
+        Button navi = findViewById(R.id.navigateMap);
+        navi.setOnClickListener(this);
+        Button direction = findViewById(R.id.openGMapp);
+        direction.setOnClickListener(this);
+        mSwipeLayout.setVisibility(View.VISIBLE);
+
+        mCustomerName.setText(name);
+        phoneNumber = "0"+phone;
+        mCustomerPhone.setText(phone);
+        mCustomerDestination.setText("To : "+dAddress);
+        mTripDistance.setText(distance+" KM");
+        mTripAmount.setText(price+" SDG");
+    }
+
+    /*private void recordTaxiTrip(UserTripInfo g) {
+        MySharedPreference.getInstance(this).recordTaxiTrip(g.getTripId(),g.getDistance(),
+                g.getPickupAddress(),g.getDestAddress(),
+                Double.toString(g.getPrice()),g.getPhone(),g.getCustomerName(),
+                g.getLat(),g.getLng(),g.getDestLat(),g.getDestLng());
+    }*/
+
     private void acceptRequest() {
         try {
             String msg = MySharedPreference.getInstance(this).getUserMessage();
@@ -2765,19 +2862,28 @@ public class MapActivity extends BaseMwmFragmentActivity
                 int flag = g.getMyFlag();
                 requestingPassenger = g.getUserId();
                 isOnWaytoCustomer = true;
+                //recordTaxiTrip(g);
             }
-            mCaptCont.setVisibility(View.VISIBLE);
+
             MySharedPreference.getInstance(this).recordTrip(Double.toString(g.getTripId()),getCurrentTimestamp()
             ,(float) g.getDistance());
             //send(ACCEPT_REQUEST, 0, 0, 0);
             //mAcceptBusyInfo.setVisibility(View.GONE);
+            showCaptCont(g.getCustomerName(),g.getPhone(),g.getDestAddress(),g.getDistance(),
+                    Double.toString(g.getPrice()));
+            mSwipeButton.setText(getString(R.string.reached_customer));
+            /*mCaptCont.setVisibility(View.VISIBLE);
+            Button navi = findViewById(R.id.navigateMap);
+            navi.setOnClickListener(this);
+            Button direction = findViewById(R.id.openGMapp);
+            direction.setOnClickListener(this);
             mSwipeLayout.setVisibility(View.VISIBLE);
             mSwipeButton.setText(getString(R.string.reached_customer));
             mCustomerName.setText(g.getCustomerName());
             mCustomerPhone.setText(g.getPhone());
             mCustomerDestination.setText("To : "+g.getDestAddress());
             mTripDistance.setText(g.getDistance()+" KM");
-            mTripAmount.setText(g.getPrice()+" SDG");
+            mTripAmount.setText(g.getPrice()+" SDG");*/
             //mOpenGMap.setVisibility(View.VISIBLE);
             //sendCaptainNotification(ACCEPT_REQUEST);
             //mCustomerName.setText("");
@@ -2806,13 +2912,15 @@ public class MapActivity extends BaseMwmFragmentActivity
     }
 
     private void swipeButtonPressed() {
-        if (isOnWaytoCustomer) {
+        if (MySharedPreference.getInstance(MapActivity.this).getCaptRespId() == ACCEPT_REQUEST) {
             reachedCustomer();
-        } else if (!isOnTrip) {
+        } else if (MySharedPreference.getInstance(MapActivity.this).getCaptRespId() == REACHED_CUSTOMER) {
             //send(TRIP_STARTED, 0, 0, 0);
             startTrip();
-        } else if (isOnTrip) {
+            mSwipeButton.setText(getString(R.string.start_trip));
+        } else if (MySharedPreference.getInstance(MapActivity.this).getCaptRespId() == TRIP_STARTED) {
             endTrip();
+            mSwipeButton.setText(getString(R.string.end_trip));
         }
     }
 
@@ -2833,12 +2941,12 @@ public class MapActivity extends BaseMwmFragmentActivity
         //LatLng pickupLatLng = new LatLng(g.getLat(), g.getLng());
         //LatLng destinationLatLng = new LatLng(g.getDestLat(), g.getDestLng());
         mSwipeButton.setText(R.string.end_trip);
-        mOpenGMap.setVisibility(View.VISIBLE);
-        if (g.getDestLat() > 0) {
+        //mOpenGMap.setVisibility(View.VISIBLE);
+        /*if (g.getDestLat() > 0) {
             //getDirectionDistance();
         } else {
             mOpenGMap.setVisibility(View.GONE);
-        }
+        }*/
         if(price == 0) {
             //tempLatLng = pickupLatLng;
             distance = 0;
@@ -2857,9 +2965,11 @@ public class MapActivity extends BaseMwmFragmentActivity
         timerHandler.removeCallbacks(timerRunnable);
         mCaptCont.setVisibility(View.GONE);
         MySharedPreference.getInstance(MapActivity.this).finishTrip();
+        MySharedPreference.getInstance(MapActivity.this).setCaptRespId(0);
         sendCaptainNotification(TRIP_COMPLETED);
+
         // todo open payment activity and send notification
-        goToPayment("0");
+        goToPayment(MySharedPreference.getInstance(this).getTTPrice());
         //NumberFormat format = NumberFormat.getCurrencyInstance();
         /*if (price == 0) {
             long startedTime = MySharedPreference.getInstance(MapActivity.this).getStartTime();
@@ -2903,15 +3013,21 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     private void sendCaptainNotification(int notificationFlag) {
         //Log.d(TAG,"to user : "+requestingPassenger);
-        UserMessage captMessage = new UserMessage(
+        MySharedPreference.getInstance(MapActivity.this).setCaptRespId(notificationFlag);
+        String msg = MySharedPreference.getInstance(this).getUserMessage();
+        UserMessage captMessage;
+        captMessage = new UserMessage(
                 MySharedPreference.getInstance(this).getUserId(),
-                requestingPassenger,
+                MySharedPreference.getInstance(this).getTTUserId(),
                 notificationFlag, 1,
-                0.0,
+                MySharedPreference.getInstance(this).getTTDistance(),
+                MySharedPreference.getInstance(this).getTTPrice(),
                 "0",
-                "0",
-                "0","0","0","0","0",0.0,0.0,0.0,0.0
+                MySharedPreference.getInstance(this).getPhoneNumber(), MySharedPreference.getInstance(this).getUserName(),
+                MySharedPreference.getInstance(this).getTTFrom(),
+                MySharedPreference.getInstance(this).getTTTo(), "0", 0.0, 0.0, 0.0, 0.0
         );
+
         UserMessageApi userMessageApi = ApiClient.getClient().create(UserMessageApi.class);
         Call<UserMessage> call = userMessageApi.sentMessage(captMessage);
 

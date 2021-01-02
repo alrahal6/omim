@@ -177,6 +177,8 @@ public class RepeatRegularActivity extends AppCompatActivity implements
                 //Log.d(TAG,"Repeat Success"+response.message());
                 //onBackPressed();
                 //Log.d(TAG,"Repeat Success");
+                Toast.makeText(RepeatRegularActivity.this, "Saved Successfully", Toast.LENGTH_LONG).show();
+
                 finish();
             }
 

@@ -39,6 +39,20 @@ public class MySharedPreference {
     private static final String KEY_SEARCHED_TIME = "searchedTime";
     private static final String KEY_IS_NOTIFY = "isRequired";
 
+    // TT Taxi Trip
+    private static final String KEY_TT_ID = "ttId";
+    private static final String KEY_TT_FROM = "ttFrom";
+    private static final String KEY_TT_TO = "ttTo";
+    private static final String KEY_TT_DISTANCE = "ttDistance";
+    private static final String KEY_TT_PRICE = "ttPrice";
+    private static final String KEY_TT_PHONE = "ttPhone";
+    private static final String KEY_TT_NAME = "ttName";
+    private static final String KEY_TT_FROM_LAT = "frmTLat";
+    private static final String KEY_TT_FROM_LNG = "frmTLng";
+    private static final String KEY_TT_TO_LAT = "toTLat";
+    private static final String KEY_TT_TO_LNG = "toTLng";
+    private static final String KEY_TT_USER_ID = "ttUsr";
+
     private static final String KEY_NOTIFY = "isNotify";
     private static final String KEY_NOTIFY_TITLE = "notifyTitle";
     private static final String KEY_NOTIFY_BODY = "notifyBody";
@@ -108,6 +122,75 @@ public class MySharedPreference {
     private SharedPreferences getSharedPreference() {
         return mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
     }
+
+    public void recordTaxiTrip(double tripId,double distance,String sourceAddress, String destAddress,
+            String price,String phone,String name,
+             double fromLat, double fromLng, double toLat, double toLng,int userId) {
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putLong(KEY_TT_ID, Double.doubleToRawLongBits(tripId));
+        editor.putLong(KEY_TT_DISTANCE, Double.doubleToRawLongBits(distance));
+        editor.putString(KEY_TT_FROM, sourceAddress);
+        editor.putString(KEY_TT_TO, destAddress);
+        editor.putString(KEY_TT_PRICE,price);
+        editor.putString(KEY_TT_PHONE,phone);
+        editor.putString(KEY_TT_NAME,name);
+        editor.putLong(KEY_TT_FROM_LAT, Double.doubleToRawLongBits(fromLat));
+        editor.putLong(KEY_TT_FROM_LNG, Double.doubleToRawLongBits(fromLng));
+        editor.putLong(KEY_TT_TO_LAT, Double.doubleToRawLongBits(toLat));
+        editor.putLong(KEY_TT_TO_LNG, Double.doubleToRawLongBits(toLng));
+        editor.putInt(KEY_TT_USER_ID,userId);
+        editor.apply();
+    }
+
+    public int getTTUserId() {
+        return getSharedPreference().getInt(KEY_TT_USER_ID, 0);
+    }
+
+    public double getTTId() {
+        return Double.longBitsToDouble(getSharedPreference().getLong(KEY_TT_ID, 0));
+    }
+
+    public double getTTDistance() {
+        return Double.longBitsToDouble(getSharedPreference().getLong(KEY_TT_DISTANCE, 0));
+    }
+
+    public String getTTFrom() {
+        return getSharedPreference().getString(KEY_TT_FROM, "na");
+    }
+
+    public String getTTTo() {
+        return getSharedPreference().getString(KEY_TT_TO, "na");
+    }
+
+    public String getTTPrice() {
+        return getSharedPreference().getString(KEY_TT_PRICE, "na");
+    }
+
+    public String getTTPhone() {
+        return getSharedPreference().getString(KEY_TT_PHONE, "na");
+    }
+
+    public String getTTName() {
+        return getSharedPreference().getString(KEY_TT_NAME, "na");
+    }
+
+    public double getTTFrmLat() {
+        return Double.longBitsToDouble(getSharedPreference().getLong(KEY_TT_FROM_LAT, 0));
+    }
+
+    public double getTTFrmLng() {
+        return Double.longBitsToDouble(getSharedPreference().getLong(KEY_TT_FROM_LNG, 0));
+    }
+
+    public double getTTToLat() {
+        return Double.longBitsToDouble(getSharedPreference().getLong(KEY_TT_TO_LAT, 0));
+    }
+
+    public double getTTToLng() {
+        return Double.longBitsToDouble(getSharedPreference().getLong(KEY_TT_TO_LNG, 0));
+    }
+
 
     public void userLogin(int id, String phone,String name, int type) {
         //SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);

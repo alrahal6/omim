@@ -2440,14 +2440,16 @@
 	<string name="captains">كاربولر</string>
 	<string name="passengers">ركاب</string>
     <string name="set_destination">ادخل وجهتك</string>
-	<string name="captains_nearby">Captains Nearby</string>
-    <string name="reschedule">Reschedule</string>
-	<string name="return_trip">Return Trip</string>
-	<string name="repeat_regular">Repeat regular</string>
-	<string name="repeat_once">Repeat Once</string>
-	<string name="suspend">Suspend</string>
-    <string name="repeat_trip">Repeat Trip</string>
-    <string name="payment">Payment</string>
+	<string name="captains_nearby">أقرب كاربولر </string>
+	<string name="reschedule">إعادة برمجة الرحلات</string>
+	<string name="return_trip">رحلة عوده</string>
+	<string name="repeat_regular"> رحلة منتظمه</string>
+    <string name="repeat_once">اعادة الرحله </string>
+    <string name="suspend"> معلق </string>
+    <string name="repeat_trip">اعادة الرحلات</string>
+    <string name="payment">دفع</string>
+    <string name="from"> من  : </string>
+    <string name="to">ألي : </string>
     <string-array name="select_vehicle">
 		<item>اقتصاد</item>
 	</string-array>
