@@ -2738,6 +2738,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                     listCurrent++;
                     if(listCurrent >= listSize) {
                         removeRequest();
+                        mCallingCaptain.setText("Captain Busy, please try later");
                         //Toast.makeText(MapActivity.this,getString(R.string.no_driver_found),Toast.LENGTH_LONG).show();
                     } else {
                         requestHandler.postDelayed(requestRunnable, 0);
