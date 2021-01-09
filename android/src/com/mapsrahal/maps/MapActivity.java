@@ -1351,6 +1351,15 @@ public class MapActivity extends BaseMwmFragmentActivity
             processNotification(notify, true);
         }
 
+        if(MySharedPreference.getInstance(this).getPTTStatus()) {
+            showPassContent(
+                    MySharedPreference.getInstance(this).getPTTName(),
+                    MySharedPreference.getInstance(this).getPTTVehicle(),
+                    MySharedPreference.getInstance(this).getPTTPhone()
+            );
+            closePassTrip();
+        }
+
         String tripId = MySharedPreference.getInstance(this).getTripId();
         if (tripId != null) {
             this.tripId = tripId;
@@ -1418,6 +1427,12 @@ public class MapActivity extends BaseMwmFragmentActivity
             Toast.makeText(this,"Captain Busy Test",Toast.LENGTH_LONG).show();
             clearRequest();
         }*/
+        //boolean status = MySharedPreference.getInstance(this).getPTTStatus();
+
+        //if(status == true) {
+
+        //}
+
         final Intent intent = getMyIntent();
         if(MySharedPreference.getInstance(this).isCaptainOnline() || mSelector == PASSENGER_TAXI_ONLY) {
             bindMyService(intent);
@@ -1845,6 +1860,10 @@ public class MapActivity extends BaseMwmFragmentActivity
         });
     }
 
+    private void closePassTrip() {
+        MySharedPreference.getInstance(this).setPTTStatus(false);
+    }
+
     private void processNotification(String myNotification, boolean isFromNotify) {
         boolean isCloseNotify = false;
         isOnRequestBtn = true;
@@ -1928,6 +1947,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 pb.setVisibility(View.GONE);
                 wtv.setVisibility(View.GONE);
                 mTextView.setText(getString(R.string.trip_completed));
+                closePassTrip();
                 /*phoneNumber = "0" + userMessage.getPhone();
                 stName.setText("Captain : " + userMessage.getName());
                 stPhone.setText("Phone : " + phoneNumber);
@@ -2584,7 +2604,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 btRequest.setVisibility(View.GONE);
                 //mCancelRequest.setVisibility(View.VISIBLE);
                 //mCallingCaptain.setVisibility(View.VISIBLE);
-                mPassCont.setVisibility(View.VISIBLE);
+                //mPassCont.setVisibility(View.VISIBLE);
                 //requestedDrivers[++requestCounter] = driverId;
                 isRequestInProgress = true;
                 if (!isDriverAccepted) {
@@ -2685,6 +2705,18 @@ public class MapActivity extends BaseMwmFragmentActivity
         }
     }
 
+    private void recordPassTrip(String captainName, String captainVehicle, String phone) {
+        MySharedPreference.getInstance(this).recordPassTaxiTrip(captainName,captainVehicle,phone);
+    }
+
+    private void showPassContent(String captainName, String captainVehicle, String phone) {
+        mPassCont.setVisibility(View.VISIBLE);
+        mCallingCaptain.setText("");
+        mCaptName.setText(captainName);
+        mCaptVehicle.setText(captainVehicle);
+        mDriverPhone.setText(getString(R.string.captain_phone) + phone);
+    }
+
     private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -2715,10 +2747,10 @@ public class MapActivity extends BaseMwmFragmentActivity
                         e.printStackTrace();
                     }
                     mDriverPhone.setVisibility(View.VISIBLE);
-                    mDriverPhone.setText(getString(R.string.captain_phone) + g.getPhone());
+
                     mCallingCaptain.setText(getString(R.string.captain_on_way));
-                    mCaptName.setText(g.getCaptainName());
-                    mCaptVehicle.setText(g.getCaptainVehicle());
+                    recordPassTrip(g.getCaptainName(),g.getCaptainVehicle(),g.getPhone());
+                    showPassContent(g.getCaptainName(),g.getCaptainVehicle(),g.getPhone());
                     //mCaptVehicle.setText(g.)
                     MyNotificationManager.getInstance(MapActivity.this).displayNotification(getString(R.string.captain_found), getString(R.string.captain_on_way));
                     //mRequest.setText("Driver Found, Coming to you");
@@ -2738,7 +2770,9 @@ public class MapActivity extends BaseMwmFragmentActivity
                     listCurrent++;
                     if(listCurrent >= listSize) {
                         removeRequest();
-                        mCallingCaptain.setText("Captain Busy, please try later");
+                        if(listSize != 0) {
+                            mCallingCaptain.setText("Captain Busy, please try later");
+                        }
                         //Toast.makeText(MapActivity.this,getString(R.string.no_driver_found),Toast.LENGTH_LONG).show();
                     } else {
                         requestHandler.postDelayed(requestRunnable, 0);

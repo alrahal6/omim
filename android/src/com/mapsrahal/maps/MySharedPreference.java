@@ -53,6 +53,13 @@ public class MySharedPreference {
     private static final String KEY_TT_TO_LNG = "toTLng";
     private static final String KEY_TT_USER_ID = "ttUsr";
 
+    // PASSENGER Taxi Trip
+
+    private static final String KEY_PTT_STATUS = "pttStatus";
+    private static final String KEY_PTT_NAME = "pttName";
+    private static final String KEY_PTT_VEHICLE = "pttVehicle";
+    private static final String KEY_PTT_PHONE = "pttPhone";
+
     private static final String KEY_NOTIFY = "isNotify";
     private static final String KEY_NOTIFY_TITLE = "notifyTitle";
     private static final String KEY_NOTIFY_BODY = "notifyBody";
@@ -121,6 +128,39 @@ public class MySharedPreference {
 
     private SharedPreferences getSharedPreference() {
         return mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+    }
+
+    public void recordPassTaxiTrip(String captainName, String captainVehicle, String phone) {
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(KEY_PTT_STATUS,true);
+        editor.putString(KEY_PTT_NAME,captainName);
+        editor.putString(KEY_PTT_VEHICLE,captainVehicle);
+        editor.putString(KEY_PTT_PHONE,phone);
+        editor.apply();
+    }
+
+    public String getPTTPhone() {
+        return getSharedPreference().getString(KEY_PTT_PHONE, "na");
+    }
+
+    public String getPTTName() {
+        return getSharedPreference().getString(KEY_PTT_NAME, "na");
+    }
+
+    public String getPTTVehicle() {
+        return getSharedPreference().getString(KEY_PTT_VEHICLE, "na");
+    }
+
+    public boolean getPTTStatus() {
+        return getSharedPreference().getBoolean(KEY_PTT_STATUS, false);
+    }
+
+    public void setPTTStatus(boolean status) {
+        SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(KEY_PTT_STATUS, status);
+        editor.apply();
     }
 
     public void recordTaxiTrip(double tripId,double distance,String sourceAddress, String destAddress,
