@@ -563,10 +563,28 @@ public class ServerConnection extends Service {
         int flag = g.getMyFlag();
         MySharedPreference.getInstance(this).userMessage(myMsg);
         //mBinder.pingBinder()
+        boolean isForeground = MwmApplication.backgroundTracker(MwmApplication.get().getApplicationContext()).isForeground();
+
+        if(flag == 5) {
+            MyNotificationManager.getInstance(this).displayNotification(getString(R.string.req_cancelled), getString(R.string.req_cancel_by_pas));
+            if(isForeground) {
+                startActivity(intent);
+            } else {
+                //closeNotification();
+                try {
+                    NotificationManager notificationManager =
+                            (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                    notificationManager.cancel(14);
+
+                } catch (Exception e) {
+
+                }
+            }
+        }
+
         if(flag == 4) {
             isResponded = false;
             //startActivity(intent);
-            boolean isForeground = MwmApplication.backgroundTracker(MwmApplication.get().getApplicationContext()).isForeground();
             if(isForeground) {
                 startActivity(intent);
                 //return;

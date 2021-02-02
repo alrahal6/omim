@@ -2655,11 +2655,15 @@ public class MapActivity extends BaseMwmFragmentActivity
                 // todo handle below code for different cancel
                 if (isRequestInProgress && !isDriverAccepted) {
                     sendMe();
+                    mCallingCaptain.setText("Request Cancelled");
+                    mCancelRequest.setVisibility(View.GONE);
                     isRequestInProgress = false;
                 }
 
                 if (isDriverAccepted) {
                     sendMe();
+                    mCallingCaptain.setText("Request Cancelled");
+                    mCancelRequest.setVisibility(View.GONE);
                     isDriverAccepted = false;
                 }
 

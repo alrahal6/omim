@@ -323,6 +323,14 @@ public class CaptainActivity extends AppCompatActivity
                 int flag = g.getMyFlag();
                 requestingPassenger = g.getUserId();
                 switch (flag) {
+
+                    case 5:
+                        if (ringtone.isPlaying()) {
+                            ringtone.stop();
+                        }
+                        finish();
+                        break;
+
                     case 4:
                         notifyTimer(g.getMinDis());
                         if (ringtone != null) {
