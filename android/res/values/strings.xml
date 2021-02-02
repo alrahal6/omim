@@ -3074,4 +3074,5 @@
     <string name="payment">Payment</string>
     <string name="from">From : </string>
     <string name="to">To : </string>
+    <string name="repeat_trips">Repeat Trips</string>
 </resources>

@@ -2450,6 +2450,7 @@
     <string name="payment">دفع</string>
     <string name="from"> من  : </string>
     <string name="to">ألي : </string>
+    <string name="repeat_trips">اعادة الرحلات</string>
     <string-array name="select_vehicle">
 		<item>اقتصاد</item>
 	</string-array>

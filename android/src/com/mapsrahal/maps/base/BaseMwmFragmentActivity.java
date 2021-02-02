@@ -29,6 +29,7 @@ import com.mapsrahal.maps.activity.ContactActivity;
 import com.mapsrahal.maps.activity.MyAccountActivity;
 import com.mapsrahal.maps.activity.MyRidesActivity;
 import com.mapsrahal.maps.activity.ProfileActivity;
+import com.mapsrahal.maps.activity.RepeatTripActivity;
 import com.mapsrahal.maps.activity.ResultActivity;
 import com.mapsrahal.util.Config;
 import com.mapsrahal.util.PermissionsUtils;
@@ -352,7 +353,10 @@ public abstract class BaseMwmFragmentActivity extends AppCompatActivity
       //intent = new Intent(this, ChatActivity.class);
       //startActivity(intent);
       //break;
-      case R.id.nav_settings:
+      case R.id.nav_repeat:
+        intent = new Intent(this, RepeatTripActivity.class);
+        startActivity(intent);
+        break;
       case R.id.nav_profile:
         Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show();
         break;

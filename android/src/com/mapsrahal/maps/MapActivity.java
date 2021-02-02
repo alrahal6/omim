@@ -1420,7 +1420,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                         MySharedPreference.getInstance(this).getTTDistance(),
                         MySharedPreference.getInstance(this).getTTPrice()
                 );
-                mSwipeButton.setText(getString(R.string.start_trip));
+                mSwipeButton.setText(getString(R.string.end_trip));
                 break;
         }
         /*if(captRes == SEND_BUSY) {
@@ -2711,11 +2711,14 @@ public class MapActivity extends BaseMwmFragmentActivity
 
     private void showPassContent(String captainName, String captainVehicle, String phone) {
         mPassCont.setVisibility(View.VISIBLE);
-        mCallingCaptain.setText("");
+        //mCallingCaptain.setText("");
+        mCallingCaptain.setText(getString(R.string.captain_on_way));
         mCaptName.setText(captainName);
         mCaptVehicle.setText(captainVehicle);
         mDriverPhone.setText(getString(R.string.captain_phone) + phone);
     }
+
+    boolean isCaptainAccepted = false;
 
     private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
@@ -2748,7 +2751,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                     }
                     mDriverPhone.setVisibility(View.VISIBLE);
 
-                    mCallingCaptain.setText(getString(R.string.captain_on_way));
+                    isCaptainAccepted = true;
                     recordPassTrip(g.getCaptainName(),g.getCaptainVehicle(),g.getPhone());
                     showPassContent(g.getCaptainName(),g.getCaptainVehicle(),g.getPhone());
                     //mCaptVehicle.setText(g.)
@@ -2770,7 +2773,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                     listCurrent++;
                     if(listCurrent >= listSize) {
                         removeRequest();
-                        if(listSize != 0) {
+                        if(!isCaptainAccepted) {
                             mCallingCaptain.setText("Captain Busy, please try later");
                         }
                         //Toast.makeText(MapActivity.this,getString(R.string.no_driver_found),Toast.LENGTH_LONG).show();
@@ -2952,7 +2955,7 @@ public class MapActivity extends BaseMwmFragmentActivity
         } else if (MySharedPreference.getInstance(MapActivity.this).getCaptRespId() == REACHED_CUSTOMER) {
             //send(TRIP_STARTED, 0, 0, 0);
             startTrip();
-            mSwipeButton.setText(getString(R.string.start_trip));
+            //mSwipeButton.setText(getString(R.string.start_trip));
         } else if (MySharedPreference.getInstance(MapActivity.this).getCaptRespId() == TRIP_STARTED) {
             endTrip();
             mSwipeButton.setText(getString(R.string.end_trip));
