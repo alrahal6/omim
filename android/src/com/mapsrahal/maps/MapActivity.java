@@ -1639,6 +1639,34 @@ public class MapActivity extends BaseMwmFragmentActivity
         checkBeforeConfirm(userMessageListM, userMessageList);
     }
 
+    private void backAsCaptain() {
+
+    }
+
+    private void backAsPassenger() {
+
+    }
+
+    private void sendTaxiCancelMessage(boolean isCaptain) {
+        Call<UserMessage> call = userMessageApi.sendTaxiPassCancelled();
+        call.enqueue(new Callback<UserMessage>() {
+            @Override
+            public void onResponse(Call<UserMessage> call, Response<UserMessage> response) {
+                // todo remove passenger or captain close accordingly
+                if(isCaptain) {
+                    backAsCaptain();
+                } else {
+                    backAsPassenger();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserMessage> call, Throwable t) {
+                //Toast.makeText(MapActivity.this, "Request Send Failed! ", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
     private void sendUserMessage(List<UserMessage> userMessageList, int flag) {
         Call<UserMessage> call;
         boolean isCloseNotify = false;
@@ -1913,12 +1941,10 @@ public class MapActivity extends BaseMwmFragmentActivity
                 mTextView.setText(getString(R.string.passenger_accepted_request));
                 break;
             case Constants.Notification.PASSENGER_CANCELLED:
+            case Constants.Notification.DRIVER_INVITE:
                 mCloseNotification.setVisibility(View.GONE);
                 isCloseNotify = true;
                 mTextView.setText(getString(R.string.passenger_cancel));
-                break;
-            case Constants.Notification.DRIVER_INVITE:
-                mTextView.setText(getString(R.string.captain_invitation));
                 break;
             case Constants.Notification.DRIVER_ACCEPTED:
                 // todo show captain name and phone
@@ -2661,7 +2687,8 @@ public class MapActivity extends BaseMwmFragmentActivity
                 }
 
                 if (isDriverAccepted) {
-                    sendMe();
+                    //sendMe();
+                    cancelTrip();
                     mCallingCaptain.setText("Request Cancelled");
                     mCancelRequest.setVisibility(View.GONE);
                     isDriverAccepted = false;
