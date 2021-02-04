@@ -59,6 +59,7 @@ public class MySharedPreference {
     private static final String KEY_PTT_NAME = "pttName";
     private static final String KEY_PTT_VEHICLE = "pttVehicle";
     private static final String KEY_PTT_PHONE = "pttPhone";
+    private static final String KEY_PTT_DRIVER_Id = "pttDriverId";
 
     private static final String KEY_NOTIFY = "isNotify";
     private static final String KEY_NOTIFY_TITLE = "notifyTitle";
@@ -130,18 +131,23 @@ public class MySharedPreference {
         return mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
     }
 
-    public void recordPassTaxiTrip(String captainName, String captainVehicle, String phone) {
+    public void recordPassTaxiTrip(String captainName, String captainVehicle, String phone,int driverId) {
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(KEY_PTT_STATUS,true);
         editor.putString(KEY_PTT_NAME,captainName);
         editor.putString(KEY_PTT_VEHICLE,captainVehicle);
         editor.putString(KEY_PTT_PHONE,phone);
+        editor.putInt(KEY_PTT_DRIVER_Id,driverId);
         editor.apply();
     }
 
     public String getPTTPhone() {
         return getSharedPreference().getString(KEY_PTT_PHONE, "na");
+    }
+
+    public int getPTTDriverId() {
+        return getSharedPreference().getInt(KEY_PTT_DRIVER_Id, 0);
     }
 
     public String getPTTName() {

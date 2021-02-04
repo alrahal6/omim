@@ -1648,7 +1648,22 @@ public class MapActivity extends BaseMwmFragmentActivity
     }
 
     private void sendTaxiCancelMessage(boolean isCaptain) {
-        Call<UserMessage> call = userMessageApi.sendTaxiPassCancelled();
+
+        UserMessage cancelMessage;
+        cancelMessage = new UserMessage(
+                MySharedPreference.getInstance(this).getUserId(),
+                MySharedPreference.getInstance(this).getPTTDriverId(),
+                5, 1,
+                0,
+                "",
+                "0",
+                "",
+                "",
+                "",
+                "", "0", 0.0, 0.0, 0.0, 0.0
+        );
+
+        Call<UserMessage> call = userMessageApi.sendTaxiPassCancelled(cancelMessage);
         call.enqueue(new Callback<UserMessage>() {
             @Override
             public void onResponse(Call<UserMessage> call, Response<UserMessage> response) {
@@ -2688,7 +2703,8 @@ public class MapActivity extends BaseMwmFragmentActivity
 
                 if (isDriverAccepted) {
                     //sendMe();
-                    cancelTrip();
+                    sendTaxiCancelMessage(false);
+                    //cancelTrip();
                     mCallingCaptain.setText("Request Cancelled");
                     mCancelRequest.setVisibility(View.GONE);
                     isDriverAccepted = false;
@@ -2736,8 +2752,8 @@ public class MapActivity extends BaseMwmFragmentActivity
         }
     }
 
-    private void recordPassTrip(String captainName, String captainVehicle, String phone) {
-        MySharedPreference.getInstance(this).recordPassTaxiTrip(captainName,captainVehicle,phone);
+    private void recordPassTrip(String captainName, String captainVehicle, String phone,int driverId) {
+        MySharedPreference.getInstance(this).recordPassTaxiTrip(captainName,captainVehicle,phone,driverId);
     }
 
     private void showPassContent(String captainName, String captainVehicle, String phone) {
@@ -2783,7 +2799,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                     mDriverPhone.setVisibility(View.VISIBLE);
 
                     isCaptainAccepted = true;
-                    recordPassTrip(g.getCaptainName(),g.getCaptainVehicle(),g.getPhone());
+                    recordPassTrip(g.getCaptainName(),g.getCaptainVehicle(),g.getPhone(),g.getDriverId());
                     showPassContent(g.getCaptainName(),g.getCaptainVehicle(),g.getPhone());
                     //mCaptVehicle.setText(g.)
                     MyNotificationManager.getInstance(MapActivity.this).displayNotification(getString(R.string.captain_found), getString(R.string.captain_on_way));

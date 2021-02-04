@@ -42,4 +42,8 @@ public class CaptainAccepted {
     public void setMyFlag(int myFlag) {
         this.myFlag = myFlag;
     }
+
+    public int getDriverId() {
+        return driverId;
+    }
 }
