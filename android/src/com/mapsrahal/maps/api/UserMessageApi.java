@@ -50,9 +50,9 @@ public interface UserMessageApi {
     Call<IsValid> checkBeforeConfirm(@Body List<UserMessage> userMessage);
 
     @POST("sendTaxiPassCancelled.php")
-    Call<UserMessage> sendTaxiPassCancelled(UserMessage userMessage);
+    Call<UserMessage> sendTaxiPassCancelled(@Body UserMessage userMessage);
 
     @POST("sendTaxiCaptCancelled.php")
-    Call<UserMessage> sendTaxiCaptCancelled();
+    Call<UserMessage> sendTaxiCaptCancelled(@Body UserMessage userMessage);
 
 }

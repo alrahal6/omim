@@ -1640,11 +1640,16 @@ public class MapActivity extends BaseMwmFragmentActivity
     }
 
     private void backAsCaptain() {
-
+        mCaptCont.setVisibility(View.GONE);
+        MySharedPreference.getInstance(MapActivity.this).finishTrip();
+        MySharedPreference.getInstance(MapActivity.this).setCaptRespId(0);
     }
 
     private void backAsPassenger() {
-
+        isDriverAccepted = false;
+        closePassTrip();
+        mCallingCaptain.setText("Trip Cancelled");
+        mCancelRequest.setVisibility(View.GONE);
     }
 
     private void sendTaxiCancelMessage(boolean isCaptain) {
@@ -1662,22 +1667,24 @@ public class MapActivity extends BaseMwmFragmentActivity
                 "",
                 "", "0", 0.0, 0.0, 0.0, 0.0
         );
-
+        UserMessageApi userMessageApi = ApiClient.getClient().create(UserMessageApi.class);
         Call<UserMessage> call = userMessageApi.sendTaxiPassCancelled(cancelMessage);
+        //boolean finalIsClose = isCaptain;
         call.enqueue(new Callback<UserMessage>() {
             @Override
             public void onResponse(Call<UserMessage> call, Response<UserMessage> response) {
-                // todo remove passenger or captain close accordingly
-                if(isCaptain) {
+                backAsPassenger();
+                /*if(finalIsClose) {
                     backAsCaptain();
                 } else {
                     backAsPassenger();
-                }
+                }*/
+
             }
 
             @Override
             public void onFailure(Call<UserMessage> call, Throwable t) {
-                //Toast.makeText(MapActivity.this, "Request Send Failed! ", Toast.LENGTH_LONG).show();
+
             }
         });
     }
@@ -1960,6 +1967,7 @@ public class MapActivity extends BaseMwmFragmentActivity
                 mCloseNotification.setVisibility(View.GONE);
                 isCloseNotify = true;
                 mTextView.setText(getString(R.string.passenger_cancel));
+                backAsCaptain();
                 break;
             case Constants.Notification.DRIVER_ACCEPTED:
                 // todo show captain name and phone
@@ -2705,9 +2713,9 @@ public class MapActivity extends BaseMwmFragmentActivity
                     //sendMe();
                     sendTaxiCancelMessage(false);
                     //cancelTrip();
-                    mCallingCaptain.setText("Request Cancelled");
-                    mCancelRequest.setVisibility(View.GONE);
-                    isDriverAccepted = false;
+                    //mCallingCaptain.setText("Request Cancelled");
+                    //mCancelRequest.setVisibility(View.GONE);
+
                 }
 
                 removeRequest();
@@ -3048,9 +3056,10 @@ public class MapActivity extends BaseMwmFragmentActivity
     private void endTrip() {
         tripRecordHandler.removeCallbacks(recordTripRunnable);
         timerHandler.removeCallbacks(timerRunnable);
-        mCaptCont.setVisibility(View.GONE);
+        backAsCaptain();
+        /*mCaptCont.setVisibility(View.GONE);
         MySharedPreference.getInstance(MapActivity.this).finishTrip();
-        MySharedPreference.getInstance(MapActivity.this).setCaptRespId(0);
+        MySharedPreference.getInstance(MapActivity.this).setCaptRespId(0);*/
         sendCaptainNotification(TRIP_COMPLETED);
 
         // todo open payment activity and send notification
