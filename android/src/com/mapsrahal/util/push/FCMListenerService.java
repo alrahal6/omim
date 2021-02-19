@@ -186,6 +186,9 @@ public class FCMListenerService extends FirebaseMessagingService {
             case Constants.Notification.PASSENGER_CANCELLED:
                 title = "Carpooler have cancelled trip";
                 break;
+            case Constants.Notification.PASSENGER_AVAILABLE:
+                title = getString(R.string.passenger_avail);
+                break;
         }
         return title;
     }
@@ -223,6 +226,9 @@ public class FCMListenerService extends FirebaseMessagingService {
                 break;
             case Constants.Notification.PASSENGER_CANCELLED:
                 body = "Contact your carpooler for details";
+                break;
+            case Constants.Notification.PASSENGER_AVAILABLE:
+                body = getString(R.string.passenger_availability);
                 break;
         }
         return body;

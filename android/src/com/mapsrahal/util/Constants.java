@@ -74,6 +74,7 @@ public final class Constants
     public static final int PASSENGER_ACCEPTED = 2;
     public static final int PASSENGER_REFUSED = 3;
     public static final int PASSENGER_CANCELLED = 4;
+    public static final int PASSENGER_AVAILABLE = 14;
     public static final int DRIVER_INVITE = 5;
     public static final int DRIVER_ACCEPTED = 6;
     public static final int DRIVER_REFUSED = 7;

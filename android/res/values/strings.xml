@@ -3075,4 +3075,6 @@
     <string name="from">From : </string>
     <string name="to">To : </string>
     <string name="repeat_trips">Repeat Trips</string>
+    <string name="passenger_availability">please check for passenger availability</string>
+    <string name="passenger_avail">Some Passenger available on your way</string>
 </resources>

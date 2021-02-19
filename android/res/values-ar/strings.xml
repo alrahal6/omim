@@ -2451,6 +2451,8 @@
     <string name="from"> من  : </string>
     <string name="to">ألي : </string>
     <string name="repeat_trips">اعادة الرحلات</string>
+    <string name="passenger_avail">هناك ركاب في طريقك</string>
+	<string name="passenger_availability">رجاء  اطلع علي الركاب المتظرين</string>
     <string-array name="select_vehicle">
 		<item>اقتصاد</item>
 	</string-array>
